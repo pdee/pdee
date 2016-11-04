@@ -156,7 +156,7 @@ impo")))
       (with-current-buffer erg
 	(goto-char (point-max))
 	;; (when py-debug-p (switch-to-buffer (current-buffer)))
-	(switch-to-buffer (current-buffer))
+	;; (switch-to-buffer (current-buffer))
 	(insert "pri")
 	(sit-for 1 t)
 	(call-interactively 'py-indent-or-complete)

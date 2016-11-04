@@ -230,8 +230,6 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
         (let ((paragraph-start (concat paragraph-start "\\|[ \t#]*$"))
               (paragraph-separate (concat paragraph-separate "\\|[ \t#]*$"))
               (fill-prefix comment-fill-prefix))
-          ;;(message "paragraph-start %S paragraph-separate %S"
-          ;;paragraph-start paragraph-separate)
           (fill-paragraph justify))))
     t))
 

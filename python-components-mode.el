@@ -1,4 +1,4 @@
-;; python-components-mode.el --- Edit, debug, develop, run Python programs.
+;;; python-components-mode.el --- Edit, debug, develop, run Python programs. -*- lexical-binding: t -*-
 
 ;; Includes a minor mode for handling a Python/IPython shell,
 ;; and can take advantage of Pymacs when installed.
@@ -2590,6 +2590,9 @@ See py-no-outdent-re-raw for better readable content ")
   :group 'python-mode
   )
 
+(defvar py-comment-re comment-start
+  "Needed for normalized processing")
+
 (defconst py-block-keywords
   (concat
    "\\_<\\("
@@ -2880,15 +2883,6 @@ See also `py-object-reference-face'"
   :tag "py-exception-name-face"
   :group 'python-mode)
 
-(defun py--delete-all-but-first-prompt ()
-  "Don't let prompts from setup-codes sent clutter buffer. "
-  (let (last erg)
-    (when (re-search-backward py-fast-filter-re nil t 1)
-      (setq erg (match-end 0))
-      (while (and (re-search-backward py-fast-filter-re nil t 1) (setq erg (match-end 0))))
-      (delete-region erg (point-max))))
-  (goto-char (point-max)))
-
 (defun py--python-send-setup-code-intern (name &optional msg)
   (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))
 	(py-ignore-result-p t)
@@ -3009,9 +3003,9 @@ Returns versioned string, nil if nothing appropriate found "
 (defun py-which-python ()
   "Returns version of Python of current environment, a number. "
   (interactive)
-  (let* (treffer (cmd (py-choose-shell))
+  (let* ((cmd (py-choose-shell))
+	 (treffer (string-match "\\([23]*\\.?[0-9\\.]*\\)$" cmd))
          version erg)
-    (setq treffer (string-match "\\([23]*\\.?[0-9\\.]*\\)$" cmd))
     (if treffer
         ;; if a number if part of python name, assume it's the version
         (setq version (substring-no-properties cmd treffer))

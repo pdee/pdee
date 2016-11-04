@@ -45,11 +45,6 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 
 (defun py--fast-send-string-no-output (string proc output-buffer)
   (with-current-buffer output-buffer
-    ;; in comint-mode, prompt might be read-only
-    ;; delete-region would fail
-    ;; (let ((comint-prompt-read-only-old comint-prompt-read-only)
-    ;; comint-prompt-read-only)
-    ;; (switch-to-buffer (current-buffer))
     (process-send-string proc "\n")
     (let ((orig (point-max)))
       (sit-for 1 t)
@@ -57,11 +52,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (process-send-string proc "\n")
       (accept-process-output proc 5)
       (sit-for 1 t)
-      ;; (when py-verbose-p (message "py--fast-send-string-intern comint-prompt-read-only: %s" comint-prompt-read-only))
-      (delete-region orig (point-max))
-      ;; (setq comint-prompt-read-only comint-prompt-read-only-old)
-      ;;)
-      )))
+      (delete-region orig (point-max)))))
 
 (defun py--filter-result (string)
   "Set `py-result' according to `py-fast-filter-re'.

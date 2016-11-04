@@ -37,8 +37,6 @@ completions on the current context."
 	 ;; (completion (when completions
 	 ;; (try-completion input completions)))
 	 newlist erg)
-    ;; (message "%s" (current-buffer))
-    ;; (sit-for 1 t)
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
 	   nil)

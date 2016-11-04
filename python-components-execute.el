@@ -641,10 +641,10 @@ Receives a buffer-name as argument"
 (defun py--reuse-existing-shell (exception-buffer)
   (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) py-buffer-name)))
 
-(defun py--create-new-shell (executable args exception-buffer)
+(defun py--create-new-shell (executable args buffer-name exception-buffer)
   (let ((buf (current-buffer)))
     (with-current-buffer
-	(apply #'make-comint-in-buffer executable py-buffer-name executable nil (split-string-and-unquote args))
+	(apply #'make-comint-in-buffer executable buffer-name executable nil (split-string-and-unquote args))
       ;; (py--shell-make-comint executable py-buffer-name args)
       (let ((proc (get-buffer-process (current-buffer))))
 	(if (string-match "^i" (process-name proc))
@@ -711,21 +711,18 @@ Receives a buffer-name as argument"
     (sit-for 0.1 t)
     (if fast-process
 	;; user rather wants an interactive shell
-	(py--shell-fast-proceeding proc py-buffer-name py-shell-name  py-shell-completion-setup-code)
+	(py--shell-fast-proceeding proc py-buffer-name py-shell-name py-shell-completion-setup-code)
       (if (comint-check-proc py-buffer-name)
 	  (py--reuse-existing-shell exception-buffer)
 	;; buffer might exist but not being empty
 	(when (buffer-live-p py-buffer-name)
 	  (with-current-buffer py-buffer-name
 	    (erase-buffer)))
-	(py--create-new-shell executable args exception-buffer))
+	(py--create-new-shell executable args py-buffer-name exception-buffer))
       (when (or (called-interactively-p 'any)
 		(eq 1 argprompt)
-		py-switch-buffers-on-execute-p
-		;; (member this-command py-named-shells)
-		)
+		py-switch-buffers-on-execute-p)
 	(py--shell-manage-windows py-buffer-name windows-config py-exception-buffer)))
-    ;; (sit-for py-new-shell-delay t)
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt py-dedicated-process-p shell switch py-buffer-name)

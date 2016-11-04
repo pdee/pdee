@@ -53,7 +53,7 @@ def foo():
 "
     (font-lock-fontify-buffer)
     (sit-for 0.1 t)
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+
     (search-forward "\"\"\"")
     (fill-paragraph)
     (sit-for 0.1 t)
@@ -78,7 +78,7 @@ def foo():
     (set-buffer buffer)
     (delete-other-windows)
     (let ((full-height (window-height)))
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+  
       (py-send-string "import os" (get-buffer-process (current-buffer)))
       (sit-for 0.1)
       (goto-char (point-max))
@@ -98,7 +98,7 @@ def foo():
       (py-execute-buffer)
       (sit-for 0.5 t)
       (set-buffer "*IPython*")
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+  
       (goto-char (point-max))
       (should (search-backward "1")))))
 
@@ -113,7 +113,7 @@ def foo():
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-expression-test\")"
     (let ((py-shell-name "python"))
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+  
       (py-execute-expression)
       (sit-for 0.1 t)
       (set-buffer ert-test-default-buffer)
@@ -150,7 +150,6 @@ def foo():
     (set-buffer "*Python2*")
     (goto-char (point-max))
     (sit-for 0.2 t)
-    (when py-debug-p (switch-to-buffer (current-buffer)))
     (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 

@@ -65,7 +65,7 @@
       (unless (string-match "\n\\'" string)
 	;; Make sure the text is properly LF-terminated.
 	(comint-send-string proc "\n"))
-      (when py-debug-p (message "%s" (current-buffer)))
+      ;; (when py-debug-p (message "%s" (current-buffer)))
       (goto-char (point-max)))))
 
 (provide 'python-components-send)

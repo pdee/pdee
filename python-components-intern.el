@@ -57,7 +57,7 @@ Returns beginning of FORM if successful, nil otherwise"
                              (cdr (ar--go-to-keyword (symbol-value regexp)
                                                     (- (progn (if (ar--beginning-of-statement-p) (current-indentation) (save-excursion (ar-backward-statement) (current-indentation)))) ar-indent-offset)))))))
         (when lc (beginning-of-line) (setq erg (point)))))
-    (when (and ar-verbose-p iact) (message "%s" erg))
+    ;; (when (and ar-verbose-p iact) (message "%s" erg))
     erg))
 
 (defun ar--beginning-of-prepare (indent final-re &optional inter-re iact lc)
@@ -80,7 +80,7 @@ Returns beginning of FORM if successful, nil otherwise"
         (progn
           (and lc (beginning-of-line))
           (setq erg (point))
-          (when (and ar-verbose-p iact) (message "%s" erg))
+          ;; (when (and ar-verbose-p iact) (message "%s" erg))
           erg)
       (ar--beginning-of-form-intern final-re iact indent orig lc))))
 
@@ -335,7 +335,7 @@ Start a new process if necessary. "
          (cond ((comint-check-proc (current-buffer))
 		(get-buffer-process (buffer-name (current-buffer))))
 	       (t (py-shell argprompt)))))
-    (when (called-interactively-p 'any) (message "%S" erg))
+    ;; (when (called-interactively-p 'any) (message "%S" erg))
     erg))
 
 ;;  Miscellany.
@@ -653,7 +653,7 @@ Use `defcustom' to keep value across sessions "
   (let ((erg (with-syntax-table
                  py-dotted-expression-syntax-table
                (current-word))))
-    (when (called-interactively-p 'any) (message "%s" erg))
+    ;; (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-kill-buffer-unconditional (buffer)
@@ -761,7 +761,6 @@ LIEP stores line-end-position at point-of-interest
                       (re-search-backward (concat py-shell-prompt-regexp "\\|" py-ipython-output-prompt-re "\\|" py-ipython-input-prompt-re) nil t 1)))
             ;; common recursion not suitable because of prompt
             (with-temp-buffer
-	      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
               (insert-buffer-substring cubuf (match-end 0) orig)
               (setq indent (py-compute-indentation)))
 	  (if (< py-max-specpdl-size repeat)
@@ -1097,7 +1096,7 @@ If non-nil, return a list composed of
 	    (setq erg (py-in-string-p-intern pps)))))
 
     ;; (list (nth 8 pps) (char-before) (1+ (skip-chars-forward (char-to-string (char-before)))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+      ;; (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg)))
 
 (defun py-in-statement-p ()
@@ -1502,8 +1501,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
 (defun py-end-of-string (&optional beginning-of-string-position)
   "Go to end of string at point if any, if successful return position. "
   (interactive)
-  ;; (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
-  ;; (when py-debug-p (message "major-mode): %s" major-mode))
   (let ((orig (point))
 	(beginning-of-string-position (or beginning-of-string-position (and (nth 3 (parse-partial-sexp 1 (point)))(nth 8 (parse-partial-sexp 1 (point))))
                                           (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")(match-beginning 0))))

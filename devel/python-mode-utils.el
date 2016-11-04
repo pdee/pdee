@@ -1,16 +1,10 @@
 ;;; python-mode-utils.el - generating parts of python-mode.el
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
 ;; Keywords: languages, processes, python, oop
-
-;; Python-components-mode started from python-mode.el
-;; and python.el, where Tim Peters, Barry A. Warsaw,
-;; Skip Montanaro, Ken Manheimer, Dave Love and many
-;; others wrote major parts. Author of ipython.el's
-;; stuff merged is Alexander Schmolck.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -784,7 +778,7 @@
   (interactive)
     (set-buffer (get-buffer-create "python-components-exec-forms.el"))
     (erase-buffer)
-    (insert ";;; python-components-exec-forms.el --- Forms with a reduced range of derived commands\n")
+    (insert ";;; python-components-exec-forms.el --- Forms with a reduced range of derived commands -*- lexical-binding: t -*-\n")
     (insert arkopf)
     (insert ";; Execute forms at point\n\n")
     (dolist (ele py-extra-execute-forms)
@@ -813,7 +807,7 @@
     (set-buffer (get-buffer-create "python-components-fast-forms.el"))
     (erase-buffer)
     (switch-to-buffer (current-buffer))
-    (insert ";;; python-components-fast-forms.el --- Execute forms at point\n")
+    (insert ";;; python-components-fast-forms.el --- Execute forms at point -*- lexical-binding: t -*-\n")
     (insert arkopf)
     (insert ";; Process forms fast\n\n")
     (insert "
@@ -920,7 +914,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
   (set-buffer (get-buffer-create "python-components-execute-file.el"))
   (erase-buffer)
   ;; (switch-to-buffer (current-buffer))
-  (insert ";;; python-components-execute-file.el --- Execute files from python-mode\n")
+  (insert ";;; python-components-execute-file.el --- Execute files from python-mode -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (insert ";; Execute file commands\n")
   (dolist (ele py-shells)
@@ -995,7 +989,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
   (set-buffer (get-buffer-create "py-shell-arg-ert-tests.el"))
   (erase-buffer)
   (switch-to-buffer (current-buffer))
-  (insert ";;; py-shell-arg-ert-tests.el --- py-shell ert tests\n")
+  (insert ";;; py-shell-arg-ert-tests.el --- py-shell ert tests -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (dolist (ele py-shells)
     (setq ele (format "%s" ele))
@@ -1153,7 +1147,7 @@ With \\\\[universal-argument] use an unique "))
       (insert (concat " interpreter. \"
   (interactive \"P\")
   (let ((wholebuf t))
-  (py--execute-buffer-base \"" ele "\" dedicated switch)))\n\n")))
+  (py--execute-buffer-base \"" ele "\" dedicated switch))) \n\n")))
     (insert ";; switch\n")
     (dolist (ele py-shells)
       (insert (concat "(defun py-execute-buffer-" ele "-switch (&optional dedicated)
@@ -1211,7 +1205,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
   (with-current-buffer
       (get-buffer-create "python-components-named-shells.el")
     (erase-buffer)
-    (insert ";;; Python named shells")
+    (insert ";;; Python named shells -*- lexical-binding: t -*- ")
     (insert arkopf)
     (newline)
     (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
@@ -1377,7 +1371,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
   (interactive)
   (set-buffer (get-buffer-create "python-components-shift-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-shift-forms.el --- Move forms left or right\n")
+  (insert ";;; python-components-shift-forms.el --- Move forms left or right -*- lexical-binding: t -*- \n")
   (insert arkopf)
 
   (insert "
@@ -1717,7 +1711,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
   (set-buffer (get-buffer-create "python-components-up-down.el"))
   (erase-buffer)
   (when (interactive-p) (switch-to-buffer (current-buffer)))
-  (insert ";;; python-components-up-down.el -- Searching up/downwards in buffer\n")
+  (insert ";;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t -*- \n")
   (insert arkopf)
   (insert "
 \(defun py-up-statement ()
@@ -1939,7 +1933,7 @@ Return position if " ele " found, nil otherwise \"
   (interactive)
   (set-buffer (get-buffer-create "python-components-comment.el"))
   (erase-buffer)
-  (insert ";;; python-components-comment.el -- Comment/uncomment python constructs at point\n")
+  (insert ";;; python-components-comment.el -- Comment/uncomment python constructs at point -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (insert "
 \(defun py-comment-region (beg end &optional arg)
@@ -2049,7 +2043,7 @@ Use backward-statement for `top-level', also bol-forms don't make sense here"
   (set-buffer (get-buffer-create "python-components-backward-forms.el"))
   (erase-buffer)
   (switch-to-buffer (current-buffer))
-  (insert ";;; python-components-backward-forms.el --- Go to beginning of form or further backward \n")
+  (insert ";;; python-components-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t -*-\n")
   (insert arkopf)
   ;; don't handle (partial)-expression forms here
   (py--insert-backward-forms)
@@ -2064,7 +2058,7 @@ Use backward-statement for `top-level', also bol-forms don't make sense here"
   (interactive)
   (set-buffer (get-buffer-create "python-components-forms-code.el"))
   (erase-buffer)
-  (insert ";;; python-components-forms-code.el --- Return Python forms' code \n")
+  (insert ";;; python-components-forms-code.el --- Return Python forms' code -*- lexical-binding: t -*-\n")
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
@@ -2089,7 +2083,7 @@ Return code of `py-" ele "' at point, a string. \"
   (interactive "*")
   (set-buffer (get-buffer-create "python-components-hide-show.el"))
   (erase-buffer)
-  (insert ";;; python-components-hide-show.el --- Provide hs-minor-mode forms\n")
+  (insert ";;; python-components-hide-show.el --- Provide hs-minor-mode forms -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (insert"
 \;; (setq hs-block-start-regexp 'py-extended-block-or-clause-re)
@@ -2181,7 +2175,7 @@ Return code of `py-" ele "' at point, a string. \"
   (let* ((liste py-shells))
     (set-buffer (get-buffer-create "py-ert-always-split-lp-1361531-tests.el"))
     (erase-buffer)
-    (insert ";;; py-ert-always-split-lp-1361531-tests.el --- Test splitting\n")
+    (insert ";;; py-ert-always-split-lp-1361531-tests.el --- Test splitting -*- lexical-binding: t -*-\n")
     (insert arkopf)
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (dolist (ele liste)
@@ -2215,7 +2209,7 @@ print(\\\"I'm the py-always-split-dedicated-lp-1361531-" elt "-test\\\")\""))
   (let* ((liste py-shells))
     (set-buffer (get-buffer-create "py-ert-just-two-split-lp-1361531-tests.el"))
     (erase-buffer)
-    (insert ";;; py-ert-just-two-split-lp-1361531-tests.el --- Test splitting\n")
+    (insert ";;; py-ert-just-two-split-lp-1361531-tests.el --- Test splitting -*- lexical-binding: t -*-\n")
     (insert arkopf)
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (dolist (ele liste)
@@ -2249,7 +2243,7 @@ print(\\\"I'm the py-just-two-split-dedicated-lp-1361531-" elt "-test\\\")\""))
   (set-buffer (get-buffer-create "py-ert-beginning-tests.el"))
   (erase-buffer)
   (switch-to-buffer (current-buffer))
-  (insert ";;; py-ert-beginning-tests.el --- Just some more tests \n")
+  (insert ";;; py-ert-beginning-tests.el --- Just some more tests \n -*- lexical-binding: t -*-")
   (insert arkopf)
   (dolist (ele py-navigate-forms)
     (insert (concat "
@@ -2358,24 +2352,26 @@ class bar:
   (interactive)
   (set-buffer (get-buffer-create "python-components-beginning-position-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-beginning-position-forms.el --- \n")
+  (insert ";;; python-components-beginning-position-forms.el --- -*- lexical-binding: t -*-\n")
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (dolist (ele py-position-forms)
     (insert (concat "
 \(defun py--beginning-of-" ele "-position ()
-  \"Returns beginning of " ele " position at beginning-of-line. \"
+  \"Returns beginning of " ele " position. \"
   (save-excursion
-    (let ((erg (py-backward-" ele ")))
+    (let ((erg (or (py--beginning-of-" ele "-p)
+                   (py-backward-" ele "))))
       erg)))\n")))
 
   (dolist (ele py-beginning-bol-command-names)
     (insert (concat "
 \(defun py--beginning-of-" ele "-position-bol ()
-  \"Returns beginning of " ele " position. \"
+  \"Returns beginning of " ele " position at beginning-of-line. \"
   (save-excursion
-    (let ((erg (py-backward-" ele "-bol)))
+    (let ((erg (or (py--beginning-of-" ele "-bol-p)
+                   (py-backward-" ele "-bol))))
       erg)))
 ")))
   (insert "\n(provide 'python-components-beginning-position-forms)
@@ -2390,7 +2386,7 @@ class bar:
   (set-buffer (get-buffer-create "python-components-end-position-forms.el"))
   (erase-buffer)
   (switch-to-buffer (current-buffer))
-  (insert ";;; python-components-end-position-forms.el --- \n")
+  (insert ";;; python-components-end-position-forms.el --- -*- lexical-binding: t -*-\n")
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
@@ -2429,7 +2425,7 @@ class bar:
   (interactive)
   (set-buffer (get-buffer-create "python-components-forward-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-forward-forms.el -- Go to the end of forms\n")
+  (insert ";;; python-components-forward-forms.el -- Go to the end of forms -*- lexical-binding: t -*-\n")
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
@@ -2469,7 +2465,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (interactive)
   (set-buffer (get-buffer-create "python-components-booleans-beginning-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-booleans-beginning-forms.el --- booleans-beginning forms\n")
+  (insert ";;; python-components-booleans-beginning-forms.el --- booleans-beginning forms -*- lexical-binding: t -*-\n")
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
@@ -2513,7 +2509,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (erase-buffer)
-  (insert ";;; python-components-booleans-end-forms.el --- booleans-end forms\n")
+  (insert ";;; python-components-booleans-end-forms.el --- booleans-end forms -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (dolist (ele py-non-bol-forms)
     (insert (concat "
@@ -2563,7 +2559,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (interactive)
   (set-buffer (get-buffer-create "python-components-kill-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-kill-forms.el --- kill forms\n")
+  (insert ";;; python-components-kill-forms.el --- kill forms -*- lexical-binding: t -*-\n")
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
@@ -2599,7 +2595,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive)
   (set-buffer (get-buffer-create "python-components-mark-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-mark-forms.el --- mark forms\n")
+  (insert ";;; python-components-mark-forms.el --- mark forms -*- lexical-binding: t -*-\n")
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
@@ -2670,7 +2666,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive)
   (set-buffer (get-buffer-create "python-components-copy-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-copy-forms.el --- copy forms\n")
+  (insert ";;; python-components-copy-forms.el --- copy forms -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (let ((forms (or forms py-execute-forms)))
     (dolist (ele forms)
@@ -2753,7 +2749,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive)
   (set-buffer (get-buffer-create "python-components-delete-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-delete-forms.el --- delete forms\n")
+  (insert ";;; python-components-delete-forms.el --- delete forms -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (py--write-delete-forms-bol py-bol-forms)
   (py--write-delete-forms py-non-bol-forms)
@@ -2782,7 +2778,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive)
   (set-buffer (get-buffer-create "python-components-section-forms.el"))
   (erase-buffer)
-  (insert ";;; python-components-section-forms.el --- section forms\n")
+  (insert ";;; python-components-section-forms.el --- section forms -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
@@ -2811,7 +2807,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive)
   (set-buffer (get-buffer-create "python-components-narrow.el"))
   (erase-buffer)
-  (insert ";;; python-components-narrow.el --- narrow forms\n")
+  (insert ";;; python-components-narrow.el --- narrow forms -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
@@ -2850,7 +2846,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (interactive)
   (set-buffer (get-buffer-create "python-components-execute-region.el"))
   (erase-buffer)
-  (insert ";;; python-components-execute-region.el --- execute-region forms\n")
+  (insert ";;; python-components-execute-region.el --- execute-region forms -*- lexical-binding: t -*-\n")
   (insert arkopf)
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))

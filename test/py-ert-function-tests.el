@@ -1251,9 +1251,6 @@
 (ert-deftest py-ert-set-onetwo-docstring-style-functionp-test ()
   (should (functionp 'py-set-onetwo-docstring-style)))
 
-(ert-deftest py-ert-fill-decorator-functionp-test ()
-  (should (functionp 'py-fill-decorator)))
-
 (ert-deftest py-ert-fill-comment-functionp-test ()
   (should (functionp 'py-fill-comment)))
 
@@ -2225,9 +2222,6 @@
 
 (ert-deftest py-ert--quote-syntax-functionp-test ()
   (should (functionp 'py--quote-syntax)))
-
-(ert-deftest py-ert--delete-all-but-first-prompt-functionp-test ()
-  (should (functionp 'py--delete-all-but-first-prompt)))
 
 (ert-deftest py-ert--python-send-setup-code-intern-functionp-test ()
   (should (functionp 'py--python-send-setup-code-intern)))
