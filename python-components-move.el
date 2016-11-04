@@ -1,4 +1,4 @@
-;;; python-components-move.el --- Functions moving point which need special treatment
+;;; python-components-move.el --- Functions moving point which need special treatment -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -27,10 +27,12 @@
 
 ;; Indentation
 ;; Travel current level of indentation
-(defun py--travel-this-indent-backward ()
-  (while (and (py-backward-statement)
-	      (or indent (setq indent (current-indentation)))
-	      (eq indent (current-indentation))(setq erg (point)) (not (bobp)))))
+(defun py--travel-this-indent-backward (&optional indent)
+  (let (erg)
+    (while (and (py-backward-statement)
+		(or indent (setq indent (current-indentation)))
+		(eq indent (current-indentation))(setq erg (point)) (not (bobp))))
+    erg))
 
 (defun py-backward-indent ()
   "Go to the beginning of a section of equal indent.
@@ -40,17 +42,18 @@ Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (bobp)
     (let ((orig (point))
-	 erg indent)
-      (py--travel-this-indent-backward)
+	  erg)
+      (setq erg (py--travel-this-indent-backward))
       (when erg (goto-char erg))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
-(defun py--travel-this-indent-backward-bol ()
-  (while (and (py-backward-statement-bol)
-	      (or indent (setq indent (current-indentation)))
-	      (eq indent (current-indentation))(setq erg (point)) (not (bobp))))
-  (when erg (goto-char erg)))
+(defun py--travel-this-indent-backward-bol (indent)
+  (let (erg)
+    (while (and (py-backward-statement-bol)
+		(or indent (setq indent (current-indentation)))
+		(eq indent (current-indentation))(setq erg (point)) (not (bobp))))
+    (when erg (goto-char erg))))
 
 (defun py-backward-indent-bol ()
   "Go to the beginning of line of a section of equal indent.
@@ -62,7 +65,7 @@ Returns final position when called from inside section, nil otherwise"
     (let ((orig (point))
 	  (indent (when (eq (current-indentation) (current-column)) (current-column)))
 	  erg)
-      (py--travel-this-indent-backward-bol)
+      (setq erg (py--travel-this-indent-backward-bol indent))
       ;; (when erg (goto-char erg)
       ;; (beginning-of-line)
       ;; (setq erg (point)))

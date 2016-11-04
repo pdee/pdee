@@ -1,4 +1,4 @@
-;;; python-components-up-down.el -- Searching up/downwards in buffer
+;;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016  Andreas Röhler
 

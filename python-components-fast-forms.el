@@ -1,4 +1,4 @@
-;;; python-components-fast-forms.el --- Execute forms at point
+;;; python-components-fast-forms.el --- Execute forms at point -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

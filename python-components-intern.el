@@ -202,7 +202,7 @@ Returns char found. "
   (let* ((pps (parse-partial-sexp (point-min) (point)))
 	 (erg (and (nth 4 pps) (nth 8 pps))))
     erg))
-;; 
+;;
 (defun py-in-string-or-comment-p ()
   "Returns beginning position if inside a string or comment, nil otherwise. "
   (or (nth 8 (parse-partial-sexp (point-min) (point)))
@@ -1567,15 +1567,15 @@ the output."
 
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
-  (let ((process (or process (get-buffer-process (py-shell))))
-	erg)
+  (let ((process (or process (get-buffer-process (py-shell)))))
     (with-current-buffer (process-buffer process)
-      (let ((comint-preoutput-filter-functions
-	     (append comint-preoutput-filter-functions
-		     '(ansi-color-filter-apply
-		       (lambda (string)
-			 (setq erg (concat erg string))
-			 "")))))
+      (let* (erg
+	     (comint-preoutput-filter-functions
+	      (append comint-preoutput-filter-functions
+		      '(ansi-color-filter-apply
+			(lambda (string)
+			  (setq erg (concat erg string))
+			  "")))))
 	(py-send-string string process)
 	(accept-process-output process 5)
 	(sit-for 0.1 t)

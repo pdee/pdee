@@ -1,4 +1,4 @@
-;;; python-components-help.el --- help functions
+;;; python-components-help.el --- help functions -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -562,7 +562,7 @@ local bindings to py-newline-and-indent."))
                ("(python-lib)Function-Method-Variable Index")
                ("(python-lib)Miscellaneous Index"))))
 
-(defun py--find-definition-in-source (sourcefile)
+(defun py--find-definition-in-source (sourcefile symbol)
   (called-interactively-p 'any) (message "sourcefile: %s" sourcefile)
   (when (find-file sourcefile)
     ;; (if (stringp py-separator-char)
@@ -582,7 +582,7 @@ local bindings to py-newline-and-indent."))
 
 ;;  Find function stuff, lifted from python.el
 (defalias 'py-find-function 'py-find-definition)
-(defun py--find-definition-question-type ()
+(defun py--find-definition-question-type (symbol)
   (cond ((setq erg (py--send-string-return-output (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
 	(t (setq erg (py--send-string-return-output (concat imports "import inspect;inspect.getmodule(\"" symbol "\")"))))))
 
@@ -623,7 +623,7 @@ Interactively, prompt for SYMBOL."
               (goto-char (match-beginning 0))
               (exchange-point-and-mark))
           (error "%s" "local not a number"))
-      (py--find-definition-question-type)
+      (setq erg (py--find-definition-question-type symbol))
       (cond ((string-match "SyntaxError" erg)
              (setq erg (substring-no-properties erg (match-beginning 0)))
              (set-window-configuration last-window-configuration)
@@ -636,7 +636,8 @@ Interactively, prompt for SYMBOL."
 	       (message "%s" erg)))
             ((and erg (setq path (replace-regexp-in-string "'" "" (py--send-string-return-output "import os;os.getcwd()")))
                   (setq sourcefile (replace-regexp-in-string "'" "" (py--send-string-return-output (concat "inspect.getsourcefile(" symbol ")")))))
-	     (py--find-definition-in-source sourcefile)
+	     (message "%s" sourcefile)
+	     (py--find-definition-in-source sourcefile symbol)
              (display-buffer py-exception-buffer))))
     erg))
 

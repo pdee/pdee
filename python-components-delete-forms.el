@@ -1,4 +1,4 @@
-;;; python-components-delete-forms.el --- delete forms
+;;; python-components-delete-forms.el --- delete forms -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

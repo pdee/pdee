@@ -1,4 +1,4 @@
-;;; python-components-fast-complete.el -- Don't touch interactive shell when completing
+;;; python-components-fast-complete.el -- Don't touch interactive shell when completing -*- lexical-binding: t; -*- 
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

@@ -1,4 +1,4 @@
-;;; python-components-paragraph.el --- filling
+;;; python-components-paragraph.el --- filling -*- lexical-binding: t; -*- 
 
 ;; Original Author: Fabián E. Gallina <fabian@anue.biz>
 ;; Maintainer: Andreas Röhler <andreas.roehler@easy-emacs.de>

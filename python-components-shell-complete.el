@@ -1,4 +1,4 @@
-;;; python-components-shell-complete.el -- Add suport for completion in py-shell
+;;; python-components-shell-complete.el -- Add suport for completion in py-shell -*- lexical-binding: t; -*- 
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ completions on the current context."
 	 (py--send-string-return-output
 	  (format completion-code input) process)))
     (sit-for 0.2 t)
-    (when (> (length erg) 2)
+    (when (and erg (> (length erg) 2))
       (setq erg (split-string erg "^'\\|^\"\\|;\\|'$\\|\"$" t)))
     erg))
 

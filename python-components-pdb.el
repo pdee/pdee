@@ -1,4 +1,4 @@
-;;; python-components-pdb.el --- pdb help functions
+;;; python-components-pdb.el --- pdb help functions -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

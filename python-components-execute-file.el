@@ -1,4 +1,4 @@
-;;; python-components-execute-file.el --- Execute files from python-mode
+;;; python-components-execute-file.el --- Execute files from python-mode -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

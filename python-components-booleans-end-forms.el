@@ -1,4 +1,4 @@
-;;; python-components-booleans-end-forms.el --- booleans-end forms
+;;; python-components-booleans-end-forms.el --- booleans-end forms -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

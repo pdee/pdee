@@ -1,4 +1,4 @@
-;;; python-components-imenu.el --- use imenu
+;;; python-components-imenu.el --- use imenu -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

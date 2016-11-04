@@ -1,4 +1,4 @@
-;;; python-components-extensions.el --- more editing utilities
+;;; python-components-extensions.el --- more editing utilities -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

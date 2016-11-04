@@ -1,4 +1,4 @@
-;;; python-components-auto-fill.el --- toggle comment-auto-fill
+;;; python-components-auto-fill.el --- toggle comment-auto-fill -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

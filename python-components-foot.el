@@ -1,4 +1,4 @@
-;;; python-components-foot.el --- foot
+;;; python-components-foot.el --- foot -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

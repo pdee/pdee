@@ -1,4 +1,4 @@
-;;; ppython-components-send.el --- functions sending strings to Python
+;;; ppython-components-send.el --- functions sending strings to Python -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

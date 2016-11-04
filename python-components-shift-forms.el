@@ -1,4 +1,4 @@
-;;; python-components-shift-forms.el --- Move forms left or right
+;;; python-components-shift-forms.el --- Move forms left or right -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

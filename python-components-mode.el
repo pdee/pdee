@@ -1,4 +1,4 @@
-;;; python-components-mode.el --- Edit, debug, develop, run Python programs. -*- lexical-binding: t -*-
+;;; python-components-mode.el --- Edit, debug, develop, run Python programs. -*- lexical-binding: t; -*-
 
 ;; Includes a minor mode for handling a Python/IPython shell,
 ;; and can take advantage of Pymacs when installed.

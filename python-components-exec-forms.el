@@ -1,4 +1,4 @@
-;;; python-components-exec-forms.el --- Forms with a reduced range of derived commands
+;;; python-components-exec-forms.el --- Forms with a reduced range of derived commands -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

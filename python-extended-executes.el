@@ -1,4 +1,4 @@
-;; Extended executes --- more execute forms
+;; Extended executes --- more execute forms -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

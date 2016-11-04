@@ -1,4 +1,4 @@
-;;; python-components-switches.el --- Toggle minor modes
+;;; python-components-switches.el --- Toggle minor modes -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

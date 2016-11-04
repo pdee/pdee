@@ -1,4 +1,4 @@
-;;; python-components-comment.el -- Comment/uncomment python constructs at point
+;;; python-components-comment.el -- Comment/uncomment python constructs at point -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 

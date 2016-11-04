@@ -1,4 +1,4 @@
-;;; python-components-execute.el --- Part of python-components-mode
+;;; python-components-execute.el --- Part of python-components-mode -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -471,7 +471,7 @@ Internal use"
 ;;       (display-buffer output-buffer)
 ;;       (select-window py-exception-window))
 
-(defun py--split-t-not-switch-wm ()
+(defun py--split-t-not-switch-wm (output-buffer py-exception-buffer number-of-windows)
   (unless (window-live-p output-buffer)
     (with-current-buffer (get-buffer output-buffer)
       (when (< number-of-windows py-split-window-on-execute-threshold)
@@ -542,7 +542,7 @@ Internal use"
       ;; https://bugs.launchpad.net/python-mode/+bug/1478122
       ;; > If the shell is visible in any of the windows it  should re-use that window
       ;; > I did double check and py-keep-window-configuration is nil and py-split-window-on-execute is t.
-      (py--split-t-not-switch-wm))
+      (py--split-t-not-switch-wm output-buffer py-exception-buffer number-of-windows))
      ((and
        py-split-window-on-execute
        py-switch-buffers-on-execute-p)

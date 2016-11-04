@@ -25,29 +25,29 @@
 (load "py-ert-tests-1.el" nil t)
 
 ;; py-if-name-main-permission-p
-;; (ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
-;;   (py-test-with-temp-buffer-point-min
-;;       "#! /usr/bin/env python
-;; # -*- coding: utf-8 -*-
-;; def py_if_name_main_permission_test():
-;;     if __name__ == \"__main__\" :
-;;         print(\"__name__ == '__main__' run\")
-;;         return True
+(ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
+  (py-test-with-temp-buffer-point-min
+      "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def py_if_name_main_permission_test():
+    if __name__ == \"__main__\" :
+        print(\"__name__ == '__main__' run\")
+        return True
 
-;;     else:
-;;         print(\"__name__ == '__main__' supressed\")
-;;         return False
+    else:
+        print(\"__name__ == '__main__' supressed\")
+        return False
 
-;; py_if_name_main_permission_test()
-;; "
-;;     (let ((py-if-name-main-permission-p t))
-;;       (py-execute-buffer)
-;;       (set-buffer "*Python*")
-;;       (goto-char (point-max))
-;;       (forward-line -1)
-;;       (end-of-line)
-;;       (sit-for 0.2)
-;;       (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
+py_if_name_main_permission_test()
+"
+    (let ((py-if-name-main-permission-p t))
+      (py-execute-buffer)
+      (set-buffer "*Python*")
+      (goto-char (point-max))
+      (forward-line -1)
+      (end-of-line)
+      (sit-for 0.2)
+      (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
 
 (ert-deftest py-ert-indent-try-test ()
   (py-test-with-temp-buffer-point-min
@@ -60,16 +60,11 @@ import os
     (search-forward "try")
     (should (eq 0 (py-compute-indentation)))))
 
-(ert-deftest py-ert-find-definition-test-1 ()
-  (py-test-with-temp-buffer-point-min
-      "#! /usr/bin/env python
-
-import sys
-import os
-
-a = sys.argv"
-    (search-forward "a = sy")
-    (py-find-definition)))
+;; Broken
+;; (ert-deftest py-ert-find-definition-test-1 ()
+;;   (py-test-with-temp-buffer
+;;       ""
+;;     (py-find-definition pdb)))
 
 (ert-deftest py-ert-multiple-decorators-test-1 ()
   (py-test-with-temp-buffer
