@@ -1,6 +1,6 @@
-;;; python-components-versioned.el --- Python 2 or Python 3
+;;; python-components-versioned.el --- Python 2 or Python 3 -*- lexical-binding: t; -*- 
 
-;; Copyright (C) 2015  Andreas Roehler
+;; Copyright (C) 2015-2016 Andreas Roehler
 
 ;; Keywords: lisp, languages
 
@@ -245,7 +245,6 @@ See available customizations listed in files variables-python-mode at directory 
 				     ("\\<file\\>" . 'py-builtins-face)))))
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
-  (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-use-syntax) t)
   (set (make-local-variable 'comment-start) "#")
   (if py-empty-comment-line-separates-paragraph-p
@@ -277,7 +276,7 @@ See available customizations listed in files variables-python-mode at directory 
   (setq imenu-create-index-function 'py--imenu-create-index-new)
 
   (and py-guess-py-install-directory-p (py-set-load-path))
-  ;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (buffer-file-name))))
+  ;;  (unless gud-pdb-history (when (py--buffer-filename-remote-maybe) (add-to-list 'gud-pdb-history (py--buffer-filename-remote-maybe))))
   (and py-autopair-mode
        (load-library "autopair")
        (add-hook 'python-mode-hook
@@ -398,7 +397,6 @@ See available customizations listed in files variables-python-mode at directory 
 				     ("\\<file\\>" . 'py-builtins-face)))))
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
-  (set (make-local-variable 'parse-sexp-ignore-comments) t)
   (set (make-local-variable 'comment-use-syntax) t)
   (set (make-local-variable 'comment-start) "#")
   (if py-empty-comment-line-separates-paragraph-p
@@ -429,7 +427,7 @@ See available customizations listed in files variables-python-mode at directory 
               (^ '(- (1+ (current-indentation)))))))
   (setq imenu-create-index-function 'py--imenu-create-index-new)
   (and py-guess-py-install-directory-p (py-set-load-path))
-  ;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (buffer-file-name))))
+  ;;  (unless gud-pdb-history (when (py--buffer-filename-remote-maybe) (add-to-list 'gud-pdb-history (py--buffer-filename-remote-maybe))))
   (and py-autopair-mode
        (load-library "autopair")
        (add-hook 'python-mode-hook

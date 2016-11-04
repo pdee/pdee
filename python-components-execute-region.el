@@ -1,6 +1,6 @@
-;;; python-components-execute-region.el --- execute-region forms
+;;; python-components-execute-region.el --- execute-region forms -*- lexical-binding: t; -*- 
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
