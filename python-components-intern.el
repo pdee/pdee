@@ -1,4 +1,4 @@
-;; python-components-intern.el --- Part of python-components-mode
+;; python-components-intern.el --- Part of python-components-mode -*- lexical-binding: t; -*- 
 
 ;; Helper functions
 
@@ -1574,8 +1574,10 @@ the output."
 	      (append comint-preoutput-filter-functions
 		      '(ansi-color-filter-apply
 			(lambda (string)
-			  (setq erg (concat erg string))
-			  "")))))
+			  string
+			;; (setq erg (concat erg string))
+			;; "")
+			)))))
 	(py-send-string string process)
 	(accept-process-output process 5)
 	(sit-for 0.1 t)
