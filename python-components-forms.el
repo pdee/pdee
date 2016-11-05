@@ -178,6 +178,7 @@ Returns beginning and end positions of marked area, a cons. "
              (not (py-in-string-or-comment-p)))
     (point)))
 
+(defalias 'py-down-block-lc 'py-end-of-block)
 (defun py-end-of-block (&optional indent)
   "Go to end of block.
 
@@ -188,6 +189,7 @@ Returns end of block if successful, nil otherwise"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defalias 'py-down-block-lc 'py-end-of-block-lc)
 (defun py-end-of-block-lc ()
   "Goto beginning of line following end of block.
   Returns position reached, if successful, nil otherwise.
@@ -212,6 +214,7 @@ A minor block is started by a `for', `if', `try' or `with'.
              (not (py-in-string-or-comment-p)))
     (point)))
 
+(defalias 'py-down-minor-block-lc 'py-end-of-minor-block)
 (defun py-end-of-minor-block (&optional indent)
   "Go to end of minor-block.
 
@@ -222,6 +225,7 @@ Returns end of minor-block if successful, nil otherwise"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defalias 'py-down-minor-block-lc 'py-end-of-minor-block-lc)
 (defun py-end-of-minor-block-lc ()
   "Goto beginning of line following end of minor-block.
   Returns position reached, if successful, nil otherwise.
@@ -243,6 +247,7 @@ See also `py-down-minor-block': down from current definition to next beginning o
              (not (py-in-string-or-comment-p)))
     (point)))
 
+(defalias 'py-down-clause-lc 'py-end-of-clause)
 (defun py-end-of-clause (&optional indent)
   "Go to end of clause.
 
@@ -253,6 +258,7 @@ Returns end of clause if successful, nil otherwise"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defalias 'py-down-clause-lc 'py-end-of-clause-lc)
 (defun py-end-of-clause-lc ()
   "Goto beginning of line following end of clause.
   Returns position reached, if successful, nil otherwise.
@@ -274,6 +280,7 @@ See also `py-down-clause': down from current definition to next beginning of cla
              (not (py-in-string-or-comment-p)))
     (point)))
 
+(defalias 'py-down-block-or-clause-lc 'py-end-of-block-or-clause)
 (defun py-end-of-block-or-clause (&optional indent)
   "Go to end of block-or-clause.
 
@@ -284,6 +291,7 @@ Returns end of block-or-clause if successful, nil otherwise"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defalias 'py-down-block-or-clause-lc 'py-end-of-block-or-clause-lc)
 (defun py-end-of-block-or-clause-lc ()
   "Goto beginning of line following end of block-or-clause.
   Returns position reached, if successful, nil otherwise.
@@ -305,6 +313,7 @@ See also `py-down-block-or-clause': down from current definition to next beginni
              (not (py-in-string-or-comment-p)))
     (point)))
 
+(defalias 'py-down-def-lc 'py-end-of-def)
 (defun py-end-of-def (&optional indent)
   "Go to end of def.
 
@@ -315,6 +324,7 @@ Returns end of def if successful, nil otherwise"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defalias 'py-down-def-lc 'py-end-of-def-lc)
 (defun py-end-of-def-lc ()
   "Goto beginning of line following end of def.
   Returns position reached, if successful, nil otherwise.
@@ -344,6 +354,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
              (not (py-in-string-or-comment-p)))
     (point)))
 
+(defalias 'py-down-class-lc 'py-end-of-class)
 (defun py-end-of-class (&optional indent)
   "Go to end of class.
 
@@ -354,6 +365,7 @@ Returns end of class if successful, nil otherwise"
     (when (and py-verbose-p (interactive-p)) (message "%s" erg))
     erg))
 
+(defalias 'py-down-class-lc 'py-end-of-class-lc)
 (defun py-end-of-class-lc ()
   "Goto beginning of line following end of class.
   Returns position reached, if successful, nil otherwise.
@@ -394,6 +406,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. "
              (not (py-in-string-or-comment-p)))
     (point)))
 
+(defalias 'py-down-def-or-class-lc 'py-end-of-def-or-class-lc)
 (defun py-end-of-def-or-class-lc ()
   "Goto beginning of line following end of def-or-class.
   Returns position reached, if successful, nil otherwise.
