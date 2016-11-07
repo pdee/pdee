@@ -1,3 +1,5 @@
+-*- lexical-binding: t; -*- 
+
 (defcustom py-devel-directory-out ""
   "Output directory when developing Python-mode. "
   :type 'string

@@ -1,4 +1,4 @@
-;;; py-interactive-tests.el --- Tests expected to succeed interactively
+;;; py-interactive-tests.el --- Tests expected to succeed interactively -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015  Andreas Roehler
 

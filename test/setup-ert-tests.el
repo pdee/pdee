@@ -1,4 +1,4 @@
-;;; setup-ert-tests.el --- Provide needed forms
+;;; setup-ert-tests.el --- Provide needed forms -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014  Andreas Roehler
 
@@ -22,18 +22,12 @@
 
 ;;; Code:
 
-;; (setq py-install-directory default-directory)
-;; (sit-for 0.1 t)
-
-
-;; (require 'python-mode)
-
 (defvar py-debug-p nil
   "Avoid error")
 
 ;; (setq py-debug-p t)
 
-(defvar py-kugel-text 
+(defvar py-kugel-text
 "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     def pylauf(self):
@@ -63,7 +57,7 @@
             # print \"%i, manque\" % (treffer)
             ausgabe[7] = treffer
 ")
- 
+
 (defvar py-forward-text "
 # {{
 class bar:
@@ -84,25 +78,6 @@ class bar:
         except:
             block2
 ")
-
-;; (setq py-forward-text "
-;; class bar:
-;;     def foo ():
-;;         try:
-;;             if foo:
-;;                 for a in b:
-;;                     print('%(language)s has %(number)03d quote types.' %
-;;        {'language': \"Python\", \"number\": 2})
-
-;;             elif bar:
-;;                 for a in b:
-;;                     pass
-;;             else:
-;;                 for a in b:
-;;                     pass
-;;         except:
-;;             block2
-;; ")
 
 (defvar py-up-text "
 def foo():
@@ -137,7 +112,6 @@ def foo():
         finally:
             pass
 ")
-
 
 (defmacro py-test-with-temp-buffer-point-min (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.

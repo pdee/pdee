@@ -1,4 +1,4 @@
-;;; python-mode-utils.el - generating parts of python-mode.el
+;;; python-mode-utils.el - generating parts of python-mode.el -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016  Andreas Röhler
 

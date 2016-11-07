@@ -1,4 +1,4 @@
-;;; py-ert-interactive-tests.el --- test interactively
+;;; py-ert-interactive-tests.el --- test interactively -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015  Andreas Roehler
 

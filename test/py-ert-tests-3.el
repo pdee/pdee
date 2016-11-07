@@ -1,4 +1,4 @@
-;; py-ert-tests-3.el --- Some more Tests
+;; py-ert-tests-3.el --- Some more Tests -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2014 Andreas Roehler, <andreas.roehler@online.de>
 
