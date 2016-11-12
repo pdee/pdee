@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+;; Author: Andreas Röhler <andreas.roehler@online.de>
 
 ;; Keywords: abbrev
 

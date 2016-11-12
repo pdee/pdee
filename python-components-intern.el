@@ -1,10 +1,10 @@
-;; python-components-intern.el --- Part of python-components-mode -*- lexical-binding: t; -*- 
+;; python-components-intern.el --- Part of python-components-mode -*- lexical-binding: t; -*-
 
 ;; Helper functions
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@easy-emacs.de>
+;; Author: Andreas Röhler <andreas.roehler@online.de>
 
 ;; Keywords: languages, processes
 
@@ -801,7 +801,9 @@ LIEP stores line-end-position at point-of-interest
 				   0))
 			     (forward-char -1)
 			     (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))))
-			((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position))(not line)
+			((and 
+			  (looking-at (concat "[ \t]*" comment-start))
+			  (looking-back "^[ \t]*" (line-beginning-position))(not line)
 			      (eq liep (line-end-position)))
 			 (if py-indent-comments
 			     (progn
@@ -813,10 +815,10 @@ LIEP stores line-end-position at point-of-interest
 			       (py-backward-comment)
 			       (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
 			   0))
-			((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position))(not
+			((and (looking-at (concat "[ \t]*" comment-start)) (looking-back "^[ \t]*" (line-beginning-position))(not
 									      (eq liep (line-end-position))))
 			 (current-indentation))
-			((and (eq ?\# (char-after)) line py-indent-honors-inline-comment)
+			((and (eq 11 (syntax-after (point))) line py-indent-honors-inline-comment)
 			 (current-column))
 			;; lists
 			((nth 1 pps)
@@ -947,7 +949,7 @@ LIEP stores line-end-position at point-of-interest
 			 (unless line
 			   (setq nesting (nth 0 (parse-partial-sexp (point-min) (point)))))
 			 (py-compute-indentation orig origline closing line nesting repeat indent-offset liep))
-			((and (not (py--beginning-of-statement-p)) (not (and line (eq ?\# (char-after)))))
+			((and (not (py--beginning-of-statement-p)) (not (and line (eq 11 (syntax-after (point))))))
 			 (if (bobp)
 			     (current-column)
 			   (if (eq (point) orig)
@@ -1782,7 +1784,7 @@ Returns position reached if point was moved. "
               (forward-comment 99999)))
   ;; forward-comment fails sometimes
   (and (eq pos (point)) (prog1 (forward-line 1) (back-to-indentation))
-       (while (member (char-after) (list ?# 10))(forward-line 1)(back-to-indentation))))
+       (while (member (char-after) (list comment-start 10))(forward-line 1)(back-to-indentation))))
 
 (defun py--skip-to-comment-or-semicolon (done)
   "Returns position if comment or semicolon found. "
@@ -2101,6 +2103,79 @@ Use current region unless optional args BEG END are delivered."
 (defun py-toggle-execute-use-temp-file ()
   (interactive)
   (setq py--execute-use-temp-file-p (not py--execute-use-temp-file-p)))
+
+(defun py-indent-forward-line (&optional arg)
+  "Indent and move one line forward to next indentation.
+Returns column of line reached.
+
+If `py-kill-empty-line' is non-nil, delete an empty line.
+When closing a form, use py-close-block et al, which will move and indent likewise.
+With \\[universal argument] just indent.
+"
+  (interactive "*P")
+  (let ((orig (point))
+        erg)
+    (unless (eobp)
+      (if (and (py--in-comment-p)(not py-indent-comments))
+          (forward-line 1)
+        (py-indent-line-outmost)
+        (unless (eq 4 (prefix-numeric-value arg))
+          (if (eobp) (newline)
+            (progn (forward-line 1))
+            (when (and py-kill-empty-line (empty-line-p) (not (looking-at "[ \t]*\n[[:alpha:]]")) (not (eobp)))
+              (delete-region (line-beginning-position) (line-end-position)))))))
+    (back-to-indentation)
+    (when (or (eq 4 (prefix-numeric-value arg)) (< orig (point))) (setq erg (current-column)))
+    (when (called-interactively-p 'any) (message "%s" erg))
+    erg))
+
+(defun py-dedent-forward-line (&optional arg)
+  "Dedent line and move one line forward. "
+  (interactive "*p")
+  (py-dedent arg)
+  (if (eobp)
+      (newline)
+    (forward-line 1))
+  (end-of-line))
+
+(defun py-dedent (&optional arg)
+  "Dedent line according to `py-indent-offset'.
+
+With arg, do it that many times.
+If point is between indent levels, dedent to next level.
+Return indentation reached, if dedent done, nil otherwise.
+
+Affected by `py-dedent-keep-relative-column'. "
+  (interactive "*p")
+  (or arg (setq arg 1))
+  (let ((orig (copy-marker (point)))
+        erg)
+    (dotimes (i arg)
+      (let* ((cui (current-indentation))
+             (remain (% cui py-indent-offset))
+             (indent (* py-indent-offset (/ cui py-indent-offset))))
+        (beginning-of-line)
+        (fixup-whitespace)
+        (if (< 0 remain)
+            (indent-to-column indent)
+          (indent-to-column (- cui py-indent-offset)))))
+    (when (< (point) orig)
+      (setq erg (current-column)))
+    (when py-dedent-keep-relative-column (goto-char orig))
+    (when (called-interactively-p 'any) (message "%s" erg))
+    erg))
+
+(defun py--close-intern (regexp)
+  "Core function, internal used only. "
+  (let ((cui (car (py--go-to-keyword (symbol-value regexp)))))
+    (message "%s" cui)
+    (py--end-base regexp (point))
+    (forward-line 1)
+    (if py-close-provides-newline
+        (unless (empty-line-p) (split-line))
+      (fixup-whitespace))
+    (indent-to-column cui)
+    cui))
 
 ;; /usr/lib/python2.7/pdb.py eyp.py
 (defalias 'IPython 'ipython)

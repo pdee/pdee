@@ -1,6 +1,6 @@
 ;;; python-components-versioned.el --- Python 2 or Python 3 -*- lexical-binding: t; -*- 
 
-;; Copyright (C) 2015-2016 Andreas Roehler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Keywords: lisp, languages
 

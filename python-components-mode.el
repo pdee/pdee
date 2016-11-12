@@ -3566,6 +3566,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-auto-fill)
 (require 'python-components-fast-complete)
 (require 'python-components-intern)
+(require 'python-components-close-forms)
 (require 'python-components-section-forms)
 (require 'python-components-narrow)
 (require 'python-components-menu)

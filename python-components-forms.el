@@ -1,6 +1,6 @@
 ;;; python-components-forms.el -- Forms start/end at beginning of line
 
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify

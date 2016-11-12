@@ -1,7 +1,7 @@
 ;;; python-components-paragraph.el --- filling -*- lexical-binding: t; -*- 
 
 ;; Original Author: Fabián E. Gallina <fabian@anue.biz>
-;; Maintainer: Andreas Röhler <andreas.roehler@easy-emacs.de>
+;; Maintainer: Andreas Röhler <andreas.roehler@online.de>
 
 ;; Keywords: languages
 
@@ -305,7 +305,7 @@ See lp:1066489 "
     (and
      (cdr delimiters-style)
      (or (newline (cdr delimiters-style)) t)))
-  (py-indent-region docstring thisend)
+  ;; (py-indent-region docstring thisend)
   (goto-char orig))
 
 (defun py--fill-docstring-base (thisbeg thisend style multi-line-p first-line-p beg end py-current-indent orig docstring)
@@ -356,9 +356,10 @@ See lp:1066489 "
   (setq multi-line-p (string-match "\n" (buffer-substring-no-properties beg end)))
   (when multi-line-p
     ;; adjust the region to fill according to style
-    (goto-char end)
-    (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end py-current-indent orig docstring))
-  (goto-char orig))
+    (goto-char end)))
+
+  ;;   (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end py-current-indent orig docstring))
+  ;; (goto-char orig))
 
 (defun py--fill-docstring-first-line (beg end thisbeg thisend style)
   "Refill first line after newline maybe. "

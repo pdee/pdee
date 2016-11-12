@@ -1,8 +1,8 @@
 ;;; setup-ert-tests.el --- Provide needed forms -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014  Andreas Roehler
+;; Copyright (C) 2014  Andreas Röhler
 
-;; Author: Andreas Roehler <andreas.roehler@easy-emacs.de>
+;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

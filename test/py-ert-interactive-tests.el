@@ -1,6 +1,6 @@
 ;;; py-ert-interactive-tests.el --- test interactively -*- lexical-binding: t; -*- 
 
-;; Copyright (C) 2015  Andreas Roehler
+;; Copyright (C) 2015  Andreas Röhler
 
 ;; Author: speck <andreas.roehler@online.de>
 ;; Keywords: languages

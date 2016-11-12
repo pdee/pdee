@@ -1,7 +1,7 @@
 #!/bin/bash
  # -- extract and convert documentation from Emacs Lisp files
 
-# Author: Andreas Roehler <andreas.roehler@online.de>
+# Author: Andreas Röhler <andreas.roehler@online.de>
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

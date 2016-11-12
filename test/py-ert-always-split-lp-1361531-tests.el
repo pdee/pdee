@@ -1,7 +1,7 @@
 ;;; py-ert-always-split-lp-1361531-tests.el --- Test splitting
 
-;; Copyright (C) 2011-2014  Andreas Roehler
-;; Author: Andreas Roehler <andreas.roehler@online.de>
+;; Copyright (C) 2011-2014  Andreas Röhler
+;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
