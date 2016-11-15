@@ -660,7 +660,6 @@ From a programm use macro `py-backward-comment' instead "
               (<= (current-indentation) maxindent))
         (unless (looking-at py-block-or-clause-re)
           (setq maxindent (current-indentation)))
-        ;; (message "%s %s" count indent)
         ;; nesting
         (cond
          ((and (looking-at "\\_<finally\\>[: \n\t]")(save-match-data (string-match regexp "finally")))

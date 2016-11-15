@@ -2420,9 +2420,12 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
    "if"
    "try"
    "while"
-   "with"
-   )
-  "")
+   "with")
+  ""
+  :type '(repeat string)
+  :tag "py-outdent-re-raw"
+  :group 'python-mode
+  )
 
 (defconst py-outdent-re
   (concat
@@ -3577,4 +3580,3 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 
 (provide 'python-components-mode)
 ;;; python-components-mode.el ends here
-
