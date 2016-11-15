@@ -55,11 +55,6 @@ if __name__ == \"__main__\":
 
 (add-to-list 'load-path default-directory)
 
-(defun py-tests-go-to (string)
-  "Move point at beginning of STRING in the current test. "
-  (and (eq (point) (point-max))(goto-char (point-min)))
-  (search-forward string nil t 1))
-
 (ert-deftest py-ert-electric-kill-backward-bracket-test ()
   (let ((py-electric-kill-backward-p t))
     (py-test-with-temp-buffer
@@ -135,27 +130,27 @@ def foo(a, b, c):
         finally:
             print ('nor a, nor b are true')
 "
-   (py-tests-go-to "if a:")
+   (search-forward "if a:")
    (should (= (py-compute-indentation) 4))
-   (py-tests-go-to "print (a)")
+   (search-forward "print (a)")
    (should (= (py-compute-indentation) 8))
-   (py-tests-go-to "elif b:")
+   (search-forward "elif b:")
    (should (= (py-compute-indentation) 4))
-   (py-tests-go-to "print (b)")
+   (search-forward "print (b)")
    (should (= (py-compute-indentation) 8))
-   (py-tests-go-to "else:")
+   (search-forward "else:")
    (should (= (py-compute-indentation) 4))
-   (py-tests-go-to "try:")
+   (search-forward "try:")
    (should (= (py-compute-indentation) 8))
-   (py-tests-go-to "print (c.pop())")
+   (search-forward "print (c.pop())")
    (should (= (py-compute-indentation) 12))
-   (py-tests-go-to "except (IndexError, AttributeError):")
+   (search-forward "except (IndexError, AttributeError):")
    (should (= (py-compute-indentation) 8))
-   (py-tests-go-to "print (c)")
+   (search-forward "print (c)")
    (should (= (py-compute-indentation) 12))
-   (py-tests-go-to "finally:")
+   (search-forward "finally:")
    (should (= (py-compute-indentation) 8))
-   (py-tests-go-to "print ('nor a, nor b are true')")
+   (search-forward "print ('nor a, nor b are true')")
    (should (= (py-compute-indentation) 12))))
 
 (ert-deftest py-ert-indent-after-backslash-lp-852052-1 ()
@@ -166,11 +161,11 @@ from foo.bar.baz import something, something_1 \\
      something_2 something_3, \\
      something_4, something_5
 "
-    (py-tests-go-to "from foo.bar.baz import something, something_1")
+    (search-forward "from foo.bar.baz import something, something_1")
     (should (= (py-compute-indentation) 0))
-    (py-tests-go-to "something_2 something_3,")
+    (search-forward "something_2 something_3,")
     (should (= (py-compute-indentation) 5))
-    (py-tests-go-to "something_4, something_5")
+    (search-forward "something_4, something_5")
     (should (= (py-compute-indentation) 5))))
 
 (ert-deftest py-ert-indent-closing ()
