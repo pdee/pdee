@@ -1,4 +1,4 @@
-;;; python-mode-utils.el - generating parts of python-mode.el -*- lexical-binding: t; -*- 
+;;; python-mode-utils.el - generating parts of python-mode.el -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016  Andreas Röhler
 
@@ -1790,7 +1790,12 @@ Expects a quoted symbol 'REGEXP\"
       (if (funcall p-command)
 	  (setq indent (current-indentation))
 	(save-excursion
-	  (funcall backward-command indent decorator bol)
+	  (cond
+	   ((and indent decorator bol)
+	    (funcall backward-command indent decorator bol))
+	   ((and indent decorator)
+	    (funcall backward-command indent decorator))
+	   (t (funcall backward-command indent)))
 	  (setq indent (current-indentation))
 	  (setq start (point))))
       \;; (setq done (funcall forward-command indent decorator bol))
@@ -1799,34 +1804,35 @@ Expects a quoted symbol 'REGEXP\"
 	      (<= indent (current-indentation))
 	      (when (looking-at (symbol-value regexp))
 		(setq last (point)))))
-    (if (looking-at (symbol-value regexp))
-	(setq erg (point))
-      (when last
-	(progn (goto-char last)
-	       (if (looking-at (symbol-value regexp))
-		   (progn
-		     (when bol (beginning-of-line))
-		     (setq erg (point)))
-		 (end-of-line)
-		 (unless (eobp)
-		   (forward-line 1)
-		   (beginning-of-line))))))
-    ;; Go to next end of next block upward instead
-    (unless (or erg last)
-      (goto-char orig)
-      (or
-       (if
-	   (and
-	    (funcall up-command)
-	    ;; up should not result to backward
-	    (not (eq (point) start))
-	    (funcall forward-command indent decorator bol)
-	    (< orig (point))
-	    (setq erg (point)))
-	   (when bol (setq erg (py--beginning-of-line-form erg)))
-	 (goto-char (point-max)))))
-    (when py-verbose-p (message \"%s\" erg))
-    erg)))
+      (if (looking-at (symbol-value regexp))
+	  (setq erg (point))
+	(when last
+	  (progn (goto-char last)
+		 (if (looking-at (symbol-value regexp))
+		     (progn
+		       (when bol (beginning-of-line))
+		       (setq erg (point)))
+		   (end-of-line)
+		   (unless (eobp)
+		     (forward-line 1)
+		     (beginning-of-line))))))
+      ;; Go to next end of next block upward instead
+      (unless (or erg last)
+	(goto-char orig)
+	(or
+	 (if
+	     (and
+	      (funcall up-command)
+	      ;; up should not result to backward
+	      (not (eq (point) start))
+	      (funcall forward-command indent decorator bol)
+	      (< orig (point))
+	      (setq erg (point)))
+	     (when bol (setq erg (py--beginning-of-line-form erg)))
+	   (goto-char (point-max)))))
+      (when py-verbose-p (message \"%s\" erg))
+      erg)))
+
 ")
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
@@ -2005,23 +2011,34 @@ Returns beginning and end positions of region, a cons. \"
 (defun py--insert-backward-forms ()
   (dolist (ele py-backward-forms)
     (insert (concat "
-\(defun py-backward-" ele " (&optional indent decorator bol)"
-"\n  \"Go to beginning of `" ele "'.
+\(defun py-backward-" ele " (&optional indent decorator bol"))
+        (if (string-match "def\\|class" ele)
+	(insert " decorator bol)")
+      (insert ")"))
+	(insert (concat "\n  \"Go to beginning of `" ele "'.
 
 If already at beginning, go one `" ele "' backward.
 Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
     (insert "  (interactive)")
     (cond ((string-match "clause" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) decorator bol))\n")))
+  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
+	  ((string-match "def\\|class" ele)
+	   (insert (concat "
+  (py--backward-prepare indent 'py-" ele "-re 'py-" ele "-re (called-interactively-p 'any) decorator bol))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) decorator bol))\n"))))))
+  (py--backward-prepare indent 'py-" ele "-re 'py-" ele "-re (called-interactively-p 'any)))\n")))
+	  )))
 
 (defun py--insert-backward-bol-forms ()
   ;; bol forms
   (dolist (ele py-backward-forms)
     (insert (concat "
-\(defun py-backward-" ele "-bol (&optional indent decorator)
+\(defun py-backward-" ele "-bol (&optional indent"))
+    (if (string-match "def\\|class" ele)
+	(insert " decorator)")
+      (insert ")"))
+    (insert (concat "
   \"Go to beginning of `" ele "', go to BOL.
 
 If already at beginning, go one `" ele "' backward.
@@ -2035,7 +2052,7 @@ Returns beginning of `" ele "' if successful, nil otherwise"))
 	   (insert (concat "
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) nil t))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) decorator t))\n"))))))
+  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) nil t))\n"))))))
 
 (defun py-write-backward-forms ()
   "Uses py-backward-forms, not `py-navigate-forms'.
@@ -2434,23 +2451,23 @@ class bar:
   (dolist (ele py-beg-end-forms)
     ;; beg-end check forms
     (insert (concat "
-\(defun py-forward-" ele " (&optional indent)
+\(defun py-forward-" ele " ()
   \"Go to end of " ele ".
 
 Returns end of " ele " if successful, nil otherwise\"
-  (interactive \"P\")
+  (interactive)
   (let\* ((orig (point))
          (erg (py--end-base 'py-" ele "-re orig)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))
 
-\(defun py-forward-" ele "-bol (&optional indent)
+\(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of " ele ".
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
   (interactive)
-  (let ((erg (py-forward-" ele " indent)))
+  (let ((erg (py-forward-" ele ")))
     (setq erg (py--beginning-of-line-form erg))
     (when (called-interactively-p 'any) (message \"%s\" erg))
     erg))

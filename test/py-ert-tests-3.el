@@ -456,8 +456,7 @@ Bar
     (indent-according-to-mode)
     (py--write-back-docstring)
     ;; back in orginial test buffer
-    (forward-line 1)
-    (end-of-line)
+    (forward-line -1)
     (should (and (nth 3 (parse-partial-sexp (point-min) (point)))
 	    (nth 8 (parse-partial-sexp (point-min) (point)))))
     )))

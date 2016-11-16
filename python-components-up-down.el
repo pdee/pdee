@@ -1,4 +1,4 @@
-;;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t; -*- 
+;;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016  Andreas Röhler
 
@@ -100,7 +100,12 @@ Expects a quoted symbol 'REGEXP"
       (if (funcall p-command)
 	  (setq indent (current-indentation))
 	(save-excursion
-	  (funcall backward-command indent decorator bol)
+	  (cond
+	   ((and indent decorator bol)
+	    (funcall backward-command indent decorator bol))
+	   ((and indent decorator)
+	    (funcall backward-command indent decorator))
+	   (t (funcall backward-command indent)))
 	  (setq indent (current-indentation))
 	  (setq start (point))))
       ;; (setq done (funcall forward-command indent decorator bol))
@@ -109,34 +114,34 @@ Expects a quoted symbol 'REGEXP"
 	      (<= indent (current-indentation))
 	      (when (looking-at (symbol-value regexp))
 		(setq last (point)))))
-    (if (looking-at (symbol-value regexp))
-	(setq erg (point))
-      (when last
-	(progn (goto-char last)
-	       (if (looking-at (symbol-value regexp))
-		   (progn
-		     (when bol (beginning-of-line))
-		     (setq erg (point)))
-		 (end-of-line)
-		 (unless (eobp)
-		   (forward-line 1)
-		   (beginning-of-line))))))
-    ;; Go to next end of next block upward instead
-    (unless (or erg last)
-      (goto-char orig)
-      (or
-       (if
-	   (and
-	    (funcall up-command)
-	    ;; up should not result to backward
-	    (not (eq (point) start))
-	    (funcall forward-command indent decorator bol)
-	    (< orig (point))
-	    (setq erg (point)))
-	   (when bol (setq erg (py--beginning-of-line-form erg)))
-	 (goto-char (point-max)))))
-    (when py-verbose-p (message "%s" erg))
-    erg)))
+      (if (looking-at (symbol-value regexp))
+	  (setq erg (point))
+	(when last
+	  (progn (goto-char last)
+		 (if (looking-at (symbol-value regexp))
+		     (progn
+		       (when bol (beginning-of-line))
+		       (setq erg (point)))
+		   (end-of-line)
+		   (unless (eobp)
+		     (forward-line 1)
+		     (beginning-of-line))))))
+      ;; Go to next end of next block upward instead
+      (unless (or erg last)
+	(goto-char orig)
+	(or
+	 (if
+	     (and
+	      (funcall up-command)
+	      ;; up should not result to backward
+	      (not (eq (point) start))
+	      (funcall forward-command indent decorator bol)
+	      (< orig (point))
+	      (setq erg (point)))
+	     (when bol (setq erg (py--beginning-of-line-form erg)))
+	   (goto-char (point-max)))))
+      (when py-verbose-p (message "%s" erg))
+      erg)))
 
 (defalias 'py-up-block 'py-block-up)
 (defun py-up-block (&optional indent decorator bol)

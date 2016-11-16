@@ -805,7 +805,7 @@ Returns the string inserted. "
   (jump-to-register py--edit-docstring-register)
   ;; (py-restore-window-configuration)
   (delete-region py--docbeg py--docend)
-  (insert-buffer py-edit-docstring-buffer))
+  (insert-buffer-substring py-edit-docstring-buffer))
 
 (defun py-edit-docstring ()
   "Edit docstring or active region in python-mode. "
