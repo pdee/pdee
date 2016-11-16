@@ -205,7 +205,6 @@ C-q TAB inserts a literal TAB-character."
 	beg
 	end
 	need
-	done
 	this-indent-offset)
     (and region
 	 (setq beg (region-beginning))
@@ -269,12 +268,11 @@ C-q TAB inserts a literal TAB-character."
 When indent is set back manually, this is honoured in following lines. "
   (interactive "*")
   (let* ((orig (point))
-	 (lkmd (prin1-to-string last-command))
 	 ;; lp:1280982, deliberatly dedented by user
 	 (this-dedent
-	  (when (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*") (line-beginning-position))
+	  (when (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*" (line-beginning-position)))
 	    (current-column)))
-	 erg pos)
+	 erg)
     (newline)
     (py--delete-trailing-whitespace orig)
     (setq erg
@@ -341,13 +339,12 @@ Returns value of `indent-tabs-mode' switched to. "
 (defun py-guessed-sanity-check (guessed)
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
-(defun py--guess-indent-final (indents orig)
+(defun py--guess-indent-final (indents)
   "Calculate and do sanity-check. "
   (let* ((first (car indents))
          (second (cadr indents))
          (erg (if (and first second)
                   (if (< second first)
-                      ;; (< (point) orig)
                       (- first second)
                     (- second first))
                 (default-value 'py-indent-offset))))
@@ -397,8 +394,7 @@ Might change local value of `py-indent-offset' only when called
 downwards from beginning of block followed by a statement. Otherwise default-value is returned."
   (interactive)
   (save-excursion
-    (let* ((orig (point))
-           (indents
+    (let* ((indents
             (cond (direction
                    (if (eq 'forward direction)
                        (py--guess-indent-forward)
@@ -407,7 +403,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
                   ((eq 0 (current-indentation))
                    (py--guess-indent-forward))
                   (t (py--guess-indent-backward))))
-           (erg (py--guess-indent-final indents orig)))
+           (erg (py--guess-indent-final indents)))
       (if erg (setq py-indent-offset erg)
         (setq py-indent-offset
               (default-value 'py-indent-offset)))
@@ -471,7 +467,7 @@ Starts from second line of region specified"
       (py-indent-and-forward)))
   (unless (empty-line-p) (py-indent-and-forward)))
 
-(defun py-indent-region (start end &optional line-by-line)
+(defun py-indent-region (start end)
   "Reindent a region of Python code.
 
 In case first line accepts an indent, keep the remaining
@@ -481,25 +477,15 @@ same with optional argument
 
 In order to shift a chunk of code, where the first line is okay, start with second line.
 "
-  (interactive "*r\nP")
+  (interactive "*")
   (let ((orig (copy-marker (point)))
         (beg start)
-        (end (copy-marker end))
-	need)
+        (end (copy-marker end)))
     (goto-char beg)
     (beginning-of-line)
     (setq beg (point))
     (skip-chars-forward " \t\r\n\f")
-    (py--indent-line-by-line beg end)
-    ;; (if (eq 4 (prefix-numeric-value line-by-line))
-    ;; 	(py--indent-line-by-line beg end)
-    ;;   (setq need (py-compute-indentation))
-    ;;   (if (< 0 (abs need))
-    ;; 	  (indent-region beg end need)
-    ;; 	(py--indent-line-by-line beg end))
-    ;;   (goto-char orig))
-    )
-  )
+    (py--indent-line-by-line beg end)))
 
 (defun py--beginning-of-buffer-position ()
   (point-min))

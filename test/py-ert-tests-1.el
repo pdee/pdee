@@ -1066,7 +1066,7 @@ for i in range(anzahl):
 bar.dosomething()
 datei.write(str(baz[i]) + \"\\n\")
 "
-   (py-indent-region 48 (point-max) '(4))
+   (py-indent-region 48 (point-max))
    (goto-char (point-min))
    (search-forward "print(123)")
    (should (eq 4 (current-indentation)))
