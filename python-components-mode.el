@@ -2443,9 +2443,11 @@ See py-no-outdent-re-raw for better readable content ")
    "import"
    "pass"
    "raise"
-   "return"
-   )
-  "")
+   "return")
+  ""
+  :type '(repeat string)
+  :tag "py-no-outdent-re-raw"
+  :group 'python-mode)
 
 (defconst py-no-outdent-re
   (concat
@@ -3047,7 +3049,7 @@ Returns RES or substring of RES"
     res))
 
 (defalias 'py-which-shell 'py-choose-shell)
-(defun py-choose-shell (&optional arg pyshell)
+(defun py-choose-shell (&optional arg)
   "Return an appropriate executable as a string.
 
 Returns nil, if no executable found.
@@ -3239,7 +3241,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
   (interactive)
   (save-excursion
     (let ((count 0)
-          (orig (point))
 	  (beg (or beg (point-min)))
 	  (end (or end (point))))
       (save-match-data
