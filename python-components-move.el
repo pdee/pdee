@@ -547,7 +547,7 @@ Travel empty lines "
   (interactive)
   (let ((orig (or pos (point)))
 	(char (or char (string-to-char comment-start)))
-	py-forward-comment-last)
+	py-forward-comment-last erg)
     (while (and (not (eobp))
 		(or
 		 (forward-comment 99999)

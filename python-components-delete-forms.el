@@ -1,6 +1,6 @@
-;;; python-components-delete-forms.el --- delete forms -*- lexical-binding: t; -*- 
+;;; python-components-delete-forms.el --- delete forms -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2016  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -142,14 +142,6 @@ Don't store data in kill ring. "
 Don't store data in kill ring. "
   (interactive)
   (let ((erg (py--mark-base-bol "statement")))
-    (delete-region (car erg) (cdr erg))))
-
-(defun py-delete-top-level ()
-  "Delete TOP-LEVEL at point until beginning-of-line.
-
-Don't store data in kill ring. "
-  (interactive)
-  (let ((erg (py--mark-base-bol "top-level")))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-try-block ()

@@ -1,4 +1,4 @@
-;;; python-components-extensions.el --- more editing utilities -*- lexical-binding: t; -*- 
+;;; python-components-extensions.el --- more editing utilities -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -206,14 +206,11 @@ With interactive call, send it to the message buffer too. "
   (if (or arg (not py-match-paren-mode))
       (progn
 	(setq py-match-paren-mode t)
-        ;; 	(define-key python-mode-map (kbd (concat "<" py-match-paren-key ">")) 'py-match-paren))
         (setq py-match-paren-mode nil))))
 
 (defun py--match-end-finish (cui)
   (let (skipped remain)
     (unless (eq (current-column) cui)
-      ;; (unless (empty-line-p)
-      ;; (split-line))
       (when (< (current-column) cui)
 	(setq skipped (skip-chars-forward " \t" (line-end-position)))
 	(setq cui (- cui skipped))
@@ -222,10 +219,7 @@ With interactive call, send it to the message buffer too. "
 	    (progn
 	      (unless (empty-line-p) (split-line))
 	      (indent-to cui))
-	  (forward-char cui)
-
-	  ;; (forward-char (- (abs cui)))
-	  )
+	  (forward-char cui))
 	(unless (eq (char-before) 32)(insert 32)(forward-char -1))))))
 
 (defun py--match-paren-forward ()
@@ -236,19 +230,19 @@ With interactive call, send it to the message buffer too. "
       (py-forward-top-level-bol)
       (py--match-end-finish cui))
      ((py--beginning-of-class-p)
-      (py-forward-class-bol cui)
+      (py-forward-class-bol)
       (py--match-end-finish cui))
      ((py--beginning-of-def-p)
-      (py-forward-def-bol cui)
+      (py-forward-def-bol)
       (py--match-end-finish cui))
      ((py--beginning-of-if-block-p)
-      (py-forward-if-block-bol cui)
+      (py-forward-if-block-bol)
       (py--match-end-finish cui))
      ((py--beginning-of-try-block-p)
-      (py-forward-try-block-bol cui)
+      (py-forward-try-block-bol)
       (py--match-end-finish cui))
      ((py--beginning-of-for-block-p)
-      (py-forward-for-block-bol cui)
+      (py-forward-for-block-bol)
       (py--match-end-finish cui))
      ((py--beginning-of-block-p)
       (py-forward-block-bol)

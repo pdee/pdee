@@ -1,4 +1,4 @@
-;;; python-components-execute.el --- Part of python-components-mode -*- lexical-binding: t; -*- 
+;;; python-components-execute.el --- Part of python-components-mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -30,14 +30,14 @@
     (and (setq val (get-register py-windows-config-register))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
 	 (jump-to-register py-windows-config-register))))
 
-(defun py-shell-execute-string-now (string &optional shell buffer proc output-buffer)
+(defun py-shell-execute-string-now (strg &optional shell buffer proc)
   "Send to Python interpreter process PROC \"exec STRING in {}\".
 and return collected output"
   (let* (wait
          (procbuf (or buffer (process-buffer proc) (progn (setq wait py-new-shell-delay) (py-shell nil nil shell))))
          (proc (or proc (get-buffer-process procbuf)))
 	 (cmd (format "exec '''%s''' in {}"
-		      (mapconcat 'identity (split-string string "\n") "\\n")))
+		      (mapconcat 'identity (split-string strg "\n") "\\n")))
 	 ;; TBD remove redundant outbuf
          (outbuf procbuf))
     ;; wait is used only when a new py-shell buffer was connected
@@ -131,10 +131,9 @@ Kind of an option 'follow', local shell sets `py-shell-name', enforces its use a
 (defun py-force-local-shell-off ()
   "Restore `py-shell-name' default value and `behaviour'. "
   (interactive "p")
-  (let* ((erg (toggle-force-local-shell 1)))
-    (when (or py-verbose-p (called-interactively-p 'any))
-      (message "py-shell-name default restored to: %s" py-shell-name)
-      (message "Enforce %s" py-shell-name))))
+  (toggle-force-local-shell 1)
+  (when (or py-verbose-p (called-interactively-p 'any))
+    (message "py-shell-name default restored to: %s" py-shell-name)))
 
 (defun toggle-force-py-shell-name-p (&optional arg)
   "If customized default `py-shell-name' should be enforced upon execution.
