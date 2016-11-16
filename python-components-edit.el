@@ -70,7 +70,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
 
 (defun py--indent-fix-region-intern (beg end)
   "Used when `py-tab-indents-region-p' is non-nil. "
-  (let (indent)
+  (let ()
     (save-excursion
       (save-restriction
         (beginning-of-line)
@@ -87,7 +87,7 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
           (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
           (indent-to (py-compute-indentation)))))))
 
-(defun py--indent-line-intern (need cui py-indent-offset col &optional beg end region)
+(defun py--indent-line-intern (need cui indent col &optional beg end region)
   (let (erg)
     (if py-tab-indent
 	(progn
@@ -130,8 +130,8 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
 	      (progn
 		(beginning-of-line)
 		(delete-horizontal-space)
-		;; indent one py-indent-offset only if goal < need
-		(setq erg (+ (* (/ cui py-indent-offset) py-indent-offset) py-indent-offset))
+		;; indent one indent only if goal < need
+		(setq erg (+ (* (/ cui indent) indent) indent))
 		(if (< need erg)
 		    (indent-to need)
 		  (indent-to erg))

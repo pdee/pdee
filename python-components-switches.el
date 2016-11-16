@@ -100,7 +100,7 @@ Returns value of `py-smart-indentation'. "
 ;; Autopair mode
 ;; py-autopair-mode forms
 (defalias 'toggle-py-autopair-mode 'py-toggle-autopair-mode)
-(defun py-toggle-autopair-mode (&optional arg)
+(defun py-toggle-autopair-mode ()
   "If `py-autopair-mode' should be on or off.
 
   Returns value of `py-autopair-mode' switched to. "
@@ -125,7 +125,7 @@ Returns value of `py-autopair-mode'. "
 
 ;; Smart operator
 ;; py-smart-operator-mode-p forms
-(defun toggle-py-smart-operator-mode-p (&optional arg)
+(defun toggle-py-smart-operator-mode-p ()
   "If `py-smart-operator-mode-p' should be on or off.
 
   Returns value of `py-smart-operator-mode-p' switched to. "

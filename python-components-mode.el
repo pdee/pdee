@@ -2989,18 +2989,18 @@ return `jython', otherwise return nil."
                         'jython))))
     mode))
 
-(defun py-choose-shell-by-path (&optional py-separator-char)
+(defun py-choose-shell-by-path (&optional separator-char)
   "Select Python executable according to version desplayed in path, current buffer-file is selected from.
 
 Returns versioned string, nil if nothing appropriate found "
   (interactive)
   (let ((path (py--buffer-filename-remote-maybe))
-                (py-separator-char (or py-separator-char py-separator-char))
+	(separator-char (or separator-char py-separator-char))
                 erg)
-    (when (and path py-separator-char
-               (string-match (concat py-separator-char "[iI]?[pP]ython[0-9.]+" py-separator-char) path))
+    (when (and path separator-char
+               (string-match (concat separator-char "[iI]?[pP]ython[0-9.]+" separator-char) path))
       (setq erg (substring path
-                           (1+ (string-match (concat py-separator-char "[iI]?[pP]ython[0-9.]+" py-separator-char) path)) (1- (match-end 0)))))
+                           (1+ (string-match (concat separator-char "[iI]?[pP]ython[0-9.]+" separator-char) path)) (1- (match-end 0)))))
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
@@ -3139,18 +3139,17 @@ if `(locate-library \"python-mode\")' is not succesful.
 
 Used only, if `py-install-directory' is empty. "
   (interactive)
-  (let (name
-	(erg (cond ((locate-library "python-mode")
-                    (file-name-directory (locate-library "python-mode")))
-                   ((and (setq name (py--buffer-filename-remote-maybe)) (string-match "python-mode" name))
-                    (file-name-directory name))
-                   ((string-match "python-mode" (buffer-name))
-                    default-directory))))
+  (let ((erg (cond ((locate-library "python-mode")
+		    (file-name-directory (locate-library "python-mode")))
+		   ((ignore-errors (string-match "python-mode" (py--buffer-filename-remote-maybe)))
+		    (file-name-directory (py--buffer-filename-remote-maybe)))
+		   ((string-match "python-mode" (buffer-name))
+		    default-directory))))
     (cond ((and (or (not py-install-directory) (string= "" py-install-directory)) erg)
 	   (setq py-install-directory erg))
-	   (t (setq py-install-directory (expand-file-name "~/")))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "Setting py-install-directory to: %s" py-install-directory))
-    py-install-directory)
+	  (t (setq py-install-directory (expand-file-name "~/")))))
+  (when (and py-verbose-p (called-interactively-p 'any)) (message "Setting py-install-directory to: %s" py-install-directory))
+  py-install-directory)
 
 (defun py--fetch-pythonpath ()
   "Consider settings of py-pythonpath. "
@@ -3259,6 +3258,27 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
       (when (and py-debug-p (called-interactively-p 'any)) (message "%s" count))
       count)))
 
+(defmacro py-escaped ()
+  "Return t if char is preceded by an odd number of backslashes. "
+  `(save-excursion
+     (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
+
+(defmacro py-current-line-backslashed-p ()
+  "Return t if current line is a backslashed continuation line. "
+  `(save-excursion
+     (end-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (and (eq (char-before (point)) ?\\ )
+          (py-escaped))))
+
+(defmacro py-preceding-line-backslashed-p ()
+  "Return t if preceding line is a backslashed continuation line. "
+  `(save-excursion
+     (beginning-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (and (eq (char-before (point)) ?\\ )
+          (py-escaped))))
+
 (defun py--escape-doublequotes (start end)
   (let ((end (copy-marker end)))
     (save-excursion
@@ -3286,26 +3306,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
        (beginning-of-line)
        (looking-at "\\s-*$"))))
 
-(defmacro py-escaped ()
-  "Return t if char is preceded by an odd number of backslashes. "
-  `(save-excursion
-     (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
-
-(defmacro py-current-line-backslashed-p ()
-  "Return t if current line is a backslashed continuation line. "
-  `(save-excursion
-     (end-of-line)
-     (skip-chars-backward " \t\r\n\f")
-     (and (eq (char-before (point)) ?\\ )
-          (py-escaped))))
-
-(defmacro py-preceding-line-backslashed-p ()
-  "Return t if preceding line is a backslashed continuation line. "
-  `(save-excursion
-     (beginning-of-line)
-     (skip-chars-backward " \t\r\n\f")
-     (and (eq (char-before (point)) ?\\ )
-          (py-escaped))))
 ;;
 
 (defvar python-mode-map nil)
