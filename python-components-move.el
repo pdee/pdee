@@ -41,8 +41,7 @@ If already at the beginning or before a indent, go to next indent in buffer upwa
 Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (bobp)
-    (let ((orig (point))
-	  erg)
+    (let (erg)
       (setq erg (py--travel-this-indent-backward))
       (when erg (goto-char erg))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -62,13 +61,9 @@ If already at the beginning or before an indent, go to next indent in buffer upw
 Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (bobp)
-    (let ((orig (point))
-	  (indent (when (eq (current-indentation) (current-column)) (current-column)))
+    (let ((indent (when (eq (current-indentation) (current-column)) (current-column)))
 	  erg)
       (setq erg (py--travel-this-indent-backward-bol indent))
-      ;; (when erg (goto-char erg)
-      ;; (beginning-of-line)
-      ;; (setq erg (point)))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
@@ -88,17 +83,13 @@ If already at the end, go down to next indent in buffer
 Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (eobp)
-    (let ((orig (point))
-	  done indent)
+    (let (done indent)
       (when (py-forward-statement)
 	(save-excursion
 	  (setq done (point))
 	  (setq indent (and (py-backward-statement)(current-indentation)))))
       (setq done (py--travel-this-indent-forward indent))
       (when done (goto-char done))
-      ;; navigation doesn't reach BOL
-      ;; (unless (eolp) (setq done (py-forward-statement)))
-      ;; (when (eq (current-column) (current-indentation)) (py-end-of-statement))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" done))
       done)))
 
@@ -109,8 +100,7 @@ If already at the end, go down to next indent in buffer
 Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (eobp)
-    (let ((orig (point))
-	  erg indent)
+    (let (erg indent)
       (when (py-forward-statement)
       	(save-excursion
       	  (setq indent (and (py-backward-statement)(current-indentation))))
@@ -216,7 +206,7 @@ Operators are ignored. "
 	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	erg))))
 
-(defun py-backward-partial-expression (&optional orig)
+(defun py-backward-partial-expression ()
   (interactive)
   (let ((orig (point))
 	erg)
@@ -237,7 +227,7 @@ Operators are ignored. "
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-partial-expression (&optional orig)
+(defun py-forward-partial-expression ()
   (interactive)
   (let (erg)
     (skip-chars-forward py-partial-expression-backward-chars)
@@ -294,8 +284,6 @@ computing indents"
     (unless (bobp)
       (let* ((repeat (or (and repeat (1+ repeat)) 999))
 	     (orig (or orig (point)))
-             (this (point))
-             (cui (current-indentation))
              (pps (parse-partial-sexp (or limit (point-min))(point)))
              (done done)
              erg)
@@ -368,7 +356,7 @@ computing indents"
 	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	erg))))
 
-(defun py-backward-statement-bol (&optional indent)
+(defun py-backward-statement-bol ()
   "Goto beginning of line where statement starts.
   Returns position reached, if successful, nil otherwise.
 
@@ -398,10 +386,9 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
     (unless (eobp)
       (let ((repeat (or (and repeat (1+ repeat)) 0))
 	    (orig (or orig (point)))
-	    erg pos last
+	    erg last
 	    ;; use by scan-lists
-	    forward-sexp-function
-	    stringchar stm pps err)
+	    forward-sexp-function pps err)
 	;; (unless done (py--skip-to-comment-or-semicolon done))
 	(setq pps (parse-partial-sexp (point-min) (point)))
 	;; (origline (or origline (py-count-lines)))
@@ -600,10 +587,9 @@ From a programm use macro `py-backward-comment' instead "
 	(setq done t)))
     erg))
 
-(defun py--go-to-keyword (regexp &optional maxindent orig)
+(defun py--go-to-keyword (regexp &optional maxindent)
   "Returns a list, whose car is indentation, cdr position. "
-  (let ((orig (or orig (point)))
-        (maxindent
+  (let ((maxindent
 	 (or maxindent
 	     (if (empty-line-p)
 		 (progn
@@ -612,7 +598,7 @@ From a programm use macro `py-backward-comment' instead "
 	       (or maxindent (and (< 0 (current-indentation))(current-indentation))
 		   ;; make maxindent large enough if not set
 		   (* 99 py-indent-offset)))))
-        done erg cui)
+        done erg)
     (while (and (not done) (not (bobp)))
       (py-backward-statement)
       (when
@@ -627,10 +613,9 @@ From a programm use macro `py-backward-comment' instead "
     (when erg (setq erg (cons (current-indentation) erg)))
     erg))
 
-(defun py--clause-lookup-keyword (regexp arg &optional indent orig origline)
+(defun py--clause-lookup-keyword (regexp arg &optional indent origline)
   "Returns a list, whose car is indentation, cdr position. "
-  (let* ((orig (or orig (point)))
-         (origline (or origline (py-count-lines)))
+  (let* ((origline (or origline (py-count-lines)))
          (stop (if (< 0 arg)'(eobp)'(bobp)))
          (function (if (< 0 arg) 'py-forward-statement 'py-backward-statement))
          (count 1)
@@ -713,7 +698,7 @@ From a programm use macro `py-backward-comment' instead "
         (setq erg (cons (current-indentation) erg))))
     erg))
 
-(defun py-leave-comment-or-string-backward (&optional pos)
+(defun py-leave-comment-or-string-backward ()
   "If inside a comment or string, leave it backward. "
   (interactive)
   (let ((pps
