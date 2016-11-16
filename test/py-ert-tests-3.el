@@ -1,4 +1,4 @@
-;; py-ert-tests-3.el --- Some more Tests -*- lexical-binding: t; -*- 
+;; py-ert-tests-3.el --- Some more Tests -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 Andreas Röhler, <andreas.roehler@online.de>
 
@@ -142,7 +142,9 @@ def foo():
 (ert-deftest py-ert-execute-statement-fast-test ()
   (py-test-with-temp-buffer-point-min
       "print(123234)"
-    (py-execute-statement-fast)))
+    (py-execute-statement-fast)
+    (set-buffer "*Python3 Fast*")
+    (should (eq (current-buffer) (get-buffer "*Python3 Fast*")))))
 
 (ert-deftest py-ert-fill-comment-test ()
   (py-test-with-temp-buffer-point-min
