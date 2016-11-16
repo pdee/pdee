@@ -2783,8 +2783,7 @@ Expects being called by `py--run-unfontify-timer' "
 (defun py--run-unfontify-timer (&optional buffer)
   "Unfontify the shell banner-text "
   (when py--shell-unfontify
-    (let ((buffer (or buffer (current-buffer)))
-	  done)
+    (let ((buffer (or buffer (current-buffer))))
       (if (and
 	   (buffer-live-p buffer)
 	   (or
