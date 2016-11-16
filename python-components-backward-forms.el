@@ -1,4 +1,4 @@
-;;; python-components-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*- 
+;;; python-components-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016  Andreas Röhler
 
@@ -130,7 +130,7 @@ Returns beginning of `try-block' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-try-block-re 'py-clause-re (called-interactively-p 'any) decorator bol))
 
-(defun py-backward-block-bol (&optional indent decorator bol)
+(defun py-backward-block-bol (&optional indent decorator)
   "Go to beginning of `block', go to BOL.
 
 If already at beginning, go one `block' backward.
@@ -138,7 +138,7 @@ Returns beginning of `block' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-block-re 'py-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-block-or-clause-bol (&optional indent decorator bol)
+(defun py-backward-block-or-clause-bol (&optional indent decorator)
   "Go to beginning of `block-or-clause', go to BOL.
 
 If already at beginning, go one `block-or-clause' backward.
@@ -146,7 +146,7 @@ Returns beginning of `block-or-clause' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) nil t))
 
-(defun py-backward-class-bol (&optional indent decorator bol)
+(defun py-backward-class-bol (&optional indent decorator)
   "Go to beginning of `class', go to BOL.
 
 If already at beginning, go one `class' backward.
@@ -154,7 +154,7 @@ Returns beginning of `class' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-class-re 'py-extended-block-or-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-clause-bol (&optional indent decorator bol)
+(defun py-backward-clause-bol (&optional indent decorator)
   "Go to beginning of `clause', go to BOL.
 
 If already at beginning, go one `clause' backward.
@@ -162,7 +162,7 @@ Returns beginning of `clause' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) nil t))
 
-(defun py-backward-def-bol (&optional indent decorator bol)
+(defun py-backward-def-bol (&optional indent decorator)
   "Go to beginning of `def', go to BOL.
 
 If already at beginning, go one `def' backward.
@@ -170,7 +170,7 @@ Returns beginning of `def' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-def-re 'py-extended-block-or-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-def-or-class-bol (&optional indent decorator bol)
+(defun py-backward-def-or-class-bol (&optional indent decorator)
   "Go to beginning of `def-or-class', go to BOL.
 
 If already at beginning, go one `def-or-class' backward.
@@ -178,7 +178,7 @@ Returns beginning of `def-or-class' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-def-or-class-re 'py-extended-block-or-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-elif-block-bol (&optional indent decorator bol)
+(defun py-backward-elif-block-bol (&optional indent decorator)
   "Go to beginning of `elif-block', go to BOL.
 
 If already at beginning, go one `elif-block' backward.
@@ -186,7 +186,7 @@ Returns beginning of `elif-block' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-elif-block-re 'py-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-else-block-bol (&optional indent decorator bol)
+(defun py-backward-else-block-bol (&optional indent decorator)
   "Go to beginning of `else-block', go to BOL.
 
 If already at beginning, go one `else-block' backward.
@@ -194,7 +194,7 @@ Returns beginning of `else-block' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-else-block-re 'py-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-except-block-bol (&optional indent decorator bol)
+(defun py-backward-except-block-bol (&optional indent decorator)
   "Go to beginning of `except-block', go to BOL.
 
 If already at beginning, go one `except-block' backward.
@@ -202,7 +202,7 @@ Returns beginning of `except-block' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-except-block-re 'py-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-for-block-bol (&optional indent decorator bol)
+(defun py-backward-for-block-bol (&optional indent decorator)
   "Go to beginning of `for-block', go to BOL.
 
 If already at beginning, go one `for-block' backward.
@@ -210,7 +210,7 @@ Returns beginning of `for-block' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-for-block-re 'py-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-if-block-bol (&optional indent decorator bol)
+(defun py-backward-if-block-bol (&optional indent decorator)
   "Go to beginning of `if-block', go to BOL.
 
 If already at beginning, go one `if-block' backward.
@@ -218,7 +218,7 @@ Returns beginning of `if-block' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-if-block-re 'py-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-minor-block-bol (&optional indent decorator bol)
+(defun py-backward-minor-block-bol (&optional indent decorator)
   "Go to beginning of `minor-block', go to BOL.
 
 If already at beginning, go one `minor-block' backward.
@@ -226,7 +226,7 @@ Returns beginning of `minor-block' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-minor-block-re 'py-clause-re (called-interactively-p 'any) decorator t))
 
-(defun py-backward-try-block-bol (&optional indent decorator bol)
+(defun py-backward-try-block-bol (&optional indent decorator)
   "Go to beginning of `try-block', go to BOL.
 
 If already at beginning, go one `try-block' backward.

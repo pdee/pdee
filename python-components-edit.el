@@ -447,7 +447,7 @@ downwards from beginning of block followed by a statement. Otherwise default-val
 If optional INDENT is given, use it"
   (interactive "*")
   (beginning-of-line)
-  (when (member (char-after) (list 32 9 10 12 13)) (delete-region (point) (progn (skip-chars-forward " \t\r\n\f")(point)))) 
+  (when (member (char-after) (list 32 9 10 12 13)) (delete-region (point) (progn (skip-chars-forward " \t\r\n\f")(point))))
   (indent-to (or indent (py-compute-indentation)))
   (if (eobp)
       (newline-and-indent)
@@ -459,7 +459,7 @@ If optional INDENT is given, use it"
 
 Starts from second line of region specified"
   (goto-char beg)
-  (py-indent-and-forward) 
+  (py-indent-and-forward)
   ;; (forward-line 1)
   (while (< (line-end-position) end)
     (if (empty-line-p)
@@ -478,8 +478,7 @@ same with optional argument
 In order to shift a chunk of code, where the first line is okay, start with second line.
 "
   (interactive "*")
-  (let ((orig (copy-marker (point)))
-        (beg start)
+  (let ((beg start)
         (end (copy-marker end)))
     (goto-char beg)
     (beginning-of-line)
@@ -674,15 +673,15 @@ Store deleted statements in kill-ring "
       (kill-new (buffer-substring-no-properties beg end))
       (delete-region beg end))))
 
-(defun py--join-words-wrapping (words separator line-prefix line-length)
+(defun py--join-words-wrapping (words separator prefix line-length)
   (let ((lines ())
-        (current-line line-prefix))
+        (current-line prefix))
     (while words
       (let* ((word (car words))
              (maybe-line (concat current-line word separator)))
         (if (> (length maybe-line) line-length)
             (setq lines (cons (substring current-line 0 -1) lines)
-                  current-line (concat line-prefix word separator " "))
+                  current-line (concat prefix word separator " "))
           (setq current-line (concat maybe-line " "))))
       (setq words (cdr words)))
     (setq lines (cons (substring
@@ -816,7 +815,7 @@ Returns the string inserted. "
       (window-configuration-to-register py--edit-docstring-register)
       (setq py--oldbuf (current-buffer))
       (let ((orig (point))
-	     pps)
+	    relpos docstring)
 	(py--edit-docstring-set-vars)
 	;; store relative position in docstring
 	(setq relpos (1+ (- orig py--docbeg)))
@@ -829,8 +828,7 @@ Returns the string inserted. "
 	(python-mode)
 	(local-set-key [(control c)(control c)] 'py--write-back-docstring)
 	(goto-char relpos)
-	(message "%s" "Type C-c C-c writes contents back")
-	))))
+	(message "%s" "Type C-c C-c writes contents back")))))
 
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here

@@ -2021,7 +2021,7 @@ Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
   ;; bol forms
   (dolist (ele py-backward-forms)
     (insert (concat "
-\(defun py-backward-" ele "-bol (&optional indent decorator bol)
+\(defun py-backward-" ele "-bol (&optional indent decorator)
   \"Go to beginning of `" ele "', go to BOL.
 
 If already at beginning, go one `" ele "' backward.
