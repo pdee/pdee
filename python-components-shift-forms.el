@@ -1,6 +1,6 @@
 ;;; python-components-shift-forms.el --- Move forms left or right -*- lexical-binding: t; -*- 
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2016  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -26,7 +26,6 @@
 ;;; Code:
 
 
-(defalias 'py-shift-region-left 'py-shift-left)
 (defun py-shift-left (&optional count start end)
   "Dedent region according to `py-indent-offset' by COUNT times.
 
@@ -37,7 +36,6 @@ Returns indentation reached. "
     (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
     erg))
 
-(defalias 'py-shift-region-right 'py-shift-right)
 (defun py-shift-right (&optional count beg end)
   "Indent region according to `py-indent-offset' by COUNT times.
 

@@ -1,6 +1,6 @@
 ;;; python-mode-utils.el - generating parts of python-mode.el -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -177,7 +177,6 @@
        "if-block"
        "indent"
        "line"
-       "minor-block"
        "minor-block"
        "paragraph"
        "partial-expression"
@@ -740,7 +739,7 @@
 		       ))
 
 (setq arkopf
-      "\n;; Copyright (C) 2015-2016  Andreas Röhler
+      "\n;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -828,7 +827,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
         (erase-buffer))
       proc)))
 
-\(defun py--fast-send-string (string)
+\(defun py--fast-send-string (strg)
   \"Process Python strings, being prepared for large output.
 
 Output buffer displays \\\"Fast\\\"  by default
@@ -839,8 +838,8 @@ See also `py-fast-shell'
                   (py-fast-process))))
     ;;    (with-current-buffer py-fast-output-buffer
     ;;      (erase-buffer))
-    (process-send-string proc string)
-    (or (string-match \"\\n\$\" string)
+    (process-send-string proc strg)
+    (or (string-match \"\\n\$\" strg)
         (process-send-string proc \"\\n\"))
     (accept-process-output proc 1)
     (switch-to-buffer py-fast-output-buffer)
@@ -1374,7 +1373,6 @@ Optional \\\\[universal-argument] prompts for path to the"))
   (insert arkopf)
 
   (insert "
-\(defalias 'py-shift-region-left 'py-shift-left)
 \(defun py-shift-left (&optional count start end)
   \"Dedent region according to `py-indent-offset' by COUNT times.
 
@@ -1385,7 +1383,6 @@ Returns indentation reached. \"
     (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
     erg))
 
-\(defalias 'py-shift-region-right 'py-shift-right)
 \(defun py-shift-right (&optional count beg end)
   \"Indent region according to `py-indent-offset' by COUNT times.
 

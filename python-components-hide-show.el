@@ -25,7 +25,6 @@
 
 ;;; Code:
 
-
 ;; (setq hs-block-start-regexp 'py-extended-block-or-clause-re)
 ;; (setq hs-forward-sexp-func 'py-forward-block)
 
@@ -240,16 +239,6 @@
   "Show line at point. "
   (interactive)
   (py-show-base 'line))
-
-(defun py-hide-minor-block ()
-  "Hide minor-block at point. "
-  (interactive)
-  (py-hide-base 'minor-block))
-
-(defun py-show-minor-block ()
-  "Show minor-block at point. "
-  (interactive)
-  (py-show-base 'minor-block))
 
 (defun py-hide-minor-block ()
   "Hide minor-block at point. "

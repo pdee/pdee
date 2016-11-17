@@ -25,7 +25,7 @@ completions on the current context."
     (when (> (length completions) 2)
       (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 
-(defun py--fast--do-completion-at-point (process imports input orig py-exception-buffer code output-buffer)
+(defun py--fast--do-completion-at-point (process imports input orig code output-buffer)
   "Do completion at point for PROCESS."
   ;; send setup-code
   (let (py-return-result-p)
@@ -33,10 +33,7 @@ completions on the current context."
       ;; (message "%s" imports)
       (py--fast-send-string-no-output imports process output-buffer)))
   (let* ((completion
-	  (py--fast-completion-get-completions input process code))
-	 ;; (completion (when completions
-	 ;; (try-completion input completions)))
-	 newlist erg)
+	  (py--fast-completion-get-completions input process code)))
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
 	   nil)
@@ -68,7 +65,7 @@ completions on the current context."
 		 py-shell-module-completion-code)))
     (with-current-buffer py-buffer-name
       (erase-buffer))
-    (py--fast--do-completion-at-point proc imports word pos py-exception-buffer code py-buffer-name)))
+    (py--fast--do-completion-at-point proc imports word pos code py-buffer-name)))
 
 (defun py-fast-complete (&optional shell debug beg end word)
   "Complete word before point, if any.
@@ -76,12 +73,7 @@ completions on the current context."
 Use `py-fast-process' "
   (interactive)
   (setq py-last-window-configuration
-        (current-window-configuration))
-  (let (py-switch-buffers-on-execute-p
-	(py-fast-process-p t)
-	(py-fast-complete-p t)
-	(py-return-result-p t))
-    (py--complete-prepare shell debug beg end word t)))
+        (current-window-configuration)))
 
 (provide 'python-components-fast-complete)
 ;;; python-components-fast-complete.el here

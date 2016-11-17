@@ -606,7 +606,6 @@ Interactively, prompt for SYMBOL."
                              "Find location of: ")
                            nil nil symbol)
             symbol))
-         (orig (point))
          (local (or
                  (py--until-found (concat "class " symbol) imenu--index-alist)
                  (py--until-found symbol imenu--index-alist)))

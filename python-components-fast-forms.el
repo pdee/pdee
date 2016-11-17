@@ -54,17 +54,17 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (sit-for 1 t)
       (delete-region orig (point-max)))))
 
-(defun py--filter-result (string)
+(defun py--filter-result (strg)
   "Set `py-result' according to `py-fast-filter-re'.
 
 Remove trailing newline"
-    (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" (ansi-color-filter-apply string)))
+    (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" (ansi-color-filter-apply strg)))
 
-(defun py--fast-send-string-intern (string proc output-buffer store return)
+(defun py--fast-send-string-intern (strg proc output-buffer return)
   (with-current-buffer output-buffer
     (process-send-string proc "\n")
     (let ((orig (point)))
-      (process-send-string proc string)
+      (process-send-string proc strg)
       (process-send-string proc "\n")
       (accept-process-output proc 5)
       (sit-for py-fast-completion-delay t)
@@ -74,7 +74,7 @@ Remove trailing newline"
       (when return
 	py-result))))
 
-(defun py--fast-send-string (string)
+(defun py--fast-send-string (strg)
   "Process Python strings, being prepared for large output.
 
 Output buffer displays \"Fast\"  by default
@@ -85,8 +85,8 @@ See also `py-fast-shell'
                   (py-fast-process))))
     ;;    (with-current-buffer py-fast-output-buffer
     ;;      (erase-buffer))
-    (process-send-string proc string)
-    (or (string-match "\n$" string)
+    (process-send-string proc strg)
+    (or (string-match "\n$" strg)
         (process-send-string proc "\n"))
     (accept-process-output proc 1)
     (switch-to-buffer py-fast-output-buffer)

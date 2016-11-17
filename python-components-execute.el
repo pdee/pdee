@@ -610,7 +610,7 @@ Receives a buffer-name as argument"
 
 (defun py--grab-prompt-ps1 (proc buffer)
   (py--send-string-no-output "import sys")
-  (py--fast-send-string-intern "sys.ps1" proc buffer nil t))
+  (py--fast-send-string-intern "sys.ps1" proc buffer t))
 
 (defun py--start-fast-process (shell buffer)
   (let ((proc (start-process shell buffer shell)))
@@ -809,7 +809,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (switch-to-buffer (current-buffer))
     (py--fast-send-string-intern strg
 				 proc
-				 output-buffer py-store-result-p py-return-result-p)
+				 output-buffer py-return-result-p)
     (sit-for 0.1))))
 
 (defun py--delete-temp-file (tempfile &optional tempbuf)

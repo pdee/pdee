@@ -28,7 +28,7 @@
 (defun py-fill-paren (&optional justify)
   "Paren fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'."
-  (interactive "*")
+  (interactive "*P")
   (save-restriction
     (save-excursion
       (let ((pps (parse-partial-sexp (point-min) (point))))
@@ -39,7 +39,7 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
 		   (paragraph-start "\f\\|[ \t]*$")
 		   (paragraph-separate ","))
 	      (when end (narrow-to-region beg end)
-		    (fill-region beg end)
+		    (fill-region beg end justify)
 		    (while (not (eobp))
 		      (forward-line 1)
 		      (py-indent-line)
@@ -240,7 +240,7 @@ See lp:1066489 "
   (interactive "r*")
   (let ((end (copy-marker end))
         (last (copy-marker (point)))
-        this-beg this-end)
+        this-beg)
     (save-excursion
       (save-restriction
         ;; (narrow-to-region beg end)
@@ -345,7 +345,7 @@ See lp:1066489 "
       (unless (empty-line-p) (newline)))
     (py--fill-fix-end thisend orig docstring delimiters-style)))
 
-(defun py--fill-docstring-last-line (thisbeg thisend beg end style orig first-line-p py-current-indent)
+(defun py--fill-docstring-last-line (thisend beg end)
   (widen)
   ;; (narrow-to-region thisbeg thisend)
   (goto-char thisend)
@@ -408,7 +408,7 @@ See lp:1066489 "
           ((save-excursion (goto-char end)
 			   (or (member (char-after) (list ?\" ?\'))
 			       (member (char-before) (list ?\" ?\'))))
-           (py--fill-docstring-last-line thisbeg thisend beg end style orig first-line-p py-current-indent))
+           (py--fill-docstring-last-line thisend beg end))
           (t ;; (narrow-to-region beg end)
 	     (fill-region beg end justify)))
     (py--fill-docstring-base thisbeg thisend style multi-line-p first-line-p beg end py-current-indent orig docstring)))
