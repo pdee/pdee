@@ -676,34 +676,6 @@ if __name__==\"__main__\":
     (search-forward "exit()")
     (should (eq 4 (py-close-block)))))
 
-(ert-deftest py-ert-close-clause-test ()
-  (py-test-with-temp-buffer-point-min
-      "# -*- coding: utf-8 -*-
-
-def main():
-    if len(sys.argv)==1:
-        usage()
-        sys.exit()
-if __name__==\"__main__\":
-    main()
-"
-    (search-forward "exit()")
-    (should (eq 4 (py-close-clause)))))
-
-(ert-deftest py-ert-close-block-or-clause-test ()
-  (py-test-with-temp-buffer-point-min
-      "# -*- coding: utf-8 -*-
-
-def main():
-    if len(sys.argv)==1:
-        usage()
-        sys.exit()
-if __name__==\"__main__\":
-    main()
-"
-    (search-forward "exit()")
-    (should (eq 4 (py-close-block-or-clause)))))
-
 (ert-deftest py-ert-close-def-or-class-test ()
   (py-test-with-temp-buffer-point-min
       "# -*- coding: utf-8 -*-

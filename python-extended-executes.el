@@ -1,6 +1,6 @@
-;; Extended executes --- more execute forms -*- lexical-binding: t; -*- 
+;; Extended executes --- more execute forms
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2016  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -513,9 +513,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer ()
   "Send buffer at point to  interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -528,9 +526,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -543,9 +539,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -556,9 +550,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-dedicated ()
   "Send buffer at point to  unique interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -569,9 +561,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-dedicated-switch ()
   "Send buffer at point to  unique interpreter and switch to result. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -582,9 +572,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython ()
   "Send buffer at point to IPython interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -597,9 +585,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -612,9 +598,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -625,9 +609,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython-dedicated ()
   "Send buffer at point to IPython unique interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -638,9 +620,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython-dedicated-switch ()
   "Send buffer at point to IPython unique interpreter and switch to result. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -651,9 +631,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython2.7 ()
   "Send buffer at point to IPython interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -666,9 +644,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -681,9 +657,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -694,9 +668,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython2.7-dedicated ()
   "Send buffer at point to IPython unique interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -707,9 +679,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython2.7-dedicated-switch ()
   "Send buffer at point to IPython unique interpreter and switch to result. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -720,9 +690,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython3 ()
   "Send buffer at point to IPython interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -735,9 +703,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -750,9 +716,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -763,9 +727,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython3-dedicated ()
   "Send buffer at point to IPython unique interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -776,9 +738,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-ipython3-dedicated-switch ()
   "Send buffer at point to IPython unique interpreter and switch to result. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -789,9 +749,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-jython ()
   "Send buffer at point to Jython interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -804,9 +762,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -819,9 +775,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -832,9 +786,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-jython-dedicated ()
   "Send buffer at point to Jython unique interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -845,9 +797,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-jython-dedicated-switch ()
   "Send buffer at point to Jython unique interpreter and switch to result. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -860,9 +810,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 
 For `default' see value of `py-shell-name'"
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -877,9 +825,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'.
 
 For `default' see value of `py-shell-name'"
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -894,9 +840,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p'
 
 For `default' see value of `py-shell-name'"
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -909,9 +853,7 @@ For `default' see value of `py-shell-name'"
 
 For `default' see value of `py-shell-name'"
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -924,9 +866,7 @@ For `default' see value of `py-shell-name'"
 
 For `default' see value of `py-shell-name'"
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -937,9 +877,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-buffer-python2 ()
   "Send buffer at point to Python2 interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -952,9 +890,7 @@ For `default' see value of `py-shell-name'"
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -967,9 +903,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -980,9 +914,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-python2-dedicated ()
   "Send buffer at point to Python2 unique interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -993,9 +925,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-python2-dedicated-switch ()
   "Send buffer at point to Python2 unique interpreter and switch to result. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -1006,9 +936,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-python3 ()
   "Send buffer at point to Python3 interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -1021,9 +949,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 
 Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -1036,9 +962,7 @@ Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "
 
 Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -1049,9 +973,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-python3-dedicated ()
   "Send buffer at point to Python3 unique interpreter. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
@@ -1062,9 +984,7 @@ Keep current buffer. Ignores `py-switch-buffers-on-execute-p' "
 (defun py-execute-buffer-python3-dedicated-switch ()
   "Send buffer at point to Python3 unique interpreter and switch to result. "
   (interactive)
-  (let ((wholebuf t)
-        (py-master-file (or py-master-file (py-fetch-py-master-file)))
-	beg end)
+  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)

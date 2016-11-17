@@ -1,4 +1,4 @@
-;;; python-components-shell-complete.el -- Add suport for completion in py-shell -*- lexical-binding: t; -*- 
+;;; python-components-shell-complete.el -- Add suport for completion in py-shell -*- lexical-binding: t; -*-
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ completions on the current context."
 
 ;; post-command-hook
 ;; caused insert-file-contents error lp:1293172
-(defun py--after-change-function (beg end len)
+(defun py--after-change-function (end)
   "Restore window-confiuration after completion. "
   (when
       (and (or
@@ -106,7 +106,7 @@ completions on the current context."
 
   nil)
 
-(defun py--shell-do-completion-at-point (process imports input orig py-exception-buffer code)
+(defun py--shell-do-completion-at-point (process imports input exception-buffer code)
   "Do completion at point for PROCESS."
   ;; (py--send-string-no-output py-shell-completion-setup-code process)
   (when imports
@@ -115,20 +115,17 @@ completions on the current context."
   (sit-for 0.1 t)
   (let* ((completion
 	  (py--shell-completion-get-completions
-	   input process code))
-	 ;; (completion (when completions
-	 ;; (try-completion input completions)))
-	 newlist erg)
-    (set-buffer py-exception-buffer)
+	   input process code)))
+    (set-buffer exception-buffer)
     ;; (py--delay-process-dependent process)
     ;; (sit-for 1 t)
     (py--shell-insert-completion-maybe completion input)))
 
-(defun py--complete-base (shell pos beg end word imports debug py-exception-buffer)
+(defun py--complete-base (shell word imports exception-buffer)
   (let* ((shell (or shell (py-choose-shell)))
          (proc (or
 		;; completing inside a shell
-		(get-buffer-process py-exception-buffer)
+		(get-buffer-process exception-buffer)
 		   (and (comint-check-proc shell)
 			(get-process shell))
 	       (prog1
@@ -137,10 +134,10 @@ completions on the current context."
     (code (if (string-match "[Ii][Pp]ython*" shell)
 	      (py-set-ipython-completion-command-string shell)
 	    py-shell-module-completion-code)))
-  (py--shell-do-completion-at-point proc imports word pos py-exception-buffer code)))
+  (py--shell-do-completion-at-point proc imports word exception-buffer code)))
 
 (defun py--complete-prepare (&optional shell debug beg end word fast-complete)
-  (let* ((py-exception-buffer (current-buffer))
+  (let* ((exception-buffer (current-buffer))
          (pos (copy-marker (point)))
 	 (pps (parse-partial-sexp (or (ignore-errors (overlay-end comint-last-prompt-overlay))(line-beginning-position)) (point)))
 	 (in-string (when (nth 3 pps) (nth 8 pps)))
@@ -166,13 +163,13 @@ completions on the current context."
 	 (filenames (and in-string ausdruck
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
-         py-fontify-shell-buffer-p completion-buffer erg)
-    (cond (fast-complete (py--fast-complete-base shell pos beg end word imports debug py-exception-buffer))
+         py-fontify-shell-buffer-p erg)
+    (cond (fast-complete (py--fast-complete-base shell pos beg end word imports debug exception-buffer))
 	  ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))
-	  (t (py--complete-base shell pos beg end word imports debug py-exception-buffer)))
+	  (t (py--complete-base shell word imports exception-buffer)))
     nil))
 
 (defun py-shell-complete (&optional shell debug beg end word)

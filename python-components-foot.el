@@ -199,7 +199,7 @@ See available customizations listed in files variables-python-mode at directory 
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local))
   (when py-pdbtrack-do-tracking-p
-    (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t))
+    (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file))
   (cond
    (py-complete-function
     (add-hook 'completion-at-point-functions

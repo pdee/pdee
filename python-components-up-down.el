@@ -1,4 +1,4 @@
-;;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t; -*-
+;;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t; -*- 
 
 ;; Copyright (C) 2015-2016  Andreas Röhler
 
@@ -31,8 +31,7 @@
 
 Return position if statement found, nil otherwise. "
   (interactive)
-  (let ((orig (point))
-        erg)
+  (let (erg)
     (if (py--beginning-of-statement-p)
 	(setq erg (py-backward-statement))
       (setq erg (and (py-backward-statement) (py-backward-statement))))
@@ -45,14 +44,14 @@ Return position if statement found, nil otherwise. "
 Return position if statement found, nil otherwise. "
   (interactive)
   (let* ((orig (point))
-	  (erg
-	   (cond ((py--end-of-statement-p)
-		  (setq erg (and (py-forward-statement) (py-backward-statement))))
-		 ((< orig (progn (py-forward-statement) (py-backward-statement)))
-		  (point))
-		 (t (and (py-forward-statement) (py-forward-statement)(py-backward-statement))))))
-	   (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-	   erg))
+	 erg)
+    (cond ((py--end-of-statement-p)
+	   (setq erg (and (py-forward-statement) (py-backward-statement))))
+	  ((setq erg (< orig (progn (py-forward-statement) (py-backward-statement))))
+	   (point))
+	  (t (setq erg (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+    erg))
 
 (defun py-up-base (regexp &optional indent orig decorator bol repeat)
   "Go to the beginning of next form upwards in buffer.
@@ -64,7 +63,7 @@ REGEXP is a quoted symbol "
 	   (repeat (or (and repeat (1+ repeat)) 999))
 	   erg name command)
       (if (< py-max-specpdl-size repeat)
-	  (message "`py-up-base' reached loops max.")
+	  (error "`py-up-base' reached loops max.")
 	(if indent
 	    (progn
 	      (while (and (re-search-backward (symbol-value regexp) nil 'move 1)
@@ -89,14 +88,13 @@ REGEXP is a quoted symbol "
 Return position if form found, nil otherwise.
 Expects a quoted symbol 'REGEXP"
   (unless (eobp)
-    (let* ((orig (point))
-	   (name (substring (symbol-name regexp) 3 -3))
+    (let* ((name (substring (symbol-name regexp) 3 -3))
 	   (p-command (car (read-from-string (concat "py--beginning-of-" name "-p"))))
 	   (backward-command (car (read-from-string (concat "py-backward-" name))))
 	   (up-command (car (read-from-string (concat "py-up-" name))))
 	   (down-command (car (read-from-string (concat "py-down-" name))))
            (forward-command (car (read-from-string (concat "py-forward-" name))))
-           erg last done start)
+           erg done start)
       (if (funcall p-command)
 	  (setq indent (current-indentation))
 	(save-excursion
@@ -109,25 +107,15 @@ Expects a quoted symbol 'REGEXP"
 	  (setq indent (current-indentation))
 	  (setq start (point))))
       ;; (setq done (funcall forward-command indent decorator bol))
-      (while (and
-	      (py-down-statement)
-	      (<= indent (current-indentation))
-	      (when (looking-at (symbol-value regexp))
-		(setq last (point)))))
-      (if (looking-at (symbol-value regexp))
-	  (setq erg (point))
-	(when last
-	  (progn (goto-char last)
-		 (if (looking-at (symbol-value regexp))
-		     (progn
-		       (when bol (beginning-of-line))
-		       (setq erg (point)))
-		   (end-of-line)
-		   (unless (eobp)
-		     (forward-line 1)
-		     (beginning-of-line))))))
-      ;; Go to next end of next block upward instead
-      (unless (or erg last)
+      (while (and (not done)
+		  (py-down-statement)
+		  (<= indent (current-indentation))
+		  (when (looking-at (symbol-value regexp))
+		    (setq done (point)))))
+      (when done
+	(when bol (beginning-of-line))
+	(setq erg (point)))
+      (unless done
 	(goto-char orig)
 	(or
 	 (if
@@ -135,7 +123,7 @@ Expects a quoted symbol 'REGEXP"
 	      (funcall up-command)
 	      ;; up should not result to backward
 	      (not (eq (point) start))
-	      (funcall forward-command indent decorator bol)
+	      (funcall forward-command decorator bol)
 	      (< orig (point))
 	      (setq erg (point)))
 	     (when bol (setq erg (py--beginning-of-line-form erg)))
@@ -143,7 +131,7 @@ Expects a quoted symbol 'REGEXP"
       (when py-verbose-p (message "%s" erg))
       erg)))
 
-(defalias 'py-up-block 'py-block-up)
+(defalias 'py-block-up 'py-up-block)
 (defun py-up-block (&optional indent decorator bol)
   "Go to the beginning of next block upwards in buffer.
 
@@ -151,7 +139,7 @@ Return position if block found, nil otherwise. "
   (interactive)
   (py-up-base 'py-extended-block-or-clause-re indent (point) decorator bol))
 
-(defalias 'py-up-class 'py-class-up)
+(defalias 'py-class-up 'py-up-class)
 (defun py-up-class (&optional indent decorator bol)
   "Go to the beginning of next class upwards in buffer.
 
@@ -159,7 +147,7 @@ Return position if class found, nil otherwise. "
   (interactive)
   (py-up-base 'py-class-re indent (point) decorator bol))
 
-(defalias 'py-up-def 'py-def-up)
+(defalias 'py-def-up 'py-up-def)
 (defun py-up-def (&optional indent decorator bol)
   "Go to the beginning of next def upwards in buffer.
 
@@ -167,7 +155,7 @@ Return position if def found, nil otherwise. "
   (interactive)
   (py-up-base 'py-def-re indent (point) decorator bol))
 
-(defalias 'py-up-def-or-class 'py-def-or-class-up)
+(defalias 'py-def-or-class-up 'py-up-def-or-class)
 (defun py-up-def-or-class (&optional indent decorator bol)
   "Go to the beginning of next def-or-class upwards in buffer.
 
@@ -175,7 +163,7 @@ Return position if def-or-class found, nil otherwise. "
   (interactive)
   (py-up-base 'py-def-or-class-re indent (point) decorator bol))
 
-(defalias 'py-up-minor-block 'py-minor-block-up)
+(defalias 'py-minor-block-up 'py-up-minor-block)
 (defun py-up-minor-block (&optional indent decorator bol)
   "Go to the beginning of next minor-block upwards in buffer.
 
@@ -183,45 +171,45 @@ Return position if minor-block found, nil otherwise. "
   (interactive)
   (py-up-base 'py-extended-block-or-clause-re indent (point) decorator bol))
 
-(defalias 'py-down-block 'py-block-down)
+(defalias 'py-block-down 'py-down-block)
 (defun py-down-block (&optional orig indent decorator bol)
   "Go to the beginning of next block below in buffer.
 
 Return position if block found, nil otherwise. "
   (interactive)
-  (py-down-base 'py-block-re (or orig (point)) indent decorator))
+  (py-down-base 'py-block-re (or orig (point)) indent decorator bol))
 
-(defalias 'py-down-class 'py-class-down)
+(defalias 'py-class-down 'py-down-class)
 (defun py-down-class (&optional orig indent decorator bol)
   "Go to the beginning of next class below in buffer.
 
 Return position if class found, nil otherwise. "
   (interactive)
-  (py-down-base 'py-class-re (or orig (point)) indent decorator))
+  (py-down-base 'py-class-re (or orig (point)) indent decorator bol))
 
-(defalias 'py-down-def 'py-def-down)
+(defalias 'py-def-down 'py-down-def)
 (defun py-down-def (&optional orig indent decorator bol)
   "Go to the beginning of next def below in buffer.
 
 Return position if def found, nil otherwise. "
   (interactive)
-  (py-down-base 'py-def-re (or orig (point)) indent decorator))
+  (py-down-base 'py-def-re (or orig (point)) indent decorator bol))
 
-(defalias 'py-down-def-or-class 'py-def-or-class-down)
+(defalias 'py-def-or-class-down 'py-down-def-or-class)
 (defun py-down-def-or-class (&optional orig indent decorator bol)
   "Go to the beginning of next def-or-class below in buffer.
 
 Return position if def-or-class found, nil otherwise. "
   (interactive)
-  (py-down-base 'py-def-or-class-re (or orig (point)) indent decorator))
+  (py-down-base 'py-def-or-class-re (or orig (point)) indent decorator bol))
 
-(defalias 'py-down-minor-block 'py-minor-block-down)
+(defalias 'py-minor-block-down 'py-down-minor-block)
 (defun py-down-minor-block (&optional orig indent decorator bol)
   "Go to the beginning of next minor-block below in buffer.
 
 Return position if minor-block found, nil otherwise. "
   (interactive)
-  (py-down-base 'py-minor-block-re (or orig (point)) indent decorator))
+  (py-down-base 'py-minor-block-re (or orig (point)) indent decorator bol))
 
 (defun py-up-block-bol (&optional indent decorator)
   "Go to the beginning of next block upwards in buffer.
@@ -269,7 +257,7 @@ Return position if minor-block found, nil otherwise. "
 Go to beginning of line
 Return position if block found, nil otherwise "
   (interactive)
-  (py-down-base 'py-block-re (point) indent decorator t))
+  (py-down-base 'py-block-re (or orig (point)) indent decorator (or bol t)))
 
 (defun py-down-class-bol (&optional orig indent decorator bol)
   "Go to the beginning of next class below in buffer.
@@ -277,7 +265,7 @@ Return position if block found, nil otherwise "
 Go to beginning of line
 Return position if class found, nil otherwise "
   (interactive)
-  (py-down-base 'py-class-re (point) indent decorator t))
+  (py-down-base 'py-class-re (or orig (point)) indent decorator (or bol t)))
 
 (defun py-down-def-bol (&optional orig indent decorator bol)
   "Go to the beginning of next def below in buffer.
@@ -285,7 +273,7 @@ Return position if class found, nil otherwise "
 Go to beginning of line
 Return position if def found, nil otherwise "
   (interactive)
-  (py-down-base 'py-def-re (point) indent decorator t))
+  (py-down-base 'py-def-re (or orig (point)) indent decorator (or bol t)))
 
 (defun py-down-def-or-class-bol (&optional orig indent decorator bol)
   "Go to the beginning of next def-or-class below in buffer.
@@ -293,7 +281,7 @@ Return position if def found, nil otherwise "
 Go to beginning of line
 Return position if def-or-class found, nil otherwise "
   (interactive)
-  (py-down-base 'py-def-or-class-re (point) indent decorator t))
+  (py-down-base 'py-def-or-class-re (or orig (point)) indent decorator (or bol t)))
 
 (defun py-down-minor-block-bol (&optional orig indent decorator bol)
   "Go to the beginning of next minor-block below in buffer.
@@ -301,7 +289,7 @@ Return position if def-or-class found, nil otherwise "
 Go to beginning of line
 Return position if minor-block found, nil otherwise "
   (interactive)
-  (py-down-base 'py-minor-block-re (point) indent decorator t))
+  (py-down-base 'py-minor-block-re (or orig (point)) indent decorator (or bol t)))
 
 ;; python-components-up-down.el ends here
 (provide 'python-components-up-down)

@@ -1,6 +1,6 @@
-;;; python-components-booleans-end-forms.el --- booleans-end forms -*- lexical-binding: t; -*- 
+;;; python-components-booleans-end-forms.el --- booleans-end forms -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2016  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -257,17 +257,6 @@
 	(setq erg orig))
       erg)))
 
-(defun py--end-of-top-level-bol-p ()
-  "Returns position, if cursor is at beginning-of-line at the end of a top-level, nil otherwise. "
-  (let ((orig (point))
-	erg)
-    (save-excursion
-      (py-backward-top-level-bol)
-      (py-forward-top-level-bol)
-      (when (eq orig (point))
-	(setq erg orig))
-      erg)))
-
 (defun py--end-of-try-block-bol-p ()
   "Returns position, if cursor is at beginning-of-line at the end of a try-block, nil otherwise. "
   (let ((orig (point))
@@ -429,17 +418,6 @@
     (save-excursion
       (py-backward-statement)
       (py-forward-statement)
-      (when (eq orig (point))
-	(setq erg orig))
-      erg)))
-
-(defun py--end-of-top-level-p ()
-  "Returns position, if cursor is at the end of a top-level, nil otherwise. "
-  (let ((orig (point))
-	erg)
-    (save-excursion
-      (py-backward-top-level)
-      (py-forward-top-level)
       (when (eq orig (point))
 	(setq erg orig))
       erg)))

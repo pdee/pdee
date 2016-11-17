@@ -36,33 +36,33 @@
                     (copy-marker (region-end)))
                    (t (copy-marker (point-max))))))
     (goto-char beg)
-    (while (re-search-forward (concat "\\(" py-shell-input-prompt-1-regexp "\\|" py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") nil (quote move) 1)
+    (while (re-search-forward (concat "\\(" py-shell-input-prompt-1-regexp "\\|" py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") end (quote move) 1)
       (replace-match ""))
     (goto-char beg)))
 
-(defun py-output-filter (string)
+(defun py-output-filter (strg)
   "Clear output buffer from py-shell-input prompt etc. "
   (interactive "*")
   (let (erg)
     (while
 	(not (equal erg (setq erg (replace-regexp-in-string
 				   (concat "\\(\n\\|" py-shell-input-prompt-1-regexp "\\|"
-					   py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") "" string))))
+					   py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") "" strg))))
       (sit-for 0.1 t))
     erg))
 
-(defun py-send-string (string &optional process)
+(defun py-send-string (strg &optional process)
   "Evaluate STRING in Python process."
   (interactive "sPython command: ")
   (let* ((proc (or process (get-buffer-process (py-shell))))
 	 (buffer (process-buffer proc)))
     (with-current-buffer buffer
       (goto-char (point-max))
-      (unless (string-match "\\`" string)
+      (unless (string-match "\\`" strg)
 	(comint-send-string proc "\n"))
-      (comint-send-string proc string)
+      (comint-send-string proc strg)
       (goto-char (point-max))
-      (unless (string-match "\n\\'" string)
+      (unless (string-match "\n\\'" strg)
 	;; Make sure the text is properly LF-terminated.
 	(comint-send-string proc "\n"))
       ;; (when py-debug-p (message "%s" (current-buffer)))

@@ -29,13 +29,15 @@
 ;;; Code:
 
 
-(defun py-forward-block ()
+(defun py-forward-block (&optional decorator bol)
   "Go to end of block.
 
-Returns end of block if successful, nil otherwise"
+Returns end of block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-block-re orig)))
+         (erg (py--end-base 'py-block-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -50,13 +52,15 @@ See also `py-down-block': down from current definition to next beginning of bloc
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-block-or-clause ()
+(defun py-forward-block-or-clause (&optional decorator bol)
   "Go to end of block-or-clause.
 
-Returns end of block-or-clause if successful, nil otherwise"
+Returns end of block-or-clause if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-block-or-clause-re orig)))
+         (erg (py--end-base 'py-block-or-clause-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -71,13 +75,15 @@ See also `py-down-block-or-clause': down from current definition to next beginni
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-class ()
+(defun py-forward-class (&optional decorator bol)
   "Go to end of class.
 
-Returns end of class if successful, nil otherwise"
+Returns end of class if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-class-re orig)))
+         (erg (py--end-base 'py-class-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -92,13 +98,15 @@ See also `py-down-class': down from current definition to next beginning of clas
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-clause ()
+(defun py-forward-clause (&optional decorator bol)
   "Go to end of clause.
 
-Returns end of clause if successful, nil otherwise"
+Returns end of clause if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-clause-re orig)))
+         (erg (py--end-base 'py-clause-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -113,13 +121,15 @@ See also `py-down-clause': down from current definition to next beginning of cla
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-def-or-class ()
+(defun py-forward-def-or-class (&optional decorator bol)
   "Go to end of def-or-class.
 
-Returns end of def-or-class if successful, nil otherwise"
+Returns end of def-or-class if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-def-or-class-re orig)))
+         (erg (py--end-base 'py-def-or-class-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -134,13 +144,15 @@ See also `py-down-def-or-class': down from current definition to next beginning 
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-def ()
+(defun py-forward-def (&optional decorator bol)
   "Go to end of def.
 
-Returns end of def if successful, nil otherwise"
+Returns end of def if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-def-re orig)))
+         (erg (py--end-base 'py-def-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -155,13 +167,15 @@ See also `py-down-def': down from current definition to next beginning of def be
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-if-block ()
+(defun py-forward-if-block (&optional decorator bol)
   "Go to end of if-block.
 
-Returns end of if-block if successful, nil otherwise"
+Returns end of if-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-if-block-re orig)))
+         (erg (py--end-base 'py-if-block-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -176,13 +190,15 @@ See also `py-down-if-block': down from current definition to next beginning of i
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-elif-block ()
+(defun py-forward-elif-block (&optional decorator bol)
   "Go to end of elif-block.
 
-Returns end of elif-block if successful, nil otherwise"
+Returns end of elif-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-elif-block-re orig)))
+         (erg (py--end-base 'py-elif-block-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -197,13 +213,15 @@ See also `py-down-elif-block': down from current definition to next beginning of
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-else-block ()
+(defun py-forward-else-block (&optional decorator bol)
   "Go to end of else-block.
 
-Returns end of else-block if successful, nil otherwise"
+Returns end of else-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-else-block-re orig)))
+         (erg (py--end-base 'py-else-block-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -218,13 +236,15 @@ See also `py-down-else-block': down from current definition to next beginning of
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-for-block ()
+(defun py-forward-for-block (&optional decorator bol)
   "Go to end of for-block.
 
-Returns end of for-block if successful, nil otherwise"
+Returns end of for-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-for-block-re orig)))
+         (erg (py--end-base 'py-for-block-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -239,13 +259,15 @@ See also `py-down-for-block': down from current definition to next beginning of 
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-except-block ()
+(defun py-forward-except-block (&optional decorator bol)
   "Go to end of except-block.
 
-Returns end of except-block if successful, nil otherwise"
+Returns end of except-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-except-block-re orig)))
+         (erg (py--end-base 'py-except-block-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -260,13 +282,15 @@ See also `py-down-except-block': down from current definition to next beginning 
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-try-block ()
+(defun py-forward-try-block (&optional decorator bol)
   "Go to end of try-block.
 
-Returns end of try-block if successful, nil otherwise"
+Returns end of try-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-try-block-re orig)))
+         (erg (py--end-base 'py-try-block-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -281,13 +305,15 @@ See also `py-down-try-block': down from current definition to next beginning of 
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-forward-minor-block ()
+(defun py-forward-minor-block (&optional decorator bol)
   "Go to end of minor-block.
 
-Returns end of minor-block if successful, nil otherwise"
+Returns end of minor-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match."
   (interactive)
   (let* ((orig (point))
-         (erg (py--end-base 'py-minor-block-re orig)))
+         (erg (py--end-base 'py-minor-block-re orig decorator bol)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 

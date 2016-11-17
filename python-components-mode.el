@@ -1788,6 +1788,9 @@ if \'0.10\' < version:
   :tag "py--imenu-create-index-function"
   :group 'python-mode)
 
+(defvar py-line-re "^"
+  "Used by generated functions." )
+
 (defvar py-input-filter-re "\\`\\s-*\\S-?\\S-?\\s-*\\'"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters.")
@@ -3059,7 +3062,7 @@ This does the following:
  - look if Path/To/File indicates a Python version
  - if not successful, return default value of `py-shell-name'
 
-When interactivly called, messages the shell name, Emacs would in the given circtumstances.
+When interactivly called, messages the shell name, Emacs would in the given circumstances.
 
 With \\[universal-argument] 4 is called `py-switch-shell' see docu there."
   (interactive "P")

@@ -447,9 +447,6 @@
 (ert-deftest py-ert--end-of-for-block-bol-p-functionp-test ()
   (should (functionp 'py--end-of-for-block-bol-p)))
 
-(ert-deftest py-ert--end-of-top-level-bol-p-functionp-test ()
-  (should (functionp 'py--end-of-top-level-bol-p)))
-
 (ert-deftest py-ert--end-of-statement-bol-p-functionp-test ()
   (should (functionp 'py--end-of-statement-bol-p)))
 
@@ -1766,9 +1763,6 @@
 
 (ert-deftest py-ert-close-class-functionp-test ()
   (should (functionp 'py-close-class)))
-
-(ert-deftest py-ert-close-clause-functionp-test ()
-  (should (functionp 'py-close-clause)))
 
 (ert-deftest py-ert-close-block-functionp-test ()
   (should (functionp 'py-close-block)))

@@ -144,7 +144,8 @@ def foo():
       "print(123234)"
     (py-execute-statement-fast)
     (set-buffer "*Python3 Fast*")
-    (should (eq (current-buffer) (get-buffer "*Python3 Fast*")))))
+    (should (eq (current-buffer) (get-buffer "*Python3 Fast*")))
+    (sit-for 0.1)))
 
 (ert-deftest py-ert-fill-comment-test ()
   (py-test-with-temp-buffer-point-min

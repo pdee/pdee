@@ -1,4 +1,4 @@
-;;; python-components-help.el --- help functions -*- lexical-binding: t; -*- 
+;;; python-components-help.el --- help functions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -141,7 +141,6 @@ Used with `eval-after-load'."
 Useful for newly defined symbol, not known to python yet. "
   (interactive)
   (let* ((symb (prin1-to-string (symbol-at-point)))
-         (args (py-expression))
          erg)
     (save-restriction
       (widen)
@@ -187,11 +186,11 @@ not inside a defun."
                                        (match-string-no-properties 0)) " "))
                          names))))))
     (when names
-      (mapconcat (lambda (string) string) names "."))))
+      (mapconcat (lambda (strg) strg) names "."))))
 
 (defalias 'py-describe-symbol 'py-help-at-point)
 (defalias 'py-eldoc-function 'py-help-at-point)
-(defun py--help-at-point-intern ()
+(defun py--help-at-point-intern (orig)
   (let* ((beg (point))
 	 (end (progn (skip-chars-forward "a-zA-Z0-9_." (line-end-position))(point)))
 	 (sym (buffer-substring-no-properties beg end))
@@ -245,7 +244,7 @@ If symbol is defined in current buffer, jump to it's definition"
 	  (py-restore-window-configuration)
 	  (goto-char orig))
       (if (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
-	  (py--help-at-point-intern)
+	  (py--help-at-point-intern orig)
 	(py-restore-window-configuration)))))
 
 ;;  Documentation functions
@@ -258,7 +257,6 @@ If symbol is defined in current buffer, jump to it's definition"
 (defun py--dump-help-string (str)
   (with-output-to-temp-buffer "*Help*"
     (let ((locals (buffer-local-variables))
-          (comint-vars-p (eq major-mode 'comint-mode))
           funckind funcname func funcdoc
           (start 0) mstart end
           keys)
@@ -582,9 +580,11 @@ local bindings to py-newline-and-indent."))
 
 ;;  Find function stuff, lifted from python.el
 (defalias 'py-find-function 'py-find-definition)
-(defun py--find-definition-question-type (symbol)
-  (cond ((setq erg (py--send-string-return-output (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
-	(t (setq erg (py--send-string-return-output (concat imports "import inspect;inspect.getmodule(\"" symbol "\")"))))))
+(defun py--find-definition-question-type (symbol imports)
+  (let (erg)
+    (cond ((setq erg (py--send-string-return-output (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
+	  (t (setq erg (py--send-string-return-output (concat imports "import inspect;inspect.getmodule(\"" symbol "\")")))))
+    erg))
 
 (defun py-find-definition (&optional symbol)
   "Find source of definition of SYMBOL.
@@ -610,7 +610,7 @@ Interactively, prompt for SYMBOL."
          (local (or
                  (py--until-found (concat "class " symbol) imenu--index-alist)
                  (py--until-found symbol imenu--index-alist)))
-         erg sourcefile path)
+         erg sourcefile)
     ;; ismethod(), isclass(), isfunction() or isbuiltin()
     ;; ismethod isclass isfunction isbuiltin)
     (if local
@@ -623,7 +623,7 @@ Interactively, prompt for SYMBOL."
               (goto-char (match-beginning 0))
               (exchange-point-and-mark))
           (error "%s" "local not a number"))
-      (setq erg (py--find-definition-question-type symbol))
+      (setq erg (py--find-definition-question-type symbol imports))
       (cond ((string-match "SyntaxError" erg)
              (setq erg (substring-no-properties erg (match-beginning 0)))
              (set-window-configuration last-window-configuration)
@@ -634,7 +634,7 @@ Interactively, prompt for SYMBOL."
                (set-window-configuration last-window-configuration)
                ;; (jump-to-register 98888888)
 	       (message "%s" erg)))
-            ((and erg (setq path (replace-regexp-in-string "'" "" (py--send-string-return-output "import os;os.getcwd()")))
+            ((and erg (setq erg (replace-regexp-in-string "'" "" (py--send-string-return-output "import os;os.getcwd()")))
                   (setq sourcefile (replace-regexp-in-string "'" "" (py--send-string-return-output (concat "inspect.getsourcefile(" symbol ")")))))
 	     (message "%s" sourcefile)
 	     (py--find-definition-in-source sourcefile symbol)
@@ -759,17 +759,13 @@ Home-page: http://www.logilab.org/project/pylint "
    (let ((default (format "%s %s %s" py-pylint-command
 			  (mapconcat 'identity py-pylint-command-args " ")
 			  (py--buffer-filename-remote-maybe)))
-         (last (and py-pylint-history (car py-pylint-history)))
-         erg)
-
+         (last (and py-pylint-history (car py-pylint-history))))
      (list (funcall (if (fboundp 'read-shell-command)
 			'read-shell-command 'read-string)
 		    "Run pylint like this: "
 		    (or default last)
 		    'py-pylint-history))))
-  ;; (if py-pylint-offer-current-p (or default last) (or last default))
-  ;; 'py-pylint-history))))
-  (save-some-buffers (not py-ask-about-save))
+    (save-some-buffers (not py-ask-about-save))
   (set-buffer (get-buffer-create "*Pylint*"))
   (erase-buffer)
   (unless (file-readable-p (car (cddr (split-string command))))
@@ -1186,7 +1182,7 @@ Maybe call M-x describe-variable RET to query its value. "
   (interactive)
   (variables-prepare "state"))
 
-(defun variables-base-state (py-exception-buffer orgname reSTname directory-in directory-out)
+(defun variables-base-state (exception-buffer orgname reSTname directory-in directory-out)
   (save-restriction
     (let ((suffix (file-name-nondirectory (py--buffer-filename-remote-maybe)))
           variableslist)

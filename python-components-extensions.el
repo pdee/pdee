@@ -84,72 +84,6 @@ Affected by `py-dedent-keep-relative-column'. "
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py--close-intern (regexp)
-  "Core function, internal used only. "
-  (let ((cui (car (py--go-to-keyword (symbol-value regexp)))))
-    (message "%s" cui)
-    (py--end-base regexp (point))
-    (forward-line 1)
-    (if py-close-provides-newline
-        (unless (empty-line-p) (split-line))
-      (fixup-whitespace))
-    (indent-to-column cui)
-    cui))
-
-(defun py-close-def ()
-  "Set indent level to that of beginning of function definition.
-
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
-  (interactive "*")
-  (let ((erg (py--close-intern 'py-def-re)))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
-
-(defun py-close-class ()
-  "Set indent level to that of beginning of class definition.
-
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
-  (interactive "*")
-  (let ((erg (py--close-intern 'py-class-re)))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
-
-(defun py-close-def-or-class ()
-  "Set indent level to that of beginning of def-or-class definition.
-
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
-  (interactive "*")
-  (let ((erg (py--close-intern 'py-def-or-class-re)))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
-
-(defun py-close-clause ()
-  "Set indent level to that of beginning of clause definition.
-
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
-  (interactive "*")
-  (let ((erg (py--close-intern 'py-block-or-clause-re)))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
-
-(defun py-close-block ()
-  "Set indent level to that of beginning of block definition.
-
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline. "
-  (interactive "*")
-  (let ((erg (py--close-intern 'py-block-re)))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
-
-(defun py-close-block-or-clause ()
-  "Set indent level to that of beginning of block-or-clause definition.
-
-If final line isn't empty and `py-close-block-or-clause-provides-newline' non-nil, insert a newline. "
-  (interactive "*")
-  (let ((erg (py--close-intern 'py-block-or-clause-re)))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
-
 (defun py-class-at-point ()
   "Return class definition as string.
 
@@ -209,7 +143,7 @@ With interactive call, send it to the message buffer too. "
         (setq py-match-paren-mode nil))))
 
 (defun py--match-end-finish (cui)
-  (let (skipped remain)
+  (let (skipped)
     (unless (eq (current-column) cui)
       (when (< (current-column) cui)
 	(setq skipped (skip-chars-forward " \t" (line-end-position)))
@@ -286,8 +220,7 @@ With interactive call, send it to the message buffer too. "
 When called from within, go to the start.
 Matches lists, but also block, statement, string and comment. "
   (interactive)
-  (let ((pps (parse-partial-sexp (point-min) (point)))
-	(orig (point)))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
     (cond
      ;; if inside string, go to beginning
      ((nth 3 pps)
@@ -378,12 +311,12 @@ Matches lists, but also block, statement, string and comment. "
 (defalias 'durck 'py-printform-insert)
 (defalias 'druck 'py-printform-insert)
 
-(defun py-printform-insert (&optional arg string)
+(defun py-printform-insert (&optional arg strg)
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts STRING if delivered.
 
 With optional \\[universal-argument] print as string"
   (interactive "*P")
-  (let* ((name (py--string-strip (or arg (car kill-ring))))
+  (let* ((name (py--string-strip (or strg (car kill-ring))))
          ;; guess if doublequotes or parentheses are needed
          (numbered (not (eq 4 (prefix-numeric-value arg))))
          (form (cond ((or (eq major-mode 'python-mode)(eq major-mode 'py-shell-mode))
@@ -392,7 +325,7 @@ With optional \\[universal-argument] print as string"
                         (concat "print(\"" name ": %s \" % \"" name "\")"))))))
     (insert form)))
 
-(defun py-line-to-printform-python2 (&optional arg)
+(defun py-line-to-printform-python2 ()
   "Transforms the item on current in a print statement. "
   (interactive "*")
   (let* ((name (thing-at-point 'word))
