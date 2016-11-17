@@ -69,7 +69,7 @@ completions on the current context."
     (when erg
       (dolist (elt completion)
 	(unless (string= erg elt)
-	  (add-to-list 'newlist elt)))
+	  (push elt newlist)))
       (if (< 1 (length newlist))
 	  (with-output-to-temp-buffer py-python-completions
 	    (display-completion-list

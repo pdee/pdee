@@ -271,8 +271,6 @@ equivalents, other structures are converted into Lisp handles."
         (inhibit-file-name-operation operation))
     (apply operation arguments)))
 
-;(add-to-list 'file-name-handler-alist '("\\.el\\'" . pymacs-file-handler))
-
 ;;; Gargabe collection of Python IDs.
 
 ;; Python objects which have no Lisp representation are allocated on the

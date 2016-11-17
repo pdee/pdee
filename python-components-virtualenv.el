@@ -5,13 +5,6 @@
 
 ;; (load-file "/path/to/virtualenv.el")
 ;;
-;; Otherwise you can do it with the load path:
-
-;; (add-to-list 'load-path "Path/to/virtualenv.el/containing/directory/"
-;; (require 'virtualenv)
-
-;; The usage is very intuitive, to activate a virtualenv use
-
 ;; M-x virtualenv-activate
 
 ;; It will prompt you for the virtual environment path.
@@ -78,7 +71,7 @@
 
     (setenv "VIRTUAL_ENV" dir)
     (virtualenv-add-to-path (concat (py--normalize-directory dir) "bin"))
-    (add-to-list 'exec-path (concat (py--normalize-directory dir) "bin"))
+    (push (concat (py--normalize-directory dir) "bin")  exec-path)
 
     (setq virtualenv-name dir)))
 

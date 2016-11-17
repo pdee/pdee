@@ -510,8 +510,7 @@ as it leaves your system default unchanged."
   (message "Warning: %s" "no abbrev-file found, customize `abbrev-file-name' in order to make mode-specific abbrevs work. "))
 
 ;; ;
-(add-to-list 'hs-special-modes-alist
-             (list
+(push (list
               'python-mode
               ;; start regex
               (concat (if py-hide-show-hide-docstrings
@@ -527,7 +526,7 @@ as it leaves your system default unchanged."
               ;; forward-sexp function
               (lambda (arg)
                 (py-forward-block-or-clause))
-              nil))
+              nil) hs-special-modes-alist)
 
 ;; ;
 
@@ -539,42 +538,36 @@ Don't save anything for STR matching `py-input-filter-re' "
 
 (make-obsolete 'jpython-mode 'jython-mode nil)
 
-(add-to-list 'same-window-buffer-names (purecopy "*Python*"))
-(add-to-list 'same-window-buffer-names (purecopy "*IPython*"))
+(push (purecopy "*Python*")  same-window-buffer-names)
+(push (purecopy "*IPython*")  same-window-buffer-names)
 
-(add-to-list 'auto-mode-alist (cons (purecopy "\\.py\\'")  'python-mode))
+(push (cons (purecopy "\\.py\\'")  'python-mode)  auto-mode-alist)
 
 ;; Python Macro File
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pym\'")  'python-mode))
+(push (cons (purecopy "\.pym\'")  'python-mode)  auto-mode-alist)
 
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pyc\'")  'python-mode))
+(push (cons (purecopy "\.pyc\'")  'python-mode)  auto-mode-alist)
 
 ;; Pyrex Source
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pyx\'")  'python-mode))
+(push (cons (purecopy "\.pyx\'")  'python-mode) auto-mode-alist)
 
 ;; Python Optimized Code
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pyo\'")  'python-mode))
+(push (cons (purecopy "\.pyo\'")  'python-mode) auto-mode-alist)
 
 ;; Pyrex Definition File
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pxd\'")  'python-mode))
+(push (cons (purecopy "\.pxd\'")  'python-mode) auto-mode-alist)
 
 ;; Python Repository
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pyr\'")  'python-mode))
+(push (cons (purecopy "\.pyr\'")  'python-mode)  auto-mode-alist)
 
 ;; Python Path Configuration
-(add-to-list 'auto-mode-alist (cons (purecopy "\.pth\'")  'python-mode))
+(push (cons (purecopy "\.pth\'")  'python-mode)  auto-mode-alist)
 
 ;; Python Wheels
-(add-to-list 'auto-mode-alist (cons (purecopy "\.whl\'")  'python-mode))
+(push (cons (purecopy "\.whl\'")  'python-mode)  auto-mode-alist)
 
-;;  (add-to-list 'interpreter-mode-alist
-;;  (cons (purecopy "[bi]*python[0-9.]*") 'python-mode))
-;;
-;;  (add-to-list 'interpreter-mode-alist
-;;  (cons (purecopy "jython[0-9.]*") 'jython-mode))
-
-(add-to-list 'magic-mode-alist
-	     '("!#[ \t]*/.*[jp]ython[0-9.]*" . python-mode))
+(push '("!#[ \t]*/.*[jp]ython[0-9.]*" . python-mode) magic-mode-alist
+	     )
 
 ;;  lp:1355458, what about using `magic-mode-alist'?
 
@@ -1636,7 +1629,7 @@ Used by variable `which-func-functions' "
 	     (setq limit (py-backward-top-level))
 	     (looking-at re))
 	(progn
-	  (add-to-list 'erg (match-string-no-properties 2))
+	  (push (match-string-no-properties 2)  erg)
 	  (setq indent (current-indentation)))
       (goto-char orig)
       (while (and
@@ -1649,7 +1642,7 @@ Used by variable `which-func-functions' "
       (when (and backward
 		 (goto-char backward)
 		 (looking-at re))
-	(add-to-list 'erg (match-string-no-properties 2))
+	(push (match-string-no-properties 2)  erg)
 	(setq indent (current-indentation))))
     ;; (goto-char orig))
     (if erg

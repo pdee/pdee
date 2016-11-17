@@ -187,8 +187,7 @@ See available customizations listed in files variables-python-mode at directory 
                                                       (current-column))))
               (^ '(- (1+ (current-indentation)))))))
   (and py-guess-py-install-directory-p (py-set-load-path))
-  ;;  (unless gud-pdb-history (when (buffer-file-name) (add-to-list 'gud-pdb-history (py--buffer-filename-remote-maybe))))
-  (and py-autopair-mode
+    (and py-autopair-mode
        (load-library "autopair")
        (add-hook 'python-mode-hook
                  #'(lambda ()
@@ -345,7 +344,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (py--python-send-completion-setup-code)
   (py--python-send-ffap-setup-code)
   (py--python-send-eldoc-setup-code)
-  (set-process-sentinel (get-buffer-process (current-buffer))  #'shell-write-history-on-exit)
+  (set-process-sentinel (get-buffer-process (current-buffer)) #'shell-write-history-on-exit)
 
   ;; (setq comint-input-ring-file-name
   ;;       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
@@ -368,12 +367,10 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
       (progn
   	(add-hook 'completion-at-point-functions
   		  py-complete-function nil 'local)
-  	(add-to-list (make-local-variable 'comint-dynamic-complete-functions)
-  		     py-complete-function))
+  	(push py-complete-function comint-dynamic-complete-functions))
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)
-    (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
-  		 'py-shell-complete))
+    (push 'py-shell-complete  comint-dynamic-complete-functions))
   (when py-sexp-use-expression-p
     (define-key py-python-shell-mode-map [(control meta f)] 'py-forward-expression)
     (define-key py-python-shell-mode-map [(control meta b)] 'py-backward-expression))
@@ -408,12 +405,10 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
       (progn
   	(add-hook 'completion-at-point-functions
   		  py-complete-function nil 'local)
-  	(add-to-list (make-local-variable 'comint-dynamic-complete-functions)
-  		     py-complete-function))
+  	(push py-complete-function  comint-dynamic-complete-functions))
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)
-    (add-to-list (make-local-variable 'comint-dynamic-complete-functions)
-  		 'py-shell-complete))
+    (push 'py-shell-complete  comint-dynamic-complete-functions))
   (when py-shell-menu
     (easy-menu-add py-menu))
   ;; Running py-ipython-shell-mode-hook seems to need some delay

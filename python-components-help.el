@@ -1100,7 +1100,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
              (local-file (file-relative-name
                           temp-file
                           (file-name-directory (py--buffer-filename-remote-maybe)))))
-        (add-to-list 'flymake-allowed-file-name-masks (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))))
+        (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-allowed-file-name-masks)
         (list command (list local-file)))
     (message "%s" "flymake needs a `file-name'. Please save before calling.")))
 
@@ -1199,7 +1199,7 @@ Maybe call M-x describe-variable RET to query its value. "
 
                   (prin1-to-string (symbol-value name)))))
           (if state
-              (add-to-list 'variableslist (cons (prin1-to-string name) state))
+              (push (cons (prin1-to-string name) state) variableslist)
             (message "don't see a state for %s" (prin1-to-string name))))
         (forward-line 1))
       (setq variableslist (nreverse variableslist))

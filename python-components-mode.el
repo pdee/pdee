@@ -3205,7 +3205,7 @@ See original source: http://pymacs.progiciels-bpi.ca"
             (setenv "PYTHONPATH" (concat
                                   pycomplete-directory
                                   (if path (concat path-separator path))))
-            (add-to-list 'load-path pycomplete-directory)
+            (push pycomplete-directory load-path)
             (require 'pycomplete)
             (add-hook 'python-mode-hook 'py-complete-initialize))
         (error "`py-install-directory' not set, see INSTALL")))))
@@ -3218,22 +3218,22 @@ See original source: http://pymacs.progiciels-bpi.ca"
   (interactive)
   (let ((py-install-directory (py--normalize-directory py-install-directory)))
     (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
-           (add-to-list 'load-path (expand-file-name py-install-directory))
-           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "completion"))
-           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "extensions"))
-           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "test"))
-           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "tools"))
-           (add-to-list 'load-path (concat (expand-file-name py-install-directory) "autopair")))
+           (push (expand-file-name py-install-directory) load-path)
+           (push (concat (expand-file-name py-install-directory) "completion")  load-path)
+           (push (concat (expand-file-name py-install-directory) "extensions")  load-path)
+           (push (concat (expand-file-name py-install-directory) "test") load-path)
+           (push (concat (expand-file-name py-install-directory) "tools")  load-path)
+           (push (concat (expand-file-name py-install-directory) "autopair")  load-path))
           (py-guess-py-install-directory-p
 	   (let ((guessed-py-install-directory (py-guess-py-install-directory)))
 	     (when guessed-py-install-directory
-	       (add-to-list 'load-path guessed-py-install-directory))))
+	       (push guessed-py-install-directory  load-path))))
           (t (error "Please set `py-install-directory', see INSTALL"))
           (when (called-interactively-p 'any) (message "%s" load-path)))))
 
 (unless py-install-directory
-  (add-to-list 'load-path default-directory)
-  (add-to-list 'load-path (concat default-directory "extensions")))
+  (push default-directory  load-path)
+  (push (concat default-directory "extensions")  load-path))
 
 (defun py-count-lines (&optional beg end)
   "Count lines in accessible part until current line.
