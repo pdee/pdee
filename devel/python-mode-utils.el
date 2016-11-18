@@ -25,7 +25,7 @@
 
 ;;; Code:
 
-(defvar py-components-directory "~/arbeit/emacs/python-modes/components-python-mode")
+(defvar components-directory "~/arbeit/emacs/python-modes/components-python-mode")
 
 (defvar arkopf)
 
@@ -799,7 +799,7 @@
   (when (called-interactively-p 'any)
     (switch-to-buffer (current-buffer))
     (emacs-lisp-mode))
-    (write-file (concat py-components-directory "/python-components-exec-forms.el")))
+    (write-file (concat components-directory "/python-components-exec-forms.el")))
 
 (defun write-fast-execute-forms ()
   "Write `py-process-block...' etc. "
@@ -812,6 +812,12 @@
     (insert arkopf)
     (insert ";; Process forms fast\n\n")
     (insert "
+
+\(defun py--filter-result (strg)
+  \"Set `py-result' according to `py-fast-filter-re'.
+
+Remove trailing newline\"
+    (replace-regexp-in-string (format \"[ \\n]*%s[ \\n]*\" py-fast-filter-re) \"\" (ansi-color-filter-apply strg)))
 
 \(defun py-fast-process (&optional buffer)
   \"Connect am (I)Python process suitable for large output.
@@ -826,6 +832,20 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (with-current-buffer this-buffer
         (erase-buffer))
       proc)))
+
+\(defun py--fast-send-string-intern (strg proc output-buffer return)
+  (with-current-buffer output-buffer
+    (process-send-string proc \"\\n\")
+    (let ((orig (point)))
+      (process-send-string proc strg)
+      (process-send-string proc \"\\n\")
+      (accept-process-output proc 5)
+      (sit-for py-fast-completion-delay t)
+      \;; sets py-result
+      (unless py-ignore-result-p
+	(setq py-result (py--filter-result (py--fetch-result orig))))
+      (when return
+	py-result))))
 
 \(defun py--fast-send-string (strg)
   \"Process Python strings, being prepared for large output.
@@ -847,23 +867,36 @@ See also `py-fast-shell'
     (skip-chars-backward \"\\r\\n\")
     (delete-region (point) (point-max))))
 
+
+\(defun py--fast-send-string-no-output (string proc output-buffer)
+  (with-current-buffer output-buffer
+    (process-send-string proc \"\\n\")
+    (let ((orig (point-max)))
+      (sit-for 1 t)
+      (process-send-string proc string)
+      (process-send-string proc \"\\n\")
+      (accept-process-output proc 5)
+      (sit-for 1 t)
+      (delete-region orig (point-max)))))
+
 \(defun py-process-region-fast (beg end)
   (interactive \"r\")
   (let ((py-fast-process-p t))
     (py-execute-region beg end)))\n\n")
     (dolist (ele py-bounds-command-names)
-      (insert (concat "(defun py-execute-" ele "-fast ()"))
+      (insert (concat "(defun py-execute-" ele "-fast (&optional shell dedicated switch beg end file)"))
       (insert (concat "
   \"Process " ele " at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
       (insert (concat "  (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare '" ele ")))\n\n")))
+  (py--execute-prepare '" ele " shell dedicated switch beg end file t))\n\n")))
   (insert "(provide 'python-components-fast-forms)
 ;;; python-components-fast-forms.el ends here\n ")
-  (emacs-lisp-mode)))
+  (emacs-lisp-mode)
+  (write-file (concat components-directory "/python-components-fast-forms.el"))
+  ))
 
 (defun write-options-dokumentation-subform (pyo)
   (cond ((string-match "dedicated" pyo)
@@ -1016,7 +1049,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
   (insert "(provide 'py-shell-arg-ert-tests)
 ;;; py-shell-arg-ert-tests.el ends here\n ")
   (emacs-lisp-mode)
-  (write-file (concat py-components-directory "/test/py-shell-arg-ert-tests.el"))
+  (write-file (concat components-directory "/test/py-shell-arg-ert-tests.el"))
   (switch-to-buffer (current-buffer)))
 
 (defun write--extended-execute-switches (ele pyo)
@@ -1116,7 +1149,7 @@ Include default forms "
   (write--unified-extended-execute-forms-intern)
   (insert "\n(provide 'python-extended-executes)
 ;;; python-extended-executes.el ends here")
-  (write-file (concat py-components-directory "/python-extended-executes.el"))
+  (write-file (concat components-directory "/python-extended-executes.el"))
   )
 
 (defun write-all-bounds-forms ()
@@ -1187,7 +1220,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
 "
     (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
-    (write-file (concat py-components-directory "/python-components-named-shells.el"))))
+    (write-file (concat components-directory "/python-components-named-shells.el"))))
 
 (defun pmu-fix-ipython ()
   (when (string-match "^ipython.*" ele)
@@ -1292,7 +1325,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
 ")
     (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
-    (write-file (concat py-components-directory "/python-components-named-shells.el"))))
+    (write-file (concat components-directory "/python-components-named-shells.el"))))
 
 (defun py-write-installed-shells-menu ()
   (interactive)
@@ -1333,7 +1366,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
     (insert ")")
     (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
-    (write-file (concat py-components-directory "/devel/python-components-installed-shells-menu.el"))))
+    (write-file (concat components-directory "/devel/python-components-installed-shells-menu.el"))))
 
 (defun py-write-installed-shells-test-intern ()
   (dolist (ele py-shells)
@@ -1362,7 +1395,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
     (py-write-installed-shells-test-intern)
     (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
-    (write-file (concat py-components-directory "/test/python-components-installed-shells-test.el"))))
+    (write-file (concat components-directory "/test/python-components-installed-shells-test.el"))))
 
 (defun py-write-shift-forms ()
   " "
@@ -1471,7 +1504,7 @@ Returns outmost indentation reached. \"
 
     (emacs-lisp-mode)
     (switch-to-buffer (current-buffer))
-    (write-file (concat py-components-directory "/python-components-shift-forms.el"))
+    (write-file (concat components-directory "/python-components-shift-forms.el"))
     )
 
 (defun py-write-down-forms-bol ()
@@ -1867,7 +1900,7 @@ Return position if " ele " found, nil otherwise \"
 \(provide 'python-components-up-down)")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-up-down.el")))
+  (write-file (concat components-directory "/python-components-up-down.el")))
 
 (defun temen (&optional symbol)
   "Provide menu for toggle-commands using checkbox. "
@@ -1954,7 +1987,7 @@ the default\"
 \(provide 'python-components-comment)")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-comment.el")))
+  (write-file (concat components-directory "/python-components-comment.el")))
 
   ;; (set-buffer (get-buffer-create "Menu-Python-Components-Comments"))
   ;; (erase-buffer)
@@ -2052,7 +2085,7 @@ Use backward-statement for `top-level', also bol-forms don't make sense here"
 ;;; python-components-backward-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-backward-forms.el")))
+  (write-file (concat components-directory "/python-components-backward-forms.el")))
 
 (defun py-write-forms-code ()
   (interactive)
@@ -2077,7 +2110,7 @@ Return code of `py-" ele "' at point, a string. \"
 
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode)
-  (write-file (concat py-components-directory "/python-components-forms-code.el")))
+  (write-file (concat components-directory "/python-components-forms-code.el")))
 
 (defun py-write-hide-forms ()
   (interactive "*")
@@ -2168,7 +2201,7 @@ Return code of `py-" ele "' at point, a string. \"
 \(provide 'python-components-hide-show)")
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode)
-    (write-file (concat py-components-directory "/python-components-hide-show.el")))
+    (write-file (concat components-directory "/python-components-hide-show.el")))
 
 (defun write-py-ert-always-split-lp-1361531-tests (&optional pyshellname-list)
   (interactive)
@@ -2346,7 +2379,7 @@ class bar:
 
   (switch-to-buffer (current-buffer))
   (emacs-lisp-mode)
-  (write-file (concat py-components-directory "/test/py-ert-beginning-tests.el")))
+  (write-file (concat components-directory "/test/py-ert-beginning-tests.el")))
 
 (defun py-write-beginning-position-forms ()
   (interactive)
@@ -2379,7 +2412,7 @@ class bar:
 
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-beginning-position-forms.el")))
+  (write-file (concat components-directory "/python-components-beginning-position-forms.el")))
 
 (defun py-write-end-position-forms ()
   (interactive)
@@ -2419,7 +2452,7 @@ class bar:
 
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
   (emacs-lisp-mode)
-  (write-file (concat py-components-directory "/python-components-end-position-forms.el")))
+  (write-file (concat components-directory "/python-components-end-position-forms.el")))
 
 (defun py-write-forward-forms ()
   (interactive)
@@ -2458,7 +2491,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
   (insert "\n;; python-components-forward-forms.el ends here
 \(provide 'python-components-forward-forms)")
-  (write-file (concat py-components-directory "/python-components-forward-forms.el"))
+  (write-file (concat components-directory "/python-components-forward-forms.el"))
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode)))
 
@@ -2502,7 +2535,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 ;; python-components-booleans-beginning-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-booleans-beginning-forms.el")))
+  (write-file (concat components-directory "/python-components-booleans-beginning-forms.el")))
 
 (defun py-write-booleans-end-forms ()
   "Uses `py-booleans-end-forms'. "
@@ -2554,7 +2587,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 ;; python-components-booleans-end-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-booleans-end-forms.el")))
+  (write-file (concat components-directory "/python-components-booleans-end-forms.el")))
 
 (defun py-write-kill-forms (&optional forms)
   "Useseb `py-kill-forms'. "
@@ -2590,7 +2623,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;;; python-components-kill-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-kill-forms.el")))
+  (write-file (concat components-directory "/python-components-kill-forms.el")))
 
 (defun py-write-close-forms (&optional forms)
   "Useseb `py-close-forms'. "
@@ -2620,7 +2653,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 ;;; python-components-close-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-close-forms.el")))
+  (write-file (concat components-directory "/python-components-close-forms.el")))
 
 (defun py-write-mark-forms ()
   "Uses `py-mark-forms'. "
@@ -2691,7 +2724,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 ;;; python-components-mark-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-mark-forms.el")))
+  (write-file (concat components-directory "/python-components-mark-forms.el")))
 
 (defun py-write-copy-forms (&optional forms)
   "Uses `py-execute-forms'. "
@@ -2728,7 +2761,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;; python-components-copy-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-copy-forms.el")))
+  (write-file (concat components-directory "/python-components-copy-forms.el")))
 
 (defun py--write-delete-forms (forms)
   (dolist (ele forms)
@@ -2789,7 +2822,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 ;; python-components-delete-forms.el ends here\n")
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
-  (write-file (concat py-components-directory "/python-components-delete-forms.el")))
+  (write-file (concat components-directory "/python-components-delete-forms.el")))
 
 (defun write--section-forms ()
   (dolist (ele py-shells)
@@ -2817,7 +2850,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (write--section-forms)
   (insert "\n(provide 'python-components-section-forms)
 ;;; python-components-section-forms.el ends here\n")
-  (write-file (concat py-components-directory "/python-components-section-forms.el")))
+  (write-file (concat components-directory "/python-components-section-forms.el")))
 
 ;; py-comment-forms
 (defun write--narrow-forms ()
@@ -2846,7 +2879,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (write--narrow-forms)
   (insert "(provide 'python-components-narrow)
 ;;; python-components-narrow.el ends here\n")
-  (write-file (concat py-components-directory "/python-components-narrow.el")))
+  (write-file (concat components-directory "/python-components-narrow.el")))
 
 ;;  python-components-execute-region
 (defun write--execute-region ()
@@ -2885,7 +2918,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (write--execute-region)
   (insert "(provide 'python-components-execute-region)
 ;;; python-components-execute-region.el ends here\n")
-  (write-file (concat py-components-directory "/python-components-execute-region.el")))
+  (write-file (concat components-directory "/python-components-execute-region.el")))
 
 (defun py--insert-split-switch-doku (pyo)
     (cond ((string= pyo "switch")

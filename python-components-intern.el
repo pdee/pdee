@@ -173,7 +173,7 @@ Returns position reached if successful"
   (unless (bobp)
     (goto-char (point-min))))
 
-(defun py--execute-prepare (form &optional shell dedicated switch beg end file)
+(defun py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf)
   "Used by python-extended-executes ."
   (save-excursion
     (let* ((form (prin1-to-string form))
@@ -200,7 +200,7 @@ Returns position reached if successful"
             (if (file-readable-p filename)
                 (py--execute-file-base nil filename nil nil origline)
               (message "%s not readable. %s" file "Do you have write permissions?")))
-        (py--execute-base beg end shell)))))
+        (py--execute-base beg end shell filename proc file wholebuf fast)))))
 
 (defun py-load-skeletons ()
   "Load skeletons from extensions. "
@@ -689,25 +689,7 @@ LIEP stores line-end-position at point-of-interest
 			       (skip-chars-backward " \t\r\n\f")
 			       (back-to-indentation)
 			       (current-indentation)))
-			    ;; ((save-excursion (goto-char (nth 8 pps))
-			    ;; 		     (and (eq origline (py-count-lines))))
-			    ;; 		     (py-backward-statement)
-			    ;; 		     (current-indentation))
 			    (t 0)))
-					     
-			    ;; still at original line
-			    ;; ((eq origline (line-end-position))
-			    ;;  (forward-line -1)
-			    ;;  (end-of-line)
-			    ;;  (skip-chars-backward " \t\r\n\f")
-			    ;;  (if (ignore-errors (< (nth 8 (parse-partial-sexp (point-min) (point))) (line-beginning-position)))
-			    ;; 	 (current-indentation)
-			    ;;    (ignore-errors (goto-char (nth 8 pps)))
-			    ;;    (when (py--line-backward-maybe) (setq line t))
-			    ;;    (back-to-indentation)
-			    ;;    (py-compute-indentation orig origline closing line nesting repeat indent-offset liep)))
-			    ;; (t (goto-char (nth 8 pps))
-			    ;;    (current-indentation))))
 			  ((and (looking-at "\"\"\"\\|'''")(not (bobp)))
 			   (py-backward-statement)
 			   (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))

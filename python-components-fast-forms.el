@@ -1,4 +1,4 @@
-;;; python-components-fast-forms.el --- Execute forms at point -*- lexical-binding: t; -*- 
+;;; python-components-fast-forms.el --- Execute forms at point -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -29,6 +29,12 @@
 
 
 
+(defun py--filter-result (strg)
+  "Set `py-result' according to `py-fast-filter-re'.
+
+Remove trailing newline"
+    (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" (ansi-color-filter-apply strg)))
+
 (defun py-fast-process (&optional buffer)
   "Connect am (I)Python process suitable for large output.
 
@@ -42,23 +48,6 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (with-current-buffer this-buffer
         (erase-buffer))
       proc)))
-
-(defun py--fast-send-string-no-output (string proc output-buffer)
-  (with-current-buffer output-buffer
-    (process-send-string proc "\n")
-    (let ((orig (point-max)))
-      (sit-for 1 t)
-      (process-send-string proc string)
-      (process-send-string proc "\n")
-      (accept-process-output proc 5)
-      (sit-for 1 t)
-      (delete-region orig (point-max)))))
-
-(defun py--filter-result (strg)
-  "Set `py-result' according to `py-fast-filter-re'.
-
-Remove trailing newline"
-    (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" (ansi-color-filter-apply strg)))
 
 (defun py--fast-send-string-intern (strg proc output-buffer return)
   (with-current-buffer output-buffer
@@ -89,114 +78,116 @@ See also `py-fast-shell'
     (or (string-match "\n$" strg)
         (process-send-string proc "\n"))
     (accept-process-output proc 1)
-    (switch-to-buffer py-fast-output-buffer)
+    (set-buffer py-fast-output-buffer)
     (beginning-of-line)
     (skip-chars-backward "\r\n")
     (delete-region (point) (point-max))))
+
+
+(defun py--fast-send-string-no-output (string proc output-buffer)
+  (with-current-buffer output-buffer
+    (process-send-string proc "\n")
+    (let ((orig (point-max)))
+      (sit-for 1 t)
+      (process-send-string proc string)
+      (process-send-string proc "\n")
+      (accept-process-output proc 5)
+      (sit-for 1 t)
+      (delete-region orig (point-max)))))
 
 (defun py-process-region-fast (beg end)
   (interactive "r")
   (let ((py-fast-process-p t))
     (py-execute-region beg end)))
 
-(defun py-execute-block-fast ()
+(defun py-execute-block-fast (&optional shell dedicated switch beg end file)
   "Process block at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'block)))
+  (py--execute-prepare 'block shell dedicated switch beg end file t))
 
-(defun py-execute-block-or-clause-fast ()
+(defun py-execute-block-or-clause-fast (&optional shell dedicated switch beg end file)
   "Process block-or-clause at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'block-or-clause)))
+  (py--execute-prepare 'block-or-clause shell dedicated switch beg end file t))
 
-(defun py-execute-class-fast ()
+(defun py-execute-class-fast (&optional shell dedicated switch beg end file)
   "Process class at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'class)))
+  (py--execute-prepare 'class shell dedicated switch beg end file t))
 
-(defun py-execute-clause-fast ()
+(defun py-execute-clause-fast (&optional shell dedicated switch beg end file)
   "Process clause at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'clause)))
+  (py--execute-prepare 'clause shell dedicated switch beg end file t))
 
-(defun py-execute-def-fast ()
+(defun py-execute-def-fast (&optional shell dedicated switch beg end file)
   "Process def at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'def)))
+  (py--execute-prepare 'def shell dedicated switch beg end file t))
 
-(defun py-execute-def-or-class-fast ()
+(defun py-execute-def-or-class-fast (&optional shell dedicated switch beg end file)
   "Process def-or-class at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'def-or-class)))
+  (py--execute-prepare 'def-or-class shell dedicated switch beg end file t))
 
-(defun py-execute-expression-fast ()
+(defun py-execute-expression-fast (&optional shell dedicated switch beg end file)
   "Process expression at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'expression)))
+  (py--execute-prepare 'expression shell dedicated switch beg end file t))
 
-(defun py-execute-partial-expression-fast ()
+(defun py-execute-partial-expression-fast (&optional shell dedicated switch beg end file)
   "Process partial-expression at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'partial-expression)))
+  (py--execute-prepare 'partial-expression shell dedicated switch beg end file t))
 
-(defun py-execute-section-fast ()
+(defun py-execute-section-fast (&optional shell dedicated switch beg end file)
   "Process section at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'section)))
+  (py--execute-prepare 'section shell dedicated switch beg end file t))
 
-(defun py-execute-statement-fast ()
+(defun py-execute-statement-fast (&optional shell dedicated switch beg end file)
   "Process statement at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'statement)))
+  (py--execute-prepare 'statement shell dedicated switch beg end file t))
 
-(defun py-execute-top-level-fast ()
+(defun py-execute-top-level-fast (&optional shell dedicated switch beg end file)
   "Process top-level at point by a Python interpreter.
 
 Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (let ((py-fast-process-p t))
-    (py--execute-prepare 'top-level)))
+  (py--execute-prepare 'top-level shell dedicated switch beg end file t))
 
 (provide 'python-components-fast-forms)
 ;;; python-components-fast-forms.el ends here
+ 

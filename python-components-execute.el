@@ -742,7 +742,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   (unless py-debug-p
     (when tempfile (py-delete-temporary tempfile tempbuf))))
 
-(defun py--execute-base (&optional start end shell filename proc file wholebuf)
+(defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated)
   "Update variables. "
   ;; (when py-debug-p (message "run: %s" "py--execute-base"))
   (setq py-error nil)
@@ -780,14 +780,14 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		 py-execute-directory)
 		((getenv "VIRTUAL_ENV"))
 		(t (getenv "HOME"))))
-	 (buffer (py--choose-buffer-name which-shell))
+	 (buffer (py--choose-buffer-name which-shell dedicated fast))
 	 (filename (or (and filename (expand-file-name filename))
 		       ;; (and (not (buffer-modified-p)) (buffer-file-name))
 		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (cond (proc)
 		     ;; will deal with py-dedicated-process-p also
-		     (py-fast-process-p
+		     (fast
 		      (or (get-buffer-process buffer)
 			  (py-fast-process buffer)))
 		     (py-dedicated-process-p
@@ -795,7 +795,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		     (t (or (get-buffer-process buffer)
 			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))))
     (setq py-buffer-name buffer)
-    (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end which-shell)
+    (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end which-shell fast)
     ;; (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
     (when (or py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows buffer py-exception-buffer))))
@@ -806,7 +806,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   (with-current-buffer output-buffer
     (sit-for 0.2 t)
     (erase-buffer)
-    (switch-to-buffer (current-buffer))
+    ;; (switch-to-buffer (current-buffer))
     (py--fast-send-string-intern strg
 				 proc
 				 output-buffer py-return-result-p)
@@ -831,14 +831,14 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	(setq erg (py--execute-file-base proc py-tempfile nil procbuf origline)))
     erg))
 
-(defun py--execute-base-intern (strg filename proc file wholebuf buffer origline execute-directory start end which-shell)
+(defun py--execute-base-intern (strg filename proc file wholebuf buffer origline execute-directory start end which-shell fast)
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
   (let ()
     (setq py-error nil)
     (py--update-execute-directory proc buffer execute-directory)
-    (cond (py-fast-process-p (py--send-to-fast-process strg proc buffer))
+    (cond (fast (py--send-to-fast-process strg proc buffer))
 	  ;; enforce proceeding as python-mode.el v5
 	  (python-mode-v5-behavior-p
 	   (py-execute-python-mode-v5 start end py-exception-buffer origline))
@@ -898,6 +898,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
     (with-current-buffer output-buffer
       (sit-for 0.1 t)
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+      ;; (delete-region (point-min) orig)
       (setq py-result (py--fetch-result orig)))
     ;; (when py-debug-p (message "py-result: %s" py-result))
     (and (string-match "\n$" py-result)
@@ -920,7 +921,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	  ;; position no longer needed, no need to correct
 	  (when py-store-result-p
 	    (when (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result))) (kill-new py-result)))
-	  (or py-error py-result))
+	  py-result)
       (message "py--postprocess-comint: %s" "Don't see any result"))))
 
 (defun py--execute-ge24.3 (start end execute-directory which-shell &optional exception-buffer proc file origline)
@@ -1019,7 +1020,7 @@ Returns position where output starts. "
     (with-current-buffer buffer
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (goto-char (point-max))
-      (setq orig (point))
+      (setq orig (copy-marker (point)))
       (py-send-string cmd proc)
       (unless py-ignore-result-p
 	(setq erg (py--postprocess-comint buffer origline orig))
