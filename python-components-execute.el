@@ -1107,7 +1107,7 @@ See also `py-execute-region'. "
 
 See `py-if-name-main-permission-p'"
   (let ((strg (if py-if-name-main-permission-p strg
-		(replace-regexp-in-strg
+		(replace-regexp-in-string
 		 "if[( ]*__name__[) ]*==[( ]*['\"]\\{1,3\\}__main__['\"]\\{1,3\\}[) ]*:"
 		 ;; space after __main__, i.e. will not be executed
 		 "if __name__ == '__main__ ':" strg))))
