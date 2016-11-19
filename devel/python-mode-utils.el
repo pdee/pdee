@@ -27,6 +27,9 @@
 
 (defvar components-directory "~/arbeit/emacs/python-modes/components-python-mode")
 
+(defvar ar-prefix "py-")
+
+
 (defvar arkopf)
 
 (setq py-shells

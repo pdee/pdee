@@ -186,7 +186,6 @@ Returns position reached if successful"
                           (push-mark)))))
            (end (unless file
                   (or end (funcall (intern-soft (concat "py-forward-" form))))))
-           (py-dedicated-process-p dedicated)
            (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
                                                   t)
                                                  ((eq 'no-switch switch)
@@ -200,7 +199,7 @@ Returns position reached if successful"
             (if (file-readable-p filename)
                 (py--execute-file-base nil filename nil nil origline)
               (message "%s not readable. %s" file "Do you have write permissions?")))
-        (py--execute-base beg end shell filename proc file wholebuf fast)))))
+        (py--execute-base beg end shell filename proc file wholebuf fast dedicated)))))
 
 (defun py-load-skeletons ()
   "Load skeletons from extensions. "

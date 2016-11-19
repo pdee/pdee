@@ -785,15 +785,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		       ;; (and (not (buffer-modified-p)) (buffer-file-name))
 		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
-	 (proc (cond (proc)
-		     ;; will deal with py-dedicated-process-p also
-		     (fast
-		      (or (get-buffer-process buffer)
-			  (py-fast-process buffer)))
-		     (py-dedicated-process-p
-		      (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))
-		     (t (or (get-buffer-process buffer)
-			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))))
+	 (proc (or proc (get-buffer-process buffer)
+			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end which-shell fast)
     ;; (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
