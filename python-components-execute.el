@@ -90,7 +90,7 @@ FILE-NAME."
       file-name file-name)
      process)))
 
-(defun toggle-force-local-shell (&optional arg)
+(defun toggle-force-local-shell (&optional arg fast)
   "If locally indicated Python shell should be taken and
 enforced upon sessions execute commands.
 
@@ -107,7 +107,7 @@ See also commands
   (let ((arg (or arg (if py-force-local-shell-p -1 1))))
     (if (< 0 arg)
         (progn
-          (setq py-shell-name (or py-local-command (py-choose-shell)))
+          (setq py-shell-name (or py-local-command (py-choose-shell nil fast)))
           (setq py-force-local-shell-p t))
       (setq py-shell-name (default-value 'py-shell-name))
       (setq py-force-local-shell-p nil))
@@ -117,21 +117,21 @@ See also commands
         (when py-verbose-p (message "py-shell-name default restored to: %s" py-shell-name))))
     py-shell-name))
 
-(defun py-force-local-shell-on ()
+(defun py-force-local-shell-on (&optional fast)
   "Make sure, `py-force-local-shell-p' is on.
 
 Returns value of `py-force-local-shell-p'.
 
 Kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards "
   (interactive)
-  (toggle-force-local-shell 1)
+  (toggle-force-local-shell 1 fast)
   (when (or py-verbose-p (called-interactively-p 'any))
     (message "Enforce %s" py-shell-name)))
 
-(defun py-force-local-shell-off ()
+(defun py-force-local-shell-off (&optional fast)
   "Restore `py-shell-name' default value and `behaviour'. "
   (interactive)
-  (toggle-force-local-shell 1)
+  (toggle-force-local-shell 1 fast)
   (when (or py-verbose-p (called-interactively-p 'any))
     (message "py-shell-name default restored to: %s" py-shell-name)))
 
@@ -658,7 +658,7 @@ Receives a buffer-name as argument"
 	 (mapconcat 'identity py-python3-command-args " "))
 	(t (mapconcat 'identity py-python-command-args " "))))
 
-(defun py-shell (&optional argprompt dedicated shell buffer-name fast-process exception-buffer)
+(defun py-shell (&optional argprompt dedicated shell buffer-name fast exception-buffer)
   "Start an interactive Python interpreter in another window.
   Interactively, \\[universal-argument] prompts for a new buffer-name.
   \\[universal-argument] 2 prompts for `py-python-command-args'.
@@ -673,16 +673,15 @@ Receives a buffer-name as argument"
   ;; done by py-shell-mode
   (let* (
 	 ;; (windows-config (window-configuration-to-register 313465889))
-	 (fast-process (or fast-process py-fast-process-p))
+	 (fast (or fast py-fast-process-p))
 	 (dedicated (or dedicated py-dedicated-process-p))
 	 (py-shell-name (or shell
-			    ;; (py--configured-shell (py-choose-shell))
-			    (py-choose-shell)))
-	 (args (py--provide-command-args fast-process argprompt))
+			    (py-choose-shell nil fast)))
+	 (args (py--provide-command-args fast argprompt))
 
 	 (py-use-local-default (py--determine-local-default))
 	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt dedicated)))
-	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name nil dedicated fast-process)))
+	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name nil dedicated fast)))
 	 (executable (cond (py-shell-name)
 			   (py-buffer-name
 			    (py--report-executable py-buffer-name))))
@@ -691,7 +690,7 @@ Receives a buffer-name as argument"
     (and (bufferp (get-buffer py-buffer-name))(buffer-live-p (get-buffer py-buffer-name))(string= (buffer-name (current-buffer)) (buffer-name (get-buffer py-buffer-name)))
 	 (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
     (sit-for 0.1 t)
-    (if fast-process
+    (if fast
 	;; user rather wants an interactive shell
 	(py--shell-fast-proceeding proc py-buffer-name py-shell-name py-shell-completion-setup-code)
       (if (comint-check-proc py-buffer-name)
@@ -744,10 +743,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated)
   "Update variables. "
-  ;; (when py-debug-p (message "run: %s" "py--execute-base"))
   (setq py-error nil)
-  ;; (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
-
   (let* ((py-exception-buffer (or py-exception-buffer (current-buffer)))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
 	 (end (or end (and (use-region-p) (region-end)) (point-max)))
@@ -762,13 +758,13 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	    (widen)
 	    (py-count-lines (point-min) end)))
 	 ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
-	 (which-shell
-	  (if shell
-	      ;; shell might be specified in different ways
-	      (or (and (stringp shell) shell)
-		  (ignore-errors (eval shell))
-		  (and (symbolp shell) (format "%s" shell)))
-	    (py-choose-shell)))
+	 (shell (or
+		  (and shell
+		       ;; shell might be specified in different ways
+		       (or (and (stringp shell) shell)
+			   (ignore-errors (eval shell))
+			   (and (symbolp shell) (format "%s" shell))))
+		  (py-choose-shell nil fast)))
 	 (execute-directory
 	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
 		((and py-use-current-dir-when-execute-p (buffer-file-name))
@@ -780,16 +776,14 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		 py-execute-directory)
 		((getenv "VIRTUAL_ENV"))
 		(t (getenv "HOME"))))
-	 (buffer (py--choose-buffer-name which-shell dedicated fast))
+	 (buffer (py--choose-buffer-name shell dedicated fast))
 	 (filename (or (and filename (expand-file-name filename))
-		       ;; (and (not (buffer-modified-p)) (buffer-file-name))
 		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (or proc (get-buffer-process buffer)
-			    (get-buffer-process (py-shell nil py-dedicated-process-p which-shell buffer)))))
+		   (get-buffer-process (py-shell nil dedicated shell buffer)))))
     (setq py-buffer-name buffer)
-    (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end which-shell fast)
-    ;; (when py-debug-p (message "py--execute-base: py-split-window-on-execute: %s" py-split-window-on-execute))
+    (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end shell fast)
     (when (or py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows buffer py-exception-buffer))))
 
@@ -797,9 +791,6 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "Called inside of `py--execute-base-intern' "
   (let ((output-buffer (or output-buffer (process-buffer proc))))
   (with-current-buffer output-buffer
-    (sit-for 0.2 t)
-    (erase-buffer)
-    ;; (switch-to-buffer (current-buffer))
     (py--fast-send-string-intern strg
 				 proc
 				 output-buffer py-return-result-p)

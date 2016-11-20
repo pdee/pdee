@@ -139,13 +139,13 @@ def foo():
     (forward-line 3)
     (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest py-ert-execute-statement-fast-test ()
-  (py-test-with-temp-buffer-point-min
-      "print(123234)"
-    (py-execute-statement-fast)
-    (set-buffer "*Python3 Fast*")
-    (should (eq (current-buffer) (get-buffer "*Python3 Fast*")))
-    (sit-for 0.1)))
+;; (ert-deftest py-ert-execute-statement-fast-test ()
+;;   (py-test-with-temp-buffer-point-min
+;;       "print(123234)"
+;;     (py-execute-statement-fast)
+;;     (set-buffer "*Python3 Fast*")
+;;     (should (eq (current-buffer) (get-buffer "*Python3 Fast*")))
+;;     (sit-for 0.1)))
 
 (ert-deftest py-ert-fill-comment-test ()
   (py-test-with-temp-buffer-point-min
