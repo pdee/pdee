@@ -840,10 +840,11 @@ If an exception occurred return error-string, otherwise return nil.  BUF must ex
 
 Indicate LINE if code wasn't run from a file, thus remember line of source buffer "
   (let* (erg)
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char (point-min))
     (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
       (setq erg (copy-marker (point)))
+      ;; Replace hints to temp-file by orig-file
       (delete-region (progn (beginning-of-line)
 			    (save-match-data
 			      (when (looking-at
@@ -891,17 +892,17 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	(if (string-match "^Traceback" py-result)
 	    (progn
 	      (with-temp-buffer
-		;; (when py-debug-p (message "py-result: %s" py-result))
 		(insert py-result)
 		(sit-for 0.1 t)
 		(setq py-error (py--fetch-error origline)))
-	      (with-current-buffer output-buffer
-		;; `comint-last-prompt' must not exist
-		(delete-region (point) (or (ignore-errors (car comint-last-prompt)) (point-max)))
-		(sit-for 0.1 t)
-		(insert py-error)
-		(newline)
-		(goto-char (point-max))))
+	      ;; (with-current-buffer output-buffer
+	      ;; 	;; `comint-last-prompt' must not exist
+	      ;; 	(delete-region (point) (or (ignore-errors (car comint-last-prompt)) (point-max)))
+	      ;; 	(sit-for 0.1 t)
+	      ;; 	(insert py-error)
+	      ;; 	(newline)
+	      ;; 	(goto-char (point-max)))
+	      )
 	  ;; position no longer needed, no need to correct
 	  (when py-store-result-p
 	    (when (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result))) (kill-new py-result)))
