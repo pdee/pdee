@@ -1138,14 +1138,16 @@ Unclosed-string errors are not handled here, as made visible by fontification al
 		       regexp)))
     (while (and (not (eobp)) (re-search-forward py-paragraph-re nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))))
 
-(defun py--end-base (regexp &optional orig decorator bol repeat)
+
+(defun py--end-base (regexp &optional orig decorator bol indent done)
   "Used internal by functions going to the end forms.
 
 Must find start first "
   (unless (eobp)
     (if (eq regexp 'py-paragraph-re)
 	(py--end-of-paragraph regexp)
-      (let* ((repeat (or (and repeat (1+ repeat)) 999))
+      (let* ((pps (parse-partial-sexp (point-min) (point)))
+	     ;; (repeat (or (and repeat (1+ repeat)) 0))
 	     (orig (or orig (point)))
 	     (regexp (or regexp (symbol-value 'py-extended-block-or-clause-re)))
 	     (thisregexp (if (symbolp regexp)
@@ -1153,25 +1155,27 @@ Must find start first "
 				    (symbol-value 'py-extended-block-or-clause-re))
 				   (t (symbol-value regexp)))
 			   regexp))
+	     (indent (or indent (if (py--beginning-of-statement-p)
+				    (current-indentation)
+				  (save-excursion (py-backward-statement) (current-indentation)))))
+
 	     ;; start of form maybe inside
 	     (this
-	      (if (looking-at thisregexp)
+	      (if (and (looking-at thisregexp)(not (or (nth 1 pps) (nth 8 pps))))
 		  (point)
-		(progn
-		  (unless (py--beginning-of-statement-p)
-		    (py-backward-statement))
-		  (if (looking-at thisregexp)
-		      (point)
-		    (py--go-to-keyword thisregexp (current-indentation))))))
-	     ind erg last pps thisindent done bofst err)
-	(if (< py-max-specpdl-size repeat)
-	    (error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'")
-	  (cond
-	   (this (py--go-down-when-found-upward regexp))
-	   (t (goto-char orig)))
-	  (if (< orig (point)) (setq erg (point)) (setq erg nil))
-	  (and erg bol (setq erg (py--beginning-of-line-form erg)))
-	  erg)))))
+		(py--go-to-keyword thisregexp indent)))
+	     ind erg last pps thisindent bofst err)
+	(cond
+	 (this (setq erg (py--go-down-when-found-upward regexp)))
+	 (t (goto-char orig)))
+	(if (< orig (point))
+	    (and erg bol (setq erg (py--beginning-of-line-form erg)))
+	  (setq erg nil)
+	  (unless (eq done orig)
+	    (when
+		(py-forward-statement)
+	      (py--end-base regexp (point) decorator bol indent (point)))))
+	erg))))
 
 (defun py--look-downward-for-beginning (regexp)
   "When above any beginning of FORM, search downward. "

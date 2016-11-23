@@ -1,4 +1,4 @@
-;; py-ert-tests.el --- Tests, some adapted from python.el -*- lexical-binding: t; -*- 
+;; py-ert-tests.el --- Tests, some adapted from python.el -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 Andreas Röhler, <andreas.roehler@online.de>
 
@@ -795,14 +795,25 @@ print()")
     (py-electric-delete)
     (should (eq (char-after) ?{))))
 
-(ert-deftest py-ert-end-of-def-or-class-test ()
+(ert-deftest py-ert-end-of-def-or-class-test-1 ()
   (py-test-with-temp-buffer-point-min
       "class MyTest(unittest.TestCase):
     def test(self):
         self.assertEqual(fun(3), 4)"
     (skip-chars-forward "^(")
-    (py-end-of-def-or-class))
-  (should (eobp)))
+    (py-end-of-def-or-class)
+    (should (eobp))))
+
+(ert-deftest py-ert-end-of-def-or-class-test-2 ()
+  (py-test-with-temp-buffer-point-min
+      "class MyTest(unittest.TestCase):
+    def test(self):
+        pass
+    def test(self):
+        pass"
+    (search-forward "pass")
+    (py-end-of-def-or-class)
+    (should (eobp))))
 
 (ert-deftest py-ert-narrow-to-block-test ()
   (py-test-with-temp-buffer

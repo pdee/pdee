@@ -119,14 +119,10 @@ BODY is code to be executed within the temp buffer.  Point is
  at the beginning of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-     ;; requires python.el
-     ;; (and (featurep 'semantic) (unload-feature 'semantic))
-     ;; (and (featurep 'python) (unload-feature 'python))
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
        (goto-char (point-min))
-       ;; (message "(current-buffer): %s" (current-buffer))
        (when py-debug-p (switch-to-buffer (current-buffer))
 	     (font-lock-fontify-buffer))
        ,@body)
@@ -138,13 +134,11 @@ BODY is code to be executed within the temp buffer.  Point is
  at the end of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-     ;; (and (featurep 'python) (unload-feature 'python))
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
        (when py-debug-p (switch-to-buffer (current-buffer))
 	     (font-lock-fontify-buffer))
-       ;; (message "ERT %s" (point))
        ,@body)
      (sit-for 0.1)))
 

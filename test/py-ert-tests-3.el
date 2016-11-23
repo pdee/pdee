@@ -41,7 +41,7 @@ def py_if_name_main_permission_test():
 py_if_name_main_permission_test()
 "
     (let ((py-if-name-main-permission-p t))
-      (py-execute-buffer)
+      (py-execute-buffer-python)
       (set-buffer "*Python*")
       (goto-char (point-max))
       (forward-line -1)

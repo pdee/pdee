@@ -467,7 +467,7 @@ Starts from second line of region specified"
       (py-indent-and-forward)))
   (unless (empty-line-p) (py-indent-and-forward)))
 
-(defun py-indent-region (start end)
+(defun py-indent-region (beg end)
   "Reindent a region of Python code.
 
 In case first line accepts an indent, keep the remaining
@@ -478,8 +478,7 @@ same with optional argument
 In order to shift a chunk of code, where the first line is okay, start with second line.
 "
   (interactive "*")
-  (let ((beg start)
-        (end (copy-marker end)))
+  (let ((end (copy-marker end)))
     (goto-char beg)
     (beginning-of-line)
     (setq beg (point))
