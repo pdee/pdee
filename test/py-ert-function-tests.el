@@ -2385,9 +2385,6 @@
 (ert-deftest py-ert--imenu-create-index-engine-functionp-test ()
   (should (functionp 'py--imenu-create-index-engine)))
 
-(ert-deftest py-ert--imenu-create-index-new-intern-functionp-test ()
-  (should (functionp 'py--imenu-create-index-new-intern)))
-
 (ert-deftest py-ert--imenu-create-index-new-functionp-test ()
   (should (functionp 'py--imenu-create-index-new)))
 

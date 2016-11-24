@@ -1057,17 +1057,16 @@ See also `py-execute-region'. "
       (insert strg)
       (py-execute-region (point-min) (point-max) shell dedicated switch fast))))
 
-(defun py-execute-string-dedicated (&optional strg shell)
+(defun py-execute-string-dedicated (&optional strg shell switch fast)
   "Send the argument STRING to an unique Python interpreter.
 
 See also `py-execute-region'. "
   (interactive)
   (let ((strg (or strg (read-from-minibuffer "String: ")))
-        (shell (or shell (default-value 'py-shell-name)))
-        (py-dedicated-process-p t))
+        (shell (or shell (default-value 'py-shell-name))))
     (with-temp-buffer
       (insert strg)
-      (py-execute-region (point-min) (point-max)))))
+      (py-execute-region (point-min) (point-max) shell t switch fast))))
 
 (defun py--insert-execute-directory (directory &optional orig done)
   (let ((orig (or orig (point)))

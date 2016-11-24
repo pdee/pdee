@@ -1,4 +1,4 @@
-;;; python-components-imenu.el --- use imenu -*- lexical-binding: t; -*- 
+;;; python-components-imenu.el --- use imenu -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -225,27 +225,6 @@ of the first definition found."
                                     (point-max) 'move))))
     (nreverse index-alist)))
 
-(defun py--imenu-create-index-new-intern (&optional thisend end)
-  (let* ((pos (match-beginning 0))
-         (name (match-string-no-properties 2))
-         ;; (classname (concat "class " name))
-         ;; (thisend (or thisend (save-match-data (py--end-of-def-or-class-position))))
-         sublist)
-    (while (and (re-search-forward "^[ \t]*\\(?:\\(def\\|class\\)\\)[ \t]+\\(?:\\(\\sw+\\)\\)" (or thisend end) t 1)(not (nth 8 (parse-partial-sexp (point-min) (point)))))
-      (let* ((pos (match-beginning 0))
-             (name (match-string-no-properties 2))
-             (classname (concat "class " name))
-             (thisend (or thisend (save-match-data (py--end-of-def-or-class-position)))))
-        (if (string= "class" (match-string-no-properties 1))
-            (py--imenu-create-index-new-intern (save-match-data (py--end-of-def-or-class-position) end))
-          (push (cons (concat " " name) pos) sublist))))
-    (if classname
-        (progn
-          (setq sublist (nreverse sublist))
-          (push (cons classname pos) sublist)
-          (push (cons classname sublist) index-alist))
-      (push sublist index-alist))))
-
 (defun py--imenu-create-index-new (&optional beg end)
   (interactive)
   "`imenu-create-index-function' for Python. "
@@ -268,9 +247,7 @@ of the first definition found."
                      (name (match-string-no-properties 2))
                      (classname (concat "class " name))
                      (thisend (or thisend (save-match-data (py--end-of-def-or-class-position)))))
-                (if (string= "class" (match-string-no-properties 1))
-                    (py--imenu-create-index-new-intern (save-match-data (py--end-of-def-or-class-position)) end)
-                  (push (cons (concat " " name) pos) sublist))))
+		(push (cons (concat " " name) pos) sublist)))
             (if classname
                 (progn
                   (setq sublist (nreverse sublist))
