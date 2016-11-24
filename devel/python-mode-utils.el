@@ -1060,18 +1060,19 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
 
   (if (string-match "dedicated" pyo)
       (insert " t")
-    (insert " nil"))
+    (insert " dedicated"))
   (cond ((or (string= "switch" pyo)
              (string= "dedicated-switch" pyo))
          (insert " 'switch"))
         ((string= "no-switch" pyo)
          (insert " 'no-switch"))
-        (t (insert " nil")))
+        (t (insert " switch")))
   (cond ((string= "region" ele)
          (insert " (or beg (region-beginning)) (or end (region-end))"))
         ((string= "buffer" ele)
-         (insert " (point-min) (point-max)")))
-  (insert "))\n"))
+         (insert " (point-min) (point-max)"))
+	(t (insert " beg end")))
+  (insert " nil fast))\n"))
 
 (defun write--unified-extended-execute-forms-docu (ele elt pyo)
   (insert (concat "
@@ -1096,8 +1097,8 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
 
 (defun write--unified-extended-execute-forms-arglist (ele)
   (if (string= "region" ele)
-      (insert " (beg end)")
-    (insert " ()")))
+      (insert " (beg end &optional shell dedicated switch fast)")
+    (insert " (&optional shell dedicated switch beg end fast)")))
 
 (defun write--unified-extended-execute-forms-interactive-spec (ele)
   (cond
@@ -1115,7 +1116,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
 
 (defun write--unified-extended-execute-shells (elt)
   (if (string= "" elt)
-      (insert " nil ")
+      (insert " shell")
     (insert (concat " '" elt))))
 
 (defun write--unified-extended-execute-forms-intern ()

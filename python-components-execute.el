@@ -1046,7 +1046,7 @@ Returns position where output starts. "
       (delete-region orig (point-max)))
     (set-buffer py-exception-buffer)))
 
-(defun py-execute-string (&optional strg shell)
+(defun py-execute-string (&optional strg shell dedicated switch fast)
   "Send the argument STRING to Python default interpreter.
 
 See also `py-execute-region'. "
@@ -1055,7 +1055,7 @@ See also `py-execute-region'. "
         (shell (or shell (default-value 'py-shell-name))))
     (with-temp-buffer
       (insert strg)
-      (py-execute-region (point-min) (point-max)))))
+      (py-execute-region (point-min) (point-max) shell dedicated switch fast))))
 
 (defun py-execute-string-dedicated (&optional strg shell)
   "Send the argument STRING to an unique Python interpreter.
