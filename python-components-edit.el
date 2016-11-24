@@ -762,6 +762,7 @@ Returns the string inserted. "
           (delete-region (point) (1+ (line-end-position)))
         (forward-line 1)))))
 
+;; Edit docstring
 (defun py--edit-docstring-set-vars ()
   (save-excursion
     (setq py--docbeg (when (use-region-p) (region-beginning)))
@@ -777,21 +778,6 @@ Returns the string inserted. "
 				    (point)))))
       (setq py--docbeg (copy-marker py--docbeg))
       (setq py--docend (copy-marker py--docend)))))
-
-;; Edit docstring
-(defvar py--docbeg nil
-  "Internally used by `py-edit-docstring'")
-
-(defvar py--docend nil
-  "Internally used by `py-edit-docstring'")
-
-(defvar py--oldbuf nil
-  "Internally used by `py-edit-docstring'")
-
-(defvar py-edit-docstring-buffer "Edit docstring"
-  "Name of the temporary buffer to use when editing. ")
-
-(defvar py--edit-docstring-register nil)
 
 (defun py--write-back-docstring ()
   (interactive)
@@ -819,7 +805,7 @@ Returns the string inserted. "
 	;; store relative position in docstring
 	(setq relpos (1+ (- orig py--docbeg)))
 	(setq docstring (buffer-substring py--docbeg py--docend))
-	(set (make-variable-buffer-local 'py-edit-docstring-orig-pos) orig)
+	(setq py-edit-docstring-orig-pos orig)
 	(set-buffer (get-buffer-create py-edit-docstring-buffer))
 	(erase-buffer)
 	(switch-to-buffer (current-buffer))
