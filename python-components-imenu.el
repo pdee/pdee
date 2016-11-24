@@ -244,9 +244,7 @@ of the first definition found."
                   sublist '())
             (while (and (re-search-forward "^[ \t]*\\(def\\|class\\)[ \t]+\\(\\sw+\\)" (or thisend end) t 1)(not (nth 8 (parse-partial-sexp (point-min) (point)))))
               (let* ((pos (match-beginning 0))
-                     (name (match-string-no-properties 2))
-                     (classname (concat "class " name))
-                     (thisend (or thisend (save-match-data (py--end-of-def-or-class-position)))))
+                     (name (match-string-no-properties 2)))
 		(push (cons (concat " " name) pos) sublist)))
             (if classname
                 (progn

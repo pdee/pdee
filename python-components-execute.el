@@ -1127,7 +1127,7 @@ Avoid empty lines at the beginning. "
       (insert strg)
       (goto-char 1)
       (when (< 0 (setq erg (skip-chars-forward " \t\r\n\f" (line-end-position))))
-	(dotimes (i erg)
+	(dotimes (_ erg)
 	  (indent-rigidly-left (point-min) (point-max))))
       (unless (py--beginning-of-statement-p)
 	(py-forward-statement))

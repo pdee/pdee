@@ -69,7 +69,7 @@ Affected by `py-dedent-keep-relative-column'. "
   (or arg (setq arg 1))
   (let ((orig (copy-marker (point)))
         erg)
-    (dotimes (i arg)
+    (dotimes (_ arg)
       (let* ((cui (current-indentation))
              (remain (% cui py-indent-offset))
              (indent (* py-indent-offset (/ cui py-indent-offset))))
