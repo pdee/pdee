@@ -597,9 +597,8 @@ Use `defcustom' to keep value across sessions "
 
 (defun py--line-backward-maybe ()
   "Return result of (< 0 (abs (skip-chars-backward \" \\t\\r\\n\\f\"))) "
-  (let ((orig (point)))
-    (skip-chars-backward " \t\f" (line-beginning-position))
-    (< 0 (abs (skip-chars-backward " \t\r\n\f")))))
+  (skip-chars-backward " \t\f" (line-beginning-position))
+  (< 0 (abs (skip-chars-backward " \t\r\n\f"))))
 
 (defun py--after-empty-line ()
   "Return `t' if line before contains only whitespace characters. "
@@ -898,14 +897,9 @@ LIEP stores line-end-position at point-of-interest
 (defun py-continuation-offset (&optional arg)
   "With numeric ARG different from 1 py-continuation-offset is set to that value; returns py-continuation-offset. "
   (interactive "p")
-  (let ((erg (if (eq 1 arg)
-                 py-continuation-offset
-               (when (numberp arg)
-                 (prog1
-                     arg
-                   (setq py-continuation-offset arg))))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" py-continuation-offset))
-    py-continuation-offset))
+  (and (numberp arg) (not (eq 1 arg)) (setq py-continuation-offset arg))
+  (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" py-continuation-offset))
+  py-continuation-offset)
 
 (defalias 'pios 'py-indentation-of-statement)
 (defalias 'ios 'py-indentation-of-statement)
@@ -925,11 +919,7 @@ LIEP stores line-end-position at point-of-interest
   "Return lists beginning position, nil if not inside.
 
 Optional ARG indicates a start-position for `parse-partial-sexp'."
-  (interactive)
-  (let* ((ppstart (or start (point-min)))
-         (erg (nth 1 (parse-partial-sexp (point-min) (point)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (nth 1 (parse-partial-sexp (or start (point-min)) (point))))
 
 (defun py-end-of-list-position (&optional arg)
   "Return end position, nil if not inside.
@@ -937,7 +927,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
 Optional ARG indicates a start-position for `parse-partial-sexp'."
   (interactive)
   (let* ((ppstart (or arg (point-min)))
-         (erg (parse-partial-sexp (point-min) (point)))
+         (erg (parse-partial-sexp ppstart (point)))
          (beg (nth 1 erg))
          end)
     (when beg
@@ -1126,12 +1116,10 @@ Unclosed-string errors are not handled here, as made visible by fontification al
 	     (py-forward-statement)(setq last (point))))
     (and last (goto-char last))))
 
-(defun py--end-of-paragraph (regexp &optional orig repeat)
-  (let* ((repeat (or (and repeat (1+ repeat)) 999))
-	 (orig (or orig (point)))
-	 (regexp (if (symbolp regexp) (symbol-value regexp)
+(defun py--end-of-paragraph (regexp)
+  (let* ((regexp (if (symbolp regexp) (symbol-value regexp)
 		       regexp)))
-    (while (and (not (eobp)) (re-search-forward py-paragraph-re nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))))
+    (while (and (not (eobp)) (re-search-forward regexp nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))))
 
 
 (defun py--end-base (regexp &optional orig decorator bol indent done)
@@ -1159,7 +1147,7 @@ Must find start first "
 	      (if (and (looking-at thisregexp)(not (or (nth 1 pps) (nth 8 pps))))
 		  (point)
 		(py--go-to-keyword thisregexp indent)))
-	     ind erg last pps thisindent bofst err)
+	     erg)
 	(cond
 	 (this (setq erg (py--go-down-when-found-upward regexp)))
 	 (t (goto-char orig)))
@@ -1325,11 +1313,7 @@ This function does not modify point or mark."
   (interactive)
   (let ((erg (split-string (shell-command-to-string (concat "find " default-directory " -maxdepth 9 -type f -name \"*python\"")))))))
 
-;;  (defun py-install-local-epdfree ()
-;;    (interactive)
-;;    (py-install-local-shells "MY-PATH/epdfree"))
-
-(defun py-install-local-shells (&optional local path-prefix)
+(defun py-install-local-shells (&optional local)
   "Builds Python-shell commands from executable found in LOCAL.
 
 If LOCAL is empty, shell-command `find' searches beneath current directory.
@@ -1342,7 +1326,7 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
                              "/"
                            "\\" t))
          (shells (split-string (shell-command-to-string (concat "find " local-dir " -maxdepth 9 -type f -executable -name \"*python\""))))
-         erg newshell prefix akt end orig curexe aktpath)
+         prefix end orig curexe aktpath)
     (set-buffer (get-buffer-create py-extensions))
     (erase-buffer)
     (dolist (elt shells)
@@ -1416,7 +1400,7 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
       (sit-for py-ipython-send-delay t)
     (sit-for py-python-send-delay t)))
 
-(defun py--send-string-no-output (string &optional process msg)
+(defun py--send-string-no-output (strg &optional process msg)
   "Send STRING to PROCESS and inhibit output display.
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
@@ -1425,17 +1409,17 @@ the output."
          (comint-preoutput-filter-functions
           (append comint-preoutput-filter-functions
                   '(ansi-color-filter-apply
-                    (lambda (string)
-                      (setq output string)
+                    (lambda (strg)
+                      (setq output strg)
                       "")))))
-    (py-send-string string process)
+    (py-send-string strg process)
     (sit-for 0.1 t)
     ;; (py--delay-process-dependent process)
     (when (and output (not (string= "" output)))
 	    (py--string-strip
 	     (format "[ \n]*%s[ \n]*" py-fast-filter-re)))))
 
-(defun py--send-string-return-output (string &optional process msg)
+(defun py--send-string-return-output (strg &optional process msg)
   "Send STRING to PROCESS and return output.
 
 When MSG is non-nil messages the first line of STRING.  Return
@@ -1446,12 +1430,9 @@ the output."
 	     (comint-preoutput-filter-functions
 	      (append comint-preoutput-filter-functions
 		      '(ansi-color-filter-apply
-			(lambda (string)
-			  string
-			;; (setq erg (concat erg string))
-			;; "")
-			)))))
-	(py-send-string string process)
+			(lambda (strg)
+			  strg)))))
+	(py-send-string strg process)
 	(accept-process-output process 5)
 	(sit-for 0.1 t)
 	(when (and erg (not (string= "" erg)))
@@ -1468,7 +1449,7 @@ the output."
 Returns \"???\" otherwise
 Used by variable `which-func-functions' "
   (interactive)
-  (let* ((orig (point))
+  (let* ((orig (or orig (point)))
 	 (backindent 99999)
 	 (re (concat py-def-or-class-re "\\([[:alnum:]_]+\\)"))
          erg forward indent backward limit)
@@ -1531,7 +1512,7 @@ Used by variable `which-func-functions' "
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py--beginning-of-form-intern (final-re &optional inter-re iact indent orig lc)
+(defun py--beginning-of-form-intern (final-re &optional inter-re iact indent orig lc decorator)
   "Go to beginning of FORM.
 
 With INDENT, go to beginning one level above.
@@ -1601,7 +1582,7 @@ Returns beginning of FORM if successful, nil otherwise"
           (setq erg (point))
           (when (and py-verbose-p iact) (message "%s" erg))
           erg)
-      (py--beginning-of-form-intern final-re inter-re iact indent orig lc))))
+      (py--beginning-of-form-intern final-re inter-re iact indent orig lc decorator))))
 
 (defun py--fetch-first-python-buffer ()
   "Returns first (I)Python-buffer found in `buffer-list'"
@@ -1746,15 +1727,6 @@ Returns position successful, nil otherwise"
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
-;; (defun py-up (&optional indent)
-;;   "Go to beginning of form indented one level less. "
-;;   (interactive "P")
-;;   (let ((pps (parse-partial-sexp (point-min) (point))))
-;;     (cond ((nth 8 pps) (goto-char (nth 8 pps)))
-;;           ((nth 1 pps) (goto-char (nth 1 pps)))
-;;           ((py--beginning-of-statement-p) (py--beginning-of-form-intern 'py-extended-block-or-clause-re (called-interactively-p 'any) t))
-;;           (t (py-backward-statement)))))
-
 (defun py-down (&optional indent)
   "Go to beginning one level below of compound statement or definition at point.
 
@@ -1824,7 +1796,6 @@ If BOL is t, mark from beginning-of-line"
   (let* ((begform (intern-soft (concat "py-backward-" form "-bol")))
          (endform (intern-soft (concat "py-forward-" form "-bol")))
          (begcheckform (intern-soft (concat "py--beginning-of-" form "-bol-p")))
-         (orig (point))
          beg end erg)
     (setq beg (if
                   (setq beg (funcall begcheckform))
