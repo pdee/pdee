@@ -92,7 +92,7 @@ Expects a quoted symbol 'REGEXP"
 	   (p-command (car (read-from-string (concat "py--beginning-of-" name "-p"))))
 	   (backward-command (car (read-from-string (concat "py-backward-" name))))
 	   (up-command (car (read-from-string (concat "py-up-" name))))
-	   (down-command (car (read-from-string (concat "py-down-" name))))
+	   ;; (down-command (car (read-from-string (concat "py-down-" name))))
            (forward-command (car (read-from-string (concat "py-forward-" name))))
            erg done start)
       (if (funcall p-command)

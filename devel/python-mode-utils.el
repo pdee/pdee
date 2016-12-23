@@ -1072,7 +1072,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
         ((string= "buffer" ele)
          (insert " (point-min) (point-max)"))
 	(t (insert " beg end")))
-  (insert " nil fast))\n"))
+  (insert " nil fast proc wholebuf split))\n"))
 
 (defun write--unified-extended-execute-forms-docu (ele elt pyo)
   (insert (concat "
@@ -1095,10 +1095,40 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
     (insert "\n\nFor `default' see value of `py-shell-name'"))
   (insert "\"\n"))
 
-(defun write--unified-extended-execute-forms-arglist (ele)
-  (if (string= "region" ele)
-      (insert " (beg end &optional shell dedicated switch fast)")
-    (insert " (&optional shell dedicated switch beg end fast)")))
+(defun write--unified-extended-execute-forms-arglist-intern (ele pyo elt)
+  (and (string= "region" ele)(not (string-match "switch" pyo)))
+  ;; (py-execute-region (point-min) (point-max) shell dedicated switch fast)
+  (if (string= "" elt)
+      (insert " (beg end &optional shell dedicated fast split switch proc wholebuf)")
+    (insert " (beg end &optional dedicated fast split switch proc wholebuf)")))
+
+;; (member 'shell (cdar (cddr (symbol-function 'py--execute-prepare))))
+(defun write--unified-extended-execute-forms-arglist (ele pyo elt)
+  (let ((erst (if (string= "" elt)
+		  "&optional shell"
+		"&optional")))
+    (cond ((string= "region" ele)
+	   (write--unified-extended-execute-forms-arglist-intern ele pyo elt))
+	  ((and (string-match "switch" pyo)(string-match "dedicated" pyo))
+	   (if (string= "buffer" ele)
+	       (insert (concat " (" erst " fast proc wholebuf split)"))
+	   (insert (concat " (" erst " beg end fast proc wholebuf split)"))))
+	  ((and (string-match "switch" pyo)(not (string-match "dedicated" pyo)))
+	   (if (string= "buffer" ele)
+	       (insert (concat " (" erst " dedicated fast split proc wholebuf)"))
+	     (insert (concat " (" erst " dedicated beg end fast split proc wholebuf)"))))
+	  ((string-match "switch" pyo)
+	   (if (string= "buffer" ele)
+	       (insert (concat " (" erst " fast split proc wholebuf)"))
+	     (insert (concat " (" erst " beg end fast split proc wholebuf)"))))
+	  ((string-match "dedicated" pyo)
+	   (if (string= "buffer" ele)
+	       (insert (concat " (" erst " fast switch split proc wholebuf)"))
+	     (insert (concat " (" erst " beg end fast switch split proc wholebuf)"))))
+	  (t
+	   (if (string= "buffer" ele)
+	       (insert (concat " (" erst " dedicated switch fast split proc wholebuf)"))
+	     (insert (concat " (" erst " dedicated switch beg end fast split proc wholebuf)")))))))
 
 (defun write--unified-extended-execute-forms-interactive-spec (ele)
   (cond
@@ -1121,7 +1151,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
 
 (defun write--unified-extended-execute-forms-intern ()
   (switch-to-buffer (current-buffer))
-  (goto-char (point-max)) 
+  (goto-char (point-max))
   (dolist (ele py-execute-forms)
     (dolist (elt py-shells)
       (setq elt (format "%s" elt))
@@ -1130,7 +1160,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
 	(unless (string= "" elt)
 	  (insert (concat "-" elt)))
 	(unless (string= pyo "")(insert (concat "-" pyo)))
-	(write--unified-extended-execute-forms-arglist ele)
+	(write--unified-extended-execute-forms-arglist ele pyo elt)
 	(write--unified-extended-execute-forms-docu ele elt pyo)
 	(write--unified-extended-execute-forms-interactive-spec ele)
 	(when (string= "buffer" ele)
@@ -1226,10 +1256,9 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
 	  (emacs-lisp-mode))
     (write-file (concat components-directory "/python-components-named-shells.el"))))
 
-(defun pmu-fix-ipython ()
+(defun pmu-fix-ipython (ele)
   (when (string-match "^ipython.*" ele)
 	(skip-chars-backward "[a-z][0-9]\\.")
-	;; (forward-char 1)
 	(delete-char 1)
 	(insert "P")
 	(end-of-line)))
@@ -1237,99 +1266,96 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
 (defun py-provide-installed-shells-commands ()
   "Reads py-shells, provides commands opening these shell. "
   (interactive)
-  (with-current-buffer
-      (get-buffer-create "python-components-named-shells.el")
-    (erase-buffer)
-    (insert ";;; Python named shells -*- lexical-binding: t; -*- ")
-    (insert arkopf)
-    (newline)
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
-	  (emacs-lisp-mode))
-    (dolist (ele py-shells)
-      (unless (string= ele "")
+
+  (set-buffer (get-buffer-create "python-components-named-shells.el"))
+  (erase-buffer)
+  (insert ";;; Python named shells -*- lexical-binding: t; -*- \n")
+  (goto-char (point-max))
+  (insert arkopf)
+  (goto-char (point-max))
+  (when (interactive-p) (switch-to-buffer (current-buffer)))
+  (goto-char (point-max))
+  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+	(emacs-lisp-mode))
+  (dolist (ele py-shells)
+    (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-      (insert (concat "(defun " ele " (&optional argprompt)
+      (insert (concat "(defun " ele " (&optional argprompt buffer fast exception-buffer split switch)
   \"Start an "))
       (insert (capitalize ele))
-      (pmu-fix-ipython)
+      (pmu-fix-ipython ele)
       (insert (concat " interpreter.
 
 Optional \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter. \"
   (interactive \"p\")
-  (py-shell argprompt nil \"" ele "\"))\n\n"))))
-    (insert ";; dedicated\n")
-    (dolist (ele py-shells)
-      (unless (string= ele "")
+  (py-shell argprompt nil \"" ele "\" buffer fast exception-buffer split switch))\n\n"))))
+  (insert ";; dedicated\n")
+  (dolist (ele py-shells)
+    (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-      (insert (concat "(defun " ele "-dedicated (&optional argprompt switch)
+      (insert (concat "(defun " ele "-dedicated (&optional argprompt buffer fast exception-buffer split switch)
   \"Start an unique "))
       (insert (capitalize ele))
-      (pmu-fix-ipython)
+      (pmu-fix-ipython ele)
       (insert (concat " interpreter in another window.
 
 Optional \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter. \"
-  (interactive \"p\")"))
-      (insert "\n (let ((py-dedicated-process-p t))\n")
-      (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n"))))
-    (insert ";; switch\n")
-    (dolist (ele py-shells)
-      (unless (string= ele "")
+  (interactive \"p\")\n"))
+      (insert (concat "  (py-shell argprompt t \"" ele "\" buffer fast exception-buffer split switch))\n\n"))))
+  ;; (py-shell &optional argprompt dedicated shell buffer fast exception-buffer split switch)
+  (insert ";; switch\n")
+  (dolist (ele py-shells)
+    (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-      (insert (concat "(defun " ele "-switch (&optional argprompt)
+      (insert (concat "(defun " ele "-switch (&optional argprompt buffer fast exception-buffer split)
   \"Switch to "))
       (insert (capitalize ele))
-      (pmu-fix-ipython)
+      (pmu-fix-ipython ele)
       (insert (concat " interpreter in another window.
 
 Optional \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter. \"
-  (interactive \"p\")"))
-      (insert "\n (let ((py-switch-buffers-on-execute-p t))\n")
-      (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n"))))
-    (insert ";; no-switch\n")
-    (dolist (ele py-shells)
-      (unless (string= ele "")
+  (interactive \"p\")\n"))
+      (insert (concat "  (py-shell argprompt nil \"" ele "\" buffer fast exception-buffer split t))\n\n"))))
+  (insert ";; no-switch\n")
+  (dolist (ele py-shells)
+    (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-      (insert (concat "(defun " ele "-no-switch (&optional argprompt)
+      (insert (concat "(defun " ele "-no-switch (&optional argprompt buffer fast exception-buffer split)
   \"Open an "))
       (insert (capitalize ele))
-      (pmu-fix-ipython)
+      (pmu-fix-ipython ele)
       (insert (concat " interpreter in another window, but do not switch to it.
 
 Optional \\\\[universal-argument] prompts for path to the"))
-      ;; (if (string= "ipython" ele)
-      ;;     (insert "IPython")
-      ;;   (insert (capitalize ele)))
+
       (insert (concat " interpreter. \"
-  (interactive \"p\")"))
-      (insert "\n (let (py-switch-buffers-on-execute-p)\n")
-      (insert (concat "    (py-shell argprompt nil \"" ele "\")))\n\n"))))
-    (insert ";; dedicated switch\n")
-    (dolist (ele py-shells)
-      (unless (string= ele "")
+  (interactive \"p\")\n"))
+      (insert (concat "  (py-shell argprompt nil \"" ele "\" buffer fast exception-buffer split))\n\n"))))
+  (insert ";; dedicated switch\n")
+  (dolist (ele py-shells)
+    (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "(defalias '" ele "-dedicated-switch '" ele "-switch-dedicated)\n"))
-      (insert (concat "(defun " ele "-switch-dedicated (&optional argprompt)
+      (insert (concat "(defun " ele "-switch-dedicated (&optional argprompt buffer fast exception-buffer split)
   \"Switch to an unique "))
       (insert (capitalize ele))
-      (pmu-fix-ipython)
+      (pmu-fix-ipython ele)
       (insert (concat " interpreter in another window.
 
 Optional \\\\[universal-argument] prompts for path to the"))
       (insert " interpreter. \"
-  \(interactive \"p\")")
-      (insert "\n (let ((py-dedicated-process-p t)
-        (py-switch-buffers-on-execute-p t))\n")
-      (insert (concat "    (py-shell argprompt t \"" ele "\")))\n\n"))))
-
-    (insert "(provide 'python-components-named-shells)
+  \(interactive \"p\")\n")
+      (insert (concat "  (py-shell argprompt t \"" ele "\" buffer fast exception-buffer split t))\n\n"))))
+  ;; (py-shell &optional argprompt dedicated shell buffer-name fast exception-buffer)
+  (insert "(provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
 ")
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
-	  (emacs-lisp-mode))
-    (write-file (concat components-directory "/python-components-named-shells.el"))))
+
+  (emacs-lisp-mode)
+  (write-file (concat components-directory "/python-components-named-shells.el")))
 
 (defun py-write-installed-shells-menu ()
   (interactive)
@@ -1376,16 +1402,16 @@ Optional \\\\[universal-argument] prompts for path to the"))
   (dolist (ele py-shells)
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
       (insert (concat "\n(ert-deftest " ele))
-      ;; (pmu-fix-ipython)
+      ;; (pmu-fix-ipython ele)
       ;; (when arg (insert (concat "-" arg)))
       (insert (concat "-shell-test ()
   (py-kill-buffer-unconditional \"*" (capitalize ele)))
-      (pmu-fix-ipython)
+      (pmu-fix-ipython ele)
       ;; (when arg (insert (concat "-" arg)))
       (insert (concat "*\")
   (" ele ")
   (should (buffer-live-p (get-buffer \"*" (capitalize ele)))
-      (pmu-fix-ipython)
+      (pmu-fix-ipython ele)
       ;; (when arg (insert (concat "-" arg)))
       (insert "*\"))))\n")))
 
@@ -2028,8 +2054,10 @@ Returns beginning and end positions of region, a cons. \"
 
 (defun py--insert-backward-forms ()
   (dolist (ele py-backward-forms)
+    (when (or (string-match "def" ele) (string-match "class" ele))
+      (insert "\n;;;###autoload"))
     (insert (concat "
-\(defun py-backward-" ele " (&optional indent decorator bol"))
+\(defun py-backward-" ele " (&optional indent"))
         (if (string-match "def\\|class" ele)
 	(insert " decorator bol)")
       (insert ")"))
@@ -2051,6 +2079,8 @@ Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
 (defun py--insert-backward-bol-forms ()
   ;; bol forms
   (dolist (ele py-backward-forms)
+    (when (or (string-match "def" ele) (string-match "class" ele))
+      (insert "\n;;;###autoload"))
     (insert (concat "
 \(defun py-backward-" ele "-bol (&optional indent"))
     (if (string-match "def\\|class" ele)
@@ -2467,6 +2497,8 @@ class bar:
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (dolist (ele py-beg-end-forms)
+    (when (or (string-match "def" ele) (string-match "class" ele))
+      (insert "\n;;;###autoload"))
     ;; beg-end check forms
     (insert (concat "
 \(defun py-forward-" ele " (&optional decorator bol)
@@ -2501,7 +2533,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-block-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `block', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-block-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2510,7 +2542,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-block-or-clause-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `block-or-clause', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-block-or-clause-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2519,7 +2551,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-class-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `class', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-class-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2528,7 +2560,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-clause-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `clause', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-clause-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2537,7 +2569,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-def-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `def', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-def-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2546,7 +2578,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-def-or-class-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `def-or-class', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-def-or-class-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2555,7 +2587,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-elif-block-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `elif-block', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-elif-block-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2564,7 +2596,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-else-block-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `else-block', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-else-block-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2573,7 +2605,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-except-block-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `except-block', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-except-block-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2582,7 +2614,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-for-block-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `for-block', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-for-block-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2591,7 +2623,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-if-block-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `if-block', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-if-block-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2600,7 +2632,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-indent-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `indent', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-indent-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2609,7 +2641,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-minor-block-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `minor-block', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-minor-block-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2618,7 +2650,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-statement-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `statement', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-statement-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2627,7 +2659,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 
 (defun py--beginning-of-try-block-bol-p (&optional pps)
   "Returns position, if cursor is at the beginning of a `try-block', nil otherwise. "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-try-block-re)
        (looking-back "[^ \t]*" (line-beginning-position))
@@ -2644,13 +2676,13 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (switch-to-buffer (current-buffer))
-  (goto-char (point-max)) 
+  (goto-char (point-max))
   (dolist (ele
 	   ;; (seq-concatenate 'list py-bol-forms py-non-bol-forms)
 	   py-non-bol-forms)
     (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
   \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \"\n"))
-	(insert (concat "  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+	(insert (concat "  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
          (looking-at py-" ele "-re)
          (point))))\n\n")))
@@ -2658,7 +2690,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
   \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \""))
     (insert (concat "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
          (looking-at py-" ele "-re)
          (looking-back \"[^ \\t]*\" (line-beginning-position))
@@ -2668,7 +2700,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (insert (concat "\(defun py--beginning-of-" ele "-bol-p (&optional pps)
   \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \""))
     (insert (concat "
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point))))) 
+  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
          (not (or (nth 8 pps)(nth 1 pps)))
          (looking-at py-" ele "-re)

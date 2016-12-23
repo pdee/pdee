@@ -1,6 +1,6 @@
 ;;; python-components-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016  Andreas Röhler
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -42,6 +42,7 @@ Returns beginning of `block-or-clause' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))
 
+;;;###autoload
 (defun py-backward-class (&optional indent decorator bol)
   "Go to beginning of `class'.
 
@@ -58,6 +59,7 @@ Returns beginning of `clause' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))
 
+;;;###autoload
 (defun py-backward-def (&optional indent decorator bol)
   "Go to beginning of `def'.
 
@@ -66,6 +68,7 @@ Returns beginning of `def' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-def-re 'py-def-re (called-interactively-p 'any) decorator bol))
 
+;;;###autoload
 (defun py-backward-def-or-class (&optional indent decorator bol)
   "Go to beginning of `def-or-class'.
 
@@ -146,6 +149,7 @@ Returns beginning of `block-or-clause' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) nil t))
 
+;;;###autoload
 (defun py-backward-class-bol (&optional indent decorator)
   "Go to beginning of `class', go to BOL.
 
@@ -162,6 +166,7 @@ Returns beginning of `clause' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) nil t))
 
+;;;###autoload
 (defun py-backward-def-bol (&optional indent decorator)
   "Go to beginning of `def', go to BOL.
 
@@ -170,6 +175,7 @@ Returns beginning of `def' if successful, nil otherwise"
   (interactive)
   (py--backward-prepare indent 'py-def-re 'py-extended-block-or-clause-re (called-interactively-p 'any) decorator t))
 
+;;;###autoload
 (defun py-backward-def-or-class-bol (&optional indent decorator)
   "Go to beginning of `def-or-class', go to BOL.
 

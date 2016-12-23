@@ -466,20 +466,22 @@ Internal use"
 	  (py--manage-windows-split py-exception-buffer)))
       (display-buffer output-buffer t))))
 
-(defun py--shell-manage-windows (output-buffer &optional exception-buffer)
+(defun py--shell-manage-windows (output-buffer &optional exception-buffer split switch)
   "Adapt or restore window configuration. Return nil "
   (let* ((py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer)))
 	 (output-buffer (or output-buffer py-buffer-name))
 	 (old-window-list (window-list))
-	 (number-of-windows (length old-window-list)))
+	 (number-of-windows (length old-window-list))
+	 (split (or split py-split-window-on-execute))
+	 (switch (or switch py-switch-buffers-on-execute-p)))
     ;; (output-buffer-displayed-p)
     (cond
      (py-keep-windows-configuration
       (py-restore-window-configuration)
       (set-buffer output-buffer)
       (goto-char (point-max)))
-     ((and (eq py-split-window-on-execute 'always)
-	   py-switch-buffers-on-execute-p)
+     ((and (eq split 'always)
+	   switch)
       (if (member (get-buffer-window output-buffer)(window-list))
 	  ;; (delete-window (get-buffer-window output-buffer))
 	  (select-window (get-buffer-window output-buffer))
@@ -490,16 +492,16 @@ Internal use"
 	  (switch-to-buffer output-buffer))
 	(display-buffer py-exception-buffer)))
      ((and
-       (eq py-split-window-on-execute 'always)
-       (not py-switch-buffers-on-execute-p))
+       (eq split 'always)
+       (not switch))
       (if (member (get-buffer-window output-buffer)(window-list))
 	  (select-window (get-buffer-window output-buffer))
 	(py--manage-windows-split py-exception-buffer)
 	(display-buffer output-buffer)
 	(pop-to-buffer py-exception-buffer)))
      ((and
-       (eq py-split-window-on-execute 'just-two)
-       py-switch-buffers-on-execute-p)
+       (eq split 'just-two)
+       switch)
       (switch-to-buffer (current-buffer))
       (delete-other-windows)
       ;; (sit-for py-new-shell-delay)
@@ -509,8 +511,8 @@ Internal use"
       (set-buffer output-buffer)
       (switch-to-buffer (current-buffer)))
      ((and
-       (eq py-split-window-on-execute 'just-two)
-       (not py-switch-buffers-on-execute-p))
+       (eq split 'just-two)
+       (not switch))
       (switch-to-buffer py-exception-buffer)
       (delete-other-windows)
       (unless
@@ -523,15 +525,13 @@ Internal use"
 	(goto-char (point-max))
 	(other-window 1)))
      ((and
-       py-split-window-on-execute
-       (not py-switch-buffers-on-execute-p))
+       split
+       (not switch))
       ;; https://bugs.launchpad.net/python-mode/+bug/1478122
       ;; > If the shell is visible in any of the windows it  should re-use that window
-      ;; > I did double check and py-keep-window-configuration is nil and py-split-window-on-execute is t.
+      ;; > I did double check and py-keep-window-configuration is nil and split is t.
       (py--split-t-not-switch-wm output-buffer number-of-windows))
-     ((and
-       py-split-window-on-execute
-       py-switch-buffers-on-execute-p)
+     ((and split switch)
       (unless
 	  (member (get-buffer-window output-buffer)(window-list))
 	(py--manage-windows-split py-exception-buffer))
@@ -545,7 +545,7 @@ Internal use"
 	(goto-char (point-max))
 	;; (other-window 1)
 	)
-     ((not py-switch-buffers-on-execute-p)
+     ((not switch)
       (let (pop-up-windows)
 	(py-restore-window-configuration))))))
 
@@ -658,16 +658,21 @@ Receives a buffer-name as argument"
 	 (mapconcat 'identity py-python3-command-args " "))
 	(t (mapconcat 'identity py-python-command-args " "))))
 
-(defun py-shell (&optional argprompt dedicated shell buffer-name fast exception-buffer)
+;;;###autoload 
+(defun py-shell (&optional argprompt dedicated shell buffer fast exception-buffer split switch)
   "Start an interactive Python interpreter in another window.
   Interactively, \\[universal-argument] prompts for a new buffer-name.
   \\[universal-argument] 2 prompts for `py-python-command-args'.
   If `default-directory' is a remote file name, it is also prompted
   to change if called with a prefix arg.
 
+  Optional string SHELL overrides default `py-shell-name'.
   Returns py-shell's buffer-name.
-  Optional string PYSHELLNAME overrides default `py-shell-name'.
   BUFFER allows specifying a name, the Python process is connected to
+  FAST process not in comint-mode buffer
+  EXCEPTION-BUFFER point to error
+  SPLIT see var `py-split-window-on-execute'
+  SWITCH see var `py-switch-buffers-on-execute-p'
   "
   (interactive "P")
   ;; done by py-shell-mode
@@ -680,7 +685,7 @@ Receives a buffer-name as argument"
 	 (args (py--provide-command-args fast argprompt))
 
 	 (py-use-local-default (py--determine-local-default))
-	 (py-buffer-name (or buffer-name (py--guess-buffer-name argprompt dedicated)))
+	 (py-buffer-name (or buffer (py--guess-buffer-name argprompt dedicated)))
 	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name nil dedicated fast)))
 	 (executable (cond (py-shell-name)
 			   (py-buffer-name
@@ -702,8 +707,8 @@ Receives a buffer-name as argument"
 	(py--create-new-shell executable args py-buffer-name exception-buffer))
       (when (or (called-interactively-p 'any)
 		(eq 1 argprompt)
-		py-switch-buffers-on-execute-p)
-	(py--shell-manage-windows py-buffer-name py-exception-buffer)))
+		(or switch py-switch-buffers-on-execute-p))
+	(py--shell-manage-windows py-buffer-name py-exception-buffer split switch)))
     py-buffer-name))
 
 (defun py-shell-get-process (&optional argprompt dedicated shell buffer)
@@ -741,10 +746,10 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   (unless py-debug-p
     (when tempfile (py-delete-temporary tempfile tempbuf))))
 
-(defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated)
+(defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated split switch)
   "Update variables. "
   (setq py-error nil)
-  (let* ((py-exception-buffer (or py-exception-buffer (current-buffer)))
+  (let* ((exception-buffer (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
 	 (end (or end (and (use-region-p) (region-end)) (point-max)))
 	 (strg-raw (if py-if-name-main-permission-p
@@ -781,11 +786,11 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (or proc (get-buffer-process buffer)
-		   (get-buffer-process (py-shell nil dedicated shell buffer)))))
+		   (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch)))))
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end shell fast)
-    (when (or py-split-window-on-execute py-switch-buffers-on-execute-p)
-      (py--shell-manage-windows buffer py-exception-buffer))))
+    (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
+      (py--shell-manage-windows buffer exception-buffer split switch))))
 
 (defun py--send-to-fast-process (strg proc output-buffer)
   "Called inside of `py--execute-base-intern' "
@@ -989,7 +994,7 @@ May we get rid of the temporary file? "
   "Fix offline amount, make error point at the corect line. "
   (insert (make-string (- line (py-count-lines (point-min) (point))) 10)))
 
-(defun py--execute-file-base (&optional proc filename cmd procbuf origline)
+(defun py--execute-file-base (&optional proc filename cmd procbuf origline split switch)
   "Send to Python interpreter process PROC, in Python version 2.. \"execfile('FILENAME')\".
 
 Make that process's buffer visible and force display.  Also make

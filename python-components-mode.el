@@ -2061,12 +2061,20 @@ See also command `toggle-py-underscore-word-syntax-p' ")
 (defvar py-autofill-timer nil)
 (defvar py-fill-column-orig fill-column)
 
+;; defvared value isn't updated maybe
 (defvar python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
 	  (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
       "python-mode.el"
-    "python-components-mode.el")
+    "python-components-mode")
   "Internally used. Reports the python-mode branch")
+
+;; defvared value isn't updated maybe
+(setq python-mode-message-string
+  (if (or (string= "python-mode.el" (buffer-name))
+	  (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
+      "python-mode.el"
+    "python-components-mode"))
 
 (unless (fboundp 'string-to-syntax)
   ;; Skip's XE workaround

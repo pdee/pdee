@@ -580,3 +580,22 @@ Bar
     (search-backward "except True:")
     (py-up-block)
     (should (looking-at "else"))))
+
+(ert-deftest UnicodeEncodeError-lp-550661-test-1 ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python3
+print(u'\\xA9')"
+    (py-execute-buffer)
+    (set-buffer "*Python3*")
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
+    (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))
+
+(ert-deftest py-execute-region-ipython-test-1 ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python3
+print(u'\\xA9')"
+    (push-mark)
+    (beginning-of-line)
+    (py-execute-region-ipython (region-beginning) (region-end))
+    (set-buffer "*IPython*")
+    (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))

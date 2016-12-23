@@ -69,6 +69,14 @@
 	     (+ start i) (+ start next-change) plist)
 	    (setq i next-change)))))))
 
+(defun py-message-which-python-mode ()
+  (if (buffer-file-name)
+      (if (string= "python-mode-el" (buffer-file-name))
+	  (message "%s" "python-mode loaded from python-mode-el")
+	(message "%s" "python-mode loaded from python-components-mode"))
+    (message "python-mode loaded from: %s" python-mode-message-string)))
+
+;;;###autoload 
 (define-derived-mode py-auto-completion-mode python-mode "Pac"
   "Run auto-completion"
   ;; disable company
@@ -88,7 +96,7 @@
 	   #'py-complete-auto)))
   (force-mode-line-update))
 
-;;;
+;;;###autoload 
 (define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
@@ -162,9 +170,9 @@ See available customizations listed in files variables-python-mode at directory 
 	     (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
 	(set (make-local-variable 'paragraph-separate)
 	     (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")))
-      ;; (progn
-      ;;   (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
-      ;;   (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
+    ;; (progn
+    ;;   (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
+    ;;   (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
     (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
     (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
   (set (make-local-variable 'comment-column) 40)
@@ -187,7 +195,7 @@ See available customizations listed in files variables-python-mode at directory 
                                                       (current-column))))
               (^ '(- (1+ (current-indentation)))))))
   (and py-guess-py-install-directory-p (py-set-load-path))
-    (and py-autopair-mode
+  (and py-autopair-mode
        (load-library "autopair")
        (add-hook 'python-mode-hook
                  #'(lambda ()
@@ -233,8 +241,8 @@ See available customizations listed in files variables-python-mode at directory 
     (define-key python-mode-map [(control meta a)] 'py-backward-def-or-class)
     (define-key python-mode-map [(control meta e)] 'py-end-of-def-or-class))
   (when py-sexp-use-expression-p
-    	(define-key python-mode-map [(control meta f)] 'py-forward-expression)
-	(define-key python-mode-map [(control meta b)] 'py-backward-expression))
+    (define-key python-mode-map [(control meta f)] 'py-forward-expression)
+    (define-key python-mode-map [(control meta b)] 'py-backward-expression))
   (when (and py--imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))
@@ -250,7 +258,8 @@ See available customizations listed in files variables-python-mode at directory 
     (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   (when py-outline-minor-mode-p (outline-minor-mode 1))
-  (when (called-interactively-p 'any) (message "python-mode loaded from: %s" python-mode-message-string))
+  (when (interactive-p)
+    (py-message-which-python-mode))
   (force-mode-line-update))
 
 (defun py--shell-setup-fontification (&optional style)
@@ -325,6 +334,7 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'inhibit-point-motion-hooks) t)
   (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send))
 
+;;;###autoload 
 (define-derived-mode py-python-shell-mode comint-mode "Py"
   "Major mode for interacting with a Python process.
 A Python process can be started with \\[py-shell].
@@ -378,6 +388,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     (easy-menu-add py-menu))
   (force-mode-line-update))
 
+;;;###autoload 
 (define-derived-mode py-ipython-shell-mode comint-mode "IPy"
   "Major mode for interacting with a Python process.
 A Python process can be started with \\[py-shell].

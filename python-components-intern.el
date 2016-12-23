@@ -173,7 +173,7 @@ Returns position reached if successful"
   (unless (bobp)
     (goto-char (point-min))))
 
-(defun py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf)
+(defun py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf split)
   "Used by python-extended-executes ."
   (save-excursion
     (let* ((form (prin1-to-string form))
@@ -186,11 +186,6 @@ Returns position reached if successful"
                           (push-mark)))))
            (end (unless file
                   (or end (funcall (intern-soft (concat "py-forward-" form))))))
-           (py-switch-buffers-on-execute-p (cond ((eq 'switch switch)
-                                                  t)
-                                                 ((eq 'no-switch switch)
-                                                  nil)
-                                                 (t py-switch-buffers-on-execute-p)))
            filename)
       (setq py-buffer-name nil)
       (if file
@@ -199,7 +194,7 @@ Returns position reached if successful"
             (if (file-readable-p filename)
                 (py--execute-file-base nil filename nil nil origline)
               (message "%s not readable. %s" file "Do you have write permissions?")))
-        (py--execute-base beg end shell filename proc file wholebuf fast dedicated)))))
+        (py--execute-base beg end shell filename proc file wholebuf fast dedicated split switch)))))
 
 (defun py-load-skeletons ()
   "Load skeletons from extensions. "
