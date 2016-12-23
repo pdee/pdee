@@ -1840,9 +1840,9 @@ If BOL is t, mark from beginning-of-line"
                   (setq end (point))))
     (cons beg end)))
 
-(defun py-mark-base (form &optional py-mark-decorators)
+(defun py-mark-base (form &optional mark-decorators)
   "Calls py--mark-base, returns bounds of form, a cons. "
-  (let* ((bounds (py--mark-base form py-mark-decorators))
+  (let* ((bounds (py--mark-base form mark-decorators))
          (beg (car bounds)))
     (push-mark beg t t)
     bounds))
