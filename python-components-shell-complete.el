@@ -136,7 +136,7 @@ completions on the current context."
 	    py-shell-module-completion-code)))
   (py--shell-do-completion-at-point proc imports word exception-buffer code)))
 
-(defun py--complete-prepare (&optional shell debug beg end word fast-complete)
+(defun py--complete-prepare (&optional shell beg end word fast-complete)
   (let* ((exception-buffer (current-buffer))
          (pos (copy-marker (point)))
 	 (pps (parse-partial-sexp (or (ignore-errors (overlay-end comint-last-prompt-overlay))(line-beginning-position)) (point)))
@@ -164,7 +164,7 @@ completions on the current context."
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p erg)
-    (cond (fast-complete (py--fast-complete-base shell pos beg end word imports debug exception-buffer))
+    (cond (fast-complete (py--fast-complete-base shell pos word imports exception-buffer))
 	  ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
@@ -172,7 +172,7 @@ completions on the current context."
 	  (t (py--complete-base shell word imports exception-buffer)))
     nil))
 
-(defun py-shell-complete (&optional shell debug beg end word)
+(defun py-shell-complete (&optional shell beg end word)
   "Complete word before point, if any. "
   (interactive)
   (save-excursion
@@ -180,8 +180,7 @@ completions on the current context."
 	 (py-kill-buffer-unconditional "*Python Completions*")))
   (setq py-last-window-configuration
         (current-window-configuration))
-  (when debug (setq py-shell-complete-debug nil))
-  (py--complete-prepare shell debug beg end word nil))
+  (py--complete-prepare shell beg end word nil))
 
 (defun py-indent-or-complete ()
   "Complete or indent depending on the context.

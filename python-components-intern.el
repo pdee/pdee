@@ -55,7 +55,7 @@ Returns beginning of FORM if successful, nil otherwise"
 			 (cdr (ar--go-to-keyword (symbol-value regexp) indent)))
                         (t (ignore-errors
                              (cdr (ar--go-to-keyword (symbol-value regexp)
-                                                    (- (progn (if (ar--beginning-of-statement-p) (current-indentation) (save-excursion (ar-backward-statement) (current-indentation)))) ar-indent-offset)))))))
+                                                    (- (progn (if (ar--beginning-of-statement-p) (current-indentation) (save-excursion (ar-backward-statement) (current-indentation)))) py-indent-offset)))))))
         (when lc (beginning-of-line) (setq erg (point)))))
     ;; (when (and ar-verbose-p iact) (message "%s" erg))
     erg))
@@ -69,9 +69,9 @@ Returns beginning of FORM if successful, nil otherwise"
 	       ((looking-at (symbol-value inter-re))
 		(current-indentation))
 	       (t
-		(if (<= ar-indent-offset (current-indentation))
-		    (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) ar-indent-offset))
-		  ar-indent-offset)))))
+		(if (<= py-indent-offset (current-indentation))
+		    (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
+		  py-indent-offset)))))
 
 (defun ar--beginning-of-prepare (indent final-re &optional inter-re iact lc)
   (let ((orig (point))
@@ -97,9 +97,9 @@ Returns beginning of FORM if successful, nil otherwise"
                           ((looking-at (symbol-value inter-re))
                            (current-indentation))
                           (t
-                           (if (<= ar-indent-offset (current-indentation))
-                               (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) ar-indent-offset))
-                             ar-indent-offset))))))
+                           (if (<= py-indent-offset (current-indentation))
+                               (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
+                             py-indent-offset))))))
         erg)
     (if (and (< orig (point)) (looking-at (symbol-value final-re)))
         (progn
@@ -431,7 +431,7 @@ as it leaves your system default unchanged."
               ;; comment-start regex
               "#"
               ;; forward-sexp function
-              (lambda (arg)
+              (lambda ()
                 (py-forward-block-or-clause))
               nil) hs-special-modes-alist)
 
@@ -483,7 +483,7 @@ Don't save anything for STR matching `py-input-filter-re' "
   (when py-uncomment-indents-p
     (py-indent-region beg end)))
 
-(defun py-uncomment (&optional beg end)
+(defun py-uncomment (&optional beg)
   "Uncomment commented lines at point.
 
 If region is active, restrict uncommenting at region "
@@ -559,7 +559,7 @@ Use `defcustom' to keep value across sessions "
   "Return `t' if emacs major version is above 23"
   (< 23 (string-to-number (car (split-string emacs-version "\\.")))))
 
-(defun py--empty-arglist-indent (nesting py-indent-offset indent-offset)
+(defun py--empty-arglist-indent (nesting &optional indent-offset indent-offset)
   "Internally used by `py-compute-indentation'"
   (if
       (and (eq 1 nesting)
@@ -569,7 +569,7 @@ Use `defcustom' to keep value across sessions "
       (progn
         (back-to-indentation)
         (+ (current-column) (* 2 (or indent-offset py-indent-offset))))
-    (+ (current-indentation) py-indent-offset)))
+    (+ (current-indentation) (or indent-offset py-indent-offset))))
 
 (defun py-symbol-at-point ()
   "Return the current Python symbol."
@@ -1826,7 +1826,7 @@ Returns position if successful, nil otherwise"
   (interactive "P")
   (py--beginning-of-form-intern py-extended-block-or-clause-re (called-interactively-p 'any) indent))
 
-(defun py-end (&optional indent)
+(defun py-end ()
  "Go to end of of compound statement or definition at point.
 
 Returns position block if successful, nil otherwise"

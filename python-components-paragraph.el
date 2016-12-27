@@ -396,7 +396,6 @@ See lp:1066489 "
          (beg (copy-marker (if (< thisbeg parabeg) parabeg thisbeg)))
          (end (copy-marker (if (< thisend paraend) thisend paraend)))
 	 (multi-line-p (string-match "\n" (buffer-substring-no-properties thisbeg thisend)))
-	 erg
          first-line-p)
     ;;    (narrow-to-region beg end)
     (goto-char beg)
@@ -442,7 +441,6 @@ Fill according to `py-docstring-style' "
     (save-restriction
       (window-configuration-to-register py-windows-config-register)
       (let* ((pps (parse-partial-sexp (point-min) (point)))
-	     (orig (copy-marker (point)))
 	     (docstring (unless (not py-docstring-style)(py--in-or-behind-or-before-a-docstring)))
 	     (fill-column py-comment-fill-column))
 	(cond ((or (nth 4 pps)

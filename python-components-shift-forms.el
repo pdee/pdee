@@ -1,4 +1,4 @@
-;;; python-components-shift-forms.el --- Move forms left or right -*- lexical-binding: t; -*- 
+;;; python-components-shift-forms.el --- Move forms left or right -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016  Andreas Röhler
 
@@ -61,8 +61,7 @@ Returns indentation reached. "
                        (save-excursion
                          (goto-char
                           (region-end))))
-                      (t (line-end-position))))
-           (orig end))
+                      (t (line-end-position)))))
       (setq beg (copy-marker beg))
       (setq end (copy-marker end))
       (if (< 0 count)
@@ -407,4 +406,3 @@ Returns outmost indentation reached. "
 
 (provide 'python-components-shift-forms)
 ;;; python-components-shift-forms.el ends here
- 

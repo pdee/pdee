@@ -84,12 +84,12 @@ See also `py-fast-shell'
     (delete-region (point) (point-max))))
 
 
-(defun py--fast-send-string-no-output (string proc output-buffer)
+(defun py--fast-send-string-no-output (strg proc output-buffer)
   (with-current-buffer output-buffer
     (process-send-string proc "\n")
     (let ((orig (point-max)))
       (sit-for 1 t)
-      (process-send-string proc string)
+      (process-send-string proc strg)
       (process-send-string proc "\n")
       (accept-process-output proc 5)
       (sit-for 1 t)

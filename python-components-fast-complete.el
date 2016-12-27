@@ -56,7 +56,7 @@ completions on the current context."
 
     nil))
 
-(defun py--fast-complete-base (shell pos beg end word imports debug exception-buffer)
+(defun py--fast-complete-base (shell pos beg end word imports exception-buffer)
   (let* ((shell (or shell (py-choose-shell nil t)))
 	 (py-buffer-name (py-shell nil nil shell nil t))
 	 (proc (get-buffer-process py-buffer-name))

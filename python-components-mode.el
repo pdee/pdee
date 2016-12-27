@@ -145,6 +145,9 @@ Results arrive in output buffer, which is not in comint-mode"
   :tag "py-fast-process-p"
   :group 'python-mode)
 
+(defvar py-fast-output-buffer "*Py-Fast-Output-Buffer*"
+  "Default buffer-name for fast-processes")
+
 (defvar py-this-result nil
   "Internally used, store return-value")
 
