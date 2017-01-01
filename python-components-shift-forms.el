@@ -82,8 +82,10 @@ Returns indentation reached. "
                        (goto-char (region-beginning))
                        (line-beginning-position)))
                     (t (save-excursion
-                         (funcall begform)
-                         (line-beginning-position)))))
+                         (if
+			      (ignore-errors (funcall begform))
+                         (line-beginning-position)
+			 (error "py--shift-forms-base: No active region"))))))
          (end (cond (end)
                     ((region-active-p)
                      (region-end))
