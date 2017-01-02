@@ -188,13 +188,13 @@ completions on the current context."
 If cursor is at end of a symbol, try to complete
 Otherwise call `py-indent-line'
 
-If `(region-active-p)' returns `t', indent region.
+If `(use-region-p)' returns `t', indent region.
 Use `C-q TAB' to insert a literally TAB-character
 
 In python-mode `py-complete-function' is called,
 in (I)Python shell-modes `py-shell-complete'"
   (interactive "*")
-  (cond ((region-active-p)
+  (cond ((use-region-p)
 	 (py-indent-region (region-beginning) (region-end)))
 	((or (bolp)
 	     (member (char-before)(list 9 10 12 13 32 ?: ?\) ?\] ?\}))

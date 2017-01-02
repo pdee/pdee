@@ -1455,13 +1455,13 @@ Returns indentation reached. \"
     (let\* ((inhibit-point-motion-hooks t)
            deactivate-mark
            (beg (cond (start)
-                      ((region-active-p)
+                      ((use-region-p)
                        (save-excursion
                          (goto-char
                           (region-beginning))))
                       (t (line-beginning-position))))
            (end (cond (end)
-                      ((region-active-p)
+                      ((use-region-p)
                        (save-excursion
                          (goto-char
                           (region-end))))
@@ -1482,7 +1482,7 @@ Returns indentation reached. \"
          (endform (intern-soft (concat \"py-forward-\" form)))
          (orig (copy-marker (point)))
          (beg (cond (beg)
-                    ((region-active-p)
+                    ((use-region-p)
                      (save-excursion
                        (goto-char (region-beginning))
                        (line-beginning-position)))
@@ -1490,7 +1490,7 @@ Returns indentation reached. \"
                          (funcall begform)
                          (line-beginning-position)))))
          (end (cond (end)
-                    ((region-active-p)
+                    ((use-region-p)
                      (region-end))
                     (t (funcall endform))))
          (erg (py--shift-intern arg beg end)))

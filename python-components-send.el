@@ -28,11 +28,11 @@
   "Clear output buffer from py-shell-input prompt etc. "
   (interactive "*")
   (let ((beg (cond (beg)
-                   ((region-active-p)
+                   ((use-region-p)
                     (region-beginning))
                    (t (point-min))))
         (end (cond (end (copy-marker end))
-                   ((region-active-p)
+                   ((use-region-p)
                     (copy-marker (region-end)))
                    (t (copy-marker (point-max))))))
     (goto-char beg)

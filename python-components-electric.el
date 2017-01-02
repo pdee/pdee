@@ -129,7 +129,7 @@ With \\[universal-argument] \"#\" electric behavior is inhibited inside a string
 (defun py-electric-backspace (&optional arg)
   "Delete preceding character or level of indentation.
 
-When `delete-active-region' and (region-active-p), delete region.
+When `delete-active-region' and (use-region-p), delete region.
 
 Unless at indentation:
   With `py-electric-kill-backward-p' delete whitespace before point.
@@ -139,7 +139,7 @@ Returns column reached. "
   (interactive "p*")
   (or arg (setq arg 1))
   (let (erg)
-    (cond ((and (region-active-p)
+    (cond ((and (use-region-p)
 		;; Emacs23 doesn't know that var
 		(boundp 'delete-active-region) delete-active-region)
 	   (backward-delete-char-untabify arg))
@@ -161,10 +161,10 @@ Returns column reached. "
 (defun py-electric-delete (&optional arg)
   "Delete following character or levels of whitespace.
 
-When `delete-active-region' and (region-active-p), delete region "
+When `delete-active-region' and (use-region-p), delete region "
   (interactive "*p")
   (let ((orig (point)))
-    (cond ((and (region-active-p)
+    (cond ((and (use-region-p)
 		;; Emacs23 doesn't know that var
 		(boundp 'delete-active-region) delete-active-region)
 	   (delete-region (region-beginning) (region-end)))
