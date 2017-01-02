@@ -51,13 +51,15 @@ Returns indentation reached. "
     (let* ((inhibit-point-motion-hooks t)
            deactivate-mark
            (beg (cond (start)
-                      ((use-region-p)
+		      ;; (use-region-p)
+                      ((and (mark) (not (eq (mark) (point))))
                        (save-excursion
                          (goto-char
                           (region-beginning))))
                       (t (line-beginning-position))))
            (end (cond (end)
-                      ((use-region-p)
+		      ;; (use-region-p)
+                      ((and (mark) (not (eq (mark) (point)))) 
                        (save-excursion
                          (goto-char
                           (region-end))))
@@ -73,25 +75,26 @@ Returns indentation reached. "
     (py-indentation-of-statement)))
 
 (defun py--shift-forms-base (form arg &optional beg end)
-  (let* ((begform (intern-soft (concat "py-backward-" form)))
-         (endform (intern-soft (concat "py-forward-" form)))
+  (let* ((begform (concat "py-backward-" form))
+         (endform (concat "py-forward-" form))
          (orig (copy-marker (point)))
          (beg (cond (beg)
-                    ((and (mark) (not (eq (mark) (point))))
-		     ;;(use-region-p)
-                     (save-excursion
-                       (goto-char (region-beginning))
-                       (line-beginning-position)))
-                    (t (save-excursion
-                         (if
-			      (ignore-errors (funcall begform))
-                         (line-beginning-position)
-			 (error "py--shift-forms-base: No active region"))))))
+                    ;; ((and (string-match "region" form) (mark) (not (eq (mark) (point)))(region-beginning)))
+		    ((use-region-p)
+		     (save-excursion
+		       (goto-char (region-beginning))
+		       (line-beginning-position)))
+		    (t (save-excursion
+			 (if
+			     (ignore-errors (funcall (car (read-from-string begform))))
+			     (line-beginning-position)
+			   (error "py--shift-forms-base: No active region"))))))
          (end (cond (end)
-                    ((and (mark) (not (eq (mark) (point))))
-		     ;; (use-region-p)
+                    (
+		     ;; (and (mark) (not (eq (mark) (point))))
+		     (use-region-p)
                      (region-end))
-                    (t (funcall endform))))
+                    (t (funcall (car (read-from-string endform))))))
          (erg (py--shift-intern arg beg end)))
     (goto-char orig)
     erg))

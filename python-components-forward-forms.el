@@ -28,6 +28,11 @@
 
 ;;; Code:
 
+(defun py-forward-region ()
+  "Go to the end of current region"
+  (interactive)
+  (let ((end (region-end)))
+    (when end (goto-char end))))
 
 (defun py-forward-block (&optional decorator bol)
   "Go to end of block.

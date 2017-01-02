@@ -25,6 +25,11 @@
 
 ;;; Code:
 
+(defun py-backward-region ()
+  "Go to the beginning of current region"
+  (interactive)
+  (let ((beg (region-beginning)))
+    (when beg (goto-char beg))))
 
 (defun py-backward-block (&optional indent)
   "Go to beginning of `block'.
