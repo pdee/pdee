@@ -599,3 +599,15 @@ print(u'\\xA9')"
     (py-execute-region-ipython (region-beginning) (region-end))
     (set-buffer "*IPython*")
     (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))
+
+(ert-deftest py-execute-region-no-transmm-test-1 ()
+  (py-test-with-temp-buffer
+      "print(u'\\xA9')"
+      (let (transient-mark-mode)
+      (push-mark)
+      (beginning-of-line)
+      (py-shift-region-right)
+      (should (eq 4 (current-indentation))))))
+
+(provide 'py-ert-tests-3)
+;;; py-ert-tests-3.el ends here 
