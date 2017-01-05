@@ -3186,7 +3186,7 @@ Used only, if `py-install-directory' is empty. "
     (concat (py--normalize-pythonpath (getenv "PYTHONPATH")) py-pythonpath)))
 
 (defun py-load-pymacs ()
-  "Load Pymacs as delivered with python-mode.el.
+  "Load Pymacs as delivered.
 
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
