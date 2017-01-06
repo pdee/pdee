@@ -22,6 +22,9 @@
 
 ;;; Code:
 
+(defvar py-menu nil
+  "Make a dynamically bound variable py-menu")
+
 (and (ignore-errors (require 'easymenu) t)
      ;; (easy-menu-define py-menu map "Python Tools"
      ;;           `("PyTools"
