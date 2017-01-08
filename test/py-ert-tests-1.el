@@ -995,9 +995,9 @@ def baz():
 (ert-deftest py-ert-moves-up-execute-statement-test ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
-    (let ((py-shell-name "python"))
+    (let ((py-shell-name "python2"))
       (py-execute-statement)
-      (set-buffer ert-test-default-buffer)
+      (set-buffer "*Python2*")
       (goto-char (point-max))
       (sit-for 0.3 t)
       (and (should (search-backward "py-execute-statement-test" nil t 1))

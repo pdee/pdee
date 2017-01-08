@@ -3338,9 +3338,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
        (beginning-of-line)
        (looking-at "\\s-*$"))))
 
-;;
-
-
+(require 'python-components-map)
 (require 'python-components-switches)
 (require 'python-components-edit)
 (require 'python-components-backward-forms)
@@ -3349,7 +3347,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-mark-forms)
 (require 'python-components-copy-forms)
 (require 'python-components-delete-forms)
-;; (require 'python-components-bounds-forms)
 (require 'python-components-execute)
 (require 'python-components-send)
 (require 'python-components-shell-complete)
@@ -3366,7 +3363,6 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-end-position-forms)
 (require 'python-components-forward-forms)
 (require 'python-components-up-down)
-;; (require 'python-components-execute-region)
 (require 'python-components-exec-forms)
 (require 'python-extended-executes)
 (require 'python-abbrev-propose)

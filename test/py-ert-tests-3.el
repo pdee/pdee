@@ -27,7 +27,7 @@
 ;; py-if-name-main-permission-p
 (ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
   (py-test-with-temp-buffer-point-min
-      "#! /usr/bin/env python
+      "#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 def py_if_name_main_permission_test():
     if __name__ == \"__main__\" :
@@ -41,8 +41,8 @@ def py_if_name_main_permission_test():
 py_if_name_main_permission_test()
 "
     (let ((py-if-name-main-permission-p t))
-      (py-execute-buffer-python)
-      (set-buffer "*Python*")
+      (py-execute-buffer-python2)
+      (set-buffer "*Python2*")
       (goto-char (point-max))
       (forward-line -1)
       (end-of-line)
