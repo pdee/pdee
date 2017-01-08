@@ -658,7 +658,7 @@ Receives a buffer-name as argument"
 	 (mapconcat 'identity py-python3-command-args " "))
 	(t (mapconcat 'identity py-python-command-args " "))))
 
-;;;###autoload 
+;;;###autoload
 (defun py-shell (&optional argprompt dedicated shell buffer fast exception-buffer split switch)
   "Start an interactive Python interpreter in another window.
   Interactively, \\[universal-argument] prompts for a new buffer-name.
@@ -764,12 +764,12 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	    (py-count-lines (point-min) end)))
 	 ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
 	 (shell (or
-		  (and shell
-		       ;; shell might be specified in different ways
-		       (or (and (stringp shell) shell)
-			   (ignore-errors (eval shell))
-			   (and (symbolp shell) (format "%s" shell))))
-		  (py-choose-shell nil fast)))
+		 (and shell
+		      ;; shell might be specified in different ways
+		      (or (and (stringp shell) shell)
+			  (ignore-errors (eval shell))
+			  (and (symbolp shell) (format "%s" shell))))
+		 (py-choose-shell nil fast)))
 	 (execute-directory
 	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
 		((and py-use-current-dir-when-execute-p (buffer-file-name))
@@ -786,7 +786,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (or proc (get-buffer-process buffer)
-		   (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch)))))
+		   (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch))))
+	 (fast (or fast py-fast-process-p)))
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end shell fast)
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
@@ -1012,7 +1013,7 @@ Returns position where output starts. "
       (goto-char (point-max))
       (setq orig (copy-marker (point)))
       (py-send-string cmd proc)
-      (unless py-ignore-result-p
+      (when py-return-result-p
 	(setq erg (py--postprocess-comint buffer origline orig))
 	(if py-error
 	    (setq py-error (prin1-to-string py-error))

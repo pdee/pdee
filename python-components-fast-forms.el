@@ -57,11 +57,9 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (process-send-string proc "\n")
       (accept-process-output proc 5)
       (sit-for py-fast-completion-delay t)
-      ;; sets py-result
-      (unless py-ignore-result-p
-	(setq py-result (py--filter-result (py--fetch-result orig))))
       (when return
-	py-result))))
+	(setq py-result (py--filter-result (py--fetch-result orig))))
+	py-result)))
 
 (defun py--fast-send-string (strg)
   "Process Python strings, being prepared for large output.

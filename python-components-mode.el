@@ -1733,9 +1733,6 @@ without the user's realization (e.g. to perform completion)."
   :tag "py-remove-cwd-from-path"
   :group 'python-mode)
 
-(defvar py-ignore-result-p nil
-  "Internally used, for example by setup-functions. ")
-
 (defcustom py-shell-local-path ""
   "If `py-use-local-default' is non-nil, `py-shell' will use EXECUTABLE indicated here incl. path. "
 
@@ -2921,7 +2918,6 @@ See also `py-object-reference-face'"
 
 (defun py--python-send-setup-code-intern (name &optional msg)
   (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))
-	(py-ignore-result-p t)
 	(buf (current-buffer)))
     (unless (file-readable-p setup-file)
       (with-temp-buffer
@@ -2946,8 +2942,7 @@ See also `py-object-reference-face'"
   "Setup IPython v0.11 or greater.
 
 Used by `py-ipython-module-completion-string'"
-  (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-ipython-module-completion.py"))
-	(py-ignore-result-p t))
+  (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-ipython-module-completion.py")))
     (unless (file-readable-p setup-file)
       (with-temp-buffer
 	(insert py-ipython-module-completion-code)

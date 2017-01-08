@@ -139,13 +139,12 @@ def foo():
     (forward-line 3)
     (should (eq 8 (py-compute-indentation)))))
 
-;; (ert-deftest py-ert-execute-statement-fast-test ()
-;;   (py-test-with-temp-buffer-point-min
-;;       "print(123234)"
-;;     (py-execute-statement-fast)
-;;     (set-buffer "*Python3 Fast*")
-;;     (should (eq (current-buffer) (get-buffer "*Python3 Fast*")))
-;;     (sit-for 0.1)))
+(ert-deftest py-ert-execute-statement-fast-test ()
+  (py-test-with-temp-buffer-point-min
+      "print(123234)"
+    (py-execute-statement-fast)
+    (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
+    (should (search-backward "123234"))))
 
 (ert-deftest py-ert-fill-comment-test ()
   (py-test-with-temp-buffer-point-min
@@ -610,7 +609,7 @@ print(u'\\xA9')"
       (should (eq 4 (current-indentation))))))
 
 (ert-deftest py-forward-statement-test-3 ()
-    (py-test-with-temp-buffer-point-min  
+    (py-test-with-temp-buffer-point-min
 	"print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})
 
@@ -619,7 +618,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (py-forward-statement)
       (py-forward-statement)
       (should (eobp))))
-      
+
 
 (provide 'py-ert-tests-3)
-;;; py-ert-tests-3.el ends here 
+;;; py-ert-tests-3.el ends here
