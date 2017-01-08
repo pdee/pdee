@@ -76,7 +76,7 @@
 	(message "%s" "python-mode loaded from python-components-mode"))
     (message "python-mode loaded from: %s" python-mode-message-string)))
 
-;;;###autoload 
+;;;###autoload
 (define-derived-mode py-auto-completion-mode python-mode "Pac"
   "Run auto-completion"
   ;; disable company
@@ -96,7 +96,7 @@
 	   #'py-complete-auto)))
   (force-mode-line-update))
 
-;;;###autoload 
+;;;###autoload
 (define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
@@ -253,9 +253,6 @@ See available customizations listed in files variables-python-mode at directory 
       (setq imenu--index-alist (py--imenu-create-index-new)))
     ;; (message "imenu--index-alist: %s" imenu--index-alist)
     (imenu-add-to-menubar "PyIndex"))
-  ;; add the menu
-  (when py-menu
-    (easy-menu-add py-menu))
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p)
@@ -334,7 +331,7 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'inhibit-point-motion-hooks) t)
   (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send))
 
-;;;###autoload 
+;;;###autoload
 (define-derived-mode py-python-shell-mode comint-mode "Py"
   "Major mode for interacting with a Python process.
 A Python process can be started with \\[py-shell].
@@ -388,7 +385,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     (easy-menu-add py-menu))
   (force-mode-line-update))
 
-;;;###autoload 
+;;;###autoload
 (define-derived-mode py-ipython-shell-mode comint-mode "IPy"
   "Major mode for interacting with a Python process.
 A Python process can be started with \\[py-shell].

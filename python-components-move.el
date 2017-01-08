@@ -457,10 +457,11 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	  (py-forward-statement orig done repeat))
 	 ((eq (current-indentation) (current-column))
 	  (py--skip-to-comment-or-semicolon done)
-	  ;; (setq pps (parse-partial-sexp (point-min) (point)))
-	  (unless done
-	    (py-forward-statement orig done repeat)))
-
+	  (setq pps (parse-partial-sexp orig (point)))
+	  (if (nth 1 pps)
+	      (py-forward-statement orig done repeat)
+	    (unless done
+	      (py-forward-statement orig done repeat))))
 	 ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon done))
 	  (py-forward-statement orig done repeat)))
 	(unless

@@ -609,5 +609,17 @@ print(u'\\xA9')"
       (py-shift-region-right)
       (should (eq 4 (current-indentation))))))
 
+(ert-deftest py-forward-statement-test-3 ()
+    (py-test-with-temp-buffer-point-min  
+	"print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+
+print(\"%(language)s has %(number)03d quote types.\" %
+       {'language': \"Python\", \"number\": 2})"
+      (py-forward-statement)
+      (py-forward-statement)
+      (should (eobp))))
+      
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here 
