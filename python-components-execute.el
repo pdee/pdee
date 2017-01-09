@@ -746,7 +746,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   (unless py-debug-p
     (when tempfile (py-delete-temporary tempfile tempbuf))))
 
-(defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated split switch)
+(defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated split switch return)
   "Update variables. "
   (setq py-error nil)
   (let* ((exception-buffer (current-buffer))
@@ -787,13 +787,14 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (or proc (get-buffer-process buffer)
 		   (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch))))
-	 (fast (or fast py-fast-process-p)))
+	 (fast (or fast py-fast-process-p))
+	 (return (or return py-return-result-p)))
     (setq py-buffer-name buffer)
-    (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end shell fast)
+    (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end shell fast return)
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows buffer exception-buffer split switch))))
 
-(defun py--send-to-fast-process (strg proc output-buffer)
+(defun py--send-to-fast-process (strg proc output-buffer return)
   "Called inside of `py--execute-base-intern' "
   (let ((output-buffer (or output-buffer (process-buffer proc))))
   (with-current-buffer output-buffer
@@ -821,14 +822,14 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	(setq erg (py--execute-file-base proc py-tempfile nil procbuf origline)))
     erg))
 
-(defun py--execute-base-intern (strg filename proc file wholebuf buffer origline execute-directory start end which-shell fast)
+(defun py--execute-base-intern (strg filename proc file wholebuf buffer origline execute-directory start end which-shell &optional fast return)
   "Select the handler.
 
 When optional FILE is `t', no temporary file is needed. "
   (let ()
     (setq py-error nil)
     (py--update-execute-directory proc buffer execute-directory)
-    (cond (fast (py--send-to-fast-process strg proc buffer))
+    (cond (fast (py--send-to-fast-process strg proc buffer return))
 	  ;; enforce proceeding as python-mode.el v5
 	  (python-mode-v5-behavior-p
 	   (py-execute-python-mode-v5 start end py-exception-buffer origline))

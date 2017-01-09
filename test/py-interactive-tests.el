@@ -81,7 +81,7 @@ finally:
     ;; (should (looking-at "\\'"))
     ))
 
-(ert-deftest py-ert-execute-block-fast ()
+(ert-deftest py-ert-execute-block-fast-3 ()
   (py-test-with-temp-buffer-point-min
       "if True:
     a = 1
