@@ -676,14 +676,12 @@ Receives a buffer-name as argument"
   "
   (interactive "P")
   ;; done by py-shell-mode
-  (let* (
-	 ;; (windows-config (window-configuration-to-register 313465889))
+  (let* (;; (windows-config (window-configuration-to-register 313465889))
 	 (fast (or fast py-fast-process-p))
 	 (dedicated (or dedicated py-dedicated-process-p))
 	 (py-shell-name (or shell
 			    (py-choose-shell nil fast)))
 	 (args (py--provide-command-args fast argprompt))
-
 	 (py-use-local-default (py--determine-local-default))
 	 (py-buffer-name (or buffer (py--guess-buffer-name argprompt dedicated)))
 	 (py-buffer-name (or py-buffer-name (py--choose-buffer-name nil dedicated fast)))
@@ -691,7 +689,6 @@ Receives a buffer-name as argument"
 			   (py-buffer-name
 			    (py--report-executable py-buffer-name))))
 	 proc)
-    ;; lp:1169687, if called from within an existing py-shell, open a new one
     (and (bufferp (get-buffer py-buffer-name))(buffer-live-p (get-buffer py-buffer-name))(string= (buffer-name (current-buffer)) (buffer-name (get-buffer py-buffer-name)))
 	 (setq py-buffer-name (generate-new-buffer-name py-buffer-name)))
     (sit-for 0.1 t)
@@ -728,14 +725,7 @@ Receives a buffer-name as argument"
   "Return the command appropriate to Python version.
 
 Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for Python 2 series."
-  (interactive)
-  (let* ((erg (py-which-python))
-         (cmd (if (< erg 3)
-                  (format "execfile(r'%s') # PYTHON-MODE\n" filename)
-                (format "exec(compile(open(r'%s').read(), r'%s', 'exec')) # PYTHON-MODE\n" filename filename)
-		)))
-    (when (called-interactively-p 'any) (message "%s" (prin1-to-string cmd)))
-    cmd))
+  (format "exec(compile(open(r'%s').read(), r'%s', 'exec')) # PYTHON-MODE\n" filename filename))
 
 (defun py--store-result-maybe (erg)
   "If no error occurred and `py-store-result-p' store result for yank. "
@@ -1004,9 +994,10 @@ comint believe the user typed this string so that
 `kill-output-from-shell' does The Right Thing.
 Returns position where output starts. "
   (let* ((origline (or (ignore-errors origline) 1))
-	 (cmd (or cmd (py-which-execute-file-command filename)))
 	 (buffer (or procbuf (py-shell nil nil nil procbuf)))
 	 (proc (or proc (get-buffer-process buffer)))
+	 (cmd (or cmd (py-which-execute-file-command filename)))
+
 	 ;; (windows-config (window-configuration-to-register py-windows-config-register))
 	 erg orig)
     (with-current-buffer buffer

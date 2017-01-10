@@ -646,9 +646,6 @@
 (ert-deftest py-ert-force-local-shell-p-test ()
   (should (boundp 'py-force-local-shell-p)))
 
-(ert-deftest py-ert-ignore-result-p-test ()
-  (should (boundp 'py-ignore-result-p)))
-
 (ert-deftest py-ert-import-from-face-test ()
   (should (boundp 'py-import-from-face)))
 

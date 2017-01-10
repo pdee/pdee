@@ -83,6 +83,7 @@
 (require 'shell)
 (require 'thingatpt)
 (require 'which-func)
+(require 'tramp-sh)
 
 (require 'python-components-menu)
 
@@ -3031,10 +3032,10 @@ Returns versioned string, nil if nothing appropriate found "
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defun py-which-python ()
+(defun py-which-python (&optional shell)
   "Returns version of Python of current environment, a number. "
   (interactive)
-  (let* ((cmd (py-choose-shell))
+  (let* ((cmd (or shell (py-choose-shell)))
 	 (treffer (string-match "\\([23]*\\.?[0-9\\.]*\\)$" cmd))
          version erg)
     (if treffer
