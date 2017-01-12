@@ -381,8 +381,6 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (when py-sexp-use-expression-p
     (define-key py-python-shell-mode-map [(control meta f)] 'py-forward-expression)
     (define-key py-python-shell-mode-map [(control meta b)] 'py-backward-expression))
-  (when py-shell-menu
-    (easy-menu-add py-menu))
   (force-mode-line-update))
 
 ;;;###autoload
@@ -417,9 +415,6 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)
     (push 'py-shell-complete  comint-dynamic-complete-functions))
-  (when py-shell-menu
-    (easy-menu-add py-menu))
-  ;; Running py-ipython-shell-mode-hook seems to need some delay
   (sit-for 0.5 t)
   (force-mode-line-update))
 

@@ -12,10 +12,8 @@ how to fontify py-shell buffer:
 
 "input" will leave previous IN/OUT unfontified.
 "all" keeps output fontified too.
-Default is nil, no fontification.
 
-Always indicate the PythonVERSION in buffer-name
-wherever python points to
+Default is nil, no fontification.
 
 New in version 6.2.2
 ---------------------

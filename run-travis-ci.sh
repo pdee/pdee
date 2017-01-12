@@ -56,7 +56,8 @@ TEST12=$TESTDIR/py-execute-region-commandp-test.el
 TEST13=$TESTDIR/py-ert-tests-2.el
 TEST14=$TESTDIR/py-ert-tests-3.el
 TEST15=$TESTDIR/py-ert-forward-tests.el
-TEST16=$TESTDIR/py-interactive-tests.el
+TEST16=$TESTDIR/py-ert-tests-4.el
+TEST17=$TESTDIR/py-extra-tests.el
 
 if [ -s emacs24 ]; then
     EMACS=emacs24
@@ -87,6 +88,7 @@ hier() {
 -l $TEST14 \
 -l $TEST15 \
 -l $TEST16 \
+-l $TEST17 \
 --eval "(setq py-debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }

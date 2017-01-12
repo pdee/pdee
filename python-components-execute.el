@@ -676,7 +676,8 @@ Receives a buffer-name as argument"
   "
   (interactive "P")
   ;; done by py-shell-mode
-  (let* (;; (windows-config (window-configuration-to-register 313465889))
+  (let* (
+	 ;; (windows-config (window-configuration-to-register 313465889))
 	 (fast (or fast py-fast-process-p))
 	 (dedicated (or dedicated py-dedicated-process-p))
 	 (py-shell-name (or shell
