@@ -88,7 +88,6 @@ hier() {
 -l $TEST14 \
 -l $TEST15 \
 -l $TEST16 \
--l $TEST17 \
 --eval "(setq py-debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }
