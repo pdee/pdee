@@ -7,15 +7,11 @@
 
 ;; Keywords: languages, processes, python, oop
 
-;; Version: "6.2.2"
-
-;; Copyright (C) 2015-2016 Andreas Röhler
-
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; Version: "6.2.3"
 
 ;; Copyright (C) 1992,1993,1994  Tim Peters
 
-;; Author: 2015-     https://gitlab.com/groups/python-mode-devs
+;; Author: 2015-2016     https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
 ;;         1992-1994 Tim Peters
