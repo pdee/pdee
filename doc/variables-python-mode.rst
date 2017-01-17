@@ -50,12 +50,6 @@ If non-nil, C-M-s call py-forward-expression.
 Respective C-M-b will call py-backward-expression
 Default is t
 
-py-shell-unfontify-p
---------------------
-Run ‘py--run-unfontify-timer’ unfontifying the shell banner-text.
-
-Default is nil 
-
 py-session-p
 ------------
 If commands would use an existing process.
@@ -121,6 +115,12 @@ py-store-result-p
 When non-nil, put resulting string of ‘py-execute-...’ into kill-ring, so it might be yanked.
 
 Default is nil
+
+py--execute-use-temp-file-p
+---------------------------
+Assume execution at a remote machine.
+
+ where write-access is not given. 
 
 py-electric-close-active-p
 --------------------------
@@ -673,6 +673,10 @@ py-current-defun-delay
 ----------------------
 When called interactively, ‘py-current-defun’ should wait PY-WHICH-FUNC-DELAY seconds at the definition name found, before returning to previous position. 
 
+py--delete-temp-file-delay
+--------------------------
+Used by ‘py--delete-temp-file’
+
 py-python-send-delay
 --------------------
 Seconds to wait for output, used by ‘py--send-...’ functions.
@@ -821,6 +825,16 @@ Don’t split when max number of displayed windows is reached.
 py-split-windows-on-execute-function
 ------------------------------------
 How window should get splitted to display results of py-execute-... functions. 
+
+py-shell-fontify-style
+----------------------
+Fontify current input resp. output in Python shell. Default is nil.
+
+INPUT will leave output unfontified.
+ALL keeps output fontified.
+
+At any case only current input gets fontified.
+
 
 py-hide-show-keywords
 ---------------------
@@ -1174,7 +1188,7 @@ Delimit arbitrary chunks of code.
 
 py-paragraph-re
 ---------------
-An empty line followed by a non-whitespace at column 1
+Allow Python specific paragraph-start var
 
 py-outdent-re-raw
 -----------------
@@ -1208,6 +1222,12 @@ py-compilation-regexp-alist
 ---------------------------
 Fetch errors from Py-shell.
 hooked into ‘compilation-error-regexp-alist’  
+
+py-shell-unfontify-p
+--------------------
+Run ‘py--run-unfontify-timer’ unfontifying the shell banner-text.
+
+Default is nil 
 
 py-underscore-word-syntax-p
 ---------------------------

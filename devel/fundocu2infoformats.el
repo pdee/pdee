@@ -1,4 +1,4 @@
--*- lexical-binding: t; -*- 
+;;; -*- lexical-binding: t; -*- 
 
 (defcustom py-devel-directory-out ""
   "Output directory when developing Python-mode. "

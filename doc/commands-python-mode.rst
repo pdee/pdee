@@ -14,6 +14,13 @@ Check, if autopair-mode is available.
 
 Give some hints, if not.
 
+py--unfontify-banner
+--------------------
+Unfontify the shell banner-text.
+
+Cancels ‘py--timer’
+Expects being called by ‘py--run-unfontify-timer’ 
+
 py-choose-shell-by-shebang
 --------------------------
 Choose shell by looking at #! on the first line.
@@ -47,7 +54,7 @@ This does the following:
  - look if Path/To/File indicates a Python version
  - if not successful, return default value of ‘py-shell-name’
 
-When interactivly called, messages the shell name, Emacs would in the given circtumstances.
+When interactivly called, messages the shell name, Emacs would in the given circumstances.
 
 With C-u 4 is called ‘py-switch-shell’ see docu there.
 
@@ -66,7 +73,7 @@ Used only, if ‘py-install-directory’ is empty.
 
 py-load-pymacs
 --------------
-Load Pymacs as delivered with python-mode.el.
+Load Pymacs as delivered.
 
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca
@@ -80,10 +87,6 @@ py-count-lines
 Count lines in accessible part until current line.
 
 See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115
-
-py-in-comment-p
----------------
-Return the beginning of current line’s comment, if inside. 
 
 py-toggle-highlight-indentation
 -------------------------------
@@ -472,6 +475,10 @@ py-edit-docstring
 -----------------
 Edit docstring or active region in python-mode. 
 
+py-backward-region
+------------------
+Go to the beginning of current region
+
 py-backward-block
 -----------------
 Go to beginning of ‘block’.
@@ -486,12 +493,33 @@ Go to beginning of ‘block-or-clause’.
 If already at beginning, go one ‘block-or-clause’ backward.
 Returns beginning of ‘block-or-clause’ if successful, nil otherwise
 
+py-backward-class
+-----------------
+Go to beginning of ‘class’.
+
+If already at beginning, go one ‘class’ backward.
+Returns beginning of ‘class’ if successful, nil otherwise
+
 py-backward-clause
 ------------------
 Go to beginning of ‘clause’.
 
 If already at beginning, go one ‘clause’ backward.
 Returns beginning of ‘clause’ if successful, nil otherwise
+
+py-backward-def
+---------------
+Go to beginning of ‘def’.
+
+If already at beginning, go one ‘def’ backward.
+Returns beginning of ‘def’ if successful, nil otherwise
+
+py-backward-def-or-class
+------------------------
+Go to beginning of ‘def-or-class’.
+
+If already at beginning, go one ‘def-or-class’ backward.
+Returns beginning of ‘def-or-class’ if successful, nil otherwise
 
 py-backward-elif-block
 ----------------------
@@ -556,12 +584,33 @@ Go to beginning of ‘block-or-clause’, go to BOL.
 If already at beginning, go one ‘block-or-clause’ backward.
 Returns beginning of ‘block-or-clause’ if successful, nil otherwise
 
+py-backward-class-bol
+---------------------
+Go to beginning of ‘class’, go to BOL.
+
+If already at beginning, go one ‘class’ backward.
+Returns beginning of ‘class’ if successful, nil otherwise
+
 py-backward-clause-bol
 ----------------------
 Go to beginning of ‘clause’, go to BOL.
 
 If already at beginning, go one ‘clause’ backward.
 Returns beginning of ‘clause’ if successful, nil otherwise
+
+py-backward-def-bol
+-------------------
+Go to beginning of ‘def’, go to BOL.
+
+If already at beginning, go one ‘def’ backward.
+Returns beginning of ‘def’ if successful, nil otherwise
+
+py-backward-def-or-class-bol
+----------------------------
+Go to beginning of ‘def-or-class’, go to BOL.
+
+If already at beginning, go one ‘def-or-class’ backward.
+Returns beginning of ‘def-or-class’ if successful, nil otherwise
 
 py-backward-elif-block-bol
 --------------------------
@@ -612,11 +661,17 @@ Go to beginning of ‘try-block’, go to BOL.
 If already at beginning, go one ‘try-block’ backward.
 Returns beginning of ‘try-block’ if successful, nil otherwise
 
+py-forward-region
+-----------------
+Go to the end of current region
+
 py-forward-block
 ----------------
 Go to end of block.
 
 Returns end of block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-block-bol
 --------------------
@@ -630,6 +685,8 @@ py-forward-block-or-clause
 Go to end of block-or-clause.
 
 Returns end of block-or-clause if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-block-or-clause-bol
 ------------------------------
@@ -643,6 +700,8 @@ py-forward-class
 Go to end of class.
 
 Returns end of class if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-class-bol
 --------------------
@@ -656,6 +715,8 @@ py-forward-clause
 Go to end of clause.
 
 Returns end of clause if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-clause-bol
 ---------------------
@@ -669,6 +730,8 @@ py-forward-def-or-class
 Go to end of def-or-class.
 
 Returns end of def-or-class if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-def-or-class-bol
 ---------------------------
@@ -682,6 +745,8 @@ py-forward-def
 Go to end of def.
 
 Returns end of def if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-def-bol
 ------------------
@@ -695,6 +760,8 @@ py-forward-if-block
 Go to end of if-block.
 
 Returns end of if-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-if-block-bol
 -----------------------
@@ -708,6 +775,8 @@ py-forward-elif-block
 Go to end of elif-block.
 
 Returns end of elif-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-elif-block-bol
 -------------------------
@@ -721,6 +790,8 @@ py-forward-else-block
 Go to end of else-block.
 
 Returns end of else-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-else-block-bol
 -------------------------
@@ -734,6 +805,8 @@ py-forward-for-block
 Go to end of for-block.
 
 Returns end of for-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-for-block-bol
 ------------------------
@@ -747,6 +820,8 @@ py-forward-except-block
 Go to end of except-block.
 
 Returns end of except-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-except-block-bol
 ---------------------------
@@ -760,6 +835,8 @@ py-forward-try-block
 Go to end of try-block.
 
 Returns end of try-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-try-block-bol
 ------------------------
@@ -773,6 +850,8 @@ py-forward-minor-block
 Go to end of minor-block.
 
 Returns end of minor-block if successful, nil otherwise
+Optional arg DECORATOR is used if form supports one
+With optional BOL, go to beginning of line following match.
 
 py-forward-minor-block-bol
 --------------------------
@@ -934,60 +1013,6 @@ Go to next section end downward in buffer.
 
 Return position if successful
 
-py-backward-class
------------------
-Go to beginning of class.
-
-If already at beginning, go one class backward.
-Returns beginning of class if successful, nil otherwise
-
-When ‘py-mark-decorators’ is non-nil, decorators are considered too. 
-
-py-backward-def
----------------
-Go to beginning of def.
-
-If already at beginning, go one def backward.
-Returns beginning of def if successful, nil otherwise
-
-When ‘py-mark-decorators’ is non-nil, decorators are considered too. 
-
-py-backward-def-or-class
-------------------------
-Go to beginning of def-or-class.
-
-If already at beginning, go one def-or-class backward.
-Returns beginning of def-or-class if successful, nil otherwise
-
-When ‘py-mark-decorators’ is non-nil, decorators are considered too. 
-
-py-backward-class-bol
----------------------
-Go to beginning of class, go to BOL.
-
-If already at beginning, go one class backward.
-Returns beginning of class if successful, nil otherwise
-
-When ‘py-mark-decorators’ is non-nil, decorators are considered too. 
-
-py-backward-def-bol
--------------------
-Go to beginning of def, go to BOL.
-
-If already at beginning, go one def backward.
-Returns beginning of def if successful, nil otherwise
-
-When ‘py-mark-decorators’ is non-nil, decorators are considered too. 
-
-py-backward-def-or-class-bol
-----------------------------
-Go to beginning of def-or-class, go to BOL.
-
-If already at beginning, go one def-or-class backward.
-Returns beginning of def-or-class if successful, nil otherwise
-
-When ‘py-mark-decorators’ is non-nil, decorators are considered too. 
-
 py-kill-comment
 ---------------
 Delete comment at point.
@@ -1028,7 +1053,7 @@ py-kill-top-level
 -----------------
 Delete top-level at point.
 
-Stores data in kill ring. Might be yanked back using ‘C-y’. 
+Stores data in kill ring
 
 py-kill-block
 -------------
@@ -1120,6 +1145,60 @@ Delete try-block at point.
 
 Stores data in kill ring. Might be yanked back using ‘C-y’. 
 
+py-close-block
+--------------
+Close block at point.
+
+Set indent level to that of beginning of function definition.
+
+If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline.
+
+
+py-close-class
+--------------
+Close class at point.
+
+Set indent level to that of beginning of function definition.
+
+If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline.
+
+
+py-close-def
+------------
+Close def at point.
+
+Set indent level to that of beginning of function definition.
+
+If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline.
+
+
+py-close-def-or-class
+---------------------
+Close def-or-class at point.
+
+Set indent level to that of beginning of function definition.
+
+If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline.
+
+
+py-close-minor-block
+--------------------
+Close minor-block at point.
+
+Set indent level to that of beginning of function definition.
+
+If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline.
+
+
+py-close-statement
+------------------
+Close statement at point.
+
+Set indent level to that of beginning of function definition.
+
+If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline.
+
+
 py-mark-comment
 ---------------
 Mark comment at point.
@@ -1158,9 +1237,9 @@ Returns beginning and end positions of marked area, a cons.
 
 py-mark-top-level
 -----------------
-Mark top-level, take beginning of line positions. 
+Mark top-level at point.
 
-Returns beginning and end positions of region, a cons. 
+Returns beginning and end positions of marked area, a cons. 
 
 py-mark-block
 -------------
@@ -1534,12 +1613,6 @@ Delete STATEMENT at point until beginning-of-line.
 
 Don’t store data in kill ring. 
 
-py-delete-top-level
--------------------
-Delete TOP-LEVEL at point.
-
-Don’t store data in kill ring. 
-
 py-delete-try-block
 -------------------
 Delete TRY-BLOCK at point until beginning-of-line.
@@ -1579,6 +1652,12 @@ Don’t store data in kill ring.
 py-delete-section
 -----------------
 Delete SECTION at point.
+
+Don’t store data in kill ring. 
+
+py-delete-top-level
+-------------------
+Delete TOP-LEVEL at point.
 
 Don’t store data in kill ring. 
 
@@ -1742,9 +1821,13 @@ Start an interactive Python interpreter in another window.
   If ‘default-directory’ is a remote file name, it is also prompted
   to change if called with a prefix arg.
 
+  Optional string SHELL overrides default ‘py-shell-name’.
   Returns py-shell’s buffer-name.
-  Optional string PYSHELLNAME overrides default ‘py-shell-name’.
   BUFFER allows specifying a name, the Python process is connected to
+  FAST process not in comint-mode buffer
+  EXCEPTION-BUFFER point to error
+  SPLIT see var ‘py-split-window-on-execute’
+  SWITCH see var ‘py-switch-buffers-on-execute-p’
   
 
 py-shell-get-process
@@ -1754,12 +1837,6 @@ Get appropriate Python process for current buffer and return it.
 py-switch-to-shell
 ------------------
 Switch to Python process buffer.
-
-py-which-execute-file-command
------------------------------
-Return the command appropriate to Python version.
-
-Per default it’s "(format "execfile(r’%s’) # PYTHON-MODE\n" filename)" for Python 2 series.
 
 py-execute-file
 ---------------
@@ -1868,7 +1945,7 @@ Complete or indent depending on the context.
 If cursor is at end of a symbol, try to complete
 Otherwise call ‘py-indent-line’
 
-If ‘(region-active-p)’ returns ‘t’, indent region.
+If ‘(use-region-p)’ returns ‘t’, indent region.
 Use ‘C-q TAB’ to insert a literally TAB-character
 
 In python-mode ‘py-complete-function’ is called,
@@ -1958,7 +2035,7 @@ Display pep8 command line help messages.
 
 py-pylint-run
 -------------
-*Run pylint (default on the file currently visited).
+Run pylint (default on the file currently visited).
 
 For help see M-x pylint-help resp. M-x pylint-long-help.
 Home-page: http://www.logilab.org/project/pylint 
@@ -2096,42 +2173,6 @@ Return indentation reached, if dedent done, nil otherwise.
 
 Affected by ‘py-dedent-keep-relative-column’. 
 
-py-close-def
-------------
-Set indent level to that of beginning of function definition.
-
-If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline. 
-
-py-close-class
---------------
-Set indent level to that of beginning of class definition.
-
-If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline. 
-
-py-close-def-or-class
----------------------
-Set indent level to that of beginning of def-or-class definition.
-
-If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline. 
-
-py-close-clause
----------------
-Set indent level to that of beginning of clause definition.
-
-If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline. 
-
-py-close-block
---------------
-Set indent level to that of beginning of block definition.
-
-If final line isn’t empty and ‘py-close-block-provides-newline’ non-nil, insert a newline. 
-
-py-close-block-or-clause
-------------------------
-Set indent level to that of beginning of block-or-clause definition.
-
-If final line isn’t empty and ‘py-close-block-or-clause-provides-newline’ non-nil, insert a newline. 
-
 py-class-at-point
 -----------------
 Return class definition as string.
@@ -2156,10 +2197,6 @@ py-line-at-point
 ----------------
 Return line as string.
   With interactive call, send it to the message buffer too. 
-
-py-looking-at-keywords-p
-------------------------
-If looking at a python keyword. Returns t or nil. 
 
 py-match-paren-mode
 -------------------
@@ -2449,7 +2486,7 @@ py-electric-backspace
 ---------------------
 Delete preceding character or level of indentation.
 
-When ‘delete-active-region’ and (region-active-p), delete region.
+When ‘delete-active-region’ and (use-region-p), delete region.
 
 Unless at indentation:
   With ‘py-electric-kill-backward-p’ delete whitespace before point.
@@ -2461,7 +2498,7 @@ py-electric-delete
 ------------------
 Delete following character or levels of whitespace.
 
-When ‘delete-active-region’ and (region-active-p), delete region 
+When ‘delete-active-region’ and (use-region-p), delete region 
 
 py-electric-yank
 ----------------
@@ -2483,10 +2520,6 @@ virtualenv-workon
 -----------------
 Issue a virtualenvwrapper-like virtualenv-workon command
 
-py--beginning-of-top-level-p
-----------------------------
-Returns position, if cursor is at the beginning of a ‘top-level’, nil otherwise. 
-
 py-up-statement
 ---------------
 Go to the beginning of next statement upwards in buffer.
@@ -2505,23 +2538,11 @@ Go to the beginning of next block upwards in buffer.
 
 Return position if block found, nil otherwise. 
 
-py-up-block-or-clause
----------------------
-Go to the beginning of next block-or-clause upwards in buffer.
-
-Return position if block-or-clause found, nil otherwise. 
-
 py-up-class
 -----------
 Go to the beginning of next class upwards in buffer.
 
 Return position if class found, nil otherwise. 
-
-py-up-clause
-------------
-Go to the beginning of next clause upwards in buffer.
-
-Return position if clause found, nil otherwise. 
 
 py-up-def
 ---------
@@ -2541,35 +2562,17 @@ Go to the beginning of next minor-block upwards in buffer.
 
 Return position if minor-block found, nil otherwise. 
 
-py-up-section
--------------
-Go to the beginning of next section upwards in buffer.
-
-Return position if section found, nil otherwise. 
-
 py-down-block
 -------------
 Go to the beginning of next block below in buffer.
 
 Return position if block found, nil otherwise. 
 
-py-down-block-or-clause
------------------------
-Go to the beginning of next block-or-clause below in buffer.
-
-Return position if block-or-clause found, nil otherwise. 
-
 py-down-class
 -------------
 Go to the beginning of next class below in buffer.
 
 Return position if class found, nil otherwise. 
-
-py-down-clause
---------------
-Go to the beginning of next clause below in buffer.
-
-Return position if clause found, nil otherwise. 
 
 py-down-def
 -----------
@@ -2589,12 +2592,6 @@ Go to the beginning of next minor-block below in buffer.
 
 Return position if minor-block found, nil otherwise. 
 
-py-down-section
----------------
-Go to the beginning of next section below in buffer.
-
-Return position if section found, nil otherwise. 
-
 py-up-block-bol
 ---------------
 Go to the beginning of next block upwards in buffer.
@@ -2602,26 +2599,12 @@ Go to the beginning of next block upwards in buffer.
 Go to beginning of line.
 Return position if block found, nil otherwise. 
 
-py-up-block-or-clause-bol
--------------------------
-Go to the beginning of next block-or-clause upwards in buffer.
-
-Go to beginning of line.
-Return position if block-or-clause found, nil otherwise. 
-
 py-up-class-bol
 ---------------
 Go to the beginning of next class upwards in buffer.
 
 Go to beginning of line.
 Return position if class found, nil otherwise. 
-
-py-up-clause-bol
-----------------
-Go to the beginning of next clause upwards in buffer.
-
-Go to beginning of line.
-Return position if clause found, nil otherwise. 
 
 py-up-def-bol
 -------------
@@ -2644,13 +2627,6 @@ Go to the beginning of next minor-block upwards in buffer.
 Go to beginning of line.
 Return position if minor-block found, nil otherwise. 
 
-py-up-section-bol
------------------
-Go to the beginning of next section upwards in buffer.
-
-Go to beginning of line.
-Return position if section found, nil otherwise. 
-
 py-down-block-bol
 -----------------
 Go to the beginning of next block below in buffer.
@@ -2658,26 +2634,12 @@ Go to the beginning of next block below in buffer.
 Go to beginning of line
 Return position if block found, nil otherwise 
 
-py-down-block-or-clause-bol
----------------------------
-Go to the beginning of next block-or-clause below in buffer.
-
-Go to beginning of line
-Return position if block-or-clause found, nil otherwise 
-
 py-down-class-bol
 -----------------
 Go to the beginning of next class below in buffer.
 
 Go to beginning of line
 Return position if class found, nil otherwise 
-
-py-down-clause-bol
-------------------
-Go to the beginning of next clause below in buffer.
-
-Go to beginning of line
-Return position if clause found, nil otherwise 
 
 py-down-def-bol
 ---------------
@@ -2699,13 +2661,6 @@ Go to the beginning of next minor-block below in buffer.
 
 Go to beginning of line
 Return position if minor-block found, nil otherwise 
-
-py-down-section-bol
--------------------
-Go to the beginning of next section below in buffer.
-
-Go to beginning of line
-Return position if section found, nil otherwise 
 
 py-execute-try-block
 --------------------
@@ -3129,7 +3084,7 @@ py-execute-buffer
 
 Send buffer at point to  interpreter. 
 
-(fn)
+(fn &optional SHELL DEDICATED FAST SPLIT SWITCH PROC WHOLEBUF)
 
 py-execute-buffer-switch
 ------------------------
@@ -5979,6 +5934,11 @@ expansion.
 
 Don’t use this function in a Lisp program; use ‘define-abbrev’ instead.
 
+py-fill-paren
+-------------
+Paren fill function for ‘py-fill-paragraph’.
+JUSTIFY should be used (if applicable) as in ‘fill-paragraph’.
+
 py-fill-string-django
 ---------------------
 Fill docstring according to Django’s coding standards style.
@@ -7076,6 +7036,19 @@ Complete word before point, if any.
 
 Use ‘py-fast-process’ 
 
+ar--beginning-of-form-intern
+----------------------------
+Go to beginning of FORM.
+
+With INDENT, go to beginning one level above.
+Whit IACT, print result in message buffer.
+
+Returns beginning of FORM if successful, nil otherwise
+
+py-in-comment-p
+---------------
+Return the beginning of current line’s comment, if inside. 
+
 py-forward-buffer
 -----------------
 A complementary form used by auto-generated commands.
@@ -7143,13 +7116,6 @@ Uncomment commented lines at point.
 
 If region is active, restrict uncommenting at region 
 
-py--unfontify-banner
---------------------
-Unfontify the shell banner-text.
-
-Cancels ‘py--timer’
-Expects being called by ‘py--run-unfontify-timer’ 
-
 py-set-command-args
 -------------------
 Set Python arguments on the fly, override defaults in this session.
@@ -7189,12 +7155,6 @@ With numeric ARG different from 1 py-continuation-offset is set to that value; r
 py-indentation-of-statement
 ---------------------------
 Returns the indenation of the statement at point. 
-
-py-list-beginning-position
---------------------------
-Return lists beginning position, nil if not inside.
-
-Optional ARG indicates a start-position for ‘parse-partial-sexp’.
 
 py-end-of-list-position
 -----------------------
@@ -7308,14 +7268,6 @@ Go to end of top-level form at point, stop at next beginning-of-line.
 
 Returns position successful, nil otherwise
 
-py-up
------
-Go up or to beginning of form if inside.
-
-If inside a delimited form --string or list-- go to its beginning.
-If not at beginning of a statement or block, go to its beginning.
-If at beginning of a statement or block, go to beginning one level above of compound statement or definition at point.
-
 py-down
 -------
 Go to beginning one level below of compound statement or definition at point.
@@ -7351,4 +7303,8 @@ py-sectionize-region
 Markup code in region as section.
 
 Use current region unless optional args BEG END are delivered.
+
+py-rotate-shell-fontify-style
+-----------------------------
+Rotates between possible values ’all, ’input and nil. 
 
