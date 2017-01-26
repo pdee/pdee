@@ -49,6 +49,54 @@ impo")))
       (should (eq (char-before) 40)))))
 
 
+(ert-deftest py-ert-shift-right-test-1 ()
+  (py-test-with-temp-buffer
+      "def foo():
+    if path == '/tmp':
+    raise ValueError"
+    (back-to-indentation)
+    (py-shift-right 1)
+    (should (eq 8 (current-indentation)))))
+
+(ert-deftest py-ert-shift-right-test-2 ()
+  (py-test-with-temp-buffer
+      "def foo():
+    if path == '/tmp':
+    raise ValueError"
+    (back-to-indentation)
+    (py-shift-right 1)
+    (forward-line -1)
+    (should (eq 4 (current-indentation)))))
+
+(ert-deftest py-ert-shift-right-test-3 ()
+  (py-test-with-temp-buffer
+      "def foo():
+    if path == '/tmp':
+    raise ValueError"
+    (beginning-of-line) 
+    (py-shift-right 1)
+    (forward-line -1)
+    (should (eq 4 (current-indentation)))))
+
+(ert-deftest py-ert-shift-right-test-4 ()
+  (py-test-with-temp-buffer
+      "def foo():
+    if path == '/tmp':
+    raise ValueError"
+    (back-to-indentation)
+    (forward-word 1) 
+    (py-shift-right 1)
+    (should (eq 8 (current-indentation)))))
+
+
+(ert-deftest py-ert-shift-right-test-5 ()
+  (py-test-with-temp-buffer
+      "def foo():
+    if path == '/tmp':
+    raise ValueError"
+    (forward-char -2) 
+    (py-shift-right 1)
+    (should (eq 8 (current-indentation)))))
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

@@ -46,9 +46,10 @@ Returns indentation reached. "
     (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
     erg))
 
-(defun py--shift-intern (count &optional start end)
+(defun py--shift-intern (&optional count start end)
   (save-excursion
-    (let* ((inhibit-point-motion-hooks t)
+    (let* ((count (or count 1)) 
+	   (inhibit-point-motion-hooks t)
            deactivate-mark
            (beg (cond (start)
 		      ;; (use-region-p)
