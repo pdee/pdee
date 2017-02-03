@@ -73,7 +73,7 @@ impo")))
       "def foo():
     if path == '/tmp':
     raise ValueError"
-    (beginning-of-line) 
+    (beginning-of-line)
     (py-shift-right 1)
     (forward-line -1)
     (should (eq 4 (current-indentation)))))
@@ -84,7 +84,7 @@ impo")))
     if path == '/tmp':
     raise ValueError"
     (back-to-indentation)
-    (forward-word 1) 
+    (forward-word 1)
     (py-shift-right 1)
     (should (eq 8 (current-indentation)))))
 
@@ -94,9 +94,36 @@ impo")))
       "def foo():
     if path == '/tmp':
     raise ValueError"
-    (forward-char -2) 
+    (forward-char -2)
     (py-shift-right 1)
     (should (eq 8 (current-indentation)))))
+
+(ert-deftest py-ert-shift-right-test-6 ()
+  (py-test-with-temp-buffer
+      "def foo():
+    if path == '/tmp':
+    raise ValueError"
+    (forward-char -2)
+    (py-shift-right 1)
+    (should (eq 8 (current-indentation)))))
+
+;; (ert-deftest window-on-top-lp-1579309-test-1 ()
+;;   (py-test-with-temp-buffer
+;;       "print(123)"
+;;     (let ((old-window (selected-window))
+;; 	  (old-point (window-point)))
+;;       (message "%s" (window-list))
+;;       (py-execute-statement-python3)
+;;       (message "%s" (window-list))
+;;       (save-window-excursion
+;; 	(with-current-buffer "*Python3*"
+;; 	  (switch-to-buffer (current-buffer)) 
+;; 	  (message "%s" (current-buffer))
+;; 	  (message "%s" (window-point))
+;; 	  (message "%s" (window-list))))
+;;       (message "%s" (window-list))
+;;       (should (eq old-window (selected-window)))
+;;       (should (eq old-point (window-point))))))
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

@@ -437,11 +437,12 @@ Internal use"
       (and (window-parent)(ignore-errors (split-window (window-parent))))
       (and (window-atom-root)(split-window (window-atom-root)))))
 
-(defun py--manage-windows-split (exception-buffer)
+(defun py--manage-windows-split (buffer)
   "If one window, split according to `py-split-windows-on-execute-function. "
   (interactive)
-  (set-buffer exception-buffer)
+  (set-buffer buffer)
   (or
+   ;; (split-window (selected-window) nil 'below)
    (ignore-errors (funcall py-split-windows-on-execute-function))
    ;; If call didn't succeed according to settings of
    ;; `split-height-threshold', `split-width-threshold'
@@ -457,13 +458,13 @@ Internal use"
 ;;       (display-buffer output-buffer)
 ;;       (select-window py-exception-window))
 
-(defun py--split-t-not-switch-wm (output-buffer number-of-windows)
+(defun py--split-t-not-switch-wm (output-buffer number-of-windows exception-buffer)
   (unless (window-live-p output-buffer)
-    (with-current-buffer (get-buffer output-buffer)
+    (with-current-buffer (get-buffer exception-buffer)
       (when (< number-of-windows py-split-window-on-execute-threshold)
 	(unless
 	    (member (get-buffer-window output-buffer)(window-list))
-	  (py--manage-windows-split py-exception-buffer)))
+	  (py--manage-windows-split exception-buffer)))
       (display-buffer output-buffer t))))
 
 (defun py--shell-manage-windows (output-buffer &optional exception-buffer split switch)
@@ -530,7 +531,7 @@ Internal use"
       ;; https://bugs.launchpad.net/python-mode/+bug/1478122
       ;; > If the shell is visible in any of the windows it  should re-use that window
       ;; > I did double check and py-keep-window-configuration is nil and split is t.
-      (py--split-t-not-switch-wm output-buffer number-of-windows))
+      (py--split-t-not-switch-wm output-buffer number-of-windows exception-buffer))
      ((and split switch)
       (unless
 	  (member (get-buffer-window output-buffer)(window-list))
