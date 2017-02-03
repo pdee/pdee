@@ -450,30 +450,39 @@ Don't save anything for STR matching `py-input-filter-re' "
 (push (cons (purecopy "\\.py\\'")  'python-mode)  auto-mode-alist)
 
 ;; Python Macro File
-(push (cons (purecopy "\.pym\'")  'python-mode)  auto-mode-alist)
 
-(push (cons (purecopy "\.pyc\'")  'python-mode)  auto-mode-alist)
+(unless (member '(".pym'" . python-mode) auto-mode-alist)
+  (push (cons (purecopy "\.pym\'")  'python-mode)  auto-mode-alist))
+
+(unless (member '(".pyc'" . python-mode)  auto-mode-alist)
+  (push (cons (purecopy "\.pyc\'")  'python-mode)  auto-mode-alist))
 
 ;; Pyrex Source
-(push (cons (purecopy "\.pyx\'")  'python-mode) auto-mode-alist)
+(unless (member '(".pyx'" . python-mode)  auto-mode-alist)
+  (push (cons (purecopy "\.pyx\'")  'python-mode) auto-mode-alist))
 
 ;; Python Optimized Code
-(push (cons (purecopy "\.pyo\'")  'python-mode) auto-mode-alist)
+(unless (member '(".pyo'" . python-mode)  auto-mode-alist)
+  (push (cons (purecopy "\.pyo\'")  'python-mode) auto-mode-alist))
 
 ;; Pyrex Definition File
-(push (cons (purecopy "\.pxd\'")  'python-mode) auto-mode-alist)
+(unless (member '(".pxd'" . python-mode)  auto-mode-alist)
+  (push (cons (purecopy "\.pxd\'")  'python-mode) auto-mode-alist))
 
 ;; Python Repository
-(push (cons (purecopy "\.pyr\'")  'python-mode)  auto-mode-alist)
+(unless (member '(".pyr'" . python-mode)  auto-mode-alist)
+  (push (cons (purecopy "\.pyr\'")  'python-mode)  auto-mode-alist))
 
 ;; Python Path Configuration
-(push (cons (purecopy "\.pth\'")  'python-mode)  auto-mode-alist)
+(unless (member '(".pth'" . python-mode)  auto-mode-alist)
+  (push (cons (purecopy "\.pth\'")  'python-mode)  auto-mode-alist))
 
 ;; Python Wheels
-(push (cons (purecopy "\.whl\'")  'python-mode)  auto-mode-alist)
+(unless (member '(".whl'" . python-mode)  auto-mode-alist)
+  (push (cons (purecopy "\.whl\'")  'python-mode)  auto-mode-alist))
 
-(push '("!#[ \t]*/.*[jp]ython[0-9.]*" . python-mode) magic-mode-alist
-	     )
+(unless (member '("!#[ 	]*/.*[jp]ython[0-9.]*" . python-mode) magic-mode-alist)
+  (push '("!#[ \t]*/.*[jp]ython[0-9.]*" . python-mode) magic-mode-alist))
 
 ;;  lp:1355458, what about using `magic-mode-alist'?
 
