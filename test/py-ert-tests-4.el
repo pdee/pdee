@@ -107,6 +107,17 @@ impo")))
     (py-shift-right 1)
     (should (eq 8 (current-indentation)))))
 
+(ert-deftest py-execute-region-test-1 ()
+  (py-test-with-temp-buffer
+      "def foo(x):
+    if x == 1:
+        return 0"
+    (push-mark)
+    (goto-char (point-min))
+    (py-execute-region (point) (mark))
+    (set-buffer (get-buffer py-buffer-name))
+    (should-not (search-backward "FileNotFoundError" nil t 1))))
+
 ;; (ert-deftest window-on-top-lp-1579309-test-1 ()
 ;;   (py-test-with-temp-buffer
 ;;       "print(123)"
@@ -117,7 +128,7 @@ impo")))
 ;;       (message "%s" (window-list))
 ;;       (save-window-excursion
 ;; 	(with-current-buffer "*Python3*"
-;; 	  (switch-to-buffer (current-buffer)) 
+;; 	  (switch-to-buffer (current-buffer))
 ;; 	  (message "%s" (current-buffer))
 ;; 	  (message "%s" (window-point))
 ;; 	  (message "%s" (window-list))))

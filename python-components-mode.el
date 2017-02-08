@@ -1932,7 +1932,9 @@ See also `py-execute-directory'"
 (defvar ffap-alist nil)
 
 (defvar py-buffer-name nil
-  "Internal use. ")
+  "Internal use. 
+
+The buffer last output was sent to.")
 
 (defvar py-orig-buffer-or-file nil
   "Internal use. ")

@@ -150,11 +150,11 @@ Returns char found. "
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
 (defun py--buffer-filename-remote-maybe (&optional file-name buffer)
-  (let ((file-name (or file-name (buffer-file-name))))
+  (let ((file-name (or file-name (ignore-errors (file-readable-p (buffer-file-name))))))
     (if (and (featurep 'tramp) (tramp-tramp-file-p file-name))
 	(tramp-file-name-localname
 	 (tramp-dissect-file-name file-name))
-      (buffer-file-name (or buffer (current-buffer))))))
+      file-name)))
 
 (defun py-forward-buffer ()
   "A complementary form used by auto-generated commands.
