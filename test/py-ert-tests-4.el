@@ -86,7 +86,9 @@ impo")))
     (back-to-indentation)
     (forward-word 1)
     (py-shift-right 1)
-    (should (eq 8 (current-indentation)))))
+    (should (eq 8 (current-indentation)))
+    (beginning-of-buffer)
+    (should (eq 0 (current-indentation)))))
 
 
 (ert-deftest py-ert-shift-right-test-5 ()
@@ -95,8 +97,11 @@ impo")))
     if path == '/tmp':
     raise ValueError"
     (forward-char -2)
+    (deactivate-mark)
     (py-shift-right 1)
-    (should (eq 8 (current-indentation)))))
+    (should (eq 8 (current-indentation)))
+    (beginning-of-buffer)
+    (should (eq 0 (current-indentation)))))
 
 (ert-deftest py-ert-shift-right-test-6 ()
   (py-test-with-temp-buffer
@@ -105,7 +110,9 @@ impo")))
     raise ValueError"
     (forward-char -2)
     (py-shift-right 1)
-    (should (eq 8 (current-indentation)))))
+    (should (eq 8 (current-indentation)))
+    (beginning-of-buffer)
+    (should (eq 0 (current-indentation)))))
 
 (ert-deftest py-execute-region-test-1 ()
   (py-test-with-temp-buffer
