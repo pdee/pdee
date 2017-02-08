@@ -110,6 +110,7 @@ $EMACS -Q --batch \
 -l $TEST13 \
 -l $TEST14 \
 -l $TEST15 \
+-l $TEST16 \
 --eval "(setq py-debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }
