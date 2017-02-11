@@ -146,6 +146,14 @@ Results arrive in output buffer, which is not in comint-mode"
   :tag "py-fast-process-p"
   :group 'python-mode)
 
+(defcustom py-shift-require-transient-mark-mode-p t
+ "If py-shift commands on active regions should require transient-mark-mode.
+
+Default is t " 
+
+:type 'boolean
+:group 'python-mode)
+
 (defvar py-fast-output-buffer "*Py-Fast-Output-Buffer*"
   "Default buffer-name for fast-processes")
 

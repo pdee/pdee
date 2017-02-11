@@ -52,8 +52,10 @@ Returns indentation reached. "
 	   (inhibit-point-motion-hooks t)
            deactivate-mark
            (beg (cond (start)
-		      ;; (use-region-p)
-                      ((and (mark) (not (eq (mark) (point))))
+		      ((and py-shift-require-transient-mark-mode-p
+			    (use-region-p))
+		       (region-beginning)) 
+                      ((and (not py-shift-require-transient-mark-mode-p)(mark) (not (eq (mark) (point))))
                        (save-excursion
                          (goto-char
                           (region-beginning))))
