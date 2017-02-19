@@ -150,7 +150,10 @@ Returns char found. "
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
 (defun py--buffer-filename-remote-maybe (&optional file-name buffer)
-  (let ((file-name (or file-name (ignore-errors (file-readable-p (buffer-file-name))))))
+  (let ((file-name (or file-name
+		       (and
+			(ignore-errors (file-readable-p (buffer-file-name)))
+			(buffer-file-name)))))
     (if (and (featurep 'tramp) (tramp-tramp-file-p file-name))
 	(tramp-file-name-localname
 	 (tramp-dissect-file-name file-name))
