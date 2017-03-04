@@ -318,7 +318,7 @@ computing indents"
           (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; at raw-string
 	 ;; (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
-	 ((py--at-raw-string)
+	 ((and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
 	  (forward-char -1)
 	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; BOL or at space before comment

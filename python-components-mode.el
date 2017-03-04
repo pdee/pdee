@@ -2958,7 +2958,7 @@ Used by `py-ipython-module-completion-string'"
 
 (defun py--at-raw-string ()
   "If at beginning of a raw-string. "
-  (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
+  (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R))))
 
 (defun py--docstring-p (pos)
   "Check to see if there is a docstring at POS."
