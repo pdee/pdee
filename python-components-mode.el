@@ -149,7 +149,7 @@ Results arrive in output buffer, which is not in comint-mode"
 (defcustom py-shift-require-transient-mark-mode-p t
  "If py-shift commands on active regions should require transient-mark-mode.
 
-Default is t " 
+Default is t "
 
 :type 'boolean
 :group 'python-mode)
@@ -1940,7 +1940,7 @@ See also `py-execute-directory'"
 (defvar ffap-alist nil)
 
 (defvar py-buffer-name nil
-  "Internal use. 
+  "Internal use.
 
 The buffer last output was sent to.")
 
@@ -2960,21 +2960,16 @@ Used by `py-ipython-module-completion-string'"
   "If at beginning of a raw-string. "
   (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
 
-(defun py--docstring-p (&optional beginning-of-string-position)
+(defun py--docstring-p (pos)
   "Check to see if there is a docstring at POS."
-  (let* (pps
-	 (pos (or beginning-of-string-position
-		  (and (nth 3 (setq pps (parse-partial-sexp (point-min) (point)))) (nth 8 pps)))))
-    (save-restriction
-      (widen)
-      (save-excursion
-	(goto-char pos)
+    (save-excursion
+      (goto-char pos)
 	(when (py--at-raw-string)
 	  (forward-char -1)
 	  (setq pos (point)))
 	(when (py-backward-statement)
 	  (when (looking-at py-def-or-class-re)
-	    pos))))))
+	    pos))))
 
 (defun py--font-lock-syntactic-face-function (state)
   (if (nth 3 state)

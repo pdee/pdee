@@ -687,7 +687,7 @@ LIEP stores line-end-position at point-of-interest
 			  ;; in string
 			  ((and (nth 3 pps)(nth 8 pps))
 			   (cond
-			    ((py--docstring-p)
+			    ((py--docstring-p (nth 8 pps))
 			     (save-excursion
 			       (back-to-indentation)
 			       (skip-chars-backward " \t\r\n\f")
