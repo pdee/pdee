@@ -1155,9 +1155,12 @@ Must find start first "
 
 	     ;; start of form maybe inside
 	     (this
-	      (if (and (looking-at thisregexp)(not (or (nth 1 pps) (nth 8 pps))))
-		  (point)
-		(py--go-to-keyword thisregexp indent)))
+	      (cond ((and (looking-at thisregexp) (not (or (nth 1 pps) (nth 8 pps))))
+		     (point))
+		    ((looking-back py-decorator-re)
+		     (and (re-search-forward thisregexp nil t 1)
+			  (match-beginning 0)))
+		    (t (py--go-to-keyword thisregexp indent))))
 	     erg)
 	(cond
 	 (this (setq erg (py--go-down-when-found-upward regexp)))

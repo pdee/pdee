@@ -48,7 +48,6 @@ impo")))
       (py-fast-complete)
       (should (eq (char-before) 40)))))
 
-
 (ert-deftest py-ert-shift-right-test-1 ()
   (py-test-with-temp-buffer
       "def foo():
@@ -90,7 +89,6 @@ impo")))
     (beginning-of-buffer)
     (should (eq 0 (current-indentation)))))
 
-
 (ert-deftest py-ert-shift-right-test-5 ()
   (py-test-with-temp-buffer
       "def foo():
@@ -125,23 +123,22 @@ impo")))
     (set-buffer (get-buffer py-buffer-name))
     (should-not (search-backward "FileNotFoundError" nil t 1))))
 
-;; (ert-deftest window-on-top-lp-1579309-test-1 ()
-;;   (py-test-with-temp-buffer
-;;       "print(123)"
-;;     (let ((old-window (selected-window))
-;; 	  (old-point (window-point)))
-;;       (message "%s" (window-list))
-;;       (py-execute-statement-python3)
-;;       (message "%s" (window-list))
-;;       (save-window-excursion
-;; 	(with-current-buffer "*Python3*"
-;; 	  (switch-to-buffer (current-buffer))
-;; 	  (message "%s" (current-buffer))
-;; 	  (message "%s" (window-point))
-;; 	  (message "%s" (window-list))))
-;;       (message "%s" (window-list))
-;;       (should (eq old-window (selected-window)))
-;;       (should (eq old-point (window-point))))))
+(ert-deftest py-end-of-def-or-class-test-1 ()
+  (py-test-with-temp-buffer
+      "class foo:
+    \"\"\"asdf\"\"\"
+    def bar():
+        \"\"\"\"\"\"
+        return True
+
+    @asdf
+    def baz():
+        \"\"\"\"\"\"
+        pass"
+    (search-backward "@asdf")
+    (end-of-line)
+    (py-end-of-def-or-class)
+    (should (looking-back "pass"))))
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here
