@@ -311,10 +311,12 @@ result = some_function_that_takes_arguments(
     (should (bolp))))
 
 (ert-deftest py-ert-moves-down-def-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       py-ert-moves-text
-    (goto-char (point-min))
-    (should (eq 142 (py-down-def-bol)))))
+    (search-backward "__init__")
+    (py-down-def-bol)
+    (should (bolp)) 
+    (should (looking-at " +def"))))
 
 (ert-deftest py-ert-down-class-bol-1 ()
   (py-test-with-temp-buffer-point-min
@@ -323,42 +325,102 @@ result = some_function_that_takes_arguments(
     (should (not (py-down-class-bol)))))
 
 (ert-deftest py-ert-moves-down-def-or-class-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       py-ert-moves-text
-    (goto-char (point-min))
-    (should (eq 142 (py-down-def-or-class-bol)))))
+    (search-backward "__init__")
+    (py-down-def-or-class-bol)
+    (should (bolp))
+    (should (looking-at " +def"))))
 
 (ert-deftest py-ert-moves-down-block-1 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       py-ert-moves-text
-    (goto-char 264)
+    (search-backward "__init__") 
     (py-down-block)
-    (should (looking-at "if"))))
+    (should (looking-at "def"))))
 
 (ert-deftest py-ert-moves-down-block-bol-2 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       py-ert-moves-text
-    (goto-char 264)
+    (search-backward "__init__") 
     (py-down-block-bol)
-    (should (looking-at "^ +if"))))
+    (should (bolp))
+    (should (looking-at " +def"))))
 
 (ert-deftest py-ert-moves-down-minor-block-1 ()
-  (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
-    (goto-char 264)
-    (should (eq 325 (py-down-minor-block)))))
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        if b:
+            pass"
+    (search-backward "__init__") 
+    (py-down-minor-block)
+    (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-moves-down-minor-block-bol-1 ()
-  (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
-    (goto-char 264)
-    (should (eq 317 (py-down-minor-block-bol)))))
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        if b:
+            pass"
+    (search-backward "__init__") 
+    (py-down-minor-block-bol)
+    (should (bolp))
+    (should (looking-at " +if"))))
 
 (ert-deftest py-ert-moves-down-def-1 ()
   (py-test-with-temp-buffer-point-min
       py-ert-moves-text
-    (goto-char (point-min))
-    (should (eq 146 (py-down-def)))))
+    (should (py-down-def))))
+
+(ert-deftest py-ert-moves-down-def-2 ()
+  (py-test-with-temp-buffer
+      py-ert-moves-text
+    (search-backward "__init__")
+    (py-down-def)
+    (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-moves-down-class-1 ()
   (py-test-with-temp-buffer-point-min
@@ -367,10 +429,11 @@ result = some_function_that_takes_arguments(
     (should (not (py-down-class)))))
 
 (ert-deftest py-ert-moves-down-def-or-class-1 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       py-ert-moves-text
-    (goto-char (point-min))
-    (should (eq 146 (py-down-def-or-class)))))
+    (search-backward "__init__")
+    (py-down-def-or-class)
+    (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-moves-backward-statement-bol-1 ()
   (py-test-with-temp-buffer-point-min

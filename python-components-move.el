@@ -87,9 +87,9 @@ Returns final position when called from inside section, nil otherwise"
       (when (py-forward-statement)
 	(save-excursion
 	  (setq done (point))
-	  (setq indent (and (py-backward-statement)(current-indentation)))))
+	  (setq indent (and (py-backward-statement)(current-indentation))))
       (setq done (py--travel-this-indent-forward indent))
-      (when done (goto-char done))
+      (when done (goto-char done)))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" done))
       done)))
 

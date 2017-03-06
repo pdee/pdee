@@ -48,13 +48,13 @@ Returns indentation reached. "
 
 (defun py--shift-intern (&optional count start end)
   (save-excursion
-    (let* ((count (or count 1)) 
+    (let* ((count (or count 1))
 	   (inhibit-point-motion-hooks t)
            deactivate-mark
            (beg (cond (start)
 		      ((and py-shift-require-transient-mark-mode-p
 			    (use-region-p))
-		       (region-beginning)) 
+		       (region-beginning))
                       ((and (not py-shift-require-transient-mark-mode-p)(mark) (not (eq (mark) (point))))
                        (save-excursion
                          (goto-char
@@ -63,7 +63,7 @@ Returns indentation reached. "
            (end (cond (end)
 		      ((and py-shift-require-transient-mark-mode-p
 			    (use-region-p))
-		       (region-end)) 
+		       (region-end))
                       ((and (not py-shift-require-transient-mark-mode-p)(mark) (not (eq (mark) (point))))
                        (save-excursion
                          (goto-char

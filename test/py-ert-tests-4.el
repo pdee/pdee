@@ -140,5 +140,39 @@ impo")))
     (py-end-of-def-or-class)
     (should (looking-back "pass"))))
 
+(ert-deftest py-down-statement-test-1 ()
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)"
+    (search-backward "\"")
+    (forward-char 1) 
+    (py-down-statement)
+    (should (eq (char-after) ?d))))
+
+(ert-deftest py-backward-minor-block-test-1 ()
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if c:
+             pass
+        if a:"
+    (py-backward-minor-block)
+    (should (eq (char-after) ?i))))
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

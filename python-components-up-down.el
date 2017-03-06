@@ -1,4 +1,4 @@
-;;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t; -*- 
+;;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016  Andreas Röhler
 
@@ -38,6 +38,7 @@ Return position if statement found, nil otherwise. "
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
+
 (defun py-down-statement ()
   "Go to the beginning of next statement downwards in buffer.
 
@@ -46,10 +47,15 @@ Return position if statement found, nil otherwise. "
   (let* ((orig (point))
 	 erg)
     (cond ((py--end-of-statement-p)
-	   (setq erg (and (py-forward-statement) (py-backward-statement))))
-	  ((setq erg (< orig (progn (py-forward-statement) (py-backward-statement))))
-	   (point))
-	  (t (setq erg (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))
+	   (setq erg
+		 (and
+		  (py-forward-statement)
+		  (py-backward-statement)
+		  (< orig (point))
+		  (point))))
+	  ((< orig (and (py-forward-statement) (py-backward-statement)))
+	   (setq erg (point)))
+	  (t (setq erg (ignore-errors (< orig (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
@@ -82,6 +88,7 @@ REGEXP is a quoted symbol "
 	(when py-verbose-p (message "%s" erg))
 	erg))))
 
+
 (defun py-down-base (regexp &optional orig indent decorator bol)
   "Go to the beginning of next form below in buffer.
 
@@ -100,18 +107,34 @@ Expects a quoted symbol 'REGEXP"
 	(save-excursion
 	  (cond
 	   ((and indent decorator bol)
-	    (funcall backward-command indent decorator bol))
+	    (when (funcall backward-command indent decorator bol)
+	      (setq indent (current-indentation))
+	      (setq start (point))))
 	   ((and indent decorator)
-	    (funcall backward-command indent decorator))
-	   (t (funcall backward-command indent)))
-	  (setq indent (current-indentation))
-	  (setq start (point))))
+	    (when (funcall backward-command indent decorator)
+	      (setq indent (current-indentation))
+	      (setq start (point))))
+	   (t (when
+		  (funcall backward-command indent)
+		(setq indent (current-indentation))
+		(setq start (point))))))
+	(unless (and indent start)
+	  (while (and (py-down-statement)
+		      (not (looking-at (symbol-value regexp))))))
+
+	(when
+	    (looking-at (symbol-value regexp))
+	  (setq done t)
+	  (setq erg (point)) 
+	  ;; (setq indent (current-indentation))
+	  ;; (setq start (point))
+	  ))
       ;; (setq done (funcall forward-command indent decorator bol))
       (while (and (not done)
 		  (py-down-statement)
-		  (<= indent (current-indentation))
-		  (when (looking-at (symbol-value regexp))
-		    (setq done (point)))))
+		  (< indent (current-indentation))))
+      (when (looking-at (symbol-value regexp))
+	(setq done (point)))
       (when done
 	(when bol (beginning-of-line))
 	(setq erg (point)))
