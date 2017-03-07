@@ -1388,7 +1388,7 @@ Don't split when max number of displayed windows is reached. "
   :tag "py-split-windows-on-execute-function"
   :group 'python-mode)
 
-(defcustom py-shell-fontify-style 'all
+(defcustom py-shell-fontify-style nil
   "Fontify current input resp. output in Python shell. Default is nil.
 
 INPUT will leave output unfontified.
@@ -1803,7 +1803,7 @@ if \'0.10\' < version:
   "';'.join(module_completion('''%s'''))"
   "See also `py-ipython-module-completion-code'")
 
-(defcustom py--imenu-create-index-function 'py--imenu-create-index-new
+(defcustom py--imenu-create-index-function 'py--imenu-create-index
   "Switch between `py--imenu-create-index-new', which also lists modules variables,  and series 5. index-machine"
   :type '(choice (const :tag "'py--imenu-create-index-new, also lists modules variables " py--imenu-create-index-new)
 
