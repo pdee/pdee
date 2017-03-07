@@ -1807,7 +1807,7 @@ if \'0.10\' < version:
   "Switch between `py--imenu-create-index-new', which also lists modules variables,  and series 5. index-machine"
   :type '(choice (const :tag "'py--imenu-create-index-new, also lists modules variables " py--imenu-create-index-new)
 
-                 (const :tag "py--imenu-create-index, series 5. index-machine" py-imenu-create-index))
+                 (const :tag "py--imenu-create-index, series 5. index-machine" py--imenu-create-index))
   :tag "py--imenu-create-index-function"
   :group 'python-mode)
 
