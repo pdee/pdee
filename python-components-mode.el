@@ -2524,7 +2524,7 @@ See py-no-outdent-re-raw for better readable content ")
 (defconst py-class-re "[ \t]*\\_<\\(class\\)\\_>[ \n\t]"
   "Matches the beginning of a class definition. ")
 
-(defconst py-def-or-class-re "[ \t]*\\_<\\(async def\\|class\\|def\\)\\_>[ \n\t]+\\([[:alnum:]_]*\\):?"
+(defconst py-def-or-class-re "[ \t]*\\_<\\(async def\\|class\\|def\\)\\_>[ \n\t]+\\([[:alnum:]_]*\\)"
   "Matches the beginning of a class- or functions definition.
 
 Second group grabs the name")
@@ -2539,6 +2539,10 @@ Second group grabs the name")
   (list
    "async for"
    "async with"
+   "async def"
+   "async class"
+   "class"
+   "def"
    "elif"
    "else"
    "except"
@@ -2560,6 +2564,13 @@ Second group grabs the name")
    (regexp-opt  py-block-or-clause-re-raw)
    "\\)\\_>[( \t]*.*:?")
   "See py-block-or-clause-re-raw, which it reads. ")
+
+;; (setq py-block-or-clause-re
+;;   (concat
+;;    "[ \t]*\\_<\\("
+;;    (regexp-opt  py-block-or-clause-re-raw)
+;;    "\\)\\_>[( \t]*.*:?"))
+
 
 (defcustom py-block-re-raw
   (list

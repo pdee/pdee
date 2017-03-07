@@ -57,7 +57,6 @@ Returns beginning of FORM if successful, nil otherwise"
                              (cdr (ar--go-to-keyword (symbol-value regexp)
                                                     (- (progn (if (ar--beginning-of-statement-p) (current-indentation) (save-excursion (ar-backward-statement) (current-indentation)))) py-indent-offset)))))))
         (when lc (beginning-of-line) (setq erg (point)))))
-    ;; (when (and ar-verbose-p iact) (message "%s" erg))
     erg))
 
 (defun py--indent-prepare (inter-re)
@@ -1152,12 +1151,12 @@ Must find start first "
 	     (indent (or indent
 			 ;; avoid costly moves by statement
 			 (when (and (not (nth 8 pps))
-				  (or (looking-back py-decorator-re)
-				      (looking-back (concat (symbol-value regexp) ".+"))))
-			     (current-indentation)) 
+				    (or (looking-back py-decorator-re)
+					(looking-back (concat (symbol-value regexp) ".+"))))
+			   (current-indentation))
 			 (if (py--beginning-of-statement-p)
-				    (current-indentation)
-				  (save-excursion (py-backward-statement) (current-indentation)))))
+			     (current-indentation)
+			   (save-excursion (py-backward-statement) (current-indentation)))))
 
 	     ;; start of form maybe inside
 	     (this
@@ -1169,8 +1168,9 @@ Must find start first "
 		    ;; when building the index, avoid costly moves by
 		    ;; statement
 		    ((and (not (nth 8 pps))(looking-back (symbol-value regexp)))
-		     (match-beginning 0)) 
+		     (match-beginning 0))
 		    (t (py--go-to-keyword thisregexp indent))))
+	     ;; (done done)
 	     erg)
 	(cond
 	 (this (setq erg (py--go-down-when-found-upward regexp)))
@@ -1178,10 +1178,17 @@ Must find start first "
 	(if (< orig (point))
 	    (and erg bol (setq erg (py--beginning-of-line-form erg)))
 	  (setq erg nil)
-	  (unless (eq done orig)
+	  ;; Prevent eternal loop
+	  (unless done
 	    (when
 		(py-forward-statement)
-	      (py--end-base regexp (point) decorator bol indent (point)))))
+	      (py--end-base regexp (point) decorator bol
+			    ;; update required indent
+			    (if (py--beginning-of-statement-p)
+				(- (current-indentation) py-indent-offset)
+			      (save-excursion (py-backward-statement) (- (current-indentation) py-indent-offset))) t
+			    ;; indent
+			    ))))
 	erg))))
 
 (defun py--look-downward-for-beginning (regexp)

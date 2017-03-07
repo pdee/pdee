@@ -174,5 +174,23 @@ impo")))
     (py-backward-minor-block)
     (should (eq (char-after) ?i))))
 
+(ert-deftest py-forward-block-or-clause-test-1 ()
+  (py-test-with-temp-buffer
+      "def main():
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit()
+
+    class asdf(object):
+        zeit = time.strftime('%Y%m%d--%H-%M-%S')
+
+        def Utf8_Exists(filename):
+            return os.path.exists(filename.encode('utf-8'))"
+    (search-backward "()")
+    (end-of-line)
+    (py-forward-block-or-clause)
+    (should (eq (char-before) ?\)))))
+
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

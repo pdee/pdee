@@ -503,58 +503,6 @@ Bar
     (should (eq 0 (current-indentation)))))
 
 (ert-deftest py-forward-def-or-class-1 ()
-  (py-test-with-temp-buffer-point-min
-      "def foo(arg1, arg2, arg3):
-    '''print decorated function call data to stdout.
-    '''
-    def bar(f):
-        print 'Inside wwrap()'
-        def wrapped_f(*args):
-            print 'Inside wrapped_f()'
-            print 'Decorator arguments:', arg1, arg2, arg3
-            f(*args)
-            print 'After f(*args)'
-        return wrapped_f
-    return wwrap"
-    (search-forward "args)'")
-    (should-not (py-forward-def-or-class))))
-
-
-(ert-deftest py-forward-block-1 ()
-  (py-test-with-temp-buffer-point-min
-      "def foo(arg1, arg2, arg3):
-    '''print decorated function call data to stdout.
-    '''
-    def bar(f):
-        print 'Inside wwrap()'
-        def wrapped_f(*args):
-            print 'Inside wrapped_f()'
-            print 'Decorator arguments:', arg1, arg2, arg3
-            f(*args)
-            print 'After f(*args)'
-        return wrapped_f
-    return wwrap"
-    (search-forward "args)'")
-    (should-not (py-forward-block))))
-
-(ert-deftest py-forward-clause-lp-1630952-1 ()
-  (py-test-with-temp-buffer-point-min
-      "def foo(arg1, arg2, arg3):
-    '''print decorated function call data to stdout.
-    '''
-    def bar(f):
-        print 'Inside wwrap()'
-        def wrapped_f(*args):
-            print 'Inside wrapped_f()'
-            print 'Decorator arguments:', arg1, arg2, arg3
-            f(*args)
-            print 'After f(*args)'
-        return wrapped_f
-    return wwrap"
-    (search-forward "args)'")
-    (should-not (py-forward-clause))))
-
-(ert-deftest py-forward-clause-lp-1630952-2 ()
   (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
@@ -568,10 +516,49 @@ Bar
             print 'After f(*args)'
         return wrapped_f
     return wwrap"
-    (search-backward "wrapped_f")
-    (end-of-line)
-    (should-not (py-forward-clause))))
+    (search-backward "args)'")
+    (py-forward-def-or-class)
+    (should (eq (char-before) ?'))
+    (py-forward-def-or-class)
+    (should (eq (char-before) ?f))))
 
+(ert-deftest py-forward-block-1 ()
+  (py-test-with-temp-buffer
+      "def foo(arg1, arg2, arg3):
+    '''print decorated function call data to stdout.
+    '''
+    def bar(f):
+        print 'Inside wwrap()'
+        def wrapped_f(*args):
+            print 'Inside wrapped_f()'
+            print 'Decorator arguments:', arg1, arg2, arg3
+            f(*args)
+            print 'After f(*args)'
+        return wrapped_f
+    return wwrap"
+    (search-backward "args)'")
+    (py-forward-block)
+    (should (eq (char-before) ?'))))
+
+(ert-deftest py-forward-clause-lp-1630952-1 ()
+  (py-test-with-temp-buffer
+      "def foo(arg1, arg2, arg3):
+    '''print decorated function call data to stdout.
+    '''
+    def bar(f):
+        print 'Inside wwrap()'
+        def wrapped_f(*args):
+            print 'Inside wrapped_f()'
+            print 'Decorator arguments:', arg1, arg2, arg3
+            f(*args)
+            print 'After f(*args)'
+        return wrapped_f
+    return wwrap"
+    (search-backward "args)'")
+    (py-forward-clause)
+    (should (eq (char-before) ?'))
+    (py-forward-clause)
+    (should (eq (char-before) ?f))))
 
 (ert-deftest py-up-block-test-1 ()
   (py-test-with-temp-buffer
@@ -618,7 +605,6 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (py-forward-statement)
       (py-forward-statement)
       (should (eobp))))
-
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
