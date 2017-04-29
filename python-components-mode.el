@@ -2515,7 +2515,7 @@ See py-no-outdent-re-raw for better readable content ")
 (defconst py-if-block-re "[ \t]*\\_<if\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
   "Matches the beginning of an `if' block. ")
 
-(defconst py-else-block-re "[ \t]*\\_<else:[ \n\t]*"
+(defconst py-else-block-re "[ \t]*\\_<else:?[ \n\t]*"
   "Matches the beginning of an `else' block. ")
 
 (defconst py-elif-block-re "[ \t]*\\_<elif\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"

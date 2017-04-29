@@ -338,6 +338,17 @@ More docstring here.
     (py-forward-comment)
     (should (eq (char-before) ?\)))))
 
+(ert-deftest py-ert-else-clause-test ()
+  (py-test-with-temp-buffer
+      "def foo()
+    if aaa:
+        if bbb:
+            x = 1
+        y = 1
+    else"
+    (beginning-of-line) 
+    (should (eq 4 (py-compute-indentation)))))
+
 (ert-deftest py-ert-shift-indent-test ()
   (py-test-with-temp-buffer-point-min
       "class A(object):

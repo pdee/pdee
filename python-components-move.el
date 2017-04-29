@@ -691,7 +691,7 @@ From a programm use macro `py-backward-comment' instead "
                ;; doesn't mean nesting yet
                (setq count (1- count))
                (not (and (eq indent (current-indentation)) (looking-at "if"))))))
-         ((and (looking-at complement-re)(<= (current-indentation) maxindent))
+         ((and complement-re (looking-at complement-re)(<= (current-indentation) maxindent))
           (setq count (1- count)))
          (t (cond ((and (string-match "except" regexp)(looking-at py-block-re))
                    (setq count (1- count)))
