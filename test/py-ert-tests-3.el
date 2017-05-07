@@ -346,7 +346,7 @@ More docstring here.
             x = 1
         y = 1
     else"
-    (beginning-of-line) 
+    (beginning-of-line)
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-shift-indent-test ()
@@ -616,6 +616,20 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (py-forward-statement)
       (py-forward-statement)
       (should (eobp))))
+
+(ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+os.chmod"
+    (forward-char -1)
+    (py-help-at-point)
+    (sit-for 0.1)
+    (set-buffer "*Python-Help*")
+    (goto-char (point-min))
+    ;; (switch-to-buffer (current-buffer))
+    (should (looking-at "Help on built-in function chmod in os:"))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
