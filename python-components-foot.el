@@ -314,9 +314,8 @@ See available customizations listed in files variables-python-mode at directory 
 				   "\\|")
 			"\\)"))))
   (remove-hook 'comint-output-filter-functions 'font-lock-extend-jit-lock-region-after-change t)
-
-  (make-local-variable 'comint-output-filter-functions)
-  ;; (set (make-local-variable 'comint-input-filter) 'py--input-filter)
+  ;; (set (make-local-variable 'comint-output-filter-functions)
+  ;; 'set-text-properties comint-last-input-start comint-last-input-end 'nil)
   (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
   (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
   ;; (set (make-local-variable 'comint-use-prompt-regexp) nil)

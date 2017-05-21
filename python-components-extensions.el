@@ -214,42 +214,44 @@ With interactive call, send it to the message buffer too. "
    (t
     (py--match-paren-backward))))
 
-(defun py-match-paren ()
+(defun py-match-paren (&optional arg)
   "If at a beginning, jump to end and vice versa.
 
 When called from within, go to the start.
 Matches lists, but also block, statement, string and comment. "
-  (interactive)
-  (let ((pps (parse-partial-sexp (point-min) (point))))
-    (cond
-     ;; if inside string, go to beginning
-     ((nth 3 pps)
-      (goto-char (nth 8 pps)))
-     ;; if inside comment, go to beginning
-     ((nth 4 pps)
-      (py-backward-comment))
-     ;; at comment start, go to end of commented section
-     ((and
-       ;; unless comment starts where jumped to some end
-       (not py--match-paren-forward-p)
-       (eq 11 (car-safe (syntax-after (point)))))
-      (py-forward-comment))
-     ;; at string start, go to end
-     ((or (eq 15 (car-safe (syntax-after (point))))
-	  (eq 7 (car (syntax-after (point)))))
-      (goto-char (scan-sexps (point) 1))
-      (forward-char -1))
-     ;; open paren
-     ((eq 4 (car (syntax-after (point))))
-      (goto-char (scan-sexps (point) 1))
-      (forward-char -1))
-     ((eq 5 (car (syntax-after (point))))
-      (goto-char (scan-sexps (1+ (point)) -1)))
-     ((nth 1 pps)
-      (goto-char (nth 1 pps)))
-     (t
-      ;; Python specific blocks
-      (py--match-paren-blocks)))))
+  (interactive "*P")
+  (if (eq 4 (prefix-numeric-value arg))
+      (insert "%")
+    (let ((pps (parse-partial-sexp (point-min) (point))))
+      (cond
+       ;; if inside string, go to beginning
+       ((nth 3 pps)
+	(goto-char (nth 8 pps)))
+       ;; if inside comment, go to beginning
+       ((nth 4 pps)
+	(py-backward-comment))
+       ;; at comment start, go to end of commented section
+       ((and
+	 ;; unless comment starts where jumped to some end
+	 (not py--match-paren-forward-p)
+	 (eq 11 (car-safe (syntax-after (point)))))
+	(py-forward-comment))
+       ;; at string start, go to end
+       ((or (eq 15 (car-safe (syntax-after (point))))
+	    (eq 7 (car (syntax-after (point)))))
+	(goto-char (scan-sexps (point) 1))
+	(forward-char -1))
+       ;; open paren
+       ((eq 4 (car (syntax-after (point))))
+	(goto-char (scan-sexps (point) 1))
+	(forward-char -1))
+       ((eq 5 (car (syntax-after (point))))
+	(goto-char (scan-sexps (1+ (point)) -1)))
+       ((nth 1 pps)
+	(goto-char (nth 1 pps)))
+       (t
+	;; Python specific blocks
+	(py--match-paren-blocks))))))
 
 (unless (boundp 'empty-line-p-chars)
   (defvar empty-line-p-chars "^[ \t\f\r]*$"))

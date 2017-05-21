@@ -842,6 +842,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char (point-min))
     (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
+      ;; (while (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t))
       (setq erg (copy-marker (point)))
       ;; Replace hints to temp-file by orig-file
       (delete-region (progn (beginning-of-line)
@@ -852,7 +853,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 				(goto-char (match-end 0))))
 
 			    (skip-chars-forward " \t\r\n\f")(point)) (line-end-position))
-      (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
+      (insert (concat "    File " py-exception-buffer ", line "
 		      (prin1-to-string origline))))
     (when erg
       (goto-char erg)
