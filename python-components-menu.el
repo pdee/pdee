@@ -1631,7 +1631,7 @@ Display flake8 command line help messages."]
        ["Python-mode customize group" (customize-group 'python-mode)
 	:help "Open the customization buffer for Python mode"]
        ("Switches"
-	:help "Toggle useful modes like `highlight-indentation'"
+	:help "Toggle useful modes"
 	("Interpreter"
 
 	 ["Shell prompt read only"
@@ -2085,15 +2085,6 @@ equal <number>, `tab-width' is set to <number>, a message saying so is
 displayed in the echo area, and if `py-beep-if-tab-change' is non-nil
 the Emacs bell is also rung as a warning.Use `M-x customize-variable' to set it permanently"
 	   :style toggle :selected py-beep-if-tab-change]
-
-	  ["Highlight indentation" highlight-indentation
-	   :help "Toggle highlight indentation.
-
-Use `M-x customize-variable' to set it permanently
-
-Make sure `highlight-indentation' is installed"
-
-	   ]
 
 	  ["Electric comment "
 	   (setq py-electric-comment-p

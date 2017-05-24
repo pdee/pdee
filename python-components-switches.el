@@ -25,36 +25,6 @@
 
 ;;; Code:
 
-;; Toggle highlight-indentation
-
-(defun py-toggle-highlight-indentation (&optional indent)
-  "If `highlight-indentation-p' should be on or off. "
-  (interactive "P")
-  ;; (let ((indent indent))
-  (unless (featurep 'highlight-indentation)
-    (load (concat (py--normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
-  (highlight-indentation indent)
-  (when py-verbose-p (message "highlight-indent-active: %s" highlight-indent-active))
-  highlight-indent-active)
-
-(defun py-highlight-indentation-off ()
-  "If `highlight-indentation-p' should be on or off. "
-  (interactive)
-  (unless (featurep 'highlight-indentation)
-    (load (concat (py--normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
-  (highlight-indentation-off)
-  (when py-verbose-p (message "highlight-indent-active: %s" highlight-indent-active))
-  highlight-indent-active)
-
-(defun py-highlight-indentation-on ()
-  "If `highlight-indentation-p' should be on or off. "
-  (interactive "P")
-  (unless (featurep 'highlight-indentation)
-    (load (concat (py--normalize-directory py-install-directory) "extensions" (char-to-string py-separator-char) "highlight-indentation.el")))
-  (highlight-indentation-on)
-  (when py-verbose-p (message "highlight-indent-active: %s" highlight-indent-active))
-  highlight-indent-active)
-
 ;;  Smart indentation
 (defalias 'toggle-py-smart-indentation 'py-toggle-smart-indentation)
 (defun py-toggle-smart-indentation (&optional arg)

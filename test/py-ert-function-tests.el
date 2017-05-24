@@ -1548,15 +1548,6 @@
 (ert-deftest py-ert--end-of-buffer-position-functionp-test ()
   (should (functionp 'py--end-of-buffer-position)))
 
-(ert-deftest py-ert-toggle-highlight-indentation-functionp-test ()
-  (should (functionp 'py-toggle-highlight-indentation)))
-
-(ert-deftest py-ert-highlight-indentation-off-functionp-test ()
-  (should (functionp 'py-highlight-indentation-off)))
-
-(ert-deftest py-ert-highlight-indentation-on-functionp-test ()
-  (should (functionp 'py-highlight-indentation-on)))
-
 (ert-deftest py-ert-toggle-smart-indentation-functionp-test ()
   (should (functionp 'py-toggle-smart-indentation)))
 
