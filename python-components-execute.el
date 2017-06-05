@@ -1186,7 +1186,7 @@ This may be preferable to `\\[py-execute-buffer]' because:
                        (find-file-noselect filename))))
       (set-buffer buffer)))
   (let ((py-shell-name (or shell (py-choose-shell)))
-        (file (py--buffer-filename-remote-maybe (current-buffer))))
+        (file (py--buffer-filename-remote-maybe)))
     (if file
         (let ((proc (or
                      (ignore-errors (get-process (file-name-directory shell)))

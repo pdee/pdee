@@ -148,7 +148,7 @@ Returns char found. "
 (when py-org-cycle-p
   (define-key python-mode-map (kbd "<backtab>") 'org-cycle))
 
-(defun py--buffer-filename-remote-maybe (&optional file-name buffer)
+(defun py--buffer-filename-remote-maybe (&optional file-name)
   (let ((file-name (or file-name
 		       (and
 			(ignore-errors (file-readable-p (buffer-file-name)))
