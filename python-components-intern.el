@@ -475,6 +475,11 @@ Don't save anything for STR matching `py-input-filter-re' "
 (unless (member '(".pyr'" . python-mode)  auto-mode-alist)
   (push (cons (purecopy "\\.pyr\\'")  'python-mode)  auto-mode-alist))
 
+;; Python Stub file
+;; https://www.python.org/dev/peps/pep-0484/#stub-files
+(unless (member '(".pyi'" . python-mode)  auto-mode-alist)
+  (push (cons (purecopy "\\.pyi\\'")  'python-mode)  auto-mode-alist))
+
 ;; Python Path Configuration
 (unless (member '(".pth'" . python-mode)  auto-mode-alist)
   (push (cons (purecopy "\\.pth\\'")  'python-mode)  auto-mode-alist))

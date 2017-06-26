@@ -631,5 +631,15 @@ os.chmod"
     ;; (switch-to-buffer (current-buffer))
     (should (looking-at "Help on built-in function chmod in os:"))))
 
+
+(ert-deftest py-execute-import-or-reload-test ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+import os"
+    (py-execute-import-or-reload)
+    (should t)))
+
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
