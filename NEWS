@@ -1,6 +1,12 @@
 Python Mode News
 ================
 
+New in version 6.2.4
+---------------------
+
+column-marker.el removed from extensions, its provided by melpa
+
+
 New in version 6.2.3
 ---------------------
 
