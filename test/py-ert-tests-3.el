@@ -363,6 +363,38 @@ More docstring here.
     (py-shift-indent-left)
     (should (eq 8 (current-indentation)))))
 
+(ert-deftest py-ert-list-indent-test-1 ()
+  (py-test-with-temp-buffer
+      "print('test'
+          'string'
+          'here')"
+    (forward-line -1)
+    (beginning-of-line)
+    (should (eq 6 (py-compute-indentation)))))
+
+(ert-deftest py-ert-list-indent-test-2 ()
+  (py-test-with-temp-buffer
+      "if (release_time != -1 and
+    datetime.datetime.now() > release_time + CLOCK_SLOP):
+    # Yes, so break the lock.
+    self._break()
+    log.error('lifetime has expired, breaking')"
+    (search-backward "datetime.datetime.now")
+    (beginning-of-line)
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-list-indent-test-3 ()
+  (let (py-indent-paren-spanned-multilines-p)
+  (py-test-with-temp-buffer
+	"if (release_time != -1 and
+    datetime.datetime.now() > release_time + CLOCK_SLOP):
+    # Yes, so break the lock.
+    self._break()
+    log.error('lifetime has expired, breaking')"
+	(search-backward "datetime.datetime.now")
+	(beginning-of-line)
+	(should (eq 4 (py-compute-indentation))))))
+
 (ert-deftest py-ert-dont-stop-embedded-def-or-class-test-1 ()
   (py-test-with-temp-buffer
       "# lp:1545649, C-M-a and C-M-e stop at embedded defs.

@@ -710,7 +710,7 @@ def foo():
             baz):
         bar()
 
-Default lines up with first element:
+If nil line up with first element:
 
 def foo():
     if (foo &&

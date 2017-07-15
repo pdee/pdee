@@ -777,9 +777,12 @@ LIEP stores line-end-position at point-of-interest
 				 (cond ((looking-at "\\s([ \t]*$")
 					(py--empty-arglist-indent nesting py-indent-offset indent-offset))
 				       ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
-					(goto-char (match-beginning 1))
-					(if py-indent-paren-spanned-multilines-p
-					    (+ (current-column) py-indent-offset)
+					(if
+					    (and (or (bolp) (eq (char-before) 32)) py-indent-paren-spanned-multilines-p)
+					    (progn
+					      (goto-char (match-beginning 1))
+					      (+ (current-column) py-indent-offset))
+					  (goto-char (match-beginning 1))
 					  (current-column)))
 				       (t (+ (current-column) (* (nth 0 pps)))))))
 			      ((nth 1 (parse-partial-sexp (point-min) (point)))
