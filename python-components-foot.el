@@ -136,7 +136,7 @@ See available customizations listed in files variables-python-mode at directory 
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                   py-outline-mode-keywords)
                           "\\|")))
-  (when (eq 0 (string-match "25" emacs-version))
+  (when (when (>= emacs-major-version 25))
     (global-eldoc-mode -1))
   (if py-use-font-lock-doc-face-p
       (set (make-local-variable 'font-lock-defaults)
