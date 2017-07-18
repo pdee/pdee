@@ -41,7 +41,7 @@ impo")))
 
 (ert-deftest py-ert-fast-complete-1 ()
   (py-test-with-temp-buffer
-      "pri"
+      "obj"
     (let ((py-return-result-p t)
 	  py-result py-store-result-p)
       (when py-debug-p (switch-to-buffer (current-buffer)))
