@@ -979,23 +979,15 @@ terminated line. "
   :tag "py-indent-tabs-mode"
   :group 'python-mode)
 
-(defcustom py-smart-indentation t
-  "Should `python-mode' try to automagically set some indentation variables?
-When this variable is non-nil, two things happen when a buffer is set
-to `python-mode':
+(defcustom py-smart-indentation nil
+  "Should `python-mode' try to automagically set `py-indent-offset'?
 
- 1. `py-indent-offset' is guessed from existing code in the buffer.
- Only guessed values between 2 and 8 are considered.  If a valid
- guess can't be made (perhaps because you are visiting a new
- file), then the value in `py-indent-offset' is used.
+Setting it to `t' seems useful only in cases where customizing
+`py-indent-offset' is no option - for example because the
+indentation step is unknown or differs inside the code.
 
- 2. `tab-width' is setq to `py-indent-offset' if not equal
- already. `indent-tabs-mode' inserts one tab one
- indentation level, otherwise spaces are used.
+When this variable is non-nil, `py-indent-offset' is guessed from existing code in the buffer, which might slow down the proceeding."
 
- Note that both these settings occur *after* `python-mode-hook' is run,
- so if you want to defeat the automagic configuration, you must also
- set `py-smart-indentation' to nil in your `python-mode-hook'."
   :type 'boolean
   :tag "py-smart-indentation"
   :group 'python-mode)
@@ -3374,7 +3366,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-forward-forms)
 (require 'python-components-up-down)
 (require 'python-components-exec-forms)
-(require 'python-extended-executes)
+(require 'python-components-extended-executes)
 (require 'python-abbrev-propose)
 (require 'python-components-paragraph)
 (require 'python-components-shift-forms)

@@ -1,6 +1,6 @@
 ;;; python-mode-utils.el - generating parts of python-mode.el -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2017 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -1168,7 +1168,7 @@ Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
 
 Include default forms "
   (interactive)
-  (set-buffer (get-buffer-create "python-extended-executes.el"))
+  (set-buffer (get-buffer-create "python-components-extended-executes.el"))
   (erase-buffer)
   (insert ";; Extended executes --- more execute forms\n")
   (insert arkopf)
@@ -1176,8 +1176,8 @@ Include default forms "
 	(emacs-lisp-mode))
   (write--unified-extended-execute-forms-intern)
   (insert "\n(provide 'python-extended-executes)
-;;; python-extended-executes.el ends here")
-  (write-file (concat components-directory "/python-extended-executes.el"))
+;;; python-components-extended-executes.el ends here")
+  (write-file (concat components-directory "/python-components-extended-executes.el"))
   )
 
 (defun write-all-bounds-forms ()

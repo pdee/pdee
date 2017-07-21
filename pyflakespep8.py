@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Author: Keegan Carruthers-Smith
+# https://bitbucket.org/keegancsmith/dotfiles/raw/tip/misc/pyflakespep8.py
 
 import commands
 import re

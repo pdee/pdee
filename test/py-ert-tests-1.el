@@ -115,9 +115,8 @@ if __name__ == \"__main__\":
 (ert-deftest py-ert-indent-dedenters-1 ()
   "Check all dedenters."
 
-(py-test-with-temp-buffer-point-min
-   "
-def foo(a, b, c):
+  (py-test-with-temp-buffer-point-min
+    "def foo(a, b, c):
     if a:
         print (a)
     elif b:
