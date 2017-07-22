@@ -768,7 +768,7 @@ Examples from PEP8"
   :tag "py-closing-list-space"
   :group 'python-mode)
 
-(defcustom py-max-specpdl-size max-specpdl-size
+(defcustom py-max-specpdl-size 99
   "Heuristic exit. Limiting number of recursive calls by py-forward-statement and related functions. Default is max-specpdl-size.
 
 This threshold is just an approximation. It might set far higher maybe.
@@ -979,8 +979,8 @@ terminated line. "
   :tag "py-indent-tabs-mode"
   :group 'python-mode)
 
-(defcustom py-smart-indentation nil
-  "Should `python-mode' try to automagically set `py-indent-offset'?
+(defcustom py-smart-indentation t
+  "Guess `py-indent-offset'.
 
 Setting it to `t' seems useful only in cases where customizing
 `py-indent-offset' is no option - for example because the

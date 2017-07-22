@@ -282,7 +282,7 @@ computing indents"
   (interactive)
   (save-restriction
     (unless (bobp)
-      (let* ((repeat (or (and repeat (1+ repeat)) 999))
+      (let* ((repeat (or (and repeat (1+ repeat)) 0))
 	     (orig (or orig (point)))
              (pps (parse-partial-sexp (or limit (point-min))(point)))
              (done done)
@@ -303,8 +303,10 @@ computing indents"
 	  (goto-char (nth 8 pps))
 	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ((nth 4 pps)
-	  (goto-char (nth 8 pps))
-	  (skip-chars-backward " \t\r\n\f")
+	  (while (ignore-errors (goto-char (nth 8 pps)))
+	    (skip-chars-backward " \t\r\n\f")
+	    (setq pps (parse-partial-sexp (line-beginning-position) (point)))
+	    )
 	  (py-backward-statement orig done limit ignore-in-string-p repeat))
          ((nth 1 pps)
           (goto-char (1- (nth 1 pps)))
@@ -344,7 +346,7 @@ computing indents"
 	  (skip-chars-backward ";")
 	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; travel until indentation or semicolon
-	 ((and (not done) (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point))))
+	 ((and (not done) (py--skip-to-semicolon-backward))
 	  (setq done t)
 	  (py-backward-statement orig done limit ignore-in-string-p repeat))
 	 ;; at current indent

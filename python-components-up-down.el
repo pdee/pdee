@@ -66,7 +66,7 @@ Return position if form found, nil otherwise.
 REGEXP is a quoted symbol "
   (unless (bobp)
     (let* ((orig (or orig (point)))
-	   (repeat (or (and repeat (1+ repeat)) 999))
+	   (repeat (or (and repeat (1+ repeat)) 0))
 	   erg name command)
       (if (< py-max-specpdl-size repeat)
 	  (error "`py-up-base' reached loops max.")

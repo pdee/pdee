@@ -1,6 +1,6 @@
 ;;; py-execute-region-commandp-test.el --- Test execute region forms
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2017  Andreas Röhler
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
