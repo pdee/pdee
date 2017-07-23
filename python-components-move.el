@@ -454,7 +454,9 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 	  (if (eolp)
 	      (skip-chars-forward " \t\r\n\f#'\"")
 	    (end-of-line)
-	    (skip-chars-backward " \t\r\n\f"))
+	    (skip-chars-backward " \t\r\n\f" orig))
+	  ;; point at orig due to a trailing whitespace 
+	  (and (eq (point) orig) (skip-chars-forward " \t\r\n\f")) 
 	  (setq done t)
 	  (py-forward-statement orig done repeat))
 	 ((eq (current-indentation) (current-column))

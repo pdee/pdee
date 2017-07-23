@@ -191,6 +191,13 @@ impo")))
     (py-forward-block-or-clause)
     (should (eq (char-before) ?\)))))
 
+(ert-deftest py-forward-statement-38-test ()
+  (py-test-with-temp-buffer
+      "def gen_segments(x, y):
+    for i in range(0, len(x)-1):
+        yield (x[i], x[i+1]), (y[i], y[i+1])"
+    (py-forward-statement)
+    (should (eobp)))) 
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here
