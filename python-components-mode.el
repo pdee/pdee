@@ -979,8 +979,8 @@ terminated line. "
   :tag "py-indent-tabs-mode"
   :group 'python-mode)
 
-(defcustom py-smart-indentation t
-  "Guess `py-indent-offset'.
+(defcustom py-smart-indentation nil
+  "Guess `py-indent-offset'. Default is nil.
 
 Setting it to `t' seems useful only in cases where customizing
 `py-indent-offset' is no option - for example because the
