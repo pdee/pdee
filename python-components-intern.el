@@ -1553,6 +1553,11 @@ Used by variable `which-func-functions' "
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
+
+(defun py--trim-regexp-empty-spaces-left (regexp)
+    (let ((erg (symbol-value regexp)))
+      (substring erg (1+ (string-match "\*" erg)))))
+
 (defun py--beginning-of-form-intern (final-re &optional inter-re iact indent orig lc decorator)
   "Go to beginning of FORM.
 
@@ -1564,7 +1569,9 @@ Returns beginning of FORM if successful, nil otherwise"
   (let ((regexp
 	 ;; (if inter-re
 	 ;; (concat (symbol-value inter-re) "\\|" (symbol-value final-re))
-		  (symbol-value final-re))
+	 (if (eq 0 indent)
+	     (py--trim-regexp-empty-spaces-left final-re)
+		  (symbol-value final-re)))
 		  ;; ))
 	erg)
     (unless (bobp)
