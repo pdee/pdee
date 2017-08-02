@@ -792,7 +792,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   (with-current-buffer output-buffer
     (py--fast-send-string-intern strg
 				 proc
-				 output-buffer py-return-result-p)
+				 output-buffer return)
     (sit-for 0.1))))
 
 (defun py--delete-temp-file (tempfile &optional tempbuf)
