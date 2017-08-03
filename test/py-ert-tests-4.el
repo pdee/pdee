@@ -197,7 +197,9 @@ impo")))
     for i in range(0, len(x)-1):
         yield (x[i], x[i+1]), (y[i], y[i+1])"
     (py-forward-statement)
-    (should (eobp)))) 
+    (should (eobp))))
+
+ 
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here
