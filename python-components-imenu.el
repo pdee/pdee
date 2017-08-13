@@ -95,14 +95,11 @@ alternative for finding the index.")
 (defun py-switch-imenu-index-function ()
   "Switch between series 5. index machine `py--imenu-create-index' and `py--imenu-create-index-new', which also lists modules variables "
   (interactive)
-  (if (eq major-mode 'python-mode)
-      (progn
-        (if (eq py--imenu-create-index-function 'py--imenu-create-index-new)
-            (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index)
-          (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index-new))
-        (when py-verbose-p (message "imenu-create-index-function: %s" (prin1-to-string py--imenu-create-index-function)))
-        (funcall imenu-create-index-function))
-    (error "%s" "Only available in buffers set to python-mode")))
+  (if (eq py--imenu-create-index-function 'py--imenu-create-index-new)
+      (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index)
+    (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index-new))
+  (when py-verbose-p (message "imenu-create-index-function: %s" (prin1-to-string py--imenu-create-index-function)))
+  (funcall imenu-create-index-function))
 
 (defun py--imenu-create-index ()
   "Python interface function for the Imenu package.
