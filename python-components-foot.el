@@ -397,6 +397,8 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   ;; (require 'ansi-color) ; for ipython
   (setq mode-line-process '(":%s"))
   (when py-verbose-p (message "%s" "Initializing IPython shell, please wait"))
+  ;; (set (make-local-variable 'inhibit-eol-conversion) (getenv "PYTHONUNBUFFERED"))
+  (set (make-local-variable 'inhibit-eol-conversion) t)
   (py--all-shell-mode-setting)
   (py--python-send-completion-setup-code)
   (py--python-send-ffap-setup-code)

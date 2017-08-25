@@ -4,9 +4,12 @@
   using `components2pythonmode' shell-script
 
   Get its source-files doing
-  
-  bzr branch lp:python-mode/components-python-mode
-  
+
+  git clone https://gitlab.com/python-mode-devs/components-python-mode
+
+  while master is at
+  https://gitlab.com/python-mode-devs/python-mode.git
+    
   An effective way users may contribute is telling
   us how Python-mode is used and which command is missing
   still.
@@ -51,11 +54,11 @@
 
 * Organizing source code to run Python
   A `py-python-' form may have a `py-ipython' sibling
-  Likewise `py--python'
 
 * Bugs, feature requests
   Please use bug-tracker at
-  http://launchpad.net/python-mode
+  https://gitlab.com/python-mode-devs/python-mode/issues
+
 
 * Testing
 

@@ -1220,5 +1220,9 @@ Maybe call M-x describe-variable RET to query its value. "
       (sit-for 0.01)
       (org-mode))))
 
+;; common typo
+(defalias 'iypthon 'ipython)
+(defalias 'pyhton 'python)
+
 (provide 'python-components-help)
 ;;;  python-components-help.el ends here
