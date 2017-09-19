@@ -1,6 +1,6 @@
 ;;; setup-ert-tests.el --- Provide needed forms -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014  Andreas Röhler
+;; Copyright (C) 2014-2017  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: lisp
