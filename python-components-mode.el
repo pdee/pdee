@@ -2412,7 +2412,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"
   "Matches the beginning of a class, method or compound statement. ")
 
 (setq py-block-closing-keywords-re
-  "[ \t]*\\_<return\\|raise\\|break\\|continue\\|pass\\_>[ \n\t]")
+  "[ \t]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ \n\t]")
 
 (defconst py-finally-re
   "[ \t]*\\_<finally\\_>[: \n\t]"

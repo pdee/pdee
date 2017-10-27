@@ -200,7 +200,17 @@ impo")))
     (py-forward-statement)
     (should (eobp))))
 
- 
+
+(ert-deftest support-PEP-553-built-in-breakpoint-42-test ()
+  (py-test-with-temp-buffer
+  "# point is at the end, now hit return
+# point ends up here when it should line up under the 'b'
+def foo(x):
+    if x == 7:
+        breakpoint()"
+  (should (eq 8 (py-compute-indentation))))) 
+
+
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here
