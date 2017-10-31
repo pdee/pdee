@@ -1,7 +1,5 @@
 ;;; python-abbrev-propose.el --- initial content for mode-abbrevs
 
-;; Copyright (C) 2015-2016 Andreas Röhler
-
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
 ;; Keywords: abbrev

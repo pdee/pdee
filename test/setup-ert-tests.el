@@ -126,7 +126,8 @@ BODY is code to be executed within the temp buffer.  Point is
        (when py-debug-p (switch-to-buffer (current-buffer))
 	     (font-lock-fontify-buffer))
        ,@body)
-     (sit-for 0.1)))
+     ;; (sit-for 0.1)
+     ))
 
 (defmacro py-test-with-temp-buffer (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
@@ -140,7 +141,8 @@ BODY is code to be executed within the temp buffer.  Point is
        (when py-debug-p (switch-to-buffer (current-buffer))
 	     (font-lock-fontify-buffer))
        ,@body)
-     (sit-for 0.1)))
+     ;; (sit-for 0.1)
+     ))
 
 (provide 'setup-ert-tests)
 ;; setup-ert-tests.el ends here

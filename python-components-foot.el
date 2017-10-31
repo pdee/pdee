@@ -1,7 +1,5 @@
 ;;; python-components-foot.el --- foot -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
-
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
 ;; Keywords: languages

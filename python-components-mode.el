@@ -11,7 +11,7 @@
 
 ;; Copyright (C) 1992,1993,1994  Tim Peters
 
-;; Author: 2015-2016     https://gitlab.com/groups/python-mode-devs
+;; Author: 2015-2017     https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
 ;;         1992-1994 Tim Peters
@@ -3353,6 +3353,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 (require 'python-components-send)
 (require 'python-components-shell-complete)
 (require 'python-components-pdb)
+(require 'python-components-pdbtrack)
 (require 'python-components-help)
 (require 'python-components-extensions)
 (require 'python-components-imenu)
