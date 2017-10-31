@@ -663,7 +663,7 @@ def baz():
     return 7
 "
     (goto-char 49)
-    (sit-for 0.1 t)
+    ;; (sit-for 0.1 t)
     (fill-paragraph)
     (end-of-line)
     (should (<= (current-column) 72))
@@ -677,7 +677,7 @@ def baz():
     (should (<= (current-column) 72))
     (search-forward "\"\"\"")
     (forward-line -1)
-    (sit-for 0.1 t)
+    ;; (sit-for 0.1 t)
     (should (not (empty-line-p)))
 
     ))
@@ -697,7 +697,7 @@ def baz():
       (goto-char 49)
       (py-fill-string)
       (end-of-line)
-      (sit-for 0.1 t)
+      ;; (sit-for 0.1 t)
       (should (<= (current-column) 72))
       (forward-line 2)
       (end-of-line)
@@ -712,7 +712,7 @@ def baz():
       (forward-line -1)
       (fill-paragraph)
       (end-of-line)
-      (sit-for 0.1 t)
+      ;; (sit-for 0.1 t)
       (should (<= (current-column) 72))
       )))
 
@@ -835,9 +835,9 @@ def baz():
       (py-execute-statement)
       (set-buffer "*Python2*")
       (goto-char (point-max))
-      (sit-for 0.3 t)
+      ;; (sit-for 0.3 t)
       (and (should (search-backward "py-execute-statement-test" nil t 1))
-	   (sit-for 0.1 t)
+	   ;; (sit-for 0.1 t)
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-1-test ()

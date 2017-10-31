@@ -31,7 +31,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-python (point-min) (point-max))
-      (sit-for 0.5 t)
+      ;; (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -42,7 +42,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-python2 (point-min) (point-max))
-      (sit-for 0.5 t)
+      ;; (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -53,7 +53,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-python3 (point-min) (point-max))
-      (sit-for 0.5 t)
+      ;; (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -64,7 +64,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-ipython (point-min) (point-max))
-      (sit-for 0.5 t)
+      ;; (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -75,7 +75,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-ipython3 (point-min) (point-max))
-      (sit-for 0.5 t)
+      ;; (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
@@ -86,7 +86,7 @@
     print(\"one\")
     print(\"two\")"
       (py-execute-region-jython (point-min) (point-max))
-      (sit-for 0.5 t)
+      ;; (sit-for 0.5 t)
       (set-buffer buffer)
       (should (search-backward "two")))))
 
