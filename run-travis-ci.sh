@@ -72,6 +72,7 @@ PYCO="$PDIR/completion/pycomplete.el"
 hier() {
     $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -88,7 +89,6 @@ hier() {
 -l $TEST14 \
 -l $TEST15 \
 -l $TEST16 \
---eval "(setq py-debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }
 
@@ -110,6 +110,7 @@ $EMACS -Q --batch \
 -l $TEST13 \
 -l $TEST14 \
 -l $TEST15 \
+-l $TEST16 \
 --eval "(setq py-debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }

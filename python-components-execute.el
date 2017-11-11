@@ -871,10 +871,16 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 
 (defun py--fetch-result (orig)
   "Return buffer-substring from orig to point-max. "
-  (replace-regexp-in-string
-   (format "[ \n]*%s[ \n]*" py-fast-filter-re)
-   ""
-   (buffer-substring-no-properties orig (point-max))))
+  (switch-to-buffer (current-buffer))
+  (goto-char orig)
+  (if (derived-mode-p 'comint-mode)
+      (replace-regexp-in-string
+       (format "[ \n]*%s[ \n]*" py-fast-filter-re)
+       ""
+       (buffer-substring-no-properties orig (point-max)))
+    (while (re-search-forward (format "[ \n]*%s[ \n]*" py-fast-filter-re) nil t 1)
+      (replace-match ""))
+    (buffer-substring-no-properties orig (point-max))))
 
 (defun py--postprocess-comint (output-buffer origline orig)
   "Provide return values, check result for error, manage windows. "

@@ -1446,8 +1446,8 @@
 (ert-deftest py-ert-pdb-help-functionp-test ()
   (should (functionp 'py-pdb-help)))
 
-(ert-deftest py-ert-pdb-break-functionp-test ()
-  (should (functionp 'py-pdb-break)))
+;; (ert-deftest py-ert-pdb-break-functionp-test ()
+;;   (should (functionp 'py-pdb-break)))
 
 (ert-deftest py-ert-end-of-block-functionp-test ()
   (should (functionp 'py-forward-block)))
