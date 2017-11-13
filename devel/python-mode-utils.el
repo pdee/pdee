@@ -804,102 +804,102 @@
     (emacs-lisp-mode))
     (write-file (concat components-directory "/python-components-exec-forms.el")))
 
-(defun write-fast-execute-forms ()
-  "Write `py-process-block...' etc. "
-  (interactive)
-  (let ((py-bounds-command-names py-fast-execute-forms-names))
-    (set-buffer (get-buffer-create "python-components-fast-forms.el"))
-    (erase-buffer)
-    (switch-to-buffer (current-buffer))
-    (insert ";;; python-components-fast-forms.el --- Execute forms at point -*- lexical-binding: t; -*-\n")
-    (insert arkopf)
-    (insert ";; Process forms fast\n\n")
-    (insert "
+;; (defun write-fast-execute-forms ()
+;;   "Write `py-process-block...' etc. "
+;;   (interactive)
+;;   (let ((py-bounds-command-names py-fast-execute-forms-names))
+;;     (set-buffer (get-buffer-create "python-components-fast-forms.el"))
+;;     (erase-buffer)
+;;     (switch-to-buffer (current-buffer))
+;;     (insert ";;; python-components-fast-forms.el --- Execute forms at point -*- lexical-binding: t; -*-\n")
+;;     (insert arkopf)
+;;     (insert ";; Process forms fast\n\n")
+;;     (insert "
 
-\(defun py--filter-result (strg)
-  \"Set `py-result' according to `py-fast-filter-re'.
+;; \(defun py--filter-result (strg)
+;;   \"Set `py-result' according to `py-fast-filter-re'.
 
-Remove trailing newline\"
-    (replace-regexp-in-string (format \"[ \\n]*%s[ \\n]*\" py-fast-filter-re) \"\" (ansi-color-filter-apply strg)))
+;; Remove trailing newline\"
+;;     (replace-regexp-in-string (format \"[ \\n]*%s[ \\n]*\" py-fast-filter-re) \"\" (ansi-color-filter-apply strg)))
 
-\(defun py-fast-process (&optional buffer)
-  \"Connect am (I)Python process suitable for large output.
+;; \(defun py-fast-process (&optional buffer)
+;;   \"Connect am (I)Python process suitable for large output.
 
-Output buffer displays \\\"Fast\\\"  by default
-It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907\"
-  (interactive)
-  (let ((this-buffer
-         (set-buffer (or (and buffer (get-buffer-create buffer))
-                         (get-buffer-create py-buffer-name)))))
-    (let ((proc (start-process py-shell-name this-buffer py-shell-name)))
-      (with-current-buffer this-buffer
-        (erase-buffer))
-      proc)))
+;; Output buffer displays \\\"Fast\\\"  by default
+;; It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907\"
+;;   (interactive)
+;;   (let ((this-buffer
+;;          (set-buffer (or (and buffer (get-buffer-create buffer))
+;;                          (get-buffer-create py-buffer-name)))))
+;;     (let ((proc (start-process py-shell-name this-buffer py-shell-name)))
+;;       (with-current-buffer this-buffer
+;;         (erase-buffer))
+;;       proc)))
 
-\(defun py--fast-send-string-intern (strg proc output-buffer return)
-  (with-current-buffer output-buffer
-    (process-send-string proc \"\\n\")
-    (let ((orig (point)))
-      (process-send-string proc strg)
-      (process-send-string proc \"\\n\")
-      (accept-process-output proc 5)
-      (sit-for py-fast-completion-delay t)
-      \;; sets py-result
-      (unless py-ignore-result-p
-	(setq py-result (py--filter-result (py--fetch-result orig))))
-      (when return
-	py-result))))
+;; \(defun py--fast-send-string-intern (strg proc output-buffer return)
+;;   (with-current-buffer output-buffer
+;;     (process-send-string proc \"\\n\")
+;;     (let ((orig (point)))
+;;       (process-send-string proc strg)
+;;       (process-send-string proc \"\\n\")
+;;       (accept-process-output proc 5)
+;;       (sit-for py-fast-completion-delay t)
+;;       \;; sets py-result
+;;       (unless py-ignore-result-p
+;; 	(setq py-result (py--filter-result (py--fetch-result orig))))
+;;       (when return
+;; 	py-result))))
 
-\(defun py--fast-send-string (strg)
-  \"Process Python strings, being prepared for large output.
+;; \(defun py--fast-send-string (strg)
+;;   \"Process Python strings, being prepared for large output.
 
-Output buffer displays \\\"Fast\\\"  by default
-See also `py-fast-shell'
+;; Output buffer displays \\\"Fast\\\"  by default
+;; See also `py-fast-shell'
 
-\"
-  (let ((proc (or (get-buffer-process (get-buffer py-fast-output-buffer))
-                  (py-fast-process))))
-    ;;    (with-current-buffer py-fast-output-buffer
-    ;;      (erase-buffer))
-    (process-send-string proc strg)
-    (or (string-match \"\\n\$\" strg)
-        (process-send-string proc \"\\n\"))
-    (accept-process-output proc 1)
-    (switch-to-buffer py-fast-output-buffer)
-    (beginning-of-line)
-    (skip-chars-backward \"\\r\\n\")
-    (delete-region (point) (point-max))))
+;; \"
+;;   (let ((proc (or (get-buffer-process (get-buffer py-fast-output-buffer))
+;;                   (py-fast-process))))
+;;     ;;    (with-current-buffer py-fast-output-buffer
+;;     ;;      (erase-buffer))
+;;     (process-send-string proc strg)
+;;     (or (string-match \"\\n\$\" strg)
+;;         (process-send-string proc \"\\n\"))
+;;     (accept-process-output proc 1)
+;;     (switch-to-buffer py-fast-output-buffer)
+;;     (beginning-of-line)
+;;     (skip-chars-backward \"\\r\\n\")
+;;     (delete-region (point) (point-max))))
 
 
-\(defun py--fast-send-string-no-output (string proc output-buffer)
-  (with-current-buffer output-buffer
-    (process-send-string proc \"\\n\")
-    (let ((orig (point-max)))
-      (sit-for 1 t)
-      (process-send-string proc string)
-      (process-send-string proc \"\\n\")
-      (accept-process-output proc 5)
-      (sit-for 1 t)
-      (delete-region orig (point-max)))))
+;; \(defun py--fast-send-string-no-output (string proc output-buffer)
+;;   (with-current-buffer output-buffer
+;;     (process-send-string proc \"\\n\")
+;;     (let ((orig (point-max)))
+;;       (sit-for 1 t)
+;;       (process-send-string proc string)
+;;       (process-send-string proc \"\\n\")
+;;       (accept-process-output proc 5)
+;;       (sit-for 1 t)
+;;       (delete-region orig (point-max)))))
 
-\(defun py-process-region-fast (beg end)
-  (interactive \"r\")
-  (let ((py-fast-process-p t))
-    (py-execute-region beg end)))\n\n")
-    (dolist (ele py-bounds-command-names)
-      (insert (concat "(defun py-execute-" ele "-fast (&optional shell dedicated switch beg end file)"))
-      (insert (concat "
-  \"Process " ele " at point by a Python interpreter.
+;; \(defun py-process-region-fast (beg end)
+;;   (interactive \"r\")
+;;   (let ((py-fast-process-p t))
+;;     (py-execute-region beg end)))\n\n")
+;;     (dolist (ele py-bounds-command-names)
+;;       (insert (concat "(defun py-execute-" ele "-fast (&optional shell dedicated switch beg end file)"))
+;;       (insert (concat "
+;;   \"Process " ele " at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
-Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
-      (insert (concat "  (interactive)
-  (py--execute-prepare '" ele " shell dedicated switch beg end file t))\n\n")))
-  (insert "(provide 'python-components-fast-forms)
-;;; python-components-fast-forms.el ends here\n ")
-  (emacs-lisp-mode)
-  (write-file (concat components-directory "/python-components-fast-forms.el"))
-  ))
+;; Suitable for large output, doesn't mess up interactive shell.
+;; Output buffer not in comint-mode, displays \\\"Fast\\\"  by default\"\n"))
+;;       (insert (concat "  (interactive)
+;;   (py--execute-prepare '" ele " shell dedicated switch beg end file t))\n\n")))
+;;   (insert "(provide 'python-components-fast-forms)
+;; ;;; python-components-fast-forms.el ends here\n ")
+;;   (emacs-lisp-mode)
+;;   (write-file (concat components-directory "/python-components-fast-forms.el"))
+;;   ))
 
 (defun write-options-dokumentation-subform (pyo)
   (cond ((string-match "dedicated" pyo)

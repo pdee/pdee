@@ -200,6 +200,10 @@ impo")))
     (py-forward-statement)
     (should (eobp))))
 
+(ert-deftest py-wrong-on-quotes-31-test ()
+  (py-test-with-temp-buffer
+      "print(\"don't\")"
+    (py-execute-statement)))
 
 (ert-deftest support-PEP-553-built-in-breakpoint-42-test ()
   (py-test-with-temp-buffer
