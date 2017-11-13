@@ -33,7 +33,10 @@
   "Set `py-result' according to `py-fast-filter-re'.
 
 Remove trailing newline"
-    (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) "" (ansi-color-filter-apply strg)))
+  ;; (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) ""
+  (ansi-color-filter-apply strg)
+  ;;)
+  )
 
 (defun py-fast-process (&optional buffer)
   "Connect am (I)Python process suitable for large output.
@@ -188,4 +191,3 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 
 (provide 'python-components-fast-forms)
 ;;; python-components-fast-forms.el ends here
- 
