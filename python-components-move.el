@@ -1,6 +1,6 @@
 ;;; python-components-move.el --- Functions moving point which need special treatment -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2017 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -28,6 +28,9 @@
 ;; Indentation
 ;; Travel current level of indentation
 (defun py--travel-this-indent-backward (&optional indent)
+  "Travel INDENT given.
+
+Otherwise travel current level of indentation"
   (let (erg)
     (while (and (py-backward-statement)
 		(or indent (setq indent (current-indentation)))
@@ -37,7 +40,7 @@
 (defun py-backward-indent ()
   "Go to the beginning of a section of equal indent.
 
-If already at the beginning or before a indent, go to next indent in buffer upwards
+If already at the beginning or before a indent, go to next indent upwards
 Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (bobp)
@@ -48,6 +51,9 @@ Returns final position when called from inside section, nil otherwise"
       erg)))
 
 (defun py--travel-this-indent-backward-bol (indent)
+  "Internal use.
+
+Travel this INDENT backward until bol"
   (let (erg)
     (while (and (py-backward-statement-bol)
 		(or indent (setq indent (current-indentation)))
@@ -57,7 +63,8 @@ Returns final position when called from inside section, nil otherwise"
 (defun py-backward-indent-bol ()
   "Go to the beginning of line of a section of equal indent.
 
-If already at the beginning or before an indent, go to next indent in buffer upwards
+If already at the beginning or before an indent,
+go to next indent in buffer upwards
 Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (bobp)
@@ -68,6 +75,9 @@ Returns final position when called from inside section, nil otherwise"
       erg)))
 
 (defun py--travel-this-indent-forward (indent)
+  "Internal use.
+
+Travel this INDENT forward"
   (let (last erg)
     (while (and (py-down-statement)
 		(eq indent (current-indentation))
@@ -112,7 +122,12 @@ Returns final position when called from inside section, nil otherwise"
 (defun py-backward-expression (&optional orig done repeat)
   "Go to the beginning of a python expression.
 
-If already at the beginning or before a expression, go to next expression in buffer upwards"
+If already at the beginning or before a expression,
+go to next expression in buffer upwards
+
+ORIG - consider orignial position or point.
+DONE - transaktional argument
+REPEAT - count and consider repeats"
   (interactive)
   (unless (bobp)
     (unless done (skip-chars-backward " \t\r\n\f"))
@@ -121,7 +136,7 @@ If already at the beginning or before a expression, go to next expression in buf
           (orig (or orig (point)))
           erg)
       (if (< py-max-specpdl-size repeat)
-	  (error "`py-backward-expression' reached loops max.")
+	  (error "`py-backward-expression' reached loops max")
 	(cond
 	 ;; comments
 	 ((nth 8 pps)
@@ -151,7 +166,10 @@ If already at the beginning or before a expression, go to next expression in buf
 (defun py-forward-expression (&optional orig done repeat)
   "Go to the end of a compound python expression.
 
-Operators are ignored. "
+Operators are ignored.
+ORIG - consider orignial position or point.
+DONE - transaktional argument
+REPEAT - count and consider repeats"
   (interactive)
   (unless done (skip-chars-forward " \t\r\n\f"))
   (unless (eobp)
@@ -160,7 +178,7 @@ Operators are ignored. "
           (orig (or orig (point)))
           erg)
       (if (< py-max-specpdl-size repeat)
-	  (error "`py-forward-expression' reached loops max.")
+	  (error "`py-forward-expression' reached loops max")
 	(cond
 	 ;; in comment
 	 ((nth 4 pps)
@@ -207,6 +225,7 @@ Operators are ignored. "
 	erg))))
 
 (defun py-backward-partial-expression ()
+  "Backward partial-expression."
   (interactive)
   (let ((orig (point))
 	erg)
@@ -228,6 +247,7 @@ Operators are ignored. "
     erg))
 
 (defun py-forward-partial-expression ()
+  "Forward partial-expression."
   (interactive)
   (let (erg)
     (skip-chars-forward py-partial-expression-backward-chars)
@@ -242,9 +262,9 @@ Operators are ignored. "
 ;; Partial- or Minor Expression
 ;;  Line
 (defun py-backward-line ()
-  "Go to beginning-of-line, return position.
+  "Go to ‘beginning-of-line’, return position.
 
-If already at beginning-of-line and not at BOB, go to beginning of previous line. "
+If already at ‘beginning-of-line’ and not at BOB, go to beginning of previous line."
   (interactive)
   (unless (bobp)
     (let ((erg
@@ -257,9 +277,9 @@ If already at beginning-of-line and not at BOB, go to beginning of previous line
       erg)))
 
 (defun py-forward-line ()
-  "Go to end-of-line, return position.
+  "Go to ‘end-of-line’, return position.
 
-If already at end-of-line and not at EOB, go to end of next line. "
+If already at ‘end-of-line’ and not at EOB, go to end of next line."
   (interactive)
   (unless (eobp)
     (let ((orig (point))
@@ -274,11 +294,16 @@ If already at end-of-line and not at EOB, go to end of next line. "
 (defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat)
   "Go to the initial line of a simple statement.
 
-For beginning of compound statement use py-backward-block.
-For beginning of clause py-backward-clause.
+For beginning of compound statement use ‘py-backward-block’.
+For beginning of clause ‘py-backward-clause’.
 
 `ignore-in-string-p' allows moves inside a docstring, used when
-computing indents"
+computing indents
+ORIG - consider orignial position or point.
+DONE - transaktional argument
+LIMIT - honor limit
+IGNORE-IN-STRING-P - also much inside a string
+REPEAT - count and consider repeats"
   (interactive)
   (save-restriction
     (unless (bobp)
@@ -293,7 +318,7 @@ computing indents"
  	       (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
 	 ((< py-max-specpdl-size repeat)
-	  (error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
+	  (error "Py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
          ((and (bolp)(eolp))
           (skip-chars-backward " \t\r\n\f")
           (py-backward-statement orig done limit ignore-in-string-p repeat))
@@ -359,10 +384,10 @@ computing indents"
 	erg))))
 
 (defun py-backward-statement-bol ()
-  "Goto beginning of line where statement starts.
-  Returns position reached, if successful, nil otherwise.
+  "Goto beginning of line where statement start.
+Returns position reached, if successful, nil otherwise.
 
-See also `py-up-statement': up from current definition to next beginning of statement above. "
+See also `py-up-statement': up from current definition to next beginning of statement above."
   (interactive)
   (let* ((orig (point))
          erg)
@@ -381,7 +406,9 @@ See also `py-up-statement': up from current definition to next beginning of stat
 (defun py-forward-statement (&optional orig done repeat)
   "Go to the last char of current statement.
 
-Optional argument REPEAT, the number of loops done already, is checked for py-max-specpdl-size error. Avoid eternal loops due to missing string delimters etc. "
+ORIG - consider orignial position or point.
+DONE - transaktional argument
+REPEAT - count and consider repeats"
   (interactive)
   (unless (eobp)
     (let ((repeat (or (and repeat (1+ repeat)) 0))
@@ -395,7 +422,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
       (cond
        ;; which-function-mode, lp:1235375
        ((< py-max-specpdl-size repeat)
-	(error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
+	(error "Py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
        ;; list
        ((nth 1 pps)
 	(if (<= orig (point))
@@ -477,7 +504,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
       erg)))
 
 (defun py-forward-statement-bol ()
-  "Go to the beginning-of-line following current statement."
+  "Go to the ‘beginning-of-line’ following current statement."
   (interactive)
   (let ((erg (py-forward-statement)))
     (setq erg (py--beginning-of-line-form erg))
@@ -488,7 +515,7 @@ Optional argument REPEAT, the number of loops done already, is checked for py-ma
 (defun py-backward-decorator ()
   "Go to the beginning of a decorator.
 
-Returns position if succesful "
+Returns position if succesful"
   (interactive)
   (back-to-indentation)
   (while (and (not (looking-at "@\\w+"))
@@ -504,7 +531,7 @@ Returns position if succesful "
 (defun py-forward-decorator ()
   "Go to the end of a decorator.
 
-Returns position if succesful "
+Returns position if succesful"
   (interactive)
   (let ((orig (point)) erg)
     (unless (looking-at "@\\w+")
@@ -529,7 +556,9 @@ Returns position if succesful "
       erg)))
 
 (defun py-backward-comment (&optional pos)
-  "Got to beginning of a commented section. "
+  "Got to beginning of a commented section.
+
+Start from POS if specified"
   (interactive)
   (let ((erg pos)
 	last)
@@ -545,8 +574,10 @@ Returns position if succesful "
 (defun py-forward-comment (&optional pos char)
   "Go to end of commented section.
 
-Optional args position and comment-start character
-Travel empty lines "
+Optional args position and ‘comment-start’ character
+Travel empty lines
+Start from POS if specified
+Use CHAR as ‘comment-start’ if provided"
   (interactive)
   (let ((orig (or pos (point)))
 	(char (or char (string-to-char comment-start)))
@@ -573,7 +604,7 @@ Travel empty lines "
 (defun py-go-to-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.
 
-From a programm use macro `py-backward-comment' instead "
+From a programm use macro `py-backward-comment' instead"
   (interactive)
   (let ((erg (py-backward-comment)))
     (when (and py-verbose-p (called-interactively-p 'any))
@@ -602,7 +633,10 @@ From a programm use macro `py-backward-comment' instead "
     (when (< (point) orig) (point))))
 
 (defun py--go-to-keyword (regexp &optional maxindent)
-  "Returns a list, whose car is indentation, cdr position. "
+  "Return a list, whose car is indentation, cdr position.
+
+Keyword detected from REGEXP
+Honor MAXINDENT if provided"
   (let ((maxindent
 	 (or maxindent
 	     (if (empty-line-p)
@@ -638,7 +672,12 @@ From a programm use macro `py-backward-comment' instead "
     erg))
 
 (defun py--clause-lookup-keyword (regexp arg &optional indent origline)
-  "Returns a list, whose car is indentation, cdr position. "
+  "Return a list, whose car is indentation, cdr position.
+
+Keyword detected from REGEXP
+ARG specifies the direction of search:
+\(< 0 arg)'(eobp)'(bobp))
+Consider INDENT and ORIGLINE if provided"
   (let* ((origline (or origline (py-count-lines)))
          (stop (if (< 0 arg)'(eobp)'(bobp)))
          (function (if (< 0 arg) 'py-forward-statement 'py-backward-statement))
@@ -723,7 +762,7 @@ From a programm use macro `py-backward-comment' instead "
     erg))
 
 (defun py-leave-comment-or-string-backward ()
-  "If inside a comment or string, leave it backward. "
+  "If inside a comment or string, leave it backward."
   (interactive)
   (let ((pps
          (if (featurep 'xemacs)
@@ -734,7 +773,12 @@ From a programm use macro `py-backward-comment' instead "
 
 (defun py-beginning-of-list-pps (&optional iact last ppstart orig done)
   "Go to the beginning of a list.
-Optional ARG indicates a start-position for `parse-partial-sexp'.
+
+IACT - if called interactively
+LAST - was last match.
+Optional PPSTART indicates a start-position for `parse-partial-sexp'.
+ORIG - consider orignial position or point.
+DONE - transaktional argument
 Return beginning position, nil if not inside."
   (interactive "p")
   (let* ((orig (or orig (point)))
@@ -757,7 +801,7 @@ Return beginning position, nil if not inside."
   "Move forward to end of a nomenclature symbol.
 
 With \\[universal-argument] (programmatically, optional argument ARG), do it that many times.
-
+IACT - if called interactively
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
   (or arg (setq arg 1))
@@ -815,9 +859,9 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (py-forward-into-nomenclature (- arg) arg))
 
 (defun py--travel-current-indent (indent &optional orig)
-  "Moves down until clause is closed, i.e. current indentation is reached.
+  "Move down until clause is closed, i.e. current indentation is reached.
 
-Takes a list, INDENT and START position. "
+Takes a list, INDENT and ORIG position."
   (unless (eobp)
     (let ((orig (or orig (point)))
           last)
@@ -830,7 +874,7 @@ Takes a list, INDENT and START position. "
         last))))
 
 (defun py-beginning-of-block-current-column ()
-  "Reach next beginning of block upwards which starts at current column.
+  "Reach next beginning of block upwards which start at current column.
 
 Return position"
   (interactive)

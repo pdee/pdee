@@ -2827,6 +2827,7 @@ Default is nil"
   :group 'python-mode)
 
 (defun py--unfontify-banner-intern (buffer)
+  "Internal use, unfontify BUFFER."
   (save-excursion
     (goto-char (point-min))
     (let ((erg (or (ignore-errors (car comint-last-prompt))
