@@ -176,7 +176,7 @@ Requires current indent-offset as INDENT-OFFSET"
     (- cui indent-offset)))
 
 (defun py-indent-line (&optional arg outmost-only)
-  "Indent the current line according to Python rules.
+  "Indent the current line according ARG.
 
 When called interactivly with \\[universal-argument],
 ignore dedenting rules for block closing statements
@@ -194,11 +194,11 @@ When bound to TAB, \\[quoted-insert] TAB inserts a TAB.
 
 OUTMOST-ONLY stops circling possible indent.
 
-When `py-tab-shifts-region-p' is `t', not just the current line,
+When `py-tab-shifts-region-p' is t, not just the current line,
 but the region is shiftet that way.
 
-If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
---as indent is at outmost reasonable--, indent-region is called.
+If `py-tab-indents-region-p' is t and first TAB doesn't shift
+--as indent is at outmost reasonable--, ‘indent-region’ is called.
 
 \\[quoted-insert] TAB inserts a literal TAB-character."
   (interactive "P")
