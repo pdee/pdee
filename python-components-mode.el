@@ -295,7 +295,7 @@ Restart ‘py-shell’ once with new Emacs/‘python-mode’.")
   "Close completion buffer if no longer needed.
 
 Works around a bug in `choose-completion'.
-Default is `nil'"
+Default is nil"
   :type 'boolean
   :group 'python-mode)
 
@@ -350,7 +350,7 @@ Default is non-nil"
   "If documention string inside of def or class get `font-lock-doc-face'.
 
 `font-lock-doc-face' inherits `font-lock-string-face'.
-Call M-x `customize-face' in order to have a visible effect."
+Call \\<emacs-lisp-mode-map> \\[customize-face] in order to have a visible effect."
 
   :type 'boolean
   :tag "py-use-font-lock-doc-face-p"
@@ -408,7 +408,7 @@ Default is  nil"
   :group 'python-mode)
 
 (defcustom py-autofill-timer-delay 1
-  "Delay when idle before functions ajusting  `py-docstring-fill-column' resp. `py-comment-fill-column' are called."
+  "Delay when idle before functions ajusting  `py-docstring-fill-column', `py-comment-fill-column' are called."
   :type 'integer
   :tag "py-autofill-timer-delay"
   :group 'python-mode)
@@ -1137,10 +1137,12 @@ to paths in Emacs."
 
 (defcustom py-import-check-point-max
   20000
-  "Maximum number of characters to search for a Java-ish import statement.
-When `python-mode' tries to calculate the shell to use (either a
-CPython or a Jython shell), it looks at the so-called `shebang' line
-                           -- i.e. #! line.  If that's not available, it looks at some of the
+  "Max number of characters to search Java-ish import statement.
+
+When `python-mode' tries to calculate the shell
+-- either a CPython or a Jython shell --
+it looks at the so-called `shebang'.
+If that's not available, it looks at some of the
 file heading imports to see if they look Java-like."
   :type 'integer
   :tag "py-import-check-point-max
@@ -1156,9 +1158,12 @@ file heading imports to see if they look Java-like."
   :group 'python-mode)
 
 (defcustom py-current-defun-show t
-  "If `py-current-defun' should jump to the definition, highlight it while waiting PY-WHICH-FUNC-DELAY seconds, before returning to previous position.
+  "If `py-current-defun' should jump to the definition.
 
-Default is `t'."
+Highlights it while waiting PY-WHICH-FUNC-DELAY seconds.
+Afterwards returning to previous position.
+
+Default is t."
 
   :type 'boolean
   :tag "py-current-defun-show"
@@ -1172,7 +1177,7 @@ Default is `t'."
   :group 'python-mode)
 
 (defcustom py--delete-temp-file-delay 1
-  "Used by `py--delete-temp-file'"
+  "Used by `py--delete-temp-file'."
 
   :type 'number
   :tag "py--delete-temp-file-delay"
@@ -1181,7 +1186,7 @@ Default is `t'."
 (defcustom py-python-send-delay 5
   "Seconds to wait for output, used by `py--send-...' functions.
 
-See also py-ipython-send-delay"
+See also ‘py-ipython-send-delay’"
 
   :type 'number
   :tag "py-python-send-delay"
@@ -1190,26 +1195,24 @@ See also py-ipython-send-delay"
 (defcustom py-ipython-send-delay 9
   "Seconds to wait for output, used by `py--send-...' functions.
 
-See also py-python-send-delay"
+See also ‘py-python-send-delay’"
 
   :type 'number
   :tag "py-ipython-send-delay"
   :group 'python-mode)
 
 (defcustom py-master-file nil
-  "If non-nil, \\[py-execute-buffer] executes the named
-master file instead of the buffer's file.  If the file name has a
-relative path, the value of variable `default-directory' for the
-buffer is prepended to come up with a file name.
+  "Execute the named master file instead of the buffer's file.
+
+Default is nil.
+With relative path variable `default-directory' is prepended.
 
 Beside you may set this variable in the file's local
 variable section, e.g.:
 
                            # Local Variables:
                            # py-master-file: \"master.py\"
-                           # End:
-
-                           "
+                           # End:"
   :type 'string
   :tag "py-master-file"
   :group 'python-mode)
