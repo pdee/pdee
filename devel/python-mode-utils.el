@@ -1768,7 +1768,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
   (insert arkopf)
   (insert "
 \(defun py-up-statement ()
-  \"Go to the beginning of next statement upwards in buffer.
+  \"go to the beginning of next statement upwards in buffer.
 
 Return position if statement found, nil otherwise. \"
   (interactive)
@@ -1779,29 +1779,17 @@ Return position if statement found, nil otherwise. \"
     (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))
 
-\(defun py-down-statement ()
-  \"Go to the beginning of next statement downwards in buffer.
-
-Return position if statement found, nil otherwise. \"
-  (interactive)
-  (let* ((orig (point))
-	 erg)
-    (cond ((py--end-of-statement-p)
-	   (setq erg (and (py-forward-statement) (py-backward-statement))))
-	  ((setq erg (< orig (progn (py-forward-statement) (py-backward-statement))))
-	   (point))
-	  (t (setq erg (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
-    erg))
 
 \(defun py-up-base (regexp &optional indent orig decorator bol repeat)
-  \"Go to the beginning of next form upwards in buffer.
+  \"REGEXP is a quoted symbol
 
-Return position if form found, nil otherwise.
-REGEXP is a quoted symbol \"
+Go to the beginning of next form upwards in buffer according to INDENT.
+
+Optional ORIG DECORATOR BOL REPEAT
+Return position if form found, nil otherwise.\"
   (unless (bobp)
     (let* ((orig (or orig (point)))
-	   (repeat (or (and repeat (1+ repeat)) 999))
+	   (repeat (or (and repeat (1+ repeat)) 0))
 	   erg name command)
       (if (< py-max-specpdl-size repeat)
 	  (error \"`py-up-base' reached loops max.\")
@@ -1823,17 +1811,38 @@ REGEXP is a quoted symbol \"
 	(when py-verbose-p (message \"%s\" erg))
 	erg))))
 
-\(defun py-down-base (regexp &optional orig indent decorator bol)
+(defun py-down-statement ()
+  \"Go to the beginning of next statement downwards in buffer.
+
+Return position if statement found, nil otherwise. \"
+  (interactive)
+  (let\* ((orig (point))
+	 erg)
+    (cond ((py--end-of-statement-p)
+	   (setq erg
+		 (and
+		  (py-forward-statement)
+		  (py-backward-statement)
+		  (< orig (point))
+		  (point))))
+	  ((< orig (and (py-forward-statement) (py-backward-statement)))
+	   (setq erg (point)))
+	  (t (setq erg (ignore-errors (< orig (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
+    erg))
+
+\(defun py-down-base (regexp \&optional orig indent decorator bol)
   \"Go to the beginning of next form below in buffer.
 
 Return position if form found, nil otherwise.
-Expects a quoted symbol 'REGEXP\"
+Expects a quoted symbol 'REGEXP
+Optional ORIG INDENT DECORATOR BOL\"
   (unless (eobp)
-    (let* ((name (substring (symbol-name regexp) 3 -3))
+    (let\* ((name (substring (symbol-name regexp) 3 -3))
 	   (p-command (car (read-from-string (concat \"py--beginning-of-\" name \"-p\"))))
 	   (backward-command (car (read-from-string (concat \"py-backward-\" name))))
 	   (up-command (car (read-from-string (concat \"py-up-\" name))))
-	   (down-command (car (read-from-string (concat \"py-down-\" name))))
+	   \;\; (down-command (car (read-from-string (concat \"py-down-\" name))))
            (forward-command (car (read-from-string (concat \"py-forward-\" name))))
            erg done start)
       (if (funcall p-command)
@@ -1841,18 +1850,34 @@ Expects a quoted symbol 'REGEXP\"
 	(save-excursion
 	  (cond
 	   ((and indent decorator bol)
-	    (funcall backward-command indent decorator bol))
+	    (when (funcall backward-command indent decorator bol)
+	      (setq indent (current-indentation))
+	      (setq start (point))))
 	   ((and indent decorator)
-	    (funcall backward-command indent decorator))
-	   (t (funcall backward-command indent)))
-	  (setq indent (current-indentation))
-	  (setq start (point))))
-      \;; (setq done (funcall forward-command indent decorator bol))
+	    (when (funcall backward-command indent decorator)
+	      (setq indent (current-indentation))
+	      (setq start (point))))
+	   (t (when
+		  (funcall backward-command indent)
+		(setq indent (current-indentation))
+		(setq start (point))))))
+	(unless (and indent start)
+	  (while (and (py-down-statement)
+		      (not (looking-at (symbol-value regexp))))))
+
+	(when
+	    (looking-at (symbol-value regexp))
+	  (setq done t)
+	  (setq erg (point)) 
+	  \;\; (setq indent (current-indentation))
+	  \;\; (setq start (point))
+	  ))
+      \;\; (setq done (funcall forward-command indent decorator bol))
       (while (and (not done)
 		  (py-down-statement)
-		  (<= indent (current-indentation))
-		  (when (looking-at (symbol-value regexp))
-		    (setq done (point)))))
+		  (< indent (current-indentation))))
+      (when (looking-at (symbol-value regexp))
+	(setq done (point)))
       (when done
 	(when bol (beginning-of-line))
 	(setq erg (point)))
@@ -1862,7 +1887,7 @@ Expects a quoted symbol 'REGEXP\"
 	 (if
 	     (and
 	      (funcall up-command)
-	      ;; up should not result to backward
+	      \;\; up should not result to backward
 	      (not (eq (point) start))
 	      (funcall forward-command decorator bol)
 	      (< orig (point))
@@ -1877,8 +1902,8 @@ Expects a quoted symbol 'REGEXP\"
       (insert (concat "
 \(defalias 'py-" ele "-up 'py-up-" ele ")
 \(defun py-up-" ele " (&optional indent decorator bol)
-  \"Go to the beginning of next " ele " upwards in buffer.
-
+  \"Go to the beginning of next " ele " upwards in buffer according to INDENT.
+Optional DECORATOR BOL
 Return position if " ele " found, nil otherwise. \"
   (interactive)
   (py-up-base 'py-"))
@@ -1891,8 +1916,9 @@ Return position if " ele " found, nil otherwise. \"
       (insert (concat "
 \(defalias 'py-" ele "-down 'py-down-" ele ")
 \(defun py-down-" ele " (&optional orig indent decorator bol)
-  \"Go to the beginning of next " ele " below in buffer.
+  \"Go to the beginning of next " ele " below in buffer according to INDENT.
 
+Optional INDENT DECORATOR BOL
 Return position if " ele " found, nil otherwise. \"
   (interactive)
   (py-down-base 'py-" ele "-re (or orig (point)) indent decorator bol))\n"))))
@@ -1902,9 +1928,10 @@ Return position if " ele " found, nil otherwise. \"
 	nil
       (insert (concat "
 \(defun py-up-" ele "-bol (&optional indent decorator)
-  \"Go to the beginning of next " ele " upwards in buffer.
+  \"Go to the beginning of next " ele " upwards in buffer according to INDENT.
 
 Go to beginning of line.
+Optional DECORATOR.
 Return position if " ele " found, nil otherwise. \"
   (interactive)
   (py-up-base 'py-" ele "-re indent (point) decorator t))\n"))))
@@ -1914,8 +1941,9 @@ Return position if " ele " found, nil otherwise. \"
         nil
       (insert (concat "
 \(defun py-down-" ele "-bol (&optional orig indent decorator bol)
-  \"Go to the beginning of next " ele " below in buffer.
+  \"Go to the beginning of next " ele " below in buffer according to INDENT.
 
+Optional INDENT DECORATOR BOL.
 Go to beginning of line
 Return position if " ele " found, nil otherwise \"
   (interactive)
@@ -2055,7 +2083,7 @@ Returns beginning and end positions of region, a cons. \"
         (if (string-match "def\\|class" ele)
 	(insert " decorator bol)")
       (insert ")"))
-	(insert (concat "\n  \"Go to beginning of `" ele "'.
+	(insert (concat "\n  \"Go to beginning of `" ele "' according to INDENT.
 
 If already at beginning, go one `" ele "' backward.
 Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
@@ -2081,7 +2109,7 @@ Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
 	(insert " decorator)")
       (insert ")"))
     (insert (concat "
-  \"Go to beginning of `" ele "', go to BOL.
+  \"Go to beginning of `" ele "' according to INDENT, go to BOL.
 
 If already at beginning, go one `" ele "' backward.
 Returns beginning of `" ele "' if successful, nil otherwise"))
@@ -2107,7 +2135,7 @@ Use backward-statement for `top-level', also bol-forms don't make sense here"
   (insert ";;; python-components-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*-\n")
   (insert arkopf)
   (insert "(defun py-backward-region ()
-  \"Go to the beginning of current region\"
+  \"Go to the beginning of current region.\"
   (interactive)
   (let ((beg (region-beginning)))
     (when beg (goto-char beg))))

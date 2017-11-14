@@ -373,7 +373,8 @@ result = some_function_that_takes_arguments(
             ])
         if b:
             pass"
-    (search-backward "__init__") 
+    (switch-to-buffer (current-buffer)) 
+    (search-backward "a:") 
     (py-down-minor-block)
     (should (eq (char-after) ?i))))
 
