@@ -173,9 +173,9 @@ Defaut is nil"
   :group 'python-mode)
 
 (defcustom py-sexp-use-expression-p nil
-  "If non-nil, C-M-s call py-forward-expression.
+  "If non-nil, ‘forward-sexp’ will call ‘py-forward-expression’.
 
-Respective C-M-b will call py-backward-expression
+Respective ‘backward-sexp’ will call ‘py-backward-expression’
 Default is t"
   :type 'boolean
   :group 'python-mode)
@@ -211,9 +211,8 @@ Default is nil.
 (defcustom py-set-pager-cat-p nil
   "If the shell environment variable $PAGER should set to `cat'.
 
-If `t', use `C-c C-r' to jump to beginning of output. Then scroll normally.
-
-Avoids lp:783828, \"Terminal not fully functional\", for help('COMMAND') in python-shell
+Avoids lp:783828,
+ \"Terminal not fully functional\", for help('COMMAND') in python-shell
 
 When non-nil, imports module `os'"
 
@@ -229,9 +228,7 @@ if True:
 
 print(\"Not part of the if-statement\")
 
-Default is nil
-
-If non-nil, a C-j from empty line dedents."
+Default is nil"
 
   :type 'boolean
   :tag "py-empty-line-closes-p"
@@ -873,14 +870,14 @@ If nil, default, it will not move from at any reasonable level."
   :group 'python-mode)
 
 (defcustom py-defun-use-top-level-p nil
- "When non-nil, keys C-M-a, C-M-e address top-level form.
+ "If ‘beginning-of-defun’, ‘end-of-defun’ calls function ‘top-level’ form.
 
 Default is nil.
 
-Beginning- end-of-defun forms use
+beginning-of defun, ‘end-of-defun’ forms use
 commands `py-beginning-of-top-level', `py-end-of-top-level'
 
-mark-defun marks top-level form at point etc."
+‘mark-defun’ marks function ‘top-level’ form at point etc."
 
  :type 'boolean
   :tag "py-defun-use-top-level-p"
@@ -1485,7 +1482,8 @@ Else python"
 
   "Make sure directory in in the PATH-variable.
 
-Windows: edit in \"Advanced System Settings/Environment Variables\" Commonly \"C:\\\\Python27\\\\python.exe\"
+Windows: edit in \"Advanced System Settings/Environment Variables\"
+Commonly \"C:\\\\Python27\\\\python.exe\"
 With Anaconda for example the following works here:
 \"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\python.exe\"
 
@@ -1510,7 +1508,10 @@ Else /usr/bin/python"
 
   "Make sure, the directory where python.exe resides in in the PATH-variable.
 
-Windows: If needed, edit in \"Advanced System Settings/Environment Variables\" Commonly \"C:\\\\Python27\\\\python.exe\"
+Windows: If needed, edit in
+\"Advanced System Settings/Environment Variables\"
+Commonly
+\"C:\\\\Python27\\\\python.exe\"
 With Anaconda for example the following works here:
 \"C:\\\\Users\\\\My-User-Name\\\\Anaconda\\\\Scripts\\\\python.exe\"
 
@@ -1999,8 +2000,9 @@ Default is nil"
     :group 'python-mode)
 
 (defcustom py-keep-windows-configuration nil
-  "Takes precedence over `py-split-window-on-execute' and `py-switch-buffers-on-execute-p'.
+  "Takes precedence over:
 
+ `py-split-window-on-execute' and `py-switch-buffers-on-execute-p'.
 See lp:1239498
 
 To suppres window-changes due to error-signaling also.
@@ -2156,9 +2158,12 @@ Syntax or has word syntax and isn't a letter.")
 (make-variable-buffer-local 'py-local-versioned-command)
 
 (defvar py-ipython-completion-command-string nil
-  "Either py-ipython0.10-completion-command-string or py-ipython0.11-completion-command-string.
+  "Select command according to IPython version.
 
-py-ipython0.11-completion-command-string also covers version 0.12")
+Either ‘py-ipython0.10-completion-command-string’
+or ‘py-ipython0.11-completion-command-string’.
+
+‘py-ipython0.11-completion-command-string’ also covers version 0.12")
 
 (defvar py-ipython0.10-completion-command-string
   "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
@@ -2191,8 +2196,8 @@ py-ipython0.11-completion-command-string also covers version 0.12")
           (if (funcall ok py-custom-temp-directory)
               (setq erg (expand-file-name py-custom-temp-directory))
             (if (file-directory-p (expand-file-name py-custom-temp-directory))
-                (error "py-custom-temp-directory set but not writable")
-              (error "py-custom-temp-directory not an existing directory"))))
+                (error "Py-custom-temp-directory set but not writable")
+              (error "Py-custom-temp-directory not an existing directory"))))
      (and (funcall ok (getenv "TMPDIR"))
           (setq erg (getenv "TMPDIR")))
      (and (funcall ok (getenv "TEMP/TMP"))
@@ -2302,12 +2307,12 @@ some logging etc."
   "Py-expression assumes chars indicated possible composing a ‘py-expression’, skip it.")
 
 (defvar py-expression-skip-chars "^ (=#\t\r\n\f"
-  "py-expression assumes chars indicated possible composing a py-expression, skip it.")
+  "Py-expression assumes chars indicated possible composing a ‘py-expression’, skip it.")
 
 (setq py-expression-skip-chars "^ [{(=#\t\r\n\f")
 
 (defvar py-expression-re "[^ =#\t\r\n\f]+"
-  "py-expression assumes chars indicated possible composing a py-expression, when looking-at or -back.")
+  "Py-expression assumes chars indicated possible composing a ‘py-expression’, when ‘looking-at’ or -back.")
 
 (defcustom py-paragraph-re paragraph-start
   "Allow Python specific ‘paragraph-start’ var."
@@ -2316,13 +2321,13 @@ some logging etc."
   :group 'python-mode)
 
 (defvar py-not-expression-regexp "[ .=#\t\r\n\f)]+"
-  "py-expression assumes chars indicated probably will not compose a py-expression.")
+  "Py-expression assumes chars indicated probably will not compose a ‘py-expression’.")
 
 (defvar py-not-expression-chars " #\t\r\n\f"
-  "py-expression assumes chars indicated probably will not compose a py-expression.")
+  "Py-expression assumes chars indicated probably will not compose a ‘py-expression’.")
 
 (defvar py-partial-expression-backward-chars "^] .=,\"'()[{}:#\t\r\n\f"
-  "py-partial-expression assumes chars indicated possible composing a py-partial-expression, skip it.")
+  "Py-partial-expression assumes chars indicated possible composing a ‘py-partial-expression’, skip it.")
 ;; (setq py-partial-expression-backward-chars "^] .=,\"'()[{}:#\t\r\n\f")
 
 (defvar py-partial-expression-forward-chars "^ .\"')}]:#\t\r\n\f")
@@ -2502,7 +2507,7 @@ See ‘py-no-outdent-re-raw’ for better readable content")
    "pass"
    "raise"
    "return")
-  "Uused by ‘py-no-outdent-re’."
+  "Uused by o‘py-no-outdent-re’."
   :type '(repeat string)
   :tag "py-no-outdent-re-raw"
   :group 'python-mode)
@@ -2853,7 +2858,8 @@ Optional argument BUFFER which select."
 	(and (timerp py--timer)(cancel-timer py--timer)))))
 
 (defun py--run-unfontify-timer (&optional buffer)
-  "Unfontify the shell banner-text."
+  "Unfontify the shell banner-text.
+Optional argument BUFFER select buffer."
   (when py--shell-unfontify
     (let ((buffer (or buffer (current-buffer))))
       (if (and
@@ -3008,6 +3014,7 @@ Used by `py-ipython-module-completion-string'"
 	    pos))))
 
 (defun py--font-lock-syntactic-face-function (state)
+  "STATE expected as result von (parse-partial-sexp (point-min) (point)."
   (if (nth 3 state)
       (if (py--docstring-p (nth 8 state))
           font-lock-doc-face
@@ -3055,6 +3062,7 @@ return `jython', otherwise return nil."
     mode))
 
 (defun py-choose-shell-by-path (&optional separator-char)
+  "SEPARATOR-CHAR according to system ‘path-separator’."
   "Select Python executable according to version desplayed in path.
 
 Returns versioned string, nil if nothing appropriate found"
@@ -3070,7 +3078,8 @@ Returns versioned string, nil if nothing appropriate found"
     erg))
 
 (defun py-which-python (&optional shell)
-  "Returns version of Python of current environment, a number."
+  "Return version of Python of current environment, a number.
+Optional argument SHELL selected shell."
   (interactive)
   (let* ((cmd (or shell (py-choose-shell)))
 	 (treffer (string-match "\\([23]*\\.?[0-9\\.]*\\)$" cmd))
@@ -3126,7 +3135,9 @@ This does the following:
 
 When interactivly called, messages the shell name.
 
-With \\[universal-argument] 4 is called `py-switch-shell'."
+With \\[universal-argument] 4 is called `py-switch-shell'.
+Optional argument ARG switch shell with universal argument.
+Optional argument FAST use fast-process."
   (interactive "P")
   (if (eq 4 (prefix-numeric-value arg))
       (py-switch-shell '(4))
@@ -3301,7 +3312,9 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (defun py-count-lines (&optional beg end)
   "Count lines in accessible part until current line.
 
-See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
+See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115
+Optional argument BEG specify beginning.
+Optional argument END specify end."
   (interactive)
   (save-excursion
     (let ((count 0)
@@ -3346,6 +3359,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
           (py-escaped))))
 
 (defun py--escape-doublequotes (start end)
+  "Escape doublequotes in region by START END."
   (let ((end (copy-marker end)))
     (save-excursion
       (goto-char start)
@@ -3356,6 +3370,7 @@ See http://debbugs.gnu.org/cgi/bugreport.cgi?bug=7115"
 	    (forward-char 1)))))))
 
 (defun py--escape-open-paren-col1 (start end)
+  "Start from position START until position END."
   (goto-char start)
   ;; (switch-to-buffer (current-buffer))
   (while (re-search-forward "^(" end t 1)
