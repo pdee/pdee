@@ -28,10 +28,10 @@
 (defvar py-use-menu-p t
   "If the menu should be loaded.
 
-Default is `t'")
+Default is t")
 
 (defvar py-menu nil
-  "Make a dynamically bound variable py-menu")
+  "Make a dynamically bound variable ‘py-menu’.")
 
 (defvar python-mode-map nil)
 (setq python-mode-map
@@ -168,10 +168,10 @@ Default is `t'")
     (substitute-key-definition 'down-list 'py-down
 			       map global-map)
     map)
-  "Used inside a Python-shell")
+  "Used inside a Python-shell.")
 
 (defvar py-ipython-shell-mode-map py-python-shell-mode-map
-  "Unless setting of ipython-shell-mode needs to be different, let's save some lines of code and copy py-python-shell-mode-map here.")
+  "Unless setting of ipython-shell-mode needs to be different, let's save some lines of code and copy ‘py-python-shell-mode-map’ here.")
 
 (defvar py-shell-map py-python-shell-mode-map)
 
@@ -260,4 +260,4 @@ Default is `t'")
 
 (provide 'python-components-map)
 
-;;; python-components-map.el ends here 
+;;; python-components-map.el ends here
