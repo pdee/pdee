@@ -25,7 +25,7 @@
 
 ;;; Code:
 
-;;;###autoload 
+;;;###autoload
 (defun ipython (&optional argprompt buffer fast exception-buffer split switch)
   "Start an IPython interpreter.
 
@@ -33,7 +33,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
   (py-shell argprompt nil "ipython" buffer fast exception-buffer split switch))
 
-;;;###autoload 
+;;;###autoload
 (defun ipython2.7 (&optional argprompt buffer fast exception-buffer split switch)
   "Start an IPython2.7 interpreter.
 
@@ -41,7 +41,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
   (py-shell argprompt nil "ipython2.7" buffer fast exception-buffer split switch))
 
-;;;###autoload 
+;;;###autoload
 (defun ipython3 (&optional argprompt buffer fast exception-buffer split switch)
   "Start an IPython3 interpreter.
 
@@ -49,7 +49,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
   (py-shell argprompt nil "ipython3" buffer fast exception-buffer split switch))
 
-;;;###autoload 
+;;;###autoload
 (defun jython (&optional argprompt buffer fast exception-buffer split switch)
   "Start an Jython interpreter.
 
@@ -57,7 +57,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
   (py-shell argprompt nil "jython" buffer fast exception-buffer split switch))
 
-;;;###autoload 
+;;;###autoload
 (defun python (&optional argprompt buffer fast exception-buffer split switch)
   "Start an Python interpreter.
 
@@ -65,7 +65,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
   (py-shell argprompt nil "python" buffer fast exception-buffer split switch))
 
-;;;###autoload 
+;;;###autoload
 (defun python2 (&optional argprompt buffer fast exception-buffer split switch)
   "Start an Python2 interpreter.
 
@@ -73,7 +73,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
   (interactive "p")
   (py-shell argprompt nil "python2" buffer fast exception-buffer split switch))
 
-;;;###autoload 
+;;;###autoload
 (defun python3 (&optional argprompt buffer fast exception-buffer split switch)
   "Start an Python3 interpreter.
 

@@ -346,7 +346,7 @@
 
 (defvar py-commands
   (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
-  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine. ")
+  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine.")
 
 
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
@@ -770,7 +770,7 @@
 ")
 
 (defun py--exexutable-name (ele)
-  "Return \"IPython\" for \"ipython\" etc. "
+  "Return \"IPython\" for \"ipython\" etc."
   (let (erg)
     (if (string-match "ipython" ele)
 	(concat "IP" (substring ele 2))
@@ -778,7 +778,7 @@
 
 ;; forms not to be declined with all variants
 (defun py-write-execute-forms (&optional command)
-  "Write `py-execute-block...' etc. "
+  "Write `py-execute-block...' etc."
   (interactive)
     (set-buffer (get-buffer-create "python-components-exec-forms.el"))
     (erase-buffer)
@@ -805,7 +805,7 @@
     (write-file (concat components-directory "/python-components-exec-forms.el")))
 
 ;; (defun write-fast-execute-forms ()
-;;   "Write `py-process-block...' etc. "
+;;   "Write `py-process-block...' etc."
 ;;   (interactive)
 ;;   (let ((py-bounds-command-names py-fast-execute-forms-names))
 ;;     (set-buffer (get-buffer-create "python-components-fast-forms.el"))
@@ -980,7 +980,7 @@
   (emacs-lisp-mode))
 
 (defun write-execute-ert-tests (&optional command path-to-shell option)
-  "Write `py-execute-block...' etc. "
+  "Write `py-execute-block...' etc."
   (interactive)
   ;; (load-shells)
   (let ((py-bounds-command-names (if command (list command) py-bounds-command-names))
@@ -1021,7 +1021,7 @@
   (switch-to-buffer (current-buffer)))
 
 (defun write-shell-arg-ert-tests (&optional command path-to-shell option)
-  "Write `py-shell...' etc. "
+  "Write `py-shell...' etc."
   (interactive)
   (set-buffer (get-buffer-create "py-shell-arg-ert-tests.el"))
   (erase-buffer)
@@ -1084,12 +1084,12 @@
 	 (insert " default"))
 	(t (insert (concat " " (capitalize elt)))))
   (cond ((string= pyo "dedicated")
-	 (insert " unique interpreter. "))
+	 (insert " unique interpreter."))
 	((string= pyo "dedicated-switch")
-	 (insert " unique interpreter and switch to result. "))
-	(t (insert " interpreter. ")))
+	 (insert " unique interpreter and switch to result."))
+	(t (insert " interpreter.")))
   (cond ((string= pyo "switch")
-	 (insert "\n\nSwitch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "))
+	 (insert "\n\nSwitch to output buffer. Ignores `py-switch-buffers-on-execute-p'."))
 	((string= pyo "no-switch")
 	 (insert "\n\nKeep current buffer. Ignores `py-switch-buffers-on-execute-p' ")))
   (when (string= "python" elt)
@@ -1175,7 +1175,7 @@ Include default forms "
   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write--unified-extended-execute-forms-intern)
-  (insert "\n(provide 'python-extended-executes)
+  (insert "\n(provide 'python-components-extended-executes)
 ;;; python-components-extended-executes.el ends here")
   (write-file (concat components-directory "/python-components-extended-executes.el"))
   )
@@ -1185,7 +1185,7 @@ Include default forms "
   (write-bounds-forms py-bounds-command-names))
 
 (defun py-provide-executes-with-resp-to-installed-python ()
-  "Reads py-shells. "
+  "Reads py-shells."
   (interactive)
   (with-current-buffer (set-buffer (get-buffer-create "*Python Executes Install Buffer*"))
     (erase-buffer)
@@ -1258,7 +1258,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
 	(end-of-line)))
 
 (defun py-provide-installed-shells-commands ()
-  "Reads py-shells, provides commands opening these shell. "
+  "Reads py-shells, provides commands opening these shell."
   (interactive)
 
   (set-buffer (get-buffer-create "python-components-named-shells.el"))
@@ -1274,7 +1274,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"
   (dolist (ele py-shells)
     (unless (string= ele "")
       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-      (insert (concat "(defun " ele " (&optional argprompt buffer fast exception-buffer split switch)
+      (insert (concat ";;;###autoload\n(defun " ele " (&optional argprompt buffer fast exception-buffer split switch)
   \"Start an "))
       (insert (capitalize ele))
       (pmu-fix-ipython ele)
@@ -1590,7 +1590,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
     (py--execute-base start end async \"" ele "\")))"))))
 
 (defun xemacs-remove-help-strings ()
-  "menu :help not supported presently at XEmacs. "
+  "menu :help not supported presently at XEmacs."
   (interactive "*")
   (let (erg)
     (goto-char (point-min))
@@ -1927,7 +1927,7 @@ Return position if " ele " found, nil otherwise \"
   (write-file (concat components-directory "/python-components-up-down.el")))
 
 (defun temen (&optional symbol)
-  "Provide menu for toggle-commands using checkbox. "
+  "Provide menu for toggle-commands using checkbox."
   (interactive "*")
   (let* ((erg (or symbol (car kill-ring)))
          (name (intern-soft erg))
@@ -1950,7 +1950,7 @@ Return position if " ele " found, nil otherwise \"
     (capitalize-word 1)))
 
 (defun switch-emen (&optional symbol)
-  "Provide menu draft for switches. "
+  "Provide menu draft for switches."
   (interactive "*")
   (let* ((erg (or symbol (car kill-ring)))
          (name (intern-soft erg))
@@ -2001,8 +2001,8 @@ the default\"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py-beginning-of-" ele "-position)))
-          (end (or end (py-forward-" ele "-position))))
+          (beg (or beg (py--beginning-of-" ele "-position)))
+          (end (or end (py-end-of-" ele "-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -2540,7 +2540,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 	(emacs-lisp-mode)))
 
 (defun py--beginning-of-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `block', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-block-re)
@@ -2549,7 +2549,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-block-or-clause-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `block-or-clause', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `block-or-clause', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-block-or-clause-re)
@@ -2558,7 +2558,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-class-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `class', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `class', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-class-re)
@@ -2567,7 +2567,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-clause-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `clause', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `clause', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-clause-re)
@@ -2576,7 +2576,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-def-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `def', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `def', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-def-re)
@@ -2585,7 +2585,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-def-or-class-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `def-or-class', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `def-or-class', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-def-or-class-re)
@@ -2594,7 +2594,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-elif-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `elif-block', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `elif-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-elif-block-re)
@@ -2603,7 +2603,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-else-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `else-block', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `else-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-else-block-re)
@@ -2612,7 +2612,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-except-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `except-block', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `except-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-except-block-re)
@@ -2621,7 +2621,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-for-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `for-block', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `for-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-for-block-re)
@@ -2630,7 +2630,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-if-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `if-block', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `if-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-if-block-re)
@@ -2639,7 +2639,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-indent-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `indent', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `indent', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-indent-re)
@@ -2648,7 +2648,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-minor-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `minor-block', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `minor-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-minor-block-re)
@@ -2657,7 +2657,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-statement-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `statement', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `statement', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-statement-re)
@@ -2666,7 +2666,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-try-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `try-block', nil otherwise. "
+  "Returns position, if cursor is at the beginning of a `try-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-try-block-re)
@@ -2675,7 +2675,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py-write-booleans-beginning-forms ()
-  "Uses `py-booleans-beginning-forms'. "
+  "Uses `py-booleans-beginning-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-booleans-beginning-forms.el"))
   (erase-buffer)
@@ -2721,7 +2721,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (write-file (concat components-directory "/python-components-booleans-beginning-forms.el")))
 
 (defun py-write-booleans-end-forms ()
-  "Uses `py-booleans-end-forms'. "
+  "Uses `py-booleans-end-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-booleans-end-forms.el"))
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
@@ -2773,7 +2773,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (write-file (concat components-directory "/python-components-booleans-end-forms.el")))
 
 (defun py-write-kill-forms (&optional forms)
-  "Useseb `py-kill-forms'. "
+  "Useseb `py-kill-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-kill-forms.el"))
   (erase-buffer)
@@ -2809,7 +2809,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
   (write-file (concat components-directory "/python-components-kill-forms.el")))
 
 (defun py-write-close-forms (&optional forms)
-  "Useseb `py-close-forms'. "
+  "Useseb `py-close-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-close-forms.el"))
   (erase-buffer)
@@ -2839,7 +2839,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
   (write-file (concat components-directory "/python-components-close-forms.el")))
 
 (defun py-write-mark-forms ()
-  "Uses `py-mark-forms'. "
+  "Uses `py-mark-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-mark-forms.el"))
   (erase-buffer)
@@ -2910,7 +2910,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
   (write-file (concat components-directory "/python-components-mark-forms.el")))
 
 (defun py-write-copy-forms (&optional forms)
-  "Uses `py-execute-forms'. "
+  "Uses `py-execute-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-copy-forms.el"))
   (erase-buffer)
@@ -2953,7 +2953,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (insert (concat "
   \"Delete " (upcase ele) " at point.
 
-\Don't store data in kill ring. "))
+\Don't store data in kill ring."))
     (insert "\"")
 
     (if (string-match "def\\|class" ele)
@@ -2977,7 +2977,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (insert (concat "
   \"Delete " (upcase ele) " at point until beginning-of-line.
 
-\Don't store data in kill ring. "))
+\Don't store data in kill ring."))
     (if (string-match "def\\|class" ele)
 	(insert "\nWith \\\\[universal-argument] or `py-mark-decorators' set to `t', `decorators' are included.\"")
       (insert "\""))
@@ -2993,7 +2993,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (delete-region (car erg) (cdr erg))))\n")))
 
 (defun py-write-delete-forms ()
-  "Uses `py-execute-forms'. "
+  "Uses `py-execute-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-delete-forms.el"))
   (erase-buffer)
@@ -3022,7 +3022,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (insert "))\n\n")))
 
 (defun py-write-section-forms ()
-  "Uses `py-section-forms'. "
+  "Uses `py-section-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-section-forms.el"))
   (erase-buffer)
@@ -3051,7 +3051,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
     (insert "))\n\n")))
 
 (defun py-write-narrow-forms ()
-  "Uses `py-narrow-forms'. "
+  "Uses `py-narrow-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-narrow.el"))
   (erase-buffer)
@@ -3090,7 +3090,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
       )))
 
 (defun py-write-execute-region ()
-  "Uses `py-execute-region-forms'. "
+  "Uses `py-execute-region-forms'."
   (interactive)
   (set-buffer (get-buffer-create "python-components-execute-region.el"))
   (erase-buffer)
@@ -3105,7 +3105,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 
 (defun py--insert-split-switch-doku (pyo)
     (cond ((string= pyo "switch")
-                 (insert "Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'. "))
+                 (insert "Switch to output buffer. Ignores `py-switch-buffers-on-execute-p'."))
                 ((string= pyo "no-switch")
                  (insert "\n\nKeep current buffer. Ignores `py-switch-buffers-on-execute-p' "))))
 
@@ -3126,7 +3126,7 @@ Stores data in kill ring. Might be yanked back using `C-y'. \"
 	 (insert "(py-dedicated-process-p t)"))))
 
 (defun write-most-of-forms ()
-  "Let's see if we can write/update forms at once. "
+  "Let's see if we can write/update forms at once."
   (interactive)
   (py-provide-installed-shells-commands)
   (py-write-backward-forms)

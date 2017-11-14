@@ -1,4 +1,4 @@
-;;; python-components-comment.el -- Comment/uncomment python constructs at point -*- lexical-binding: t; -*- 
+;;; python-components-comment.el -- Comment/uncomment python constructs at point -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -44,8 +44,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-block-position)))
-          (end (or end (py--end-of-block-position))))
+          (beg (or beg (py-beginning-of-block-position)))
+          (end (or end (py-forward-block-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -61,8 +61,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-block-or-clause-position)))
-          (end (or end (py--end-of-block-or-clause-position))))
+          (beg (or beg (py-beginning-of-block-or-clause-position)))
+          (end (or end (py-forward-block-or-clause-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -78,8 +78,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-class-position)))
-          (end (or end (py--end-of-class-position))))
+          (beg (or beg (py-beginning-of-class-position)))
+          (end (or end (py-forward-class-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -95,8 +95,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-clause-position)))
-          (end (or end (py--end-of-clause-position))))
+          (beg (or beg (py-beginning-of-clause-position)))
+          (end (or end (py-forward-clause-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -112,8 +112,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-def-position)))
-          (end (or end (py--end-of-def-position))))
+          (beg (or beg (py-beginning-of-def-position)))
+          (end (or end (py-forward-def-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -129,8 +129,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-def-or-class-position)))
-          (end (or end (py--end-of-def-or-class-position))))
+          (beg (or beg (py-beginning-of-def-or-class-position)))
+          (end (or end (py-forward-def-or-class-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -146,8 +146,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-indent-position)))
-          (end (or end (py--end-of-indent-position))))
+          (beg (or beg (py-beginning-of-indent-position)))
+          (end (or end (py-forward-indent-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -163,8 +163,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-minor-block-position)))
-          (end (or end (py--end-of-minor-block-position))))
+          (beg (or beg (py-beginning-of-minor-block-position)))
+          (end (or end (py-forward-minor-block-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -180,8 +180,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-section-position)))
-          (end (or end (py--end-of-section-position))))
+          (beg (or beg (py-beginning-of-section-position)))
+          (end (or end (py-forward-section-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -197,8 +197,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-statement-position)))
-          (end (or end (py--end-of-statement-position))))
+          (beg (or beg (py-beginning-of-statement-position)))
+          (end (or end (py-forward-statement-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -214,8 +214,8 @@ the default"
     (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
                            comment-start))
-          (beg (or beg (py--beginning-of-top-level-position)))
-          (end (or end (py--end-of-top-level-position))))
+          (beg (or beg (py-beginning-of-top-level-position)))
+          (end (or end (py-forward-top-level-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)

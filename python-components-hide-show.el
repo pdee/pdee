@@ -1,4 +1,6 @@
-;;; python-components-hide-show.el --- Provide hs-minor-mode forms
+;;; python-components-hide-show.el --- Provide hs-minor-mode forms -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2015-2016 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -22,6 +24,7 @@
 ;; directory devel. Edits here might not be persistent.
 
 ;;; Code:
+
 
 ;; (setq hs-block-start-regexp 'py-extended-block-or-clause-re)
 ;; (setq hs-forward-sexp-func 'py-forward-block)
