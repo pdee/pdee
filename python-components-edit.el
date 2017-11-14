@@ -25,11 +25,11 @@
 
 ;;; Code:
 (defvar py-keywords "\\<\\(ArithmeticError\\|AssertionError\\|AttributeError\\|BaseException\\|BufferError\\|BytesWarning\\|DeprecationWarning\\|EOFError\\|Ellipsis\\|EnvironmentError\\|Exception\\|False\\|FloatingPointError\\|FutureWarning\\|GeneratorExit\\|IOError\\|ImportError\\|ImportWarning\\|IndentationError\\|IndexError\\|KeyError\\|KeyboardInterrupt\\|LookupError\\|MemoryError\\|NameError\\|NoneNotImplementedError\\|NotImplemented\\|OSError\\|OverflowError\\|PendingDeprecationWarning\\|ReferenceError\\|RuntimeError\\|RuntimeWarning\\|StandardError\\|StopIteration\\|SyntaxError\\|SyntaxWarning\\|SystemError\\|SystemExit\\|TabError\\|True\\|TypeError\\|UnboundLocalError\\|UnicodeDecodeError\\|UnicodeEncodeError\\|UnicodeError\\|UnicodeTranslateError\\|UnicodeWarning\\|UserWarning\\|ValueError\\|Warning\\|ZeroDivisionError\\|__debug__\\|__import__\\|__name__\\|abs\\|all\\|and\\|any\\|apply\\|as\\|assert\\|basestring\\|bin\\|bool\\|break\\|buffer\\|bytearray\\|callable\\|chr\\|class\\|classmethod\\|cmp\\|coerce\\|compile\\|complex\\|continue\\|copyright\\|credits\\|def\\|del\\|delattr\\|dict\\|dir\\|divmod\\|elif\\|else\\|enumerate\\|eval\\|except\\|exec\\|execfile\\|exit\\|file\\|filter\\|float\\|for\\|format\\|from\\|getattr\\|global\\|globals\\|hasattr\\|hash\\|help\\|hex\\|id\\|if\\|import\\|in\\|input\\|int\\|intern\\|is\\|isinstance\\|issubclass\\|iter\\|lambda\\|len\\|license\\|list\\|locals\\|long\\|map\\|max\\|memoryview\\|min\\|next\\|not\\|object\\|oct\\|open\\|or\\|ord\\|pass\\|pow\\|print\\|property\\|quit\\|raise\\|range\\|raw_input\\|reduce\\|reload\\|repr\\|return\\|round\\|set\\|setattr\\|slice\\|sorted\\|staticmethod\\|str\\|sum\\|super\\|tuple\\|type\\|unichr\\|unicode\\|vars\\|while\\|with\\|xrange\\|yield\\|zip\\|\\)\\>"
-  "Contents like py-fond-lock-keyword")
+  "Contents like py-fond-lock-keyword.")
 
 ;; ;
 (defun py-insert-default-shebang ()
-  "Insert in buffer shebang of installed default Python. "
+  "Insert in buffer shebang of installed default Python."
   (interactive "*")
   (let* ((erg (if py-edit-only-p
                   py-shell-name
@@ -38,9 +38,9 @@
     (insert sheb)))
 
 (defun py--top-level-form-p ()
-  "Return non-nil, if line starts with a top level definition.
+  "Return non-nil, if line start with a top level definition.
 
-Used by `py-electric-colon', which will not indent than. "
+Used by `py-electric-colon', which will not indent than."
   (let (erg)
     (save-excursion
       (beginning-of-line)
@@ -52,7 +52,7 @@ Used by `py-electric-colon', which will not indent than. "
 (defun py-indent-line-outmost (&optional arg)
   "Indent the current line to the outmost reasonable indent.
 
-With optional \\[universal-argument] an indent with length `py-indent-offset' is inserted unconditionally "
+With optional \\[universal-argument] ARG an indent with length `py-indent-offset' is inserted unconditionally"
   (interactive "*P")
   (let* ((need (py-compute-indentation (point)))
          (cui (current-indentation))
@@ -69,7 +69,9 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
              (indent-to need))))))
 
 (defun py--indent-fix-region-intern (beg end)
-  "Used when `py-tab-indents-region-p' is non-nil. "
+  "Used when `py-tab-indents-region-p' is non-nil.
+
+Requires BEG, END as the boundery of region"
   (let ()
     (save-excursion
       (save-restriction
@@ -164,7 +166,10 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
 	(t (py--indent-line-intern need cui this-indent-offset col beg end region))))
 
 (defun py--calculate-indent-backwards (cui indent-offset)
-  "Return the next reasonable indent lower than current indentation. "
+  "Return the next reasonable indent lower than current indentation.
+
+Requires current indent as CUI
+Requires current indent-offset as INDENT-OFFSET"
   (if (< 0 (% cui py-indent-offset))
       ;; not correctly indented at all
       (/ cui indent-offset)
@@ -173,16 +178,19 @@ With optional \\[universal-argument] an indent with length `py-indent-offset' is
 (defun py-indent-line (&optional arg outmost-only)
   "Indent the current line according to Python rules.
 
-When called interactivly with \\[universal-argument], ignore dedenting rules for block closing statements
+When called interactivly with \\[universal-argument],
+ignore dedenting rules for block closing statements
 \(e.g. return, raise, break, continue, pass)
 
-An optional \\[universal-argument] followed by a numeric argument neither 1 nor 4 will switch off `py-smart-indentation' for this execution. This permits to correct allowed but unwanted indents.
-Similar to `toggle-py-smart-indentation' resp. `py-smart-indentation-off' followed by TAB.
+An optional \\[universal-argument] followed by a numeric argument
+neither 1 nor 4 will switch off `py-smart-indentation' for this execution.
+This permits to correct allowed but unwanted indents. Similar to
+`toggle-py-smart-indentation' resp. `py-smart-indentation-off' followed by TAB.
 
 This function is normally used by `indent-line-function' resp.
 \\[indent-for-tab-command].
 
-When bound to TAB, C-q TAB inserts a TAB.
+When bound to TAB, \\[quoted-insert] TAB inserts a TAB.
 
 OUTMOST-ONLY stops circling possible indent.
 
@@ -192,7 +200,7 @@ but the region is shiftet that way.
 If `py-tab-indents-region-p' is `t' and first TAB doesn't shift
 --as indent is at outmost reasonable--, indent-region is called.
 
-C-q TAB inserts a literal TAB-character."
+\\[quoted-insert] TAB inserts a literal TAB-character."
   (interactive "P")
   (unless (eq this-command last-command)
     (setq py-already-guessed-indent-offset nil))
@@ -245,7 +253,13 @@ C-q TAB inserts a literal TAB-character."
       (current-indentation))))
 
 (defun py--delete-trailing-whitespace (orig)
-  "Delete trailing whitespace if either `py-newline-delete-trailing-whitespace-p' or `py-trailing-whitespace-smart-delete-p' are `t' "
+  "Delete trailing whitespace.
+
+Either `py-newline-delete-trailing-whitespace-p'
+or `
+py-trailing-whitespace-smart-delete-p' must be t.
+
+Start from position ORIG"
   (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
     (let ((pos (copy-marker (point))))
       (save-excursion
@@ -265,7 +279,7 @@ C-q TAB inserts a literal TAB-character."
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
-When indent is set back manually, this is honoured in following lines. "
+When indent is set back manually, this is honoured in following lines."
   (interactive "*")
   (let* ((orig (point))
 	 ;; lp:1280982, deliberatly dedented by user
@@ -289,7 +303,7 @@ When indent is set back manually, this is honoured in following lines. "
 (defalias 'py-newline-and-close-block 'py-newline-and-dedent)
 (defun py-newline-and-dedent ()
   "Add a newline and indent to one level below current.
-Returns column. "
+Returns column."
   (interactive "*")
   (let ((cui (current-indentation))
         erg)
@@ -303,7 +317,7 @@ Returns column. "
 (defun py-toggle-indent-tabs-mode ()
   "Toggle `indent-tabs-mode'.
 
-Returns value of `indent-tabs-mode' switched to. "
+Returns value of `indent-tabs-mode' switched to."
   (interactive)
   (when
       (setq indent-tabs-mode (not indent-tabs-mode))
@@ -315,7 +329,9 @@ Returns value of `indent-tabs-mode' switched to. "
   "With positive ARG switch `indent-tabs-mode' on.
 
 With negative ARG switch `indent-tabs-mode' off.
-Returns value of `indent-tabs-mode' switched to. "
+Returns value of `indent-tabs-mode' switched to.
+
+If IACT is provided, message result"
   (interactive "p")
   (if (< 0 arg)
       (progn
@@ -326,12 +342,12 @@ Returns value of `indent-tabs-mode' switched to. "
   indent-tabs-mode)
 
 (defun py-indent-tabs-mode-on (arg)
-  "Switch `indent-tabs-mode' on. "
+  "Switch `indent-tabs-mode' according to ARG."
   (interactive "p")
   (py-indent-tabs-mode (abs arg)(called-interactively-p 'any)))
 
 (defun py-indent-tabs-mode-off (arg)
-  "Switch `indent-tabs-mode' off. "
+  "Switch `indent-tabs-mode' according to ARG."
   (interactive "p")
   (py-indent-tabs-mode (- (abs arg))(called-interactively-p 'any)))
 
@@ -340,7 +356,9 @@ Returns value of `indent-tabs-mode' switched to. "
   (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
 (defun py--guess-indent-final (indents)
-  "Calculate and do sanity-check. "
+  "Calculate and do sanity-check.
+
+Expects INDENTS, a cons"
   (let* ((first (car indents))
          (second (cadr indents))
          (erg (if (and first second)
@@ -352,7 +370,7 @@ Returns value of `indent-tabs-mode' switched to. "
     erg))
 
 (defun py--guess-indent-forward ()
-  "Called when moving to end of a form and `py-smart-indentation' is on. "
+  "Called when moving to end of a form and `py-smart-indentation' is on."
   (let* ((first (if
                     (py--beginning-of-statement-p)
                     (current-indentation)
@@ -374,7 +392,7 @@ Returns value of `indent-tabs-mode' switched to. "
     (list first second)))
 
 (defun py--guess-indent-backward ()
-  "Called when moving to beginning of a form and `py-smart-indentation' is on. "
+  "Called when moving to beginning of a form and `py-smart-indentation' is on."
   (let* ((cui (current-indentation))
          (indent (if (< 0 cui) cui 999))
          (pos (progn (while (and (re-search-backward py-extended-block-or-clause-re nil 'move 1)
@@ -391,7 +409,9 @@ Returns value of `indent-tabs-mode' switched to. "
 Set local value of `py-indent-offset', return it
 
 Might change local value of `py-indent-offset' only when called
-downwards from beginning of block followed by a statement. Otherwise default-value is returned."
+downwards from beginning of block followed by a statement.
+Otherwise ‘default-value’ is returned.
+Unless DIRECTION is symbol 'forward, go backward first"
   (interactive)
   (save-excursion
     (let* ((indents
@@ -428,6 +448,9 @@ downwards from beginning of block followed by a statement. Otherwise default-val
 ;;  make general form below work also in these cases
 ;;  (defalias 'py-backward-paragraph 'backward-paragraph)
 (defun py-backward-paragraph ()
+  "Go to beginning of current paragraph.
+
+If already at beginning, go to start of next paragraph upwards"
   (interactive)
   (let ((erg (and (backward-paragraph)(point))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -435,6 +458,9 @@ downwards from beginning of block followed by a statement. Otherwise default-val
 
 ;;  (defalias 'py-end-of-paragraph 'forward-paragraph)
 (defun py-forward-paragraph ()
+    "Go to end of current paragraph.
+
+If already at end, go to end of next paragraph downwards"
   (interactive)
   (let ((erg (and (forward-paragraph)(point))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -457,7 +483,8 @@ If optional INDENT is given, use it"
 (defun py--indent-line-by-line (beg end)
   "Indent every line until end to max reasonable extend.
 
-Starts from second line of region specified"
+Starts from second line of region specified
+BEG END deliver the boundaries of region to work within"
   (goto-char beg)
   (py-indent-and-forward)
   ;; (forward-line 1)
@@ -468,15 +495,14 @@ Starts from second line of region specified"
   (unless (empty-line-p) (py-indent-and-forward)))
 
 (defun py-indent-region (beg end)
-  "Reindent a region of Python code.
+  "Reindent a region delimited by BEG END.
 
 In case first line accepts an indent, keep the remaining
 lines relative.
 Otherwise lines in region get outmost indent,
 same with optional argument
 
-In order to shift a chunk of code, where the first line is okay, start with second line.
-"
+In order to shift a chunk of code, where the first line is okay, start with second line."
   (interactive "*")
   (let ((end (copy-marker end)))
     (goto-char beg)
@@ -486,9 +512,11 @@ In order to shift a chunk of code, where the first line is okay, start with seco
     (py--indent-line-by-line beg end)))
 
 (defun py--beginning-of-buffer-position ()
+  "Provided for abstract reasons."
   (point-min))
 
 (defun py--end-of-buffer-position ()
+  "Provided for abstract reasons."
   (point-max))
 
 ;;  Declarations start
@@ -498,7 +526,7 @@ In order to shift a chunk of code, where the first line is okay, start with seco
 Indented same level, which don't open blocks.
 Typically declarations resp. initialisations of variables following
 a class or function definition.
-See also py--bounds-of-statements "
+See also ‘py--bounds-of-statements’"
   (let* ((orig-indent (progn
                         (back-to-indentation)
                         (unless (py--beginning-of-statement-p)
@@ -534,8 +562,7 @@ See also py--bounds-of-statements "
         nil))))
 
 (defun py-backward-declarations ()
-  "Got to the beginning of assigments resp. statements in current level which don't open blocks.
-"
+  "Got to the beginning of assigments resp. statements in current level which don't open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (erg (car bounds)))
@@ -544,7 +571,7 @@ See also py--bounds-of-statements "
     erg))
 
 (defun py-forward-declarations ()
-  "Got to the end of assigments resp. statements in current level which don't open blocks. "
+  "Got to the end of assigments resp. statements in current level which don't open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (erg (cdr bounds)))
@@ -554,9 +581,9 @@ See also py--bounds-of-statements "
 
 (defalias 'py-copy-declarations 'py-declarations)
 (defun py-declarations ()
-  "Copy and mark assigments resp. statements in current level which don't open blocks or start with a keyword.
+  "Forms in current level,which don't open blocks or start with a keyword.
 
-See also `py-statements', which is more general, taking also simple statements starting with a keyword. "
+See also `py-statements', which is more general, taking also simple statements starting with a keyword."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (beg (car bounds))
@@ -571,7 +598,7 @@ See also `py-statements', which is more general, taking also simple statements s
 (defun py-kill-declarations ()
   "Delete variables declared in current level.
 
-Store deleted variables in kill-ring "
+Store deleted variables in ‘kill-ring’"
   (interactive "*")
   (let* ((bounds (py--bounds-of-declarations))
          (beg (car bounds))
@@ -588,7 +615,7 @@ Store deleted variables in kill-ring "
 (defun py--bounds-of-statements ()
   "Bounds of consecutive multitude of statements around point.
 
-Indented same level, which don't open blocks. "
+Indented same level, which don't open blocks."
   (interactive)
   (let* ((orig-indent (progn
                         (back-to-indentation)
@@ -627,7 +654,7 @@ Indented same level, which don't open blocks. "
         nil))))
 
 (defun py-backward-statements ()
-  "Got to the beginning of statements in current level which don't open blocks. "
+  "Got to the beginning of statements in current level which don't open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
          (erg (car bounds)))
@@ -636,7 +663,7 @@ Indented same level, which don't open blocks. "
     erg))
 
 (defun py-forward-statements ()
-  "Got to the end of statements in current level which don't open blocks. "
+  "Got to the end of statements in current level which don't open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
          (erg (cdr bounds)))
@@ -648,7 +675,7 @@ Indented same level, which don't open blocks. "
 (defun py-statements ()
   "Copy and mark simple statements in current level which don't open blocks.
 
-More general than py-declarations, which would stop at keywords like a print-statement. "
+More general than ‘py-declarations’, which would stop at keywords like a print-statement."
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))
@@ -663,7 +690,7 @@ More general than py-declarations, which would stop at keywords like a print-sta
 (defun py-kill-statements ()
   "Delete statements declared in current level.
 
-Store deleted statements in kill-ring "
+Store deleted statements in ‘kill-ring’"
   (interactive "*")
   (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))
@@ -697,7 +724,7 @@ class C(B):
         super().method(arg) # This does the same thing as:
                                # super(C, self).method(arg)
 
-Returns the string inserted. "
+Returns the string inserted."
   (interactive "*")
   (let* ((orig (point))
          (funcname (progn
@@ -723,7 +750,7 @@ Returns the string inserted. "
 
 ;; Comments
 (defun py-delete-comments-in-def-or-class ()
-  "Delete all commented lines in def-or-class at point"
+  "Delete all commented lines in def-or-class at point."
   (interactive "*")
   (save-excursion
     (let ((beg (py--beginning-of-def-or-class-position))
@@ -731,7 +758,7 @@ Returns the string inserted. "
       (and beg end (py--delete-comments-intern beg end)))))
 
 (defun py-delete-comments-in-class ()
-  "Delete all commented lines in class at point"
+  "Delete all commented lines in class at point."
   (interactive "*")
   (save-excursion
     (let ((beg (py--beginning-of-class-position))
@@ -739,7 +766,7 @@ Returns the string inserted. "
       (and beg end (py--delete-comments-intern beg end)))))
 
 (defun py-delete-comments-in-block ()
-  "Delete all commented lines in block at point"
+  "Delete all commented lines in block at point."
   (interactive "*")
   (save-excursion
     (let ((beg (py--beginning-of-block-position))
@@ -747,7 +774,7 @@ Returns the string inserted. "
       (and beg end (py--delete-comments-intern beg end)))))
 
 (defun py-delete-comments-in-region (beg end)
-  "Delete all commented lines in region. "
+  "Delete all commented lines in region delimited by BEG END."
   (interactive "r*")
   (save-excursion
     (py--delete-comments-intern beg end)))
@@ -780,6 +807,7 @@ Returns the string inserted. "
       (setq py--docend (copy-marker py--docend)))))
 
 (defun py--write-back-docstring ()
+  "When edit is finished, write docstring back to orginal buffer."
   (interactive)
   (unless (eq (current-buffer) (get-buffer py-edit-docstring-buffer))
     (set-buffer py-edit-docstring-buffer))
@@ -793,7 +821,7 @@ Returns the string inserted. "
   (insert-buffer-substring py-edit-docstring-buffer))
 
 (defun py-edit-docstring ()
-  "Edit docstring or active region in python-mode. "
+  "Edit docstring or active region in ‘python-mode’."
   (interactive "*")
   (save-excursion
     (save-restriction
