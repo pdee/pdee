@@ -51,7 +51,7 @@ Return position if form found, nil otherwise."
 	   (repeat (or (and repeat (1+ repeat)) 0))
 	   erg name command)
       (if (< py-max-specpdl-size repeat)
-	  (error "`py-up-base' reached loops max.")
+	  (error "`py-up-base' reached loops max")
 	(if indent
 	    (progn
 	      (while (and (re-search-backward (symbol-value regexp) nil 'move 1)

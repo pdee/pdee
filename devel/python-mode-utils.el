@@ -1180,75 +1180,6 @@ Include default forms "
   (write-file (concat components-directory "/python-components-extended-executes.el"))
   )
 
-;; (defun write-all-bounds-forms ()
-;;   (interactive)
-;;   (write-bounds-forms py-bounds-command-names))
-
-;; (defun py-provide-executes-with-resp-to-installed-python ()
-;;   "Reads py-shells."
-;;   (interactive)
-;;   (with-current-buffer (set-buffer (get-buffer-create "*Python Executes Install Buffer*"))
-;;     (erase-buffer)
-;;     (insert ";;; Python execute with")
-;;     (newline)
-;;     (dolist (ele py-shells)
-;;       (insert (concat "(defun py-execute-buffer-" ele " (&optional dedicated switch)
-;;   \"Execute buffer through a"))
-;;       (if (string= "ipython" ele)
-;;           (insert " IPython")
-;;         (insert (concat " " (capitalize ele))))
-;;       (insert (concat " interpreter.
-
-;; With \\\\[universal-argument] use an unique "))
-;;       (if (string= "ipython" ele)
-;;           (insert "IPython")
-;;         (insert (capitalize ele)))
-;;       (insert (concat " interpreter.\"
-;;   (interactive \"P\")
-;;   (let ((wholebuf t))
-;;   (py--execute-buffer-base \"" ele "\" dedicated switch))) \n\n")))
-;;     (insert ";; switch\n")
-;;     (dolist (ele py-shells)
-;;       (insert (concat "(defun py-execute-buffer-" ele "-switch (&optional dedicated)
-;;   \"Execute buffer through a"))
-;;       (if (string= "ipython" ele)
-;; 	  (insert "n IPython")
-;; 	(insert (concat " " (capitalize ele))))
-;;       (insert (concat " interpreter and switch to output buffer.
-
-;; Ignores `py-switch-buffers-on-execute-p'.
-;; Optional \\\\[universal-argument] makes"))
-;;       (when (string-match "^ipython.*" ele)
-;; 	(forward-word -1)
-;; 	(forward-char 1)
-;; 	(delete-char 1)
-;; 	(insert "P"))
-;;       (insert " run as an unique process.\"
-;;   (interactive \"P\")
-;;   (let ((wholebuf t))
-;;   (py--execute-buffer-base \"" ele "\" dedicated 'switch)))\n\n"))
-;;     (insert ";; dedicated-switch\n")
-;;     (dolist (ele py-shells)
-;;       (insert (concat "(defun py-execute-buffer-" ele "-dedicated-switch (&optional dedicated)
-;;   \"Execute buffer through an unique"))
-;;       (when (string-match "^ipython.*" ele)
-;; 	(forward-word -1)
-;; 	(forward-char 1)
-;; 	(delete-char 1)
-;; 	(insert "P"))
-;;       (insert (concat " interpreter.
-
-;; Switch to output buffer; ignores `py-switch-buffers-on-execute-p'.\"
-;;   (interactive)
-;;   (let ((wholebuf t))
-;;   (py--execute-buffer-base \"" ele "\" t 'switch)))\n\n")))
-
-;;     \(insert "\(provide 'python-components-named-shells)
-;; ;;; python-components-named-shells.el ends here
-;; "
-;;     (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
-;; 	  (emacs-lisp-mode))
-;;     (write-file (concat components-directory "/python-components-named-shells.el"))))
 
 (defun pmu-fix-ipython (ele)
   (when (string-match "^ipython.*" ele)
@@ -1280,9 +1211,9 @@ Include default forms "
       (pmu-fix-ipython ele)
       (insert (concat " interpreter.
 
-Optional \\\\[universal-argument] prompts for path to the"))
+Optional ARG \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter.\"
-  (interactive \"p\")
+  (interactive \"P\")
   (py-shell argprompt nil \"" ele "\" buffer fast exception-buffer split switch))\n\n"))))
   (insert ";; dedicated\n")
   (dolist (ele py-shells)
@@ -1294,9 +1225,9 @@ Optional \\\\[universal-argument] prompts for path to the"))
       (pmu-fix-ipython ele)
       (insert (concat " interpreter in another window.
 
-Optional \\\\[universal-argument] prompts for path to the"))
+Optional ARG \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter.\"
-  (interactive \"p\")\n"))
+  (interactive \"P\")\n"))
       (insert (concat "  (py-shell argprompt t \"" ele "\" buffer fast exception-buffer split switch))\n\n"))))
   ;; (py-shell &optional argprompt dedicated shell buffer fast exception-buffer split switch)
   (insert ";; switch\n")
@@ -1309,9 +1240,9 @@ Optional \\\\[universal-argument] prompts for path to the"))
       (pmu-fix-ipython ele)
       (insert (concat " interpreter in another window.
 
-Optional \\\\[universal-argument] prompts for path to the"))
+Optional ARG \\\\[universal-argument] prompts for path to the"))
       (insert (concat " interpreter.\"
-  (interactive \"p\")\n"))
+  (interactive \"P\")\n"))
       (insert (concat "  (py-shell argprompt nil \"" ele "\" buffer fast exception-buffer split t))\n\n"))))
   (insert ";; no-switch\n")
   (dolist (ele py-shells)
@@ -1323,10 +1254,10 @@ Optional \\\\[universal-argument] prompts for path to the"))
       (pmu-fix-ipython ele)
       (insert (concat " interpreter in another window, but do not switch to it.
 
-Optional \\\\[universal-argument] prompts for path to the"))
+Optional ARG \\\\[universal-argument] prompts for path to the"))
 
       (insert (concat " interpreter.\"
-  (interactive \"p\")\n"))
+  (interactive \"P\")\n"))
       (insert (concat "  (py-shell argprompt nil \"" ele "\" buffer fast exception-buffer split))\n\n"))))
   (insert ";; dedicated switch\n")
   (dolist (ele py-shells)
@@ -1339,9 +1270,9 @@ Optional \\\\[universal-argument] prompts for path to the"))
       (pmu-fix-ipython ele)
       (insert (concat " interpreter in another window.
 
-Optional \\\\[universal-argument] prompts for path to the"))
+Optional ARG \\\\[universal-argument] prompts for path to the"))
       (insert " interpreter.\"
-  \(interactive \"p\")\n")
+  \(interactive \"P\")\n")
       (insert (concat "  (py-shell argprompt t \"" ele "\" buffer fast exception-buffer split t))\n\n"))))
   ;; (py-shell &optional argprompt dedicated shell buffer-name fast exception-buffer)
   (insert "(provide 'python-components-named-shells)
@@ -1792,7 +1723,7 @@ Return position if form found, nil otherwise.\"
 	   (repeat (or (and repeat (1+ repeat)) 0))
 	   erg name command)
       (if (< py-max-specpdl-size repeat)
-	  (error \"`py-up-base' reached loops max.\")
+	  (error \"`py-up-base' reached loops max\")
 	(if indent
 	    (progn
 	      (while (and (re-search-backward (symbol-value regexp) nil 'move 1)
@@ -2205,7 +2136,7 @@ Return code of `py-" ele "' at point, a string.\"
           (progn
             (hs-make-overlay beg end 'code)
             (set-buffer-modified-p modified))
-        (error (concat \"No \" (format \"%s\" form) \" at point!\"))))))
+        (error (concat \"No \" (format \"%s\" form) \" at point\"))))))
 
 \(defun py-show-base (form &optional beg end)
   \"Remove invisibility of existing form at point.\"
@@ -2220,7 +2151,7 @@ Return code of `py-" ele "' at point, a string.\"
           (progn
             (hs-discard-overlays beg end)
             (set-buffer-modified-p modified))
-        (error (concat \"No \" (format \"%s\" form) \" at point!\"))))))
+        (error (concat \"No \" (format \"%s\" form) \" at point\"))))))
 
 \(defun py-hide-show (&optional form beg end)
   \"Toggle visibility of existing forms at point.\"
@@ -2236,7 +2167,7 @@ Return code of `py-" ele "' at point, a string.\"
           (if (overlays-in beg end)
               (hs-discard-overlays beg end)
             (hs-make-overlay beg end 'code))
-        (error (concat \"No \" (format \"%s\" form) \" at point!\")))
+        (error (concat \"No \" (format \"%s\" form) \" at point\")))
       (set-buffer-modified-p modified))))
 
 \(defun py-hide-region (beg end)
@@ -2806,41 +2737,41 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-booleans-end-forms.el")))
 
-(defun py-write-kill-forms (&optional forms)
-  "Useseb `py-kill-forms'."
-  (interactive)
-  (set-buffer (get-buffer-create "python-components-kill-forms.el"))
-  (erase-buffer)
-  (insert ";;; python-components-kill-forms.el --- kill forms -*- lexical-binding: t; -*-\n")
-  (insert "\n;;This file is generated by function from python-mode-utils.el - see in
-;; directory devel. Edits here might not be persistent.\n")
-  (insert arkopf)
-  (let ((forms (or forms py-non-bol-forms)))
-    (dolist (ele forms)
-      (insert (concat "
-\(defun py-kill-"ele" ()
-  \"Delete " ele " at point.
+;; (defun py-write-kill-forms (&optional forms)
+;;   "Useseb `py-kill-forms'."
+;;   (interactive)
+;;   (set-buffer (get-buffer-create "python-components-kill-forms.el"))
+;;   (erase-buffer)
+;;   (insert ";;; python-components-kill-forms.el --- kill forms -*- lexical-binding: t; -*-\n")
+;;   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
+;; ;; directory devel. Edits here might not be persistent.\n")
+;;   (insert arkopf)
+;;   (let ((forms (or forms py-non-bol-forms)))
+;;     (dolist (ele forms)
+;;       (insert (concat "
+;; \(defun py-kill-"ele" ()
+;;   \"Delete " ele " at point.
 
-Stores data in kill ring\"
-  (interactive \"*\")
-  (let ((erg (py--mark-base \"" ele "\")))
-    (kill-region (car erg) (cdr erg))))\n")))
-    ;; expression-forms don't make sense WRT bol
-    (dolist (ele py-bol-forms)
-      (insert (concat "
-\(defun py-kill-" ele " ()
-  \"Delete " ele " at point.
+;; Stores data in kill ring\"
+;;   (interactive \"*\")
+;;   (let ((erg (py--mark-base \"" ele "\")))
+;;     (kill-region (car erg) (cdr erg))))\n")))
+;;     ;; expression-forms don't make sense WRT bol
+;;     (dolist (ele py-bol-forms)
+;;       (insert (concat "
+;; \(defun py-kill-" ele " ()
+;;   \"Delete " ele " at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'.\"
-  (interactive \"\*\")
-  (let ((erg (py--mark-base-bol \"" ele "\")))
-    (kill-region (car erg) (cdr erg))))
-"))))
-  (insert "\n(provide 'python-components-kill-forms)
-;;; python-components-kill-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
-	(emacs-lisp-mode))
-  (write-file (concat components-directory "/python-components-kill-forms.el")))
+;; Stores data in kill ring. Might be yanked back using `C-y'.\"
+;;   (interactive \"\*\")
+;;   (let ((erg (py--mark-base-bol \"" ele "\")))
+;;     (kill-region (car erg) (cdr erg))))
+;; "))))
+;;   (insert "\n(provide 'python-components-kill-forms)
+;; ;;; python-components-kill-forms.el ends here\n")
+;;   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+;; 	(emacs-lisp-mode))
+;;   (write-file (concat components-directory "/python-components-kill-forms.el")))
 
 (defun py-write-close-forms (&optional forms)
   "Useseb `py-close-forms'."
@@ -2859,8 +2790,7 @@ Stores data in kill ring. Might be yanked back using `C-y'.\"
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline.
-\"
+If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline.\"
   (interactive \"*\")
   (let ((erg (py--close-intern 'py-" ele "-re)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
@@ -2890,7 +2820,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
       (insert (concat "
   \"Mark " ele " at point.\n\n"))
       (when (string-match "def\\|class" ele)
-	(insert "With \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
+	(insert "With ARG \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
 "))
 
       (insert (concat "Return beginning and end positions of marked area, a cons.\""))
@@ -2919,7 +2849,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
       (insert (concat "
   \"Mark " ele ", take beginning of line positions. \n\n"))
       (when (string-match "def\\|class" ele)
-	(insert "With \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
+	(insert "With ARG \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
 "))
 
       (insert (concat "Return beginning and end positions of region, a cons.\""))
@@ -3001,45 +2931,45 @@ Stores data in kill ring. Might be yanked back using `C-y'.\"
     (insert "
     (delete-region (car erg) (cdr erg))))\n")))
 
-(defun py--write-delete-forms-bol (forms)
-  (dolist (ele forms)
-    (if (string-match "def\\|class" ele)
-	(insert (concat "
-\(defun py-delete-" ele " (&optional arg)"))
-      (insert (concat "
-\(defun py-delete-" ele " ()")))
-    (insert (concat "
-  \"Delete " (upcase ele) " at point until beginning-of-line.
+;; (defun py--write-delete-forms-bol (forms)
+;;   (dolist (ele forms)
+;;     (if (string-match "def\\|class" ele)
+;; 	(insert (concat "
+;; \(defun py-delete-" ele " (&optional arg)"))
+;;       (insert (concat "
+;; \(defun py-delete-" ele " ()")))
+;;     (insert (concat "
+;;   \"Delete " (upcase ele) " at point until beginning-of-line.
 
-\Don't store data in kill ring."))
-    (if (string-match "def\\|class" ele)
-	(insert "\nWith \\\\[universal-argument] or `py-mark-decorators' set to `t', `decorators' are included.\"")
-      (insert "\""))
-    (if (string-match "def\\|class" ele)
-	(insert "\n  (interactive \"P\")")
-      (insert "\n  (interactive)"))
-    (if (string-match "def\\|class" ele)
-	(insert (concat "\n (let* ((py-mark-decorators (or arg py-mark-decorators))
-        (erg (py--mark-base \"" ele "\" py-mark-decorators)))"))
-      (insert (concat
-	       "\n  (let ((erg (py--mark-base-bol \"" ele "\")))")))
-    (insert "
-    (delete-region (car erg) (cdr erg))))\n")))
+;; \Don't store data in kill ring."))
+;;     (if (string-match "def\\|class" ele)
+;; 	(insert "\nWith ARG \\\\[universal-argument] or `py-mark-decorators' set to `t', `decorators' are included.\"")
+;;       (insert "\""))
+;;     (if (string-match "def\\|class" ele)
+;; 	(insert "\n  (interactive \"P\")")
+;;       (insert "\n  (interactive)"))
+;;     (if (string-match "def\\|class" ele)
+;; 	(insert (concat "\n (let* ((py-mark-decorators (or arg py-mark-decorators))
+;;         (erg (py--mark-base \"" ele "\" py-mark-decorators)))"))
+;;       (insert (concat
+;; 	       "\n  (let ((erg (py--mark-base-bol \"" ele "\")))")))
+;;     (insert "
+;;     (delete-region (car erg) (cdr erg))))\n")))
 
-(defun py-write-delete-forms ()
-  "Uses `py-execute-forms'."
-  (interactive)
-  (set-buffer (get-buffer-create "python-components-delete-forms.el"))
-  (erase-buffer)
-  (insert ";;; python-components-delete-forms.el --- delete forms -*- lexical-binding: t; -*-\n")
-  (insert arkopf)
-  (py--write-delete-forms-bol py-bol-forms)
-  (py--write-delete-forms py-non-bol-forms)
-  (insert "\n(provide 'python-components-delete-forms)
-;; python-components-delete-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
-	(emacs-lisp-mode))
-  (write-file (concat components-directory "/python-components-delete-forms.el")))
+;; (defun py-write-delete-forms ()
+;;   "Uses `py-execute-forms'."
+;;   (interactive)
+;;   (set-buffer (get-buffer-create "python-components-delete-forms.el"))
+;;   (erase-buffer)
+;;   (insert ";;; python-components-delete-forms.el --- delete forms -*- lexical-binding: t; -*-\n")
+;;   (insert arkopf)
+;;   (py--write-delete-forms-bol py-bol-forms)
+;;   (py--write-delete-forms py-non-bol-forms)
+;;   (insert "\n(provide 'python-components-delete-forms)
+;; ;; python-components-delete-forms.el ends here\n")
+;;   (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+;; 	(emacs-lisp-mode))
+;;   (write-file (concat components-directory "/python-components-delete-forms.el")))
 
 (defun write--section-forms ()
   (dolist (ele py-shells)
@@ -3169,10 +3099,10 @@ Stores data in kill ring. Might be yanked back using `C-y'.\"
   (py-write-booleans-beginning-forms)
   (py-write-booleans-end-forms)
   (py-write-copy-forms)
-  (py-write-delete-forms)
+  ;; (py-write-delete-forms)
   (py-write-forms-code)
   (py-write-forward-forms)
-  (py-write-kill-forms)
+  ;; (py-write-kill-forms)
   (py-write-close-forms)
   (py-write-mark-forms)
   (write-py-comment-forms)

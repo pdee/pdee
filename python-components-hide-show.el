@@ -43,7 +43,7 @@
           (progn
             (hs-make-overlay beg end 'code)
             (set-buffer-modified-p modified))
-        (error (concat "No " (format "%s" form) " at point!"))))))
+        (error (concat "No " (format "%s" form) " at point"))))))
 
 (defun py-show-base (form &optional beg end)
   "Remove invisibility of existing form at point."
@@ -58,7 +58,7 @@
           (progn
             (hs-discard-overlays beg end)
             (set-buffer-modified-p modified))
-        (error (concat "No " (format "%s" form) " at point!"))))))
+        (error (concat "No " (format "%s" form) " at point"))))))
 
 (defun py-hide-show (&optional form beg end)
   "Toggle visibility of existing forms at point."
@@ -74,7 +74,7 @@
           (if (overlays-in beg end)
               (hs-discard-overlays beg end)
             (hs-make-overlay beg end 'code))
-        (error (concat "No " (format "%s" form) " at point!")))
+        (error (concat "No " (format "%s" form) " at point")))
       (set-buffer-modified-p modified))))
 
 (defun py-hide-region (beg end)

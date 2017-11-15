@@ -34,8 +34,7 @@
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline.
-"
+If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline."
   (interactive "*")
   (let ((erg (py--close-intern 'py-block-re)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -46,8 +45,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline.
-"
+If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline."
   (interactive "*")
   (let ((erg (py--close-intern 'py-class-re)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -58,8 +56,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline.
-"
+If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline."
   (interactive "*")
   (let ((erg (py--close-intern 'py-def-re)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -70,8 +67,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline.
-"
+If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline."
   (interactive "*")
   (let ((erg (py--close-intern 'py-def-or-class-re)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -82,8 +78,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline.
-"
+If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline."
   (interactive "*")
   (let ((erg (py--close-intern 'py-minor-block-re)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -94,8 +89,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline.
-"
+If final line isn't empty and `py-close-block-provides-newline' non-nil, insert a newline."
   (interactive "*")
   (let ((erg (py--close-intern 'py-statement-re)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
