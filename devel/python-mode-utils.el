@@ -1434,7 +1434,7 @@ Optional \\\\[universal-argument] prompts for path to the"))
   \"Dedent region according to `py-indent-offset' by COUNT times.
 
 If no region is active, current line is dedented.
-Returns indentation reached. \"
+Return indentation reached. \"
   (interactive \"p\")
   (let ((erg (py--shift-intern (- count) start end)))
     (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
@@ -1444,7 +1444,7 @@ Returns indentation reached. \"
   \"Indent region according to `py-indent-offset' by COUNT times.
 
 If no region is active, current line is indented.
-Returns indentation reached. \"
+Return indentation reached. \"
   (interactive \"p\")
   (let ((erg (py--shift-intern count beg end)))
     (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
@@ -1505,7 +1505,7 @@ Returns indentation reached. \"
 COUNT defaults to `py-indent-offset',
 use \\[universal-argument] to specify a different value.
 
-Returns outmost indentation reached. \"
+Return outmost indentation reached. \"
   (interactive \"\*P\")
   (let ((erg (py--shift-forms-base \"" ele "\" (or arg py-indent-offset))))
         (when (called-interactively-p 'any) (message \"%s\" erg))
@@ -1517,7 +1517,7 @@ Returns outmost indentation reached. \"
 COUNT defaults to `py-indent-offset',
 use \\[universal-argument] to specify a different value.
 
-Returns outmost indentation reached. \"
+Return outmost indentation reached. \"
   (interactive \"\*P\")
   (let ((erg (py--shift-forms-base \"" ele "\" (- (or arg py-indent-offset)))))
     (when (called-interactively-p 'any) (message \"%s\" erg))
@@ -1546,7 +1546,7 @@ Returns outmost indentation reached. \"
 \(defalias 'py-down-" ele "-bol 'py-end-of-" ele "-bol)
 \(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of " ele ".
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 A complementary command travelling at beginning of line, whilst `py-forward-" ele "' stops at right corner.
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
@@ -1640,7 +1640,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 \(defun toggle-" ele " (&optional arg)
   \"If `" ele "' should be on or off.
 
-  Returns value of `" ele "' switched to. \"
+Return value of `" ele "' switched to. \"
   (interactive)
   (let ((arg (or arg (if " ele " -1 1))))
     (if (< 0 arg)
@@ -1652,7 +1652,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 \(defun " ele "-on (&optional arg)
   \"Make sure, " ele "' is on.
 
-Returns value of `" ele "'. \"
+Return value of `" ele "'. \"
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-" ele " arg))
@@ -1662,7 +1662,7 @@ Returns value of `" ele "'. \"
 \(defun " ele "-off ()
   \"Make sure, `" ele "' is off.
 
-Returns value of `" ele "'. \"
+Return value of `" ele "'. \"
   (interactive)
   (toggle-" ele " -1)
   (when (or py-verbose-p (called-interactively-p 'any)) (message \"" ele ": %s\" " ele "))
@@ -2063,7 +2063,7 @@ the default\"
 \(defun py-mark-" ele "-bol ()
   \"Mark " ele ", take beginning of line positions.
 
-Returns beginning and end positions of region, a cons. \"
+Return beginning and end positions of region, a cons. \"
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol \"" ele "\"))
@@ -2085,8 +2085,11 @@ Returns beginning and end positions of region, a cons. \"
       (insert ")"))
 	(insert (concat "\n  \"Go to beginning of `" ele "' according to INDENT.
 
-If already at beginning, go one `" ele "' backward.
-Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
+If already at beginning, go one `" ele "' backward."))
+	(when (string-match "def\\|class" ele)
+	  (insert  "\nOptional DECORATOR BOL\n"))
+	(insert (concat "
+Return beginning of `" ele "' if successful, nil otherwise\"\n"))
     (insert "  (interactive)")
     (cond ((string-match "clause" ele)
 	   (insert (concat "
@@ -2109,10 +2112,13 @@ Returns beginning of `" ele "' if successful, nil otherwise\"\n"))
 	(insert " decorator)")
       (insert ")"))
     (insert (concat "
-  \"Go to beginning of `" ele "' according to INDENT, go to BOL.
+  \"Go to beginning of `" ele "' according to INDENT, go to BOL."))
+    (when (string-match "def\\|class" ele)
+      (insert  "\nOptional DECORATOR BOL\n"))
 
+(insert (concat "
 If already at beginning, go one `" ele "' backward.
-Returns beginning of `" ele "' if successful, nil otherwise"))
+Return beginning of `" ele "' if successful, nil otherwise"))
     (insert "\"\n")
     (insert "  (interactive)")
     (cond ((string-match "def\\|class" ele)
@@ -2455,7 +2461,7 @@ class bar:
   (dolist (ele py-position-forms)
     (insert (concat "
 \(defun py--beginning-of-" ele "-position ()
-  \"Returns beginning of " ele " position. \"
+  \"Return beginning of " ele " position. \"
   (save-excursion
     (let ((erg (or (py--beginning-of-" ele "-p)
                    (py-backward-" ele "))))
@@ -2464,7 +2470,7 @@ class bar:
   (dolist (ele py-beginning-bol-command-names)
     (insert (concat "
 \(defun py--beginning-of-" ele "-position-bol ()
-  \"Returns beginning of " ele " position at beginning-of-line. \"
+  \"Return beginning of " ele " position at beginning-of-line. \"
   (save-excursion
     (let ((erg (or (py--beginning-of-" ele "-bol-p)
                    (py-backward-" ele "-bol))))
@@ -2489,7 +2495,7 @@ class bar:
   (dolist (ele py-position-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-position ()
-  \"Returns end of " ele " position. \"
+  \"Return end of " ele " position. \"
   (save-excursion
     (let ((erg (progn
                  (when (looking-at \"[ \\\\t\\\\r\\\\n\\\\f]\*\$\")
@@ -2501,7 +2507,7 @@ class bar:
   (dolist (ele py-shift-bol-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-position-bol ()
-  \"Returns end of " ele " position at beginning-of-line. \"
+  \"Return end of " ele " position at beginning-of-line. \"
   (save-excursion
     (let ((erg (progn
                  (when (looking-at \"[ \\\\t\\\\r\\\\n\\\\f]\*\$\")
@@ -2527,7 +2533,7 @@ class bar:
   (insert arkopf)
 
   (insert "(defun py-forward-region ()
-  \"Go to the end of current region\"
+  \"Go to the end of current region.\"
   (interactive)
   (let ((end (region-end)))
     (when end (goto-char end))))
@@ -2540,7 +2546,7 @@ class bar:
 \(defun py-forward-" ele " (&optional decorator bol)
   \"Go to end of " ele ".
 
-Returns end of " ele " if successful, nil otherwise
+Return end of " ele " if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match.\"
   (interactive)
@@ -2551,7 +2557,7 @@ With optional BOL, go to beginning of line following match.\"
 
 \(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of " ele ".
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-" ele "': down from current definition to next beginning of " ele " below. \"
   (interactive)
@@ -2568,7 +2574,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 	(emacs-lisp-mode)))
 
 (defun py--beginning-of-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `block', nil otherwise."
+  "Return position, if cursor is at the beginning of a `block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-block-re)
@@ -2577,7 +2583,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-block-or-clause-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `block-or-clause', nil otherwise."
+  "Return position, if cursor is at the beginning of a `block-or-clause', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-block-or-clause-re)
@@ -2586,7 +2592,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-class-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `class', nil otherwise."
+  "Return position, if cursor is at the beginning of a `class', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-class-re)
@@ -2595,7 +2601,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-clause-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `clause', nil otherwise."
+  "Return position, if cursor is at the beginning of a `clause', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-clause-re)
@@ -2604,7 +2610,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-def-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `def', nil otherwise."
+  "Return position, if cursor is at the beginning of a `def', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-def-re)
@@ -2613,7 +2619,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-def-or-class-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `def-or-class', nil otherwise."
+  "Return position, if cursor is at the beginning of a `def-or-class', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-def-or-class-re)
@@ -2622,7 +2628,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-elif-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `elif-block', nil otherwise."
+  "Return position, if cursor is at the beginning of a `elif-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-elif-block-re)
@@ -2631,7 +2637,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-else-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `else-block', nil otherwise."
+  "Return position, if cursor is at the beginning of a `else-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-else-block-re)
@@ -2640,7 +2646,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-except-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `except-block', nil otherwise."
+  "Return position, if cursor is at the beginning of a `except-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-except-block-re)
@@ -2649,7 +2655,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-for-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `for-block', nil otherwise."
+  "Return position, if cursor is at the beginning of a `for-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-for-block-re)
@@ -2658,7 +2664,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-if-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `if-block', nil otherwise."
+  "Return position, if cursor is at the beginning of a `if-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-if-block-re)
@@ -2667,7 +2673,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-indent-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `indent', nil otherwise."
+  "Return position, if cursor is at the beginning of a `indent', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-indent-re)
@@ -2676,7 +2682,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-minor-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `minor-block', nil otherwise."
+  "Return position, if cursor is at the beginning of a `minor-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-minor-block-re)
@@ -2685,7 +2691,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-statement-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `statement', nil otherwise."
+  "Return position, if cursor is at the beginning of a `statement', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-statement-re)
@@ -2694,7 +2700,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
        (point))))
 
 (defun py--beginning-of-try-block-bol-p (&optional pps)
-  "Returns position, if cursor is at the beginning of a `try-block', nil otherwise."
+  "Return position, if cursor is at the beginning of a `try-block', nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
        (looking-at py-try-block-re)
@@ -2717,14 +2723,14 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
 	   ;; (seq-concatenate 'list py-bol-forms py-non-bol-forms)
 	   py-non-bol-forms)
     (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
-  \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \"\n"))
+  \"Return position, if cursor is at the beginning of a `" ele "', nil otherwise. \"\n"))
 	(insert (concat "  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
          (looking-at py-" ele "-re)
          (point))))\n\n")))
   (dolist (ele py-bol-forms)
     (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
-  \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \""))
+  \"Return position, if cursor is at the beginning of a `" ele "', nil otherwise. \""))
     (insert (concat "
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -2734,7 +2740,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
          (point))))\n\n")))
   (dolist (ele py-bol-forms)
     (insert (concat "\(defun py--beginning-of-" ele "-bol-p (&optional pps)
-  \"Returns position, if cursor is at the beginning of a `" ele "', nil otherwise. \""))
+  \"Return position, if cursor is at the beginning of a `" ele "', nil otherwise. \""))
     (insert (concat "
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -2760,7 +2766,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (dolist (ele py-non-bol-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-p ()
-  \"Returns position, if cursor is at the end of a " ele ", nil otherwise. \"
+  \"Return position, if cursor is at the end of a " ele ", nil otherwise. \"
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -2773,7 +2779,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (dolist (ele py-bol-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-bol-p ()
-  \"Returns position, if cursor is at beginning-of-line at the end of a " ele ", nil otherwise. \"
+  \"Return position, if cursor is at beginning-of-line at the end of a " ele ", nil otherwise. \"
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -2785,7 +2791,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (dolist (ele py-bol-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-p ()
-  \"Returns position, if cursor is at the end of a " ele ", nil otherwise. \"
+  \"Return position, if cursor is at the end of a " ele ", nil otherwise. \"
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -2887,7 +2893,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 	(insert "With \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
 "))
 
-      (insert (concat "Returns beginning and end positions of marked area, a cons. \""))
+      (insert (concat "Return beginning and end positions of marked area, a cons. \""))
       (if (string-match "def\\|class" ele)
 	  (insert "\n  (interactive \"P\")")
 	(insert "\n  (interactive)"))
@@ -2916,7 +2922,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
 	(insert "With \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
 "))
 
-      (insert (concat "Returns beginning and end positions of region, a cons. \""))
+      (insert (concat "Return beginning and end positions of region, a cons. \""))
       (if (string-match "def\\|class" ele)
 	  (insert "\n  (interactive \"P\")")
 	(insert "\n  (interactive)"))

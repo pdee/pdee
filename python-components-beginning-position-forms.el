@@ -30,238 +30,238 @@
 
 
 (defun py--beginning-of-block-position ()
-  "Returns beginning of block position. "
+  "Return beginning of block position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-block-p)
                    (py-backward-block))))
       erg)))
 
 (defun py--beginning-of-block-or-clause-position ()
-  "Returns beginning of block-or-clause position. "
+  "Return beginning of block-or-clause position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-block-or-clause-p)
                    (py-backward-block-or-clause))))
       erg)))
 
 (defun py--beginning-of-class-position ()
-  "Returns beginning of class position. "
+  "Return beginning of class position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-class-p)
                    (py-backward-class))))
       erg)))
 
 (defun py--beginning-of-clause-position ()
-  "Returns beginning of clause position. "
+  "Return beginning of clause position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-clause-p)
                    (py-backward-clause))))
       erg)))
 
 (defun py--beginning-of-comment-position ()
-  "Returns beginning of comment position. "
+  "Return beginning of comment position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-comment-p)
                    (py-backward-comment))))
       erg)))
 
 (defun py--beginning-of-def-position ()
-  "Returns beginning of def position. "
+  "Return beginning of def position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-def-p)
                    (py-backward-def))))
       erg)))
 
 (defun py--beginning-of-def-or-class-position ()
-  "Returns beginning of def-or-class position. "
+  "Return beginning of def-or-class position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-def-or-class-p)
                    (py-backward-def-or-class))))
       erg)))
 
 (defun py--beginning-of-expression-position ()
-  "Returns beginning of expression position. "
+  "Return beginning of expression position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-expression-p)
                    (py-backward-expression))))
       erg)))
 
 (defun py--beginning-of-except-block-position ()
-  "Returns beginning of except-block position. "
+  "Return beginning of except-block position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-except-block-p)
                    (py-backward-except-block))))
       erg)))
 
 (defun py--beginning-of-if-block-position ()
-  "Returns beginning of if-block position. "
+  "Return beginning of if-block position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-if-block-p)
                    (py-backward-if-block))))
       erg)))
 
 (defun py--beginning-of-indent-position ()
-  "Returns beginning of indent position. "
+  "Return beginning of indent position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-indent-p)
                    (py-backward-indent))))
       erg)))
 
 (defun py--beginning-of-line-position ()
-  "Returns beginning of line position. "
+  "Return beginning of line position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-line-p)
                    (py-backward-line))))
       erg)))
 
 (defun py--beginning-of-minor-block-position ()
-  "Returns beginning of minor-block position. "
+  "Return beginning of minor-block position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-minor-block-p)
                    (py-backward-minor-block))))
       erg)))
 
 (defun py--beginning-of-partial-expression-position ()
-  "Returns beginning of partial-expression position. "
+  "Return beginning of partial-expression position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-partial-expression-p)
                    (py-backward-partial-expression))))
       erg)))
 
 (defun py--beginning-of-paragraph-position ()
-  "Returns beginning of paragraph position. "
+  "Return beginning of paragraph position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-paragraph-p)
                    (py-backward-paragraph))))
       erg)))
 
 (defun py--beginning-of-section-position ()
-  "Returns beginning of section position. "
+  "Return beginning of section position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-section-p)
                    (py-backward-section))))
       erg)))
 
 (defun py--beginning-of-statement-position ()
-  "Returns beginning of statement position. "
+  "Return beginning of statement position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-statement-p)
                    (py-backward-statement))))
       erg)))
 
 (defun py--beginning-of-top-level-position ()
-  "Returns beginning of top-level position. "
+  "Return beginning of top-level position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-top-level-p)
                    (py-backward-top-level))))
       erg)))
 
 (defun py--beginning-of-try-block-position ()
-  "Returns beginning of try-block position. "
+  "Return beginning of try-block position. "
   (save-excursion
     (let ((erg (or (py--beginning-of-try-block-p)
                    (py-backward-try-block))))
       erg)))
 
 (defun py--beginning-of-block-position-bol ()
-  "Returns beginning of block position at beginning-of-line. "
+  "Return beginning of block position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-block-bol-p)
                    (py-backward-block-bol))))
       erg)))
 
 (defun py--beginning-of-block-or-clause-position-bol ()
-  "Returns beginning of block-or-clause position at beginning-of-line. "
+  "Return beginning of block-or-clause position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-block-or-clause-bol-p)
                    (py-backward-block-or-clause-bol))))
       erg)))
 
 (defun py--beginning-of-class-position-bol ()
-  "Returns beginning of class position at beginning-of-line. "
+  "Return beginning of class position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-class-bol-p)
                    (py-backward-class-bol))))
       erg)))
 
 (defun py--beginning-of-clause-position-bol ()
-  "Returns beginning of clause position at beginning-of-line. "
+  "Return beginning of clause position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-clause-bol-p)
                    (py-backward-clause-bol))))
       erg)))
 
 (defun py--beginning-of-def-position-bol ()
-  "Returns beginning of def position at beginning-of-line. "
+  "Return beginning of def position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-def-bol-p)
                    (py-backward-def-bol))))
       erg)))
 
 (defun py--beginning-of-def-or-class-position-bol ()
-  "Returns beginning of def-or-class position at beginning-of-line. "
+  "Return beginning of def-or-class position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-def-or-class-bol-p)
                    (py-backward-def-or-class-bol))))
       erg)))
 
 (defun py--beginning-of-elif-block-position-bol ()
-  "Returns beginning of elif-block position at beginning-of-line. "
+  "Return beginning of elif-block position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-elif-block-bol-p)
                    (py-backward-elif-block-bol))))
       erg)))
 
 (defun py--beginning-of-else-block-position-bol ()
-  "Returns beginning of else-block position at beginning-of-line. "
+  "Return beginning of else-block position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-else-block-bol-p)
                    (py-backward-else-block-bol))))
       erg)))
 
 (defun py--beginning-of-except-block-position-bol ()
-  "Returns beginning of except-block position at beginning-of-line. "
+  "Return beginning of except-block position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-except-block-bol-p)
                    (py-backward-except-block-bol))))
       erg)))
 
 (defun py--beginning-of-for-block-position-bol ()
-  "Returns beginning of for-block position at beginning-of-line. "
+  "Return beginning of for-block position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-for-block-bol-p)
                    (py-backward-for-block-bol))))
       erg)))
 
 (defun py--beginning-of-if-block-position-bol ()
-  "Returns beginning of if-block position at beginning-of-line. "
+  "Return beginning of if-block position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-if-block-bol-p)
                    (py-backward-if-block-bol))))
       erg)))
 
 (defun py--beginning-of-indent-position-bol ()
-  "Returns beginning of indent position at beginning-of-line. "
+  "Return beginning of indent position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-indent-bol-p)
                    (py-backward-indent-bol))))
       erg)))
 
 (defun py--beginning-of-minor-block-position-bol ()
-  "Returns beginning of minor-block position at beginning-of-line. "
+  "Return beginning of minor-block position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-minor-block-bol-p)
                    (py-backward-minor-block-bol))))
       erg)))
 
 (defun py--beginning-of-statement-position-bol ()
-  "Returns beginning of statement position at beginning-of-line. "
+  "Return beginning of statement position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-statement-bol-p)
                    (py-backward-statement-bol))))
       erg)))
 
 (defun py--beginning-of-try-block-position-bol ()
-  "Returns beginning of try-block position at beginning-of-line. "
+  "Return beginning of try-block position at beginning-of-line. "
   (save-excursion
     (let ((erg (or (py--beginning-of-try-block-bol-p)
                    (py-backward-try-block-bol))))

@@ -29,7 +29,7 @@
 ;;; Code:
 
 (defun py-forward-region ()
-  "Go to the end of current region"
+  "Go to the end of current region."
   (interactive)
   (let ((end (region-end)))
     (when end (goto-char end))))
@@ -37,7 +37,7 @@
 (defun py-forward-block (&optional decorator bol)
   "Go to end of block.
 
-Returns end of block if successful, nil otherwise
+Return end of block if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -48,7 +48,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-block-bol ()
   "Goto beginning of line following end of block.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-block': down from current definition to next beginning of block below. "
   (interactive)
@@ -60,7 +60,7 @@ See also `py-down-block': down from current definition to next beginning of bloc
 (defun py-forward-block-or-clause (&optional decorator bol)
   "Go to end of block-or-clause.
 
-Returns end of block-or-clause if successful, nil otherwise
+Return end of block-or-clause if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -71,7 +71,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-block-or-clause-bol ()
   "Goto beginning of line following end of block-or-clause.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-block-or-clause': down from current definition to next beginning of block-or-clause below. "
   (interactive)
@@ -84,7 +84,7 @@ See also `py-down-block-or-clause': down from current definition to next beginni
 (defun py-forward-class (&optional decorator bol)
   "Go to end of class.
 
-Returns end of class if successful, nil otherwise
+Return end of class if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -95,7 +95,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-class-bol ()
   "Goto beginning of line following end of class.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-class': down from current definition to next beginning of class below. "
   (interactive)
@@ -107,7 +107,7 @@ See also `py-down-class': down from current definition to next beginning of clas
 (defun py-forward-clause (&optional decorator bol)
   "Go to end of clause.
 
-Returns end of clause if successful, nil otherwise
+Return end of clause if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -118,7 +118,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-clause-bol ()
   "Goto beginning of line following end of clause.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-clause': down from current definition to next beginning of clause below. "
   (interactive)
@@ -131,7 +131,7 @@ See also `py-down-clause': down from current definition to next beginning of cla
 (defun py-forward-def-or-class (&optional decorator bol)
   "Go to end of def-or-class.
 
-Returns end of def-or-class if successful, nil otherwise
+Return end of def-or-class if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -142,7 +142,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-def-or-class-bol ()
   "Goto beginning of line following end of def-or-class.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-def-or-class': down from current definition to next beginning of def-or-class below. "
   (interactive)
@@ -155,7 +155,7 @@ See also `py-down-def-or-class': down from current definition to next beginning 
 (defun py-forward-def (&optional decorator bol)
   "Go to end of def.
 
-Returns end of def if successful, nil otherwise
+Return end of def if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -166,7 +166,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-def-bol ()
   "Goto beginning of line following end of def.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-def': down from current definition to next beginning of def below. "
   (interactive)
@@ -178,7 +178,7 @@ See also `py-down-def': down from current definition to next beginning of def be
 (defun py-forward-if-block (&optional decorator bol)
   "Go to end of if-block.
 
-Returns end of if-block if successful, nil otherwise
+Return end of if-block if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -189,7 +189,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-if-block-bol ()
   "Goto beginning of line following end of if-block.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-if-block': down from current definition to next beginning of if-block below. "
   (interactive)
@@ -201,7 +201,7 @@ See also `py-down-if-block': down from current definition to next beginning of i
 (defun py-forward-elif-block (&optional decorator bol)
   "Go to end of elif-block.
 
-Returns end of elif-block if successful, nil otherwise
+Return end of elif-block if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -212,7 +212,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-elif-block-bol ()
   "Goto beginning of line following end of elif-block.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-elif-block': down from current definition to next beginning of elif-block below. "
   (interactive)
@@ -224,7 +224,7 @@ See also `py-down-elif-block': down from current definition to next beginning of
 (defun py-forward-else-block (&optional decorator bol)
   "Go to end of else-block.
 
-Returns end of else-block if successful, nil otherwise
+Return end of else-block if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -235,7 +235,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-else-block-bol ()
   "Goto beginning of line following end of else-block.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-else-block': down from current definition to next beginning of else-block below. "
   (interactive)
@@ -247,7 +247,7 @@ See also `py-down-else-block': down from current definition to next beginning of
 (defun py-forward-for-block (&optional decorator bol)
   "Go to end of for-block.
 
-Returns end of for-block if successful, nil otherwise
+Return end of for-block if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -258,7 +258,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-for-block-bol ()
   "Goto beginning of line following end of for-block.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-for-block': down from current definition to next beginning of for-block below. "
   (interactive)
@@ -270,7 +270,7 @@ See also `py-down-for-block': down from current definition to next beginning of 
 (defun py-forward-except-block (&optional decorator bol)
   "Go to end of except-block.
 
-Returns end of except-block if successful, nil otherwise
+Return end of except-block if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -281,7 +281,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-except-block-bol ()
   "Goto beginning of line following end of except-block.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-except-block': down from current definition to next beginning of except-block below. "
   (interactive)
@@ -293,7 +293,7 @@ See also `py-down-except-block': down from current definition to next beginning 
 (defun py-forward-try-block (&optional decorator bol)
   "Go to end of try-block.
 
-Returns end of try-block if successful, nil otherwise
+Return end of try-block if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -304,7 +304,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-try-block-bol ()
   "Goto beginning of line following end of try-block.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-try-block': down from current definition to next beginning of try-block below. "
   (interactive)
@@ -316,7 +316,7 @@ See also `py-down-try-block': down from current definition to next beginning of 
 (defun py-forward-minor-block (&optional decorator bol)
   "Go to end of minor-block.
 
-Returns end of minor-block if successful, nil otherwise
+Return end of minor-block if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive)
@@ -327,7 +327,7 @@ With optional BOL, go to beginning of line following match."
 
 (defun py-forward-minor-block-bol ()
   "Goto beginning of line following end of minor-block.
-  Returns position reached, if successful, nil otherwise.
+Return position reached, if successful, nil otherwise.
 
 See also `py-down-minor-block': down from current definition to next beginning of minor-block below. "
   (interactive)

@@ -32,7 +32,7 @@
 (defun py-mark-comment ()
   "Mark comment at point.
 
-Returns beginning and end positions of marked area, a cons. "
+Return beginning and end positions of marked area, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base "comment"))
@@ -43,7 +43,7 @@ Returns beginning and end positions of marked area, a cons. "
 (defun py-mark-line ()
   "Mark line at point.
 
-Returns beginning and end positions of marked area, a cons. "
+Return beginning and end positions of marked area, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base "line"))
@@ -54,7 +54,7 @@ Returns beginning and end positions of marked area, a cons. "
 (defun py-mark-paragraph ()
   "Mark paragraph at point.
 
-Returns beginning and end positions of marked area, a cons. "
+Return beginning and end positions of marked area, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base "paragraph"))
@@ -65,7 +65,7 @@ Returns beginning and end positions of marked area, a cons. "
 (defun py-mark-expression ()
   "Mark expression at point.
 
-Returns beginning and end positions of marked area, a cons. "
+Return beginning and end positions of marked area, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base "expression"))
@@ -76,7 +76,7 @@ Returns beginning and end positions of marked area, a cons. "
 (defun py-mark-partial-expression ()
   "Mark partial-expression at point.
 
-Returns beginning and end positions of marked area, a cons. "
+Return beginning and end positions of marked area, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base "partial-expression"))
@@ -87,7 +87,7 @@ Returns beginning and end positions of marked area, a cons. "
 (defun py-mark-section ()
   "Mark section at point.
 
-Returns beginning and end positions of marked area, a cons. "
+Return beginning and end positions of marked area, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base "section"))
@@ -98,7 +98,7 @@ Returns beginning and end positions of marked area, a cons. "
 (defun py-mark-top-level ()
   "Mark top-level at point.
 
-Returns beginning and end positions of marked area, a cons. "
+Return beginning and end positions of marked area, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base "top-level"))
@@ -109,7 +109,7 @@ Returns beginning and end positions of marked area, a cons. "
 (defun py-mark-block ()
   "Mark block, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "block"))
@@ -120,7 +120,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-block-or-clause ()
   "Mark block-or-clause, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "block-or-clause"))
@@ -132,7 +132,7 @@ Returns beginning and end positions of region, a cons. "
   "Mark class, take beginning of line positions. 
 
 With \\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
@@ -144,7 +144,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-clause ()
   "Mark clause, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "clause"))
@@ -156,7 +156,7 @@ Returns beginning and end positions of region, a cons. "
   "Mark def, take beginning of line positions. 
 
 With \\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
@@ -169,7 +169,7 @@ Returns beginning and end positions of region, a cons. "
   "Mark def-or-class, take beginning of line positions. 
 
 With \\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
         erg)
@@ -181,7 +181,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-elif-block ()
   "Mark elif-block, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "elif-block"))
@@ -192,7 +192,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-else-block ()
   "Mark else-block, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "else-block"))
@@ -203,7 +203,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-except-block ()
   "Mark except-block, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "except-block"))
@@ -214,7 +214,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-for-block ()
   "Mark for-block, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "for-block"))
@@ -225,7 +225,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-if-block ()
   "Mark if-block, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "if-block"))
@@ -236,7 +236,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-indent ()
   "Mark indent, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "indent"))
@@ -247,7 +247,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-minor-block ()
   "Mark minor-block, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "minor-block"))
@@ -258,7 +258,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-statement ()
   "Mark statement, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "statement"))
@@ -269,7 +269,7 @@ Returns beginning and end positions of region, a cons. "
 (defun py-mark-try-block ()
   "Mark try-block, take beginning of line positions. 
 
-Returns beginning and end positions of region, a cons. "
+Return beginning and end positions of region, a cons. "
   (interactive)
   (let (erg)
     (setq erg (py--mark-base-bol "try-block"))
