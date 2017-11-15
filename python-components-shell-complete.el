@@ -34,7 +34,9 @@ completions on the current context."
 ;; post-command-hook
 ;; caused insert-file-contents error lp:1293172
 (defun py--after-change-function (end)
-  "Restore window-confiuration after completion. "
+  "Restore window-confiuration after completion.
+
+Takes END"
   (when
       (and (or
             (eq this-command 'completion-at-point)
@@ -63,7 +65,9 @@ completions on the current context."
     erg))
 
 (defun py--try-completion (input completion)
-  "Repeat `try-completion' as long as matches are found. "
+  "Repeat `try-completion' as long as match are found.
+
+Interal used. Takes INPUT COMPLETION"
   (let (erg newlist)
     (setq erg (py--try-completion-intern input completion))
     (when erg
@@ -107,7 +111,9 @@ completions on the current context."
   nil)
 
 (defun py--shell-do-completion-at-point (process imports input exception-buffer code)
-  "Do completion at point for PROCESS."
+  "Do completion at point for PROCESS.
+
+Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   ;; (py--send-string-no-output py-shell-completion-setup-code process)
   (when imports
     (py--send-string-no-output imports process))
@@ -173,7 +179,9 @@ completions on the current context."
     nil))
 
 (defun py-shell-complete (&optional shell beg end word)
-  "Complete word before point, if any. "
+  "Complete word before point, if any.
+
+Optional SHELL BEG END WORD"
   (interactive)
   (save-excursion
     (and (buffer-live-p (get-buffer "*Python Completions*"))
@@ -188,10 +196,10 @@ completions on the current context."
 If cursor is at end of a symbol, try to complete
 Otherwise call `py-indent-line'
 
-If `(use-region-p)' returns `t', indent region.
+If `(use-region-p)' returns t, indent region.
 Use `C-q TAB' to insert a literally TAB-character
 
-In python-mode `py-complete-function' is called,
+In ‘python-mode’ `py-complete-function' is called,
 in (I)Python shell-modes `py-shell-complete'"
   (interactive "*")
   (cond ((use-region-p)

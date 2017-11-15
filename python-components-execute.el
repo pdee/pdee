@@ -1182,7 +1182,7 @@ Avoid empty lines at the beginning."
 (defun py-fetch-py-master-file ()
   "Lookup if a ‘py-master-file’ is specified.
 
-See also doku of variable ‘py-master-file’ "
+See also doku of variable ‘py-master-file’"
   (interactive)
   (save-excursion
     (save-restriction
