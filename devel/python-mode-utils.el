@@ -1953,7 +1953,7 @@ Return position if " ele " found, nil otherwise \"
     (insert (concat "(defun py-comment-" ele " (&optional beg end arg)
   \"Comments " ele " at point.
 
-Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  `t',
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  t,
 the default\"
   (interactive \"\*\")
   (save-excursion
@@ -2401,7 +2401,7 @@ class bar:
   (dolist (ele py-beginning-bol-command-names)
     (insert (concat "
 \(defun py--beginning-of-" ele "-position-bol ()
-  \"Return beginning of " ele " position at beginning-of-line.\"
+  \"Return beginning of " ele " position at ‘beginning-of-line’.\"
   (save-excursion
     (let ((erg (or (py--beginning-of-" ele "-bol-p)
                    (py-backward-" ele "-bol))))
@@ -2438,7 +2438,7 @@ class bar:
   (dolist (ele py-shift-bol-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-position-bol ()
-  \"Return end of " ele " position at beginning-of-line.\"
+  \"Return end of " ele " position at ‘beginning-of-line’.\"
   (save-excursion
     (let ((erg (progn
                  (when (looking-at \"[ \\\\t\\\\r\\\\n\\\\f]\*\$\")
@@ -2710,7 +2710,7 @@ See also `py-down-" ele "': down from current definition to next beginning of " 
   (dolist (ele py-bol-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-bol-p ()
-  \"Return position, if cursor is at beginning-of-line at the end of a " ele ", nil otherwise.\"
+  \"Return position, if cursor is at ‘beginning-of-line’ at the end of a " ele ", nil otherwise.\"
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -2820,7 +2820,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
       (insert (concat "
   \"Mark " ele " at point.\n\n"))
       (when (string-match "def\\|class" ele)
-	(insert "With ARG \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
+	(insert "With ARG \\\\[universal-argument] or `py-mark-decorators' set to t, decorators are marked too.
 "))
 
       (insert (concat "Return beginning and end positions of marked area, a cons.\""))
@@ -2849,7 +2849,7 @@ If final line isn't empty and `py-close-block-provides-newline' non-nil, insert 
       (insert (concat "
   \"Mark " ele ", take beginning of line positions. \n\n"))
       (when (string-match "def\\|class" ele)
-	(insert "With ARG \\\\[universal-argument] or `py-mark-decorators' set to `t', decorators are marked too.
+	(insert "With ARG \\\\[universal-argument] or `py-mark-decorators' set to t, decorators are marked too.
 "))
 
       (insert (concat "Return beginning and end positions of region, a cons.\""))
@@ -2939,11 +2939,11 @@ Stores data in kill ring. Might be yanked back using `C-y'.\"
       (insert (concat "
 \(defun py-delete-" ele " ()")))
     (insert (concat "
-  \"Delete " (upcase ele) " at point until beginning-of-line.
+  \"Delete " (upcase ele) " at point until ‘beginning-of-line’.
 
 \Don't store data in kill ring."))
     (if (string-match "def\\|class" ele)
-	(insert "\nWith ARG \\\\[universal-argument] or `py-mark-decorators' set to `t', `decorators' are included.\"")
+	(insert "\nWith ARG \\\\[universal-argument] or `py-mark-decorators' set to t, `decorators' are included.\"")
       (insert "\""))
     (if (string-match "def\\|class" ele)
 	(insert "\n  (interactive \"P\")")

@@ -1,6 +1,6 @@
 ;;; python-components-execute.el --- Part of python-components-mode -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2017 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -25,7 +25,7 @@
 
 ;;; Code:
 (defun py-restore-window-configuration ()
-  "Restore py-restore-window-configuration when completion is done resp. abandoned. "
+  "Restore py-restore-window-configuration when completion is done resp. abandoned."
   (let (val)
     (and (setq val (get-register py-windows-config-register))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
 	 (jump-to-register py-windows-config-register))))
@@ -129,7 +129,7 @@ Kind of an option 'follow', local shell sets `py-shell-name', enforces its use a
     (message "Enforce %s" py-shell-name)))
 
 (defun py-force-local-shell-off (&optional fast)
-  "Restore `py-shell-name' default value and `behaviour'. "
+  "Restore `py-shell-name' default value and `behaviour'."
   (interactive)
   (toggle-force-local-shell 1 fast)
   (when (or py-verbose-p (called-interactively-p 'any))
@@ -172,7 +172,7 @@ Caveat: Completion might not work that way.
   "Make sure, `py-force-py-shell-name-p' is off.
 
 Function to use by executes will be guessed from environment.
-Returns value of `py-force-py-shell-name-p'. "
+Returns value of `py-force-py-shell-name-p'."
   (interactive)
   (toggle-force-py-shell-name-p -1)
   (when (or py-verbose-p (called-interactively-p 'any)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
@@ -183,7 +183,7 @@ Returns value of `py-force-py-shell-name-p'. "
 (defun py-toggle-split-windows-on-execute (&optional arg)
   "If `py-split-window-on-execute' should be on or off.
 
-  Returns value of `py-split-window-on-execute' switched to. "
+  Returns value of `py-split-window-on-execute' switched to."
   (interactive)
   (let ((arg (or arg (if py-split-window-on-execute -1 1))))
     (if (< 0 arg)
@@ -195,7 +195,7 @@ Returns value of `py-force-py-shell-name-p'. "
 (defun py-split-windows-on-execute-on (&optional arg)
   "Make sure, `py-split-window-on-execute' is on.
 
-Returns value of `py-split-window-on-execute'. "
+Returns value of `py-split-window-on-execute'."
   (interactive "p")
   (let ((arg (or arg 1)))
     (toggle-py-split-windows-on-execute arg))
@@ -205,7 +205,7 @@ Returns value of `py-split-window-on-execute'. "
 (defun py-split-windows-on-execute-off ()
   "Make sure, `py-split-window-on-execute' is off.
 
-Returns value of `py-split-window-on-execute'. "
+Returns value of `py-split-window-on-execute'."
   (interactive)
   (toggle-py-split-windows-on-execute -1)
   (when (called-interactively-p 'any) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
@@ -217,7 +217,7 @@ Returns value of `py-split-window-on-execute'. "
 (defun py-toggle-shell-switch-buffers-on-execute (&optional arg)
   "If `py-switch-buffers-on-execute-p' should be on or off.
 
-  Returns value of `py-switch-buffers-on-execute-p' switched to. "
+  Returns value of `py-switch-buffers-on-execute-p' switched to."
   (interactive)
   (let ((arg (or arg (if py-switch-buffers-on-execute-p -1 1))))
     (if (< 0 arg)
@@ -229,7 +229,7 @@ Returns value of `py-split-window-on-execute'. "
 (defun py-shell-switch-buffers-on-execute-on (&optional arg)
   "Make sure, `py-switch-buffers-on-execute-p' is on.
 
-Returns value of `py-switch-buffers-on-execute-p'. "
+Returns value of `py-switch-buffers-on-execute-p'."
   (interactive "p")
   (let ((arg (or arg 1)))
     (toggle-py-shell-switch-buffers-on-execute arg))
@@ -239,14 +239,14 @@ Returns value of `py-switch-buffers-on-execute-p'. "
 (defun py-shell-switch-buffers-on-execute-off ()
   "Make sure, `py-switch-buffers-on-execute-p' is off.
 
-Returns value of `py-switch-buffers-on-execute-p'. "
+Returns value of `py-switch-buffers-on-execute-p'."
   (interactive)
   (toggle-py-shell-switch-buffers-on-execute -1)
   (when (called-interactively-p 'any) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
 (defun py-guess-default-python ()
-  "Defaults to \"python\", if guessing didn't succeed. "
+  "Defaults to \"python\", if guessing didn't succeed."
   (interactive)
   (let* ((ptn (or py-shell-name (py-choose-shell) "python"))
          (erg (if py-edit-only-p ptn (executable-find ptn))))
@@ -278,7 +278,7 @@ interpreter.
   (py-shell argprompt t))
 
 (defun py-set-ipython-completion-command-string (shell)
-  "Set and return `py-ipython-completion-command-string'. "
+  "Set and return `py-ipython-completion-command-string'."
   (interactive)
   (let* ((ipython-version (shell-command-to-string (concat shell " -V"))))
     (if (string-match "[0-9]" ipython-version)
@@ -307,7 +307,7 @@ interpreter.
     erg))
 
 (defun py--remove-home-directory-from-list (liste)
-  "Prepare for compose-buffer-name-initials. "
+  "Prepare for compose-buffer-name-initials."
   (let ((case-fold-search t)
 	(liste liste)
 	erg)
@@ -322,7 +322,7 @@ interpreter.
 
 (defun py--choose-buffer-name (&optional name dedicated fast-process)
   "Return an appropriate name to display in modeline.
-SEPCHAR is the file-path separator of your system. "
+SEPCHAR is the file-path separator of your system."
   (let* ((name-first (or name py-shell-name))
 	 (erg (when name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
 	 (fast-process (or fast-process py-fast-process-p))
@@ -407,7 +407,7 @@ SEPCHAR is the file-path separator of your system. "
 (defun py-toggle-split-window-function ()
   "If window is splitted vertically or horizontally.
 
-When code is executed and `py-split-window-on-execute' is `t', the result is displays in an output-buffer, \"\*Python\*\" by default.
+When code is executed and `py-split-window-on-execute' is t, the result is displays in an output-buffer, \"\*Python\*\" by default.
 
 Customizable variable `py-split-windows-on-execute-function' tells how to split the screen."
   (interactive)
@@ -431,14 +431,14 @@ Internal use"
     'split-window-vertically))
 
 (defun py--get-splittable-window ()
-  "If selected window doesn't permit a further split, search window-list for a suitable one. "
+  "If selected window doesn't permit a further split, search window-list for a suitable one."
   (or (and (window-left-child)(split-window (window-left-child)))
       (and (window-top-child)(split-window (window-top-child)))
       (and (window-parent)(ignore-errors (split-window (window-parent))))
       (and (window-atom-root)(split-window (window-atom-root)))))
 
 (defun py--manage-windows-split (buffer)
-  "If one window, split according to `py-split-windows-on-execute-function. "
+  "If one window, split according to `py-split-windows-on-execute-function."
   (interactive)
   (set-buffer buffer)
   (or
@@ -561,7 +561,7 @@ Receives a buffer-name as argument"
     (py-kill-buffer-unconditional shell)))
 
 (defun py-kill-default-shell-unconditional ()
-  "Kill buffer \"\*Python\*\" and its process. "
+  "Kill buffer \"\*Python\*\" and its process."
   (interactive)
   (py-kill-buffer-unconditional "*Python*"))
 
@@ -579,7 +579,7 @@ Receives a buffer-name as argument"
     erg))
 
 (defun py--shell-make-comint (executable buffer args)
-  "Returns the buffer of the comint-proces created. "
+  "Returns the buffer of the comint-proces created."
   (let* ((buffer (apply #'make-comint-in-buffer executable buffer executable nil (split-string-and-unquote (car args))))
 	 (proc (get-buffer-process buffer)))
     (with-current-buffer buffer
@@ -589,14 +589,14 @@ Receives a buffer-name as argument"
     buffer))
 
 (defun py--guess-buffer-name (argprompt dedicated)
-  "Guess the buffer-name core string. "
+  "Guess the buffer-name core string."
   (when (and (not dedicated) argprompt
 	     (eq 4 (prefix-numeric-value argprompt)))
     (read-buffer "Py-Shell buffer: "
 		 (generate-new-buffer-name (py--choose-buffer-name)))))
 
 (defun py--configured-shell (name)
-  "Return the configured PATH/TO/STRING if any. "
+  "Return the configured PATH/TO/STRING if any."
   (if (string-match "//\\|\\\\" name)
       name
     (cond ((string-match "^[Ii]" name)
@@ -647,7 +647,7 @@ Receives a buffer-name as argument"
   (if (not (string= "" py-shell-local-path))
       (expand-file-name py-shell-local-path)
     (when py-use-local-default
-      (error "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
+      (error "Abort: `py-use-local-default' is set to t but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'"))))
 
 (defun py--provide-command-args (fast-process argprompt)
   (cond (fast-process nil)
@@ -730,7 +730,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   (format "exec(compile(open(r'%s').read(), r'%s', 'exec')) # PYTHON-MODE\n" filename filename))
 
 (defun py--store-result-maybe (erg)
-  "If no error occurred and `py-store-result-p' store result for yank. "
+  "If no error occurred and `py-store-result-p' store result for yank."
   (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 
 (defun py--close-execution (tempbuf tempfile)
@@ -739,7 +739,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (when tempfile (py-delete-temporary tempfile tempbuf))))
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated split switch return)
-  "Update variables. "
+  "Update variables."
   (setq py-error nil)
   (let* ((exception-buffer (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
@@ -796,7 +796,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (sit-for 0.1))))
 
 (defun py--delete-temp-file (tempfile &optional tempbuf)
-  "The called, after `py--execute-buffer-finally' returned. "
+  "The called, after `py--execute-buffer-finally' returned."
   (sit-for py--delete-temp-file-delay t)
   (py--close-execution tempbuf tempfile))
 
@@ -817,7 +817,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 (defun py--execute-base-intern (strg filename proc file wholebuf buffer origline execute-directory start end which-shell &optional fast return)
   "Select the handler.
 
-When optional FILE is `t', no temporary file is needed. "
+When optional FILE is t, no temporary file is needed."
   (let ()
     (setq py-error nil)
     (py--update-execute-directory proc buffer execute-directory)
@@ -870,7 +870,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
       py-error)))
 
 (defun py--fetch-result (orig)
-  "Return buffer-substring from orig to point-max. "
+  "Return buffer-substring from orig to point-max."
   (switch-to-buffer (current-buffer))
   (goto-char orig)
   (if (derived-mode-p 'comint-mode)
@@ -883,7 +883,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
     (buffer-substring-no-properties orig (point-max))))
 
 (defun py--postprocess-comint (output-buffer origline orig)
-  "Provide return values, check result for error, manage windows. "
+  "Provide return values, check result for error, manage windows."
   ;; py--fast-send-string doesn't set origline
   (let (py-result py-error)
     (with-current-buffer output-buffer
@@ -992,7 +992,7 @@ May we get rid of the temporary file? "
           (copy-marker (point)))))))
 
 (defun py--insert-offset-lines (line)
-  "Fix offline amount, make error point at the corect line. "
+  "Fix offline amount, make error point at the corect line."
   (insert (make-string (- line (py-count-lines (point-min) (point))) 10)))
 
 (defun py--execute-file-base (&optional proc filename cmd procbuf origline)
@@ -1001,7 +1001,7 @@ May we get rid of the temporary file? "
 Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 `kill-output-from-shell' does The Right Thing.
-Returns position where output starts. "
+Returns position where output starts."
   (let* ((origline (or (ignore-errors origline) 1))
 	 (buffer (or procbuf (py-shell nil nil nil procbuf)))
 	 (proc (or proc (get-buffer-process buffer)))
@@ -1021,7 +1021,7 @@ Returns position where output starts. "
 	  erg)))))
 
 (defun py-execute-file (filename)
-  "When called interactively, user is prompted for filename. "
+  "When called interactively, user is prompted for filename."
   (interactive "fFilename: ")
   (let (;; postprocess-output-buffer might want origline
         (origline 1)
@@ -1056,7 +1056,7 @@ Returns position where output starts. "
 (defun py-execute-string (&optional strg shell dedicated switch fast)
   "Send the argument STRING to Python default interpreter.
 
-See also `py-execute-region'. "
+See also `py-execute-region'."
   (interactive)
   (let ((strg (or strg (read-from-minibuffer "String: ")))
         (shell (or shell (default-value 'py-shell-name))))
@@ -1067,7 +1067,7 @@ See also `py-execute-region'. "
 (defun py-execute-string-dedicated (&optional strg shell switch fast)
   "Send the argument STRING to an unique Python interpreter.
 
-See also `py-execute-region'. "
+See also `py-execute-region'."
   (interactive)
   (let ((strg (or strg (read-from-minibuffer "String: ")))
         (shell (or shell (default-value 'py-shell-name))))
@@ -1126,7 +1126,7 @@ See `py-if-name-main-permission-p'"
 (defun py--fix-start (strg)
   "Internal use by py-execute... functions.
 
-Avoid empty lines at the beginning. "
+Avoid empty lines at the beginning."
   ;; (when py-debug-p (message "py--fix-start:"))
   (with-temp-buffer
     (python-mode)
@@ -1235,7 +1235,7 @@ Basically, this goes down the directory tree as long as there are __init__.py fi
 (defun py-process-file (filename &optional output-buffer error-buffer)
   "Process \"python filename\".
 
-Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
+Optional OUTPUT-BUFFER and ERROR-BUFFER might be given."
   (interactive "fDatei:")
   (let ((coding-system-for-read 'utf-8)
         (coding-system-for-write 'utf-8)
@@ -1248,10 +1248,10 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given. "
 
 (defvar py-last-exeption-buffer nil
   "Internal use only - when `py-up-exception' is called in
-  source-buffer, this will deliver the exception-buffer again. ")
+  source-buffer, this will deliver the exception-buffer again.")
 
 (defun py-remove-overlays-at-point ()
-  "Remove overlays as set when `py-highlight-error-source-p' is non-nil. "
+  "Remove overlays as set when `py-highlight-error-source-p' is non-nil."
   (interactive "*")
   (delete-overlay (car (overlays-at (point)))))
 
@@ -1389,7 +1389,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
     py-error))
 
 (defun py--find-next-exception-prepare (direction start)
-  "Setup exception regexps depending from kind of Python shell. "
+  "Setup exception regexps depending from kind of Python shell."
   (let* ((name (get-process (substring (buffer-name (current-buffer)) 1 -1)))
          (buffer (cond (name (buffer-name (current-buffer)))
                        ((buffer-live-p (get-buffer py-output-buffer))

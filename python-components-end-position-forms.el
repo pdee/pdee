@@ -220,7 +220,7 @@
       erg)))
 
 (defun py--end-of-block-position-bol ()
-  "Return end of block position at beginning-of-line."
+  "Return end of block position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -230,7 +230,7 @@
       erg)))
 
 (defun py--end-of-block-or-clause-position-bol ()
-  "Return end of block-or-clause position at beginning-of-line."
+  "Return end of block-or-clause position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -240,7 +240,7 @@
       erg)))
 
 (defun py--end-of-class-position-bol ()
-  "Return end of class position at beginning-of-line."
+  "Return end of class position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -250,7 +250,7 @@
       erg)))
 
 (defun py--end-of-clause-position-bol ()
-  "Return end of clause position at beginning-of-line."
+  "Return end of clause position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -260,7 +260,7 @@
       erg)))
 
 (defun py--end-of-def-position-bol ()
-  "Return end of def position at beginning-of-line."
+  "Return end of def position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -270,7 +270,7 @@
       erg)))
 
 (defun py--end-of-def-or-class-position-bol ()
-  "Return end of def-or-class position at beginning-of-line."
+  "Return end of def-or-class position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -280,7 +280,7 @@
       erg)))
 
 (defun py--end-of-elif-block-position-bol ()
-  "Return end of elif-block position at beginning-of-line."
+  "Return end of elif-block position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -290,7 +290,7 @@
       erg)))
 
 (defun py--end-of-else-block-position-bol ()
-  "Return end of else-block position at beginning-of-line."
+  "Return end of else-block position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -300,7 +300,7 @@
       erg)))
 
 (defun py--end-of-except-block-position-bol ()
-  "Return end of except-block position at beginning-of-line."
+  "Return end of except-block position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -310,7 +310,7 @@
       erg)))
 
 (defun py--end-of-for-block-position-bol ()
-  "Return end of for-block position at beginning-of-line."
+  "Return end of for-block position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -320,7 +320,7 @@
       erg)))
 
 (defun py--end-of-if-block-position-bol ()
-  "Return end of if-block position at beginning-of-line."
+  "Return end of if-block position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -330,7 +330,7 @@
       erg)))
 
 (defun py--end-of-indent-position-bol ()
-  "Return end of indent position at beginning-of-line."
+  "Return end of indent position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -340,7 +340,7 @@
       erg)))
 
 (defun py--end-of-minor-block-position-bol ()
-  "Return end of minor-block position at beginning-of-line."
+  "Return end of minor-block position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -350,7 +350,7 @@
       erg)))
 
 (defun py--end-of-statement-position-bol ()
-  "Return end of statement position at beginning-of-line."
+  "Return end of statement position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
@@ -360,7 +360,7 @@
       erg)))
 
 (defun py--end-of-try-block-position-bol ()
-  "Return end of try-block position at beginning-of-line."
+  "Return end of try-block position at ‘beginning-of-line’."
   (save-excursion
     (let ((erg (progn
                  (when (looking-at "[ \\t\\r\\n\\f]*$")
