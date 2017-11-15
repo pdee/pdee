@@ -1,4 +1,4 @@
-;;; ppython-components-send.el --- functions sending strings to Python -*- lexical-binding: t; -*- 
+;;; ppython-components-send.el --- functions sending strings to Python -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015-2016 Andreas Röhler
 
@@ -25,7 +25,9 @@
 
 ;;; Code:
 (defun py-output-buffer-filter (&optional beg end)
-  "Clear output buffer from py-shell-input prompt etc. "
+  "Clear output buffer from py-shell-input prompt etc.
+
+Optional BEG END"
   (interactive "*")
   (let ((beg (cond (beg)
                    ((use-region-p)
@@ -41,7 +43,7 @@
     (goto-char beg)))
 
 (defun py-output-filter (strg)
-  "Clear output buffer from py-shell-input prompt etc. "
+  "Clear STRG from py-shell-input prompt."
   (interactive "*")
   (let (erg)
     (while
@@ -52,7 +54,7 @@
     erg))
 
 (defun py-send-string (strg &optional process)
-  "Evaluate STRING in Python process."
+  "Evaluate STRG in Python PROCESS."
   (interactive "sPython command: ")
   (let* ((proc (or process (get-buffer-process (py-shell))))
 	 (buffer (process-buffer proc)))
