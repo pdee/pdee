@@ -50,7 +50,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of block.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-block': down from current definition to next beginning of block below."
+See also ‘py-down-block’: down from current definition to next beginning of block below."
   (interactive)
   (let ((erg (py-forward-block)))
     (setq erg (py--beginning-of-line-form erg))
@@ -73,7 +73,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of block-or-clause.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-block-or-clause': down from current definition to next beginning of block-or-clause below."
+See also ‘py-down-block-or-clause’: down from current definition to next beginning of block-or-clause below."
   (interactive)
   (let ((erg (py-forward-block-or-clause)))
     (setq erg (py--beginning-of-line-form erg))
@@ -97,7 +97,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of class.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-class': down from current definition to next beginning of class below."
+See also ‘py-down-class’: down from current definition to next beginning of class below."
   (interactive)
   (let ((erg (py-forward-class)))
     (setq erg (py--beginning-of-line-form erg))
@@ -120,7 +120,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of clause.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-clause': down from current definition to next beginning of clause below."
+See also ‘py-down-clause’: down from current definition to next beginning of clause below."
   (interactive)
   (let ((erg (py-forward-clause)))
     (setq erg (py--beginning-of-line-form erg))
@@ -144,7 +144,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of def-or-class.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-def-or-class': down from current definition to next beginning of def-or-class below."
+See also ‘py-down-def-or-class’: down from current definition to next beginning of def-or-class below."
   (interactive)
   (let ((erg (py-forward-def-or-class)))
     (setq erg (py--beginning-of-line-form erg))
@@ -168,7 +168,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of def.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-def': down from current definition to next beginning of def below."
+See also ‘py-down-def’: down from current definition to next beginning of def below."
   (interactive)
   (let ((erg (py-forward-def)))
     (setq erg (py--beginning-of-line-form erg))
@@ -191,7 +191,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of if-block.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-if-block': down from current definition to next beginning of if-block below."
+See also ‘py-down-if-block’: down from current definition to next beginning of if-block below."
   (interactive)
   (let ((erg (py-forward-if-block)))
     (setq erg (py--beginning-of-line-form erg))
@@ -214,7 +214,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of elif-block.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-elif-block': down from current definition to next beginning of elif-block below."
+See also ‘py-down-elif-block’: down from current definition to next beginning of elif-block below."
   (interactive)
   (let ((erg (py-forward-elif-block)))
     (setq erg (py--beginning-of-line-form erg))
@@ -237,7 +237,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of else-block.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-else-block': down from current definition to next beginning of else-block below."
+See also ‘py-down-else-block’: down from current definition to next beginning of else-block below."
   (interactive)
   (let ((erg (py-forward-else-block)))
     (setq erg (py--beginning-of-line-form erg))
@@ -260,7 +260,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of for-block.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-for-block': down from current definition to next beginning of for-block below."
+See also ‘py-down-for-block’: down from current definition to next beginning of for-block below."
   (interactive)
   (let ((erg (py-forward-for-block)))
     (setq erg (py--beginning-of-line-form erg))
@@ -283,7 +283,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of except-block.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-except-block': down from current definition to next beginning of except-block below."
+See also ‘py-down-except-block’: down from current definition to next beginning of except-block below."
   (interactive)
   (let ((erg (py-forward-except-block)))
     (setq erg (py--beginning-of-line-form erg))
@@ -306,7 +306,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of try-block.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-try-block': down from current definition to next beginning of try-block below."
+See also ‘py-down-try-block’: down from current definition to next beginning of try-block below."
   (interactive)
   (let ((erg (py-forward-try-block)))
     (setq erg (py--beginning-of-line-form erg))
@@ -329,7 +329,7 @@ With optional BOL, go to beginning of line following match."
   "Goto beginning of line following end of minor-block.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-minor-block': down from current definition to next beginning of minor-block below."
+See also ‘py-down-minor-block’: down from current definition to next beginning of minor-block below."
   (interactive)
   (let ((erg (py-forward-minor-block)))
     (setq erg (py--beginning-of-line-form erg))

@@ -173,7 +173,7 @@ Store data in kill ring, so it might yanked back."
 (defun py-copy-block-bol ()
   "Delete block bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "block")))
@@ -182,7 +182,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-block-or-clause-bol ()
   "Delete block-or-clause bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "block-or-clause")))
@@ -191,7 +191,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-buffer-bol ()
   "Delete buffer bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "buffer")))
@@ -200,7 +200,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-class-bol ()
   "Delete class bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "class")))
@@ -209,7 +209,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-clause-bol ()
   "Delete clause bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "clause")))
@@ -218,7 +218,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-def-bol ()
   "Delete def bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "def")))
@@ -227,7 +227,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-def-or-class-bol ()
   "Delete def-or-class bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "def-or-class")))
@@ -236,7 +236,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-expression-bol ()
   "Delete expression bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "expression")))
@@ -245,7 +245,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-indent-bol ()
   "Delete indent bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "indent")))
@@ -254,7 +254,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-line-bol ()
   "Delete line bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "line")))
@@ -263,7 +263,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-minor-block-bol ()
   "Delete minor-block bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "minor-block")))
@@ -272,7 +272,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-paragraph-bol ()
   "Delete paragraph bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "paragraph")))
@@ -281,7 +281,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-partial-expression-bol ()
   "Delete partial-expression bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "partial-expression")))
@@ -290,7 +290,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-region-bol ()
   "Delete region bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "region")))
@@ -299,7 +299,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-statement-bol ()
   "Delete statement bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "statement")))
@@ -308,7 +308,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-copy-top-level-bol ()
   "Delete top-level bol at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (save-excursion
     (let ((erg (py--mark-base-bol "top-level")))

@@ -131,7 +131,7 @@ Return beginning and end positions of region, a cons."
 (defun py-mark-class (&optional arg)
   "Mark class, take beginning of line positions. 
 
-With ARG \\[universal-argument] or `py-mark-decorators' set to t, decorators are marked too.
+With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, decorators are marked too.
 Return beginning and end positions of region, a cons."
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
@@ -155,7 +155,7 @@ Return beginning and end positions of region, a cons."
 (defun py-mark-def (&optional arg)
   "Mark def, take beginning of line positions. 
 
-With ARG \\[universal-argument] or `py-mark-decorators' set to t, decorators are marked too.
+With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, decorators are marked too.
 Return beginning and end positions of region, a cons."
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))
@@ -168,7 +168,7 @@ Return beginning and end positions of region, a cons."
 (defun py-mark-def-or-class (&optional arg)
   "Mark def-or-class, take beginning of line positions. 
 
-With ARG \\[universal-argument] or `py-mark-decorators' set to t, decorators are marked too.
+With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, decorators are marked too.
 Return beginning and end positions of region, a cons."
   (interactive "P")
   (let ((py-mark-decorators (or arg py-mark-decorators))

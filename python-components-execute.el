@@ -31,8 +31,10 @@
 	 (jump-to-register py-windows-config-register))))
 
 (defun py-shell-execute-string-now (strg &optional shell buffer proc)
-  "Send to Python interpreter process PROC \"exec STRING in {}\".
-and return collected output"
+  "Send STRG to Python interpreter process PROC \"exec STRING in {}\".
+and return collected output
+
+Optional SHELL BUFFER PROC"
   (let* (wait
          (procbuf (or buffer (process-buffer proc) (progn (setq wait py-new-shell-delay) (py-shell nil nil shell))))
          (proc (or proc (get-buffer-process procbuf)))
@@ -63,8 +65,8 @@ and return collected output"
 (defun py-switch-to-python (eob-p)
   "Switch to the Python process buffer, maybe starting new process.
 
-With prefix arg, position cursor at end of buffer."
-  (interactive "P")
+With EOB-P, go to end of buffer."
+  (interactive "p")
   (pop-to-buffer (process-buffer (py-proc)) t) ;Runs python if needed.
   (when eob-p
     (goto-char (point-max))))
@@ -72,6 +74,7 @@ With prefix arg, position cursor at end of buffer."
 (defalias 'py-shell-send-file 'py-send-file)
 (defun py-send-file (file-name &optional process temp-file-name)
   "Send FILE-NAME to Python PROCESS.
+
 If TEMP-FILE-NAME is passed then that file is used for processing
 instead, while internally the shell will continue to use
 FILE-NAME."
@@ -96,7 +99,7 @@ enforced upon sessions execute commands.
 
 Toggles boolean `py-force-local-shell-p' along with `py-force-py-shell-name-p'
 Returns value of `toggle-force-local-shell' switched to.
-
+Optional ARG FAST
 When on, kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards.
 
 See also commands
@@ -121,15 +124,17 @@ See also commands
   "Make sure, `py-force-local-shell-p' is on.
 
 Returns value of `py-force-local-shell-p'.
-
-Kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards "
+Optional FAST
+Kind of an option 'follow', local shell sets `py-shell-name', enforces its use afterwards"
   (interactive)
   (toggle-force-local-shell 1 fast)
   (when (or py-verbose-p (called-interactively-p 'any))
     (message "Enforce %s" py-shell-name)))
 
 (defun py-force-local-shell-off (&optional fast)
-  "Restore `py-shell-name' default value and `behaviour'."
+  "Restore `py-shell-name' default value and `behaviour'.
+
+Optional FAST"
   (interactive)
   (toggle-force-local-shell 1 fast)
   (when (or py-verbose-p (called-interactively-p 'any))
@@ -141,12 +146,12 @@ Kind of an option 'follow', local shell sets `py-shell-name', enforces its use a
 If `py-force-py-shell-name-p' should be on or off.
 Returns value of `py-force-py-shell-name-p' switched to.
 
+Optional ARG
 See also commands
 force-py-shell-name-p-on
 force-py-shell-name-p-off
 
-Caveat: Completion might not work that way.
-"
+Caveat: Completion might not work that way."
   (interactive)
   (let ((arg (or arg (if py-force-py-shell-name-p -1 1))))
     (if (< 0 arg)
@@ -161,8 +166,7 @@ Caveat: Completion might not work that way.
 Customized default `py-shell-name' will be enforced upon execution.
 Returns value of `py-force-py-shell-name-p'.
 
-Caveat: Completion might not work that way.
-"
+Caveat: Completion might not work that way."
   (interactive)
   (toggle-force-py-shell-name-p 1)
   (when (or py-verbose-p (called-interactively-p 'any)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
@@ -183,6 +187,7 @@ Returns value of `py-force-py-shell-name-p'."
 (defun py-toggle-split-windows-on-execute (&optional arg)
   "If `py-split-window-on-execute' should be on or off.
 
+optional ARG 
   Returns value of `py-split-window-on-execute' switched to."
   (interactive)
   (let ((arg (or arg (if py-split-window-on-execute -1 1))))

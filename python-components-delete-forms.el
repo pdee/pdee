@@ -46,7 +46,7 @@ Don't store data in kill ring."
   "Delete CLASS at point until ‘beginning-of-line’.
 
 Don't store data in kill ring.
-With ARG \\[universal-argument] or `py-mark-decorators' set to t, `decorators' are included."
+With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, ‘decorators’ are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
         (erg (py--mark-base "class" py-mark-decorators)))
@@ -64,7 +64,7 @@ Don't store data in kill ring."
   "Delete DEF at point until ‘beginning-of-line’.
 
 Don't store data in kill ring.
-With ARG \\[universal-argument] or `py-mark-decorators' set to t, `decorators' are included."
+With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, ‘decorators’ are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
         (erg (py--mark-base "def" py-mark-decorators)))
@@ -74,7 +74,7 @@ With ARG \\[universal-argument] or `py-mark-decorators' set to t, `decorators' a
   "Delete DEF-OR-CLASS at point until ‘beginning-of-line’.
 
 Don't store data in kill ring.
-With ARG \\[universal-argument] or `py-mark-decorators' set to t, `decorators' are included."
+With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, ‘decorators’ are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
         (erg (py--mark-base "def-or-class" py-mark-decorators)))
