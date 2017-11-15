@@ -28,7 +28,7 @@
 ;; Execute forms at point
 
 (defun py-execute-try-block ()
-  "Send try-block at point to Python default interpreter. "
+  "Send try-block at point to Python default interpreter."
   (interactive)
   (let ((beg (prog1
                  (or (py--beginning-of-try-block-p)
@@ -39,7 +39,7 @@
     (py-execute-region beg end)))
 
 (defun py-execute-if-block ()
-  "Send if-block at point to Python default interpreter. "
+  "Send if-block at point to Python default interpreter."
   (interactive)
   (let ((beg (prog1
                  (or (py--beginning-of-if-block-p)
@@ -50,7 +50,7 @@
     (py-execute-region beg end)))
 
 (defun py-execute-for-block ()
-  "Send for-block at point to Python default interpreter. "
+  "Send for-block at point to Python default interpreter."
   (interactive)
   (let ((beg (prog1
                  (or (py--beginning-of-for-block-p)

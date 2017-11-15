@@ -27,7 +27,7 @@
 
 
 (defun py--end-of-comment-p ()
-  "Return position, if cursor is at the end of a comment, nil otherwise. "
+  "Return position, if cursor is at the end of a comment, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -38,7 +38,7 @@
       erg)))
 
 (defun py--end-of-line-p ()
-  "Return position, if cursor is at the end of a line, nil otherwise. "
+  "Return position, if cursor is at the end of a line, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -49,7 +49,7 @@
       erg)))
 
 (defun py--end-of-paragraph-p ()
-  "Return position, if cursor is at the end of a paragraph, nil otherwise. "
+  "Return position, if cursor is at the end of a paragraph, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -60,7 +60,7 @@
       erg)))
 
 (defun py--end-of-expression-p ()
-  "Return position, if cursor is at the end of a expression, nil otherwise. "
+  "Return position, if cursor is at the end of a expression, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -71,7 +71,7 @@
       erg)))
 
 (defun py--end-of-partial-expression-p ()
-  "Return position, if cursor is at the end of a partial-expression, nil otherwise. "
+  "Return position, if cursor is at the end of a partial-expression, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -82,7 +82,7 @@
       erg)))
 
 (defun py--end-of-section-p ()
-  "Return position, if cursor is at the end of a section, nil otherwise. "
+  "Return position, if cursor is at the end of a section, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -93,7 +93,7 @@
       erg)))
 
 (defun py--end-of-top-level-p ()
-  "Return position, if cursor is at the end of a top-level, nil otherwise. "
+  "Return position, if cursor is at the end of a top-level, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -104,7 +104,7 @@
       erg)))
 
 (defun py--end-of-block-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a block, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -115,7 +115,7 @@
       erg)))
 
 (defun py--end-of-block-or-clause-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a block-or-clause, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a block-or-clause, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -126,7 +126,7 @@
       erg)))
 
 (defun py--end-of-class-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a class, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a class, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -137,7 +137,7 @@
       erg)))
 
 (defun py--end-of-clause-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a clause, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a clause, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -148,7 +148,7 @@
       erg)))
 
 (defun py--end-of-def-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a def, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a def, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -159,7 +159,7 @@
       erg)))
 
 (defun py--end-of-def-or-class-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a def-or-class, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a def-or-class, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -170,7 +170,7 @@
       erg)))
 
 (defun py--end-of-elif-block-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a elif-block, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a elif-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -181,7 +181,7 @@
       erg)))
 
 (defun py--end-of-else-block-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a else-block, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a else-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -192,7 +192,7 @@
       erg)))
 
 (defun py--end-of-except-block-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a except-block, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a except-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -203,7 +203,7 @@
       erg)))
 
 (defun py--end-of-for-block-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a for-block, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a for-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -214,7 +214,7 @@
       erg)))
 
 (defun py--end-of-if-block-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a if-block, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a if-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -225,7 +225,7 @@
       erg)))
 
 (defun py--end-of-indent-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a indent, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a indent, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -236,7 +236,7 @@
       erg)))
 
 (defun py--end-of-minor-block-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a minor-block, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a minor-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -247,7 +247,7 @@
       erg)))
 
 (defun py--end-of-statement-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a statement, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a statement, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -258,7 +258,7 @@
       erg)))
 
 (defun py--end-of-try-block-bol-p ()
-  "Return position, if cursor is at beginning-of-line at the end of a try-block, nil otherwise. "
+  "Return position, if cursor is at beginning-of-line at the end of a try-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -269,7 +269,7 @@
       erg)))
 
 (defun py--end-of-block-p ()
-  "Return position, if cursor is at the end of a block, nil otherwise. "
+  "Return position, if cursor is at the end of a block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -280,7 +280,7 @@
       erg)))
 
 (defun py--end-of-block-or-clause-p ()
-  "Return position, if cursor is at the end of a block-or-clause, nil otherwise. "
+  "Return position, if cursor is at the end of a block-or-clause, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -291,7 +291,7 @@
       erg)))
 
 (defun py--end-of-class-p ()
-  "Return position, if cursor is at the end of a class, nil otherwise. "
+  "Return position, if cursor is at the end of a class, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -302,7 +302,7 @@
       erg)))
 
 (defun py--end-of-clause-p ()
-  "Return position, if cursor is at the end of a clause, nil otherwise. "
+  "Return position, if cursor is at the end of a clause, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -313,7 +313,7 @@
       erg)))
 
 (defun py--end-of-def-p ()
-  "Return position, if cursor is at the end of a def, nil otherwise. "
+  "Return position, if cursor is at the end of a def, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -324,7 +324,7 @@
       erg)))
 
 (defun py--end-of-def-or-class-p ()
-  "Return position, if cursor is at the end of a def-or-class, nil otherwise. "
+  "Return position, if cursor is at the end of a def-or-class, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -335,7 +335,7 @@
       erg)))
 
 (defun py--end-of-elif-block-p ()
-  "Return position, if cursor is at the end of a elif-block, nil otherwise. "
+  "Return position, if cursor is at the end of a elif-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -346,7 +346,7 @@
       erg)))
 
 (defun py--end-of-else-block-p ()
-  "Return position, if cursor is at the end of a else-block, nil otherwise. "
+  "Return position, if cursor is at the end of a else-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -357,7 +357,7 @@
       erg)))
 
 (defun py--end-of-except-block-p ()
-  "Return position, if cursor is at the end of a except-block, nil otherwise. "
+  "Return position, if cursor is at the end of a except-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -368,7 +368,7 @@
       erg)))
 
 (defun py--end-of-for-block-p ()
-  "Return position, if cursor is at the end of a for-block, nil otherwise. "
+  "Return position, if cursor is at the end of a for-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -379,7 +379,7 @@
       erg)))
 
 (defun py--end-of-if-block-p ()
-  "Return position, if cursor is at the end of a if-block, nil otherwise. "
+  "Return position, if cursor is at the end of a if-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -390,7 +390,7 @@
       erg)))
 
 (defun py--end-of-indent-p ()
-  "Return position, if cursor is at the end of a indent, nil otherwise. "
+  "Return position, if cursor is at the end of a indent, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -401,7 +401,7 @@
       erg)))
 
 (defun py--end-of-minor-block-p ()
-  "Return position, if cursor is at the end of a minor-block, nil otherwise. "
+  "Return position, if cursor is at the end of a minor-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -412,7 +412,7 @@
       erg)))
 
 (defun py--end-of-statement-p ()
-  "Return position, if cursor is at the end of a statement, nil otherwise. "
+  "Return position, if cursor is at the end of a statement, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion
@@ -423,7 +423,7 @@
       erg)))
 
 (defun py--end-of-try-block-p ()
-  "Return position, if cursor is at the end of a try-block, nil otherwise. "
+  "Return position, if cursor is at the end of a try-block, nil otherwise."
   (let ((orig (point))
 	erg)
     (save-excursion

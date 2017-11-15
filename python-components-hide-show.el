@@ -30,7 +30,7 @@
 ;; (setq hs-forward-sexp-func 'py-forward-block)
 
 (defun py-hide-base (form &optional beg end)
-  "Hide visibility of existing form at point. "
+  "Hide visibility of existing form at point."
   (hs-minor-mode 1)
   (save-excursion
     (let* ((form (prin1-to-string form))
@@ -46,7 +46,7 @@
         (error (concat "No " (format "%s" form) " at point!"))))))
 
 (defun py-show-base (form &optional beg end)
-  "Remove invisibility of existing form at point. "
+  "Remove invisibility of existing form at point."
   (save-excursion
     (let* ((form (prin1-to-string form))
            (beg (or beg (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
@@ -61,7 +61,7 @@
         (error (concat "No " (format "%s" form) " at point!"))))))
 
 (defun py-hide-show (&optional form beg end)
-  "Toggle visibility of existing forms at point. "
+  "Toggle visibility of existing forms at point."
   (interactive)
   (save-excursion
     (let* ((form (prin1-to-string form))
@@ -78,226 +78,226 @@
       (set-buffer-modified-p modified))))
 
 (defun py-hide-region (beg end)
-  "Hide active region. "
+  "Hide active region."
   (interactive
    (list
     (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
   (py-hide-base 'region beg end))
 
 (defun py-show-region (beg end)
-  "Un-hide active region. "
+  "Un-hide active region."
   (interactive
    (list
     (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
   (py-show-base 'region beg end))
 
 (defun py-hide-block ()
-  "Hide block at point. "
+  "Hide block at point."
   (interactive)
   (py-hide-base 'block))
 
 (defun py-show-block ()
-  "Show block at point. "
+  "Show block at point."
   (interactive)
   (py-show-base 'block))
 
 (defun py-hide-block-or-clause ()
-  "Hide block-or-clause at point. "
+  "Hide block-or-clause at point."
   (interactive)
   (py-hide-base 'block-or-clause))
 
 (defun py-show-block-or-clause ()
-  "Show block-or-clause at point. "
+  "Show block-or-clause at point."
   (interactive)
   (py-show-base 'block-or-clause))
 
 (defun py-hide-class ()
-  "Hide class at point. "
+  "Hide class at point."
   (interactive)
   (py-hide-base 'class))
 
 (defun py-show-class ()
-  "Show class at point. "
+  "Show class at point."
   (interactive)
   (py-show-base 'class))
 
 (defun py-hide-clause ()
-  "Hide clause at point. "
+  "Hide clause at point."
   (interactive)
   (py-hide-base 'clause))
 
 (defun py-show-clause ()
-  "Show clause at point. "
+  "Show clause at point."
   (interactive)
   (py-show-base 'clause))
 
 (defun py-hide-comment ()
-  "Hide comment at point. "
+  "Hide comment at point."
   (interactive)
   (py-hide-base 'comment))
 
 (defun py-show-comment ()
-  "Show comment at point. "
+  "Show comment at point."
   (interactive)
   (py-show-base 'comment))
 
 (defun py-hide-def ()
-  "Hide def at point. "
+  "Hide def at point."
   (interactive)
   (py-hide-base 'def))
 
 (defun py-show-def ()
-  "Show def at point. "
+  "Show def at point."
   (interactive)
   (py-show-base 'def))
 
 (defun py-hide-def-or-class ()
-  "Hide def-or-class at point. "
+  "Hide def-or-class at point."
   (interactive)
   (py-hide-base 'def-or-class))
 
 (defun py-show-def-or-class ()
-  "Show def-or-class at point. "
+  "Show def-or-class at point."
   (interactive)
   (py-show-base 'def-or-class))
 
 (defun py-hide-elif-block ()
-  "Hide elif-block at point. "
+  "Hide elif-block at point."
   (interactive)
   (py-hide-base 'elif-block))
 
 (defun py-show-elif-block ()
-  "Show elif-block at point. "
+  "Show elif-block at point."
   (interactive)
   (py-show-base 'elif-block))
 
 (defun py-hide-else-block ()
-  "Hide else-block at point. "
+  "Hide else-block at point."
   (interactive)
   (py-hide-base 'else-block))
 
 (defun py-show-else-block ()
-  "Show else-block at point. "
+  "Show else-block at point."
   (interactive)
   (py-show-base 'else-block))
 
 (defun py-hide-except-block ()
-  "Hide except-block at point. "
+  "Hide except-block at point."
   (interactive)
   (py-hide-base 'except-block))
 
 (defun py-show-except-block ()
-  "Show except-block at point. "
+  "Show except-block at point."
   (interactive)
   (py-show-base 'except-block))
 
 (defun py-hide-expression ()
-  "Hide expression at point. "
+  "Hide expression at point."
   (interactive)
   (py-hide-base 'expression))
 
 (defun py-show-expression ()
-  "Show expression at point. "
+  "Show expression at point."
   (interactive)
   (py-show-base 'expression))
 
 (defun py-hide-for-block ()
-  "Hide for-block at point. "
+  "Hide for-block at point."
   (interactive)
   (py-hide-base 'for-block))
 
 (defun py-show-for-block ()
-  "Show for-block at point. "
+  "Show for-block at point."
   (interactive)
   (py-show-base 'for-block))
 
 (defun py-hide-if-block ()
-  "Hide if-block at point. "
+  "Hide if-block at point."
   (interactive)
   (py-hide-base 'if-block))
 
 (defun py-show-if-block ()
-  "Show if-block at point. "
+  "Show if-block at point."
   (interactive)
   (py-show-base 'if-block))
 
 (defun py-hide-indent ()
-  "Hide indent at point. "
+  "Hide indent at point."
   (interactive)
   (py-hide-base 'indent))
 
 (defun py-show-indent ()
-  "Show indent at point. "
+  "Show indent at point."
   (interactive)
   (py-show-base 'indent))
 
 (defun py-hide-line ()
-  "Hide line at point. "
+  "Hide line at point."
   (interactive)
   (py-hide-base 'line))
 
 (defun py-show-line ()
-  "Show line at point. "
+  "Show line at point."
   (interactive)
   (py-show-base 'line))
 
 (defun py-hide-minor-block ()
-  "Hide minor-block at point. "
+  "Hide minor-block at point."
   (interactive)
   (py-hide-base 'minor-block))
 
 (defun py-show-minor-block ()
-  "Show minor-block at point. "
+  "Show minor-block at point."
   (interactive)
   (py-show-base 'minor-block))
 
 (defun py-hide-paragraph ()
-  "Hide paragraph at point. "
+  "Hide paragraph at point."
   (interactive)
   (py-hide-base 'paragraph))
 
 (defun py-show-paragraph ()
-  "Show paragraph at point. "
+  "Show paragraph at point."
   (interactive)
   (py-show-base 'paragraph))
 
 (defun py-hide-partial-expression ()
-  "Hide partial-expression at point. "
+  "Hide partial-expression at point."
   (interactive)
   (py-hide-base 'partial-expression))
 
 (defun py-show-partial-expression ()
-  "Show partial-expression at point. "
+  "Show partial-expression at point."
   (interactive)
   (py-show-base 'partial-expression))
 
 (defun py-hide-section ()
-  "Hide section at point. "
+  "Hide section at point."
   (interactive)
   (py-hide-base 'section))
 
 (defun py-show-section ()
-  "Show section at point. "
+  "Show section at point."
   (interactive)
   (py-show-base 'section))
 
 (defun py-hide-statement ()
-  "Hide statement at point. "
+  "Hide statement at point."
   (interactive)
   (py-hide-base 'statement))
 
 (defun py-show-statement ()
-  "Show statement at point. "
+  "Show statement at point."
   (interactive)
   (py-show-base 'statement))
 
 (defun py-hide-top-level ()
-  "Hide top-level at point. "
+  "Hide top-level at point."
   (interactive)
   (py-hide-base 'top-level))
 
 (defun py-show-top-level ()
-  "Show top-level at point. "
+  "Show top-level at point."
   (interactive)
   (py-show-base 'top-level))
 

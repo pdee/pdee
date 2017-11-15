@@ -29,7 +29,7 @@
 (defun ipython (&optional argprompt buffer fast exception-buffer split switch)
   "Start an IPython interpreter.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython" buffer fast exception-buffer split switch))
 
@@ -37,7 +37,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun ipython2.7 (&optional argprompt buffer fast exception-buffer split switch)
   "Start an IPython2.7 interpreter.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython2.7" buffer fast exception-buffer split switch))
 
@@ -45,7 +45,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun ipython3 (&optional argprompt buffer fast exception-buffer split switch)
   "Start an IPython3 interpreter.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython3" buffer fast exception-buffer split switch))
 
@@ -53,7 +53,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun jython (&optional argprompt buffer fast exception-buffer split switch)
   "Start an Jython interpreter.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "jython" buffer fast exception-buffer split switch))
 
@@ -61,7 +61,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun python (&optional argprompt buffer fast exception-buffer split switch)
   "Start an Python interpreter.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python" buffer fast exception-buffer split switch))
 
@@ -69,7 +69,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun python2 (&optional argprompt buffer fast exception-buffer split switch)
   "Start an Python2 interpreter.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python2" buffer fast exception-buffer split switch))
 
@@ -77,7 +77,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun python3 (&optional argprompt buffer fast exception-buffer split switch)
   "Start an Python3 interpreter.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python3" buffer fast exception-buffer split switch))
 
@@ -85,49 +85,49 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun ipython-dedicated (&optional argprompt buffer fast exception-buffer split switch)
   "Start an unique IPython interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "ipython" buffer fast exception-buffer split switch))
 
 (defun ipython2.7-dedicated (&optional argprompt buffer fast exception-buffer split switch)
   "Start an unique IPython2.7 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "ipython2.7" buffer fast exception-buffer split switch))
 
 (defun ipython3-dedicated (&optional argprompt buffer fast exception-buffer split switch)
   "Start an unique IPython3 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "ipython3" buffer fast exception-buffer split switch))
 
 (defun jython-dedicated (&optional argprompt buffer fast exception-buffer split switch)
   "Start an unique Jython interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "jython" buffer fast exception-buffer split switch))
 
 (defun python-dedicated (&optional argprompt buffer fast exception-buffer split switch)
   "Start an unique Python interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "python" buffer fast exception-buffer split switch))
 
 (defun python2-dedicated (&optional argprompt buffer fast exception-buffer split switch)
   "Start an unique Python2 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "python2" buffer fast exception-buffer split switch))
 
 (defun python3-dedicated (&optional argprompt buffer fast exception-buffer split switch)
   "Start an unique Python3 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "python3" buffer fast exception-buffer split switch))
 
@@ -135,49 +135,49 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun ipython-switch (&optional argprompt buffer fast exception-buffer split)
   "Switch to IPython interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython" buffer fast exception-buffer split t))
 
 (defun ipython2.7-switch (&optional argprompt buffer fast exception-buffer split)
   "Switch to IPython2.7 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython2.7" buffer fast exception-buffer split t))
 
 (defun ipython3-switch (&optional argprompt buffer fast exception-buffer split)
   "Switch to IPython3 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython3" buffer fast exception-buffer split t))
 
 (defun jython-switch (&optional argprompt buffer fast exception-buffer split)
   "Switch to Jython interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "jython" buffer fast exception-buffer split t))
 
 (defun python-switch (&optional argprompt buffer fast exception-buffer split)
   "Switch to Python interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python" buffer fast exception-buffer split t))
 
 (defun python2-switch (&optional argprompt buffer fast exception-buffer split)
   "Switch to Python2 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python2" buffer fast exception-buffer split t))
 
 (defun python3-switch (&optional argprompt buffer fast exception-buffer split)
   "Switch to Python3 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python3" buffer fast exception-buffer split t))
 
@@ -185,49 +185,49 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun ipython-no-switch (&optional argprompt buffer fast exception-buffer split)
   "Open an IPython interpreter in another window, but do not switch to it.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython" buffer fast exception-buffer split))
 
 (defun ipython2.7-no-switch (&optional argprompt buffer fast exception-buffer split)
   "Open an IPython2.7 interpreter in another window, but do not switch to it.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython2.7" buffer fast exception-buffer split))
 
 (defun ipython3-no-switch (&optional argprompt buffer fast exception-buffer split)
   "Open an IPython3 interpreter in another window, but do not switch to it.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "ipython3" buffer fast exception-buffer split))
 
 (defun jython-no-switch (&optional argprompt buffer fast exception-buffer split)
   "Open an Jython interpreter in another window, but do not switch to it.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "jython" buffer fast exception-buffer split))
 
 (defun python-no-switch (&optional argprompt buffer fast exception-buffer split)
   "Open an Python interpreter in another window, but do not switch to it.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python" buffer fast exception-buffer split))
 
 (defun python2-no-switch (&optional argprompt buffer fast exception-buffer split)
   "Open an Python2 interpreter in another window, but do not switch to it.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python2" buffer fast exception-buffer split))
 
 (defun python3-no-switch (&optional argprompt buffer fast exception-buffer split)
   "Open an Python3 interpreter in another window, but do not switch to it.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt nil "python3" buffer fast exception-buffer split))
 
@@ -236,7 +236,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun ipython-switch-dedicated (&optional argprompt buffer fast exception-buffer split)
   "Switch to an unique IPython interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "ipython" buffer fast exception-buffer split t))
 
@@ -244,7 +244,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun ipython2.7-switch-dedicated (&optional argprompt buffer fast exception-buffer split)
   "Switch to an unique IPython2.7 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "ipython2.7" buffer fast exception-buffer split t))
 
@@ -252,7 +252,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun ipython3-switch-dedicated (&optional argprompt buffer fast exception-buffer split)
   "Switch to an unique IPython3 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "ipython3" buffer fast exception-buffer split t))
 
@@ -260,7 +260,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun jython-switch-dedicated (&optional argprompt buffer fast exception-buffer split)
   "Switch to an unique Jython interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "jython" buffer fast exception-buffer split t))
 
@@ -268,7 +268,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun python-switch-dedicated (&optional argprompt buffer fast exception-buffer split)
   "Switch to an unique Python interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "python" buffer fast exception-buffer split t))
 
@@ -276,7 +276,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun python2-switch-dedicated (&optional argprompt buffer fast exception-buffer split)
   "Switch to an unique Python2 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "python2" buffer fast exception-buffer split t))
 
@@ -284,7 +284,7 @@ Optional \\[universal-argument] prompts for path to the interpreter. "
 (defun python3-switch-dedicated (&optional argprompt buffer fast exception-buffer split)
   "Switch to an unique Python3 interpreter in another window.
 
-Optional \\[universal-argument] prompts for path to the interpreter. "
+Optional \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt t "python3" buffer fast exception-buffer split t))
 

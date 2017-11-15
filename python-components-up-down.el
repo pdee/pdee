@@ -29,7 +29,7 @@
 (defun py-up-statement ()
   "go to the beginning of next statement upwards in buffer.
 
-Return position if statement found, nil otherwise. "
+Return position if statement found, nil otherwise."
   (interactive)
   (let (erg)
     (if (py--beginning-of-statement-p)
@@ -73,7 +73,7 @@ Return position if form found, nil otherwise."
 (defun py-down-statement ()
   "Go to the beginning of next statement downwards in buffer.
 
-Return position if statement found, nil otherwise. "
+Return position if statement found, nil otherwise."
   (interactive)
   (let* ((orig (point))
 	 erg)
@@ -160,7 +160,7 @@ Optional ORIG INDENT DECORATOR BOL"
 (defun py-up-block (&optional indent decorator bol)
   "Go to the beginning of next block upwards in buffer according to INDENT.
 Optional DECORATOR BOL
-Return position if block found, nil otherwise. "
+Return position if block found, nil otherwise."
   (interactive)
   (py-up-base 'py-extended-block-or-clause-re indent (point) decorator bol))
 
@@ -168,7 +168,7 @@ Return position if block found, nil otherwise. "
 (defun py-up-class (&optional indent decorator bol)
   "Go to the beginning of next class upwards in buffer according to INDENT.
 Optional DECORATOR BOL
-Return position if class found, nil otherwise. "
+Return position if class found, nil otherwise."
   (interactive)
   (py-up-base 'py-class-re indent (point) decorator bol))
 
@@ -176,7 +176,7 @@ Return position if class found, nil otherwise. "
 (defun py-up-def (&optional indent decorator bol)
   "Go to the beginning of next def upwards in buffer according to INDENT.
 Optional DECORATOR BOL
-Return position if def found, nil otherwise. "
+Return position if def found, nil otherwise."
   (interactive)
   (py-up-base 'py-def-re indent (point) decorator bol))
 
@@ -184,7 +184,7 @@ Return position if def found, nil otherwise. "
 (defun py-up-def-or-class (&optional indent decorator bol)
   "Go to the beginning of next def-or-class upwards in buffer according to INDENT.
 Optional DECORATOR BOL
-Return position if def-or-class found, nil otherwise. "
+Return position if def-or-class found, nil otherwise."
   (interactive)
   (py-up-base 'py-def-or-class-re indent (point) decorator bol))
 
@@ -192,7 +192,7 @@ Return position if def-or-class found, nil otherwise. "
 (defun py-up-minor-block (&optional indent decorator bol)
   "Go to the beginning of next minor-block upwards in buffer according to INDENT.
 Optional DECORATOR BOL
-Return position if minor-block found, nil otherwise. "
+Return position if minor-block found, nil otherwise."
   (interactive)
   (py-up-base 'py-extended-block-or-clause-re indent (point) decorator bol))
 
@@ -201,7 +201,7 @@ Return position if minor-block found, nil otherwise. "
   "Go to the beginning of next block below in buffer according to INDENT.
 
 Optional INDENT DECORATOR BOL
-Return position if block found, nil otherwise. "
+Return position if block found, nil otherwise."
   (interactive)
   (py-down-base 'py-block-re (or orig (point)) indent decorator bol))
 
@@ -210,7 +210,7 @@ Return position if block found, nil otherwise. "
   "Go to the beginning of next class below in buffer according to INDENT.
 
 Optional INDENT DECORATOR BOL
-Return position if class found, nil otherwise. "
+Return position if class found, nil otherwise."
   (interactive)
   (py-down-base 'py-class-re (or orig (point)) indent decorator bol))
 
@@ -219,7 +219,7 @@ Return position if class found, nil otherwise. "
   "Go to the beginning of next def below in buffer according to INDENT.
 
 Optional INDENT DECORATOR BOL
-Return position if def found, nil otherwise. "
+Return position if def found, nil otherwise."
   (interactive)
   (py-down-base 'py-def-re (or orig (point)) indent decorator bol))
 
@@ -228,7 +228,7 @@ Return position if def found, nil otherwise. "
   "Go to the beginning of next def-or-class below in buffer according to INDENT.
 
 Optional INDENT DECORATOR BOL
-Return position if def-or-class found, nil otherwise. "
+Return position if def-or-class found, nil otherwise."
   (interactive)
   (py-down-base 'py-def-or-class-re (or orig (point)) indent decorator bol))
 
@@ -237,7 +237,7 @@ Return position if def-or-class found, nil otherwise. "
   "Go to the beginning of next minor-block below in buffer according to INDENT.
 
 Optional INDENT DECORATOR BOL
-Return position if minor-block found, nil otherwise. "
+Return position if minor-block found, nil otherwise."
   (interactive)
   (py-down-base 'py-minor-block-re (or orig (point)) indent decorator bol))
 
@@ -246,7 +246,7 @@ Return position if minor-block found, nil otherwise. "
 
 Go to beginning of line.
 Optional DECORATOR.
-Return position if block found, nil otherwise. "
+Return position if block found, nil otherwise."
   (interactive)
   (py-up-base 'py-block-re indent (point) decorator t))
 
@@ -255,7 +255,7 @@ Return position if block found, nil otherwise. "
 
 Go to beginning of line.
 Optional DECORATOR.
-Return position if class found, nil otherwise. "
+Return position if class found, nil otherwise."
   (interactive)
   (py-up-base 'py-class-re indent (point) decorator t))
 
@@ -264,7 +264,7 @@ Return position if class found, nil otherwise. "
 
 Go to beginning of line.
 Optional DECORATOR.
-Return position if def found, nil otherwise. "
+Return position if def found, nil otherwise."
   (interactive)
   (py-up-base 'py-def-re indent (point) decorator t))
 
@@ -273,7 +273,7 @@ Return position if def found, nil otherwise. "
 
 Go to beginning of line.
 Optional DECORATOR.
-Return position if def-or-class found, nil otherwise. "
+Return position if def-or-class found, nil otherwise."
   (interactive)
   (py-up-base 'py-def-or-class-re indent (point) decorator t))
 
@@ -282,7 +282,7 @@ Return position if def-or-class found, nil otherwise. "
 
 Go to beginning of line.
 Optional DECORATOR.
-Return position if minor-block found, nil otherwise. "
+Return position if minor-block found, nil otherwise."
   (interactive)
   (py-up-base 'py-minor-block-re indent (point) decorator t))
 
