@@ -41,13 +41,11 @@
 
 ;; Please report bugs at
 ;; https://gitlab.com/python-mode-devs/python-mode/issues
-;; or at
-;; https://bugs.launchpad.net/python-mode
 
-;; commands-python-mode.org in directory "doc" reports
-;; available commands, also a menu is provided
+;; available commands are documented in directory "doc" as
+;; commands-python-mode.org
 
-;; as for `py-add-abbrev':
+;; As for `py-add-abbrev':
 ;; Similar to `add-mode-abbrev', but uses
 ;; `py-partial-expression' before point for expansion to
 ;; store, not `word'.  Also provides a proposal for new
