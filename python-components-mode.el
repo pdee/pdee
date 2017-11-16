@@ -9,6 +9,8 @@
 
 ;; Version: "6.2.3"
 
+;; URL: https://gitlab.com/groups/python-mode-devs
+
 ;; Copyright (C) 1992,1993,1994  Tim Peters
 
 ;; Author: 2015-2017 https://gitlab.com/groups/python-mode-devs
