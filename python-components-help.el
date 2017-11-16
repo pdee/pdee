@@ -35,10 +35,10 @@
 (eval-when-compile (require 'info))
 
 (defun py-info-lookup-symbol ()
-  (interactive)
-  "Calls `info-lookup-symbol'.
+  "Call ‘info-lookup-symbol’.
 
-Sends help if stuff is missing. "
+Sends help if stuff is missing."
+  (interactive)
   (if (functionp 'pydoc-info-add-help)
       (call-interactively 'info-lookup-symbol)
     (message "pydoc-info-add-help not found. Please check INSTALL-INFO-FILES")))
@@ -54,7 +54,7 @@ Sends help if stuff is missing. "
 
 Tries to take account of versioned Python Info files, e.g. Debian's
 python2.5-ref.info.gz.
-Used with `eval-after-load'."
+Used with ‘eval-after-load’."
   (let* ((version (let ((s (shell-command-to-string (concat py-python-command
 							    " -V"))))
 		    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
@@ -66,7 +66,7 @@ Used with `eval-after-load'."
 	    ;; First look for Info files corresponding to the version
 	    ;; of the interpreter we're running.
 	    (condition-case ()
-		;; Don't use `info' because it would pop-up a *info* buffer.
+		;; Don't use ‘info’ because it would pop-up a *info* buffer.
 		(progn
 		  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
 					  version))
@@ -130,7 +130,7 @@ Used with `eval-after-load'."
 
 ;; ;
 (defun py--warn-tmp-files-left ()
-  "Detect and warn about file of form \"py11046IoE\" in py-temp-directory. "
+  "Detect and warn about file of form \"py11046IoE\" in py-temp-directory."
   (let ((erg1 (file-readable-p (concat py-temp-directory (char-to-string py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
     (when (and py-verbose-p erg1)
       (message "py--warn-tmp-files-left: %s ?" (concat py-temp-directory (char-to-string py-separator-char) (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
@@ -138,7 +138,7 @@ Used with `eval-after-load'."
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.
 
-Useful for newly defined symbol, not known to python yet. "
+Useful for newly defined symbol, not known to python yet."
   (interactive)
   (let* ((symb (prin1-to-string (symbol-at-point)))
          erg)
@@ -157,10 +157,12 @@ Useful for newly defined symbol, not known to python yet. "
             (insert erg)))))))
 
 (defun py-info-current-defun (&optional include-type)
-  "Return name of surrounding function with Python compatible dotted expression syntax.
+  "Return name of surrounding function.
+
+Use Python compatible dotted expression syntax
 Optional argument INCLUDE-TYPE indicates to include the type of the defun.
 This function is compatible to be used as
-`add-log-current-defun-function' since it returns nil if point is
+‘add-log-current-defun-function’ since it returns nil if point is
 not inside a defun."
   (interactive)
   (let ((names '())
@@ -286,7 +288,7 @@ If symbol is defined in current buffer, jump to it's definition"
                         "Value: "
                         (prin1-to-string (symbol-value func))))))
          (t                             ; unexpected
-          (error "Error in py--dump-help-string, tag `%s'" funckind)))
+          (error "Error in py--dump-help-string, tag %s" funckind)))
         (princ (format "\n-> %s:\t%s\t%s\n\n"
                        (if (equal funckind "c") "Command" "Variable")
                        funcname keys))
@@ -300,14 +302,14 @@ If symbol is defined in current buffer, jump to it's definition"
       (help-print-return-message))))
 
 (defun py-describe-mode ()
-  "Dump long form of `python-mode' docs."
+  "Dump long form of ‘python-mode’ docs."
   (interactive)
   (py--dump-help-string "Major mode for editing Python files.
 Knows about Python indentation, tokens, comments and continuation lines.
 Paragraphs are separated by blank lines only.
 
-Major sections below begin with the string `@'; specific function and
-variable docs begin with `->'.
+Major sections below begin with the string ‘@’; specific function and
+variable docs begin with ->.
 
 @EXECUTING PYTHON CODE
 
@@ -327,7 +329,7 @@ variable docs begin with `->'.
 
 @VARIABLES
 
-py-install-directory\twherefrom `python-mode' looks for extensions
+py-install-directory\twherefrom ‘python-mode’ looks for extensions
 py-indent-offset\tindentation increment
 py-block-comment-prefix\tcomment string used by comment-region
 
@@ -344,26 +346,26 @@ py-beep-if-tab-change\tring the bell if tab-width is changed
 
 @KINDS OF LINES
 
-Each physical line in the file is either a `continuation line' (the
+Each physical line in the file is either a ‘continuation line’ (the
 preceding line ends with a backslash that's not part of a comment, or
 the paren/bracket/brace nesting level at the start of the line is
-non-zero, or both) or an `initial line' (everything else).
+non-zero, or both) or an ‘initial line’ (everything else).
 
-An initial line is in turn a `blank line' (contains nothing except
-possibly blanks or tabs), a `comment line' (leftmost non-blank
-character is `#'), or a `code line' (everything else).
+An initial line is in turn a ‘blank line’ (contains nothing except
+possibly blanks or tabs), a ‘comment line’ (leftmost non-blank
+character is ‘#’), or a ‘code line’ (everything else).
 
 Comment Lines
 
 Although all comment lines are treated alike by Python, Python mode
 recognizes two kinds that act differently with respect to indentation.
 
-An `indenting comment line' is a comment line with a blank, tab or
-nothing after the initial `#'.  The indentation commands (see below)
+An ‘indenting comment line’ is a comment line with a blank, tab or
+nothing after the initial ‘#’.  The indentation commands (see below)
 treat these exactly as if they were code lines: a line following an
 indenting comment line will be indented like the comment line.  All
 other comment lines (those with a non-whitespace character immediately
-following the initial `#') are `non-indenting comment lines', and
+following the initial ‘#’) are ‘non-indenting comment lines’, and
 their indentation is ignored by the indentation commands.
 
 Indenting comment lines are by far the usual case, and should be used
@@ -374,17 +376,17 @@ like these:
 \t #... continued onto another line
 
 \tif a == b:
-##\t\tprint 'panic!' # old code we've `commented out'
+##\t\tprint 'panic!' # old code we've ‘commented out’
 \t\treturn a
 
-Since the `#...' and `##' comment lines have a non-whitespace
-character following the initial `#', Python mode ignores them when
+Since the ‘#...’ and ‘##’ comment lines have a non-whitespace
+character following the initial ‘#’, Python mode ignores them when
 computing the proper indentation for the next line.
 
 Continuation Lines and Statements
 
-The `python-mode' commands generally work on statements instead of on
-individual lines, where a `statement' is a comment or blank line, or a
+The ‘python-mode’ commands generally work on statements instead of on
+individual lines, where a ‘statement’ is a comment or blank line, or a
 code line and all of its following continuation lines (if any)
 considered as a single logical unit.  The commands in this mode
 generally (when it makes sense) automatically move to the start of the
@@ -408,7 +410,7 @@ Primarily for reindenting existing code:
 
 Unlike most programming languages, Python uses indentation, and only
 indentation, to specify block structure.  Hence the indentation supplied
-automatically by `python-mode' is just an educated guess:  only you know
+automatically by ‘python-mode’ is just an educated guess:  only you know
 the block structure you intend, so only you can supply correct
 indentation.
 
@@ -416,24 +418,24 @@ The \\[indent-for-tab-command] and \\[py-newline-and-indent] keys try to suggest
 the indentation of preceding statements.  E.g., assuming
 py-indent-offset is 4, after you enter
 \tif a > 0: \\[py-newline-and-indent]
-the cursor will be moved to the position of the `_' (_ is not a
+the cursor will be moved to the position of the ‘_’ (_ is not a
 character in the file, it's just used here to indicate the location of
 the cursor):
 \tif a > 0:
 \t _
-If you then enter `c = d' \\[py-newline-and-indent], the cursor will move
+If you then enter ‘c = d’ \\[py-newline-and-indent], the cursor will move
 to
 \tif a > 0:
 \t c = d
 \t _
-`python-mode' cannot know whether that's what you intended, or whether
+‘python-mode’ cannot know whether that's what you intended, or whether
 \tif a > 0:
 \t c = d
 \t_
-was your intent.  In general, `python-mode' either reproduces the
+was your intent.  In general, ‘python-mode’ either reproduces the
 indentation of the (closest code or indenting-comment) preceding
 statement, or adds an extra py-indent-offset blanks if the preceding
-statement has `:' as its last significant (non-whitespace and non-
+statement has ‘:’ as its last significant (non-whitespace and non-
 comment) character.  If the suggested indentation is too much, use
 \\[py-electric-backspace] to reduce it.
 
@@ -442,7 +444,7 @@ suggested indentation, change it to something you do like, and Python-
 mode will strive to indent later lines of the statement in the same way.
 
 If a line is a continuation line by virtue of being in an unclosed
-paren/bracket/brace structure (`list', for short), the suggested
+paren/bracket/brace structure (‘list’, for short), the suggested
 indentation depends on whether the current line contains the first item
 in the list.  If it does, it's indented py-indent-offset columns beyond
 the indentation of the line containing the open bracket.  If you don't
@@ -454,8 +456,8 @@ a backslash, the third and following lines of the statement inherit their
 indentation from the line preceding them.  The indentation of the second
 line in the statement depends on the form of the first (base) line:  if
 the base line is an assignment statement with anything more interesting
-than the backslash following the leftmost assigning `=', the second line
-is indented two columns beyond that `='.  Else it's indented to two
+than the backslash following the leftmost assigning ‘=’, the second line
+is indented two columns beyond that ‘=’.  Else it's indented to two
 columns beyond the leftmost solid chunk of non-whitespace characters on
 the base line.
 
@@ -469,7 +471,7 @@ structure you intend.
 The next function may be handy when editing code you didn't write:
 %c:py-guess-indent-offset
 
-The remaining `indent' functions apply to a region of Python code.  They
+The remaining ‘indent’ functions apply to a region of Python code.  They
 assume the block structure (equals indentation, in Python) of the region
 is correct, and alter the indentation in various ways while preserving
 the block structure:
@@ -501,11 +503,11 @@ the block structure:
 The first two move to one statement beyond the statement that contains
 point.  A numeric prefix argument tells them to move that many
 statements instead.  Blank lines, comment lines, and continuation lines
-do not count as `statements' for these commands.  So, e.g., you can go
+do not count as ‘statements’ for these commands.  So, e.g., you can go
 to the first code statement in a file by entering
 \t\\[beginning-of-buffer]\t to move to the top of the file
 \t\\[py-next-statement]\t to skip over initial comments and blank lines
-Or do `\\[py-previous-statement]' with a huge prefix argument.
+Or do \\[py-previous-statement] with a huge prefix argument.
 %c:py-previous-statement
 %c:py-next-statement
 %c:py-goto-block-up
@@ -514,34 +516,34 @@ Or do `\\[py-previous-statement]' with a huge prefix argument.
 
 @LITTLE-KNOWN EMACS COMMANDS PARTICULARLY USEFUL IN PYTHON MODE
 
-`\\[indent-new-comment-line]' is handy for entering a multi-line comment.
+\\[indent-new-comment-line] is handy for entering a multi-line comment.
 
-`\\[set-selective-display]' with a `small' prefix arg is ideally suited for viewing the
+\\[set-selective-display] with a ‘small’ prefix arg is ideally suited for viewing the
 overall class and def structure of a module.
 
-`\\[back-to-indentation]' moves point to a line's first non-blank character.
+‘\\[back-to-indentation]’ moves point to a line's first non-blank character.
 
-`\\[indent-relative]' is handy for creating odd indentation.
+‘\\[indent-relative]’ is handy for creating odd indentation.
 
 @OTHER EMACS HINTS
 
 If you don't like the default value of a variable, change its value to
-whatever you do like by putting a `setq' line in your .emacs file.
+whatever you do like by putting a ‘setq’ line in your .emacs file.
 E.g., to set the indentation increment to 4, put this line in your
 .emacs:
 \t(setq py-indent-offset 4)
-To see the value of a variable, do `\\[describe-variable]' and enter the variable
+To see the value of a variable, do ‘\\[describe-variable]’ and enter the variable
 name at the prompt.
 
-When entering a key sequence like `C-c C-n', it is not necessary to
-release the CONTROL key after doing the `C-c' part -- it suffices to
-press the CONTROL key, press and release `c' (while still holding down
-CONTROL), press and release `n' (while still holding down CONTROL), &
+When entering a key sequence like ‘C-c C-n’, it is not necessary to
+release the CONTROL key after doing the ‘C-c’ part -- it suffices to
+press the CONTROL key, press and release ‘c’ (while still holding down
+CONTROL), press and release ‘n’ (while still holding down CONTROL), &
 then release CONTROL.
 
 Entering Python mode calls with no arguments the value of the variable
-`python-mode-hook', if that value exists and is not nil; for backward
-compatibility it also tries `py-mode-hook'; see the `Hooks' section of
+‘python-mode-hook’, if that value exists and is not nil; for backward
+compatibility it also tries ‘py-mode-hook’; see the ‘Hooks’ section of
 the Elisp manual for details.
 
 Obscure:  When python-mode is first loaded, it looks for all bindings
@@ -643,7 +645,7 @@ Interactively, prompt for SYMBOL."
 (defun py-find-imports ()
   "Find top-level imports.
 
-Returns imports "
+Returns imports"
   (interactive)
   (let (imports erg)
     (save-excursion
@@ -684,9 +686,9 @@ Returns imports "
     imports))
 
 (defun py-update-imports ()
-  "Returns imports.
+  "Return imports.
 
-Imports done are displayed in message buffer. "
+Imports done are displayed in message buffer."
   (interactive)
   (save-excursion
     (let ((py-exception-buffer (current-buffer))
@@ -705,7 +707,7 @@ Imports done are displayed in message buffer. "
 ;;  pep8
 (defalias 'pep8 'py-pep8-run)
 (defun py-pep8-run (command)
-  "*Run pep8, check formatting - default on the file currently visited."
+  "*Run pep8 using COMMAND, check formatting - default on the file currently visited."
   (interactive
    (let ((default
            (if (py--buffer-filename-remote-maybe)
@@ -741,7 +743,7 @@ Imports done are displayed in message buffer. "
       (compile-internal command "No more errors"))))
 
 (defun py-pep8-help ()
-  "Display pep8 command line help messages. "
+  "Display pep8 command line help messages."
   (interactive)
   (set-buffer (get-buffer-create "*pep8-Help*"))
   (erase-buffer)
@@ -750,10 +752,10 @@ Imports done are displayed in message buffer. "
 ;;  Pylint
 (defalias 'pylint 'py-pylint-run)
 (defun py-pylint-run (command)
-  "Run pylint (default on the file currently visited).
+  "Run pylint from COMMAND (default on the file currently visited).
 
-For help see M-x pylint-help resp. M-x pylint-long-help.
-Home-page: http://www.logilab.org/project/pylint "
+For help see \\[pylint-help] resp. \\[pylint-long-help].
+Home-page: http://www.logilab.org/project/pylint"
   (interactive
    (let ((default (format "%s %s %s" py-pylint-command
 			  (mapconcat 'identity py-pylint-command-args " ")
@@ -775,7 +777,7 @@ Home-page: http://www.logilab.org/project/pylint "
 (defun py-pylint-help ()
   "Display Pylint command line help messages.
 
-Let's have this until more Emacs-like help is prepared "
+Let's have this until more Emacs-like help is prepared"
   (interactive)
   (set-buffer (get-buffer-create "*Pylint-Help*"))
   (erase-buffer)
@@ -785,7 +787,7 @@ Let's have this until more Emacs-like help is prepared "
 (defun py-pylint-doku ()
   "Display Pylint Documentation.
 
-Calls `pylint --full-documentation'"
+Calls ‘pylint --full-documentation’"
   (interactive)
   (set-buffer (get-buffer-create "*Pylint-Documentation*"))
   (erase-buffer)
@@ -794,10 +796,10 @@ Calls `pylint --full-documentation'"
 ;;  Pyflakes
 (defalias 'pyflakes 'py-pyflakes-run)
 (defun py-pyflakes-run (command)
-  "*Run pyflakes (default on the file currently visited).
+  "*Run pyflakes on COMMAND (default on the file currently visited).
 
-For help see M-x pyflakes-help resp. M-x pyflakes-long-help.
-Home-page: http://www.logilab.org/project/pyflakes "
+For help see \\[pyflakes-help] resp. \\[pyflakes-long-help].
+Home-page: http://www.logilab.org/project/pyflakes"
   (interactive
    (let ((default
            (if (py--buffer-filename-remote-maybe)
@@ -836,7 +838,7 @@ Home-page: http://www.logilab.org/project/pyflakes "
 (defun py-pyflakes-help ()
   "Display Pyflakes command line help messages.
 
-Let's have this until more Emacs-like help is prepared "
+Let's have this until more Emacs-like help is prepared"
   (interactive)
   ;; (set-buffer (get-buffer-create "*Pyflakes-Help*"))
   ;; (erase-buffer)
@@ -871,8 +873,7 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
 ;;  Pyflakes-pep8
 (defalias 'pyflakespep8 'py-pyflakespep8-run)
 (defun py-pyflakespep8-run (command)
-  "*Run pyflakespep8, check formatting (default on the file currently visited).
-"
+  "*Run COMMAND pyflakespep8, check formatting (default on the file currently visited)."
   (interactive
    (let ((default
            (if (py--buffer-filename-remote-maybe)
@@ -908,7 +909,7 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
       (compile-internal command "No more errors"))))
 
 (defun py-pyflakespep8-help ()
-  "Display pyflakespep8 command line help messages. "
+  "Display pyflakespep8 command line help messages."
   (interactive)
   (set-buffer (get-buffer-create "*pyflakespep8-Help*"))
   (erase-buffer)
@@ -920,7 +921,7 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
 ;;  (defalias 'read-shell-command 'read-string))
 
 (defun py-pychecker-run (command)
-  "*Run pychecker (default on the file currently visited)."
+  "Run COMMAND pychecker (default on the file currently visited)."
   (interactive
    (let ((default
            (if (py--buffer-filename-remote-maybe)
@@ -954,11 +955,11 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-;;  After `sgml-validate-command'.
+;;  After ‘sgml-validate-command’.
 (defun py-check-command (command)
   "Check a Python file (default current buffer's file).
-Runs COMMAND, a shell command, as if by `compile'.
-See `py-check-command' for the default."
+Runs COMMAND, a shell command, as if by ‘compile’.
+See ‘py-check-command’ for the default."
   (interactive
    (list (read-string "Checker command: "
                       (concat py-check-command " "
@@ -975,15 +976,15 @@ See `py-check-command' for the default."
 ;;  flake8
 (defalias 'flake8 'py-flake8-run)
 (defun py-flake8-run (command)
-  "Flake8 is a wrapper around these tools:
-        - PyFlakes
+  "COMMAND Flake8 is a wrapper around these tools:
+- PyFlakes
         - pep8
         - Ned Batchelder's McCabe script
 
         It also adds features:
         - files that contain this line are skipped::
             # flake8: noqa
-        - lines that contain a ``# noqa`` comment at the end will not issue warnings.
+        - no-warn lines that contain a `# noqa`` comment at the end.
         - a Git and a Mercurial hook.
         - a McCabe complexity checker.
         - extendable through ``flake8.extension`` entry points."
@@ -1028,7 +1029,7 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
       (compile-internal command "No more errors"))))
 
 (defun py-flake8-help ()
-  "Display flake8 command line help messages. "
+  "Display flake8 command line help messages."
   (interactive)
   (set-buffer (get-buffer-create "*flake8-Help*"))
   (erase-buffer)
@@ -1037,16 +1038,16 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
 ;;  from string-strip.el --- Strip CHARS from STRING
 
 (defvar py-chars-before " \t\n\r\f"
-  "Used by `py--string-strip'")
+  "Used by ‘py--string-strip’.")
 
 (defvar py-chars-after " \t\n\r\f"
-    "Used by `py--string-strip'")
+    "Used by ‘py--string-strip’.")
 
 ;;  (setq strip-chars-before  "[ \t\r\n]*")
 (defun py--string-strip (str &optional chars-before chars-after)
   "Return a copy of STR, CHARS removed.
-`CHARS-BEFORE' and `CHARS-AFTER' default is \"[ \t\r\n]*\",
-i.e. spaces, tabs, carriage returns, newlines and newpages. "
+‘CHARS-BEFORE’ and ‘CHARS-AFTER’ default is \"[ \t\r\n]*\",
+i.e. spaces, tabs, carriage returns, newlines and newpages."
   (let ((s-c-b (or chars-before
                    py-chars-before))
         (s-c-a (or chars-after
@@ -1057,7 +1058,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
     erg))
 
 (defun py-nesting-level (&optional pps)
-  "Accepts the output of `parse-partial-sexp'. "
+  "Accepts the output of ‘parse-partial-sexp’ - PPS."
   (interactive)
   (let* ((pps (or (ignore-errors (nth 0 pps))
                   (if (featurep 'xemacs)
@@ -1069,7 +1070,7 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
 
 ;;  ffap
 (defun py-ffap-module-path (module)
-  "Function for `ffap-alist' to return path for MODULE."
+  "Function for ‘ffap-alist’ to return path for MODULE."
   (let ((process (or
                   (and (eq major-mode 'py-shell-mode)
                        (get-buffer-process (current-buffer)))
@@ -1089,10 +1090,12 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
 
 ;;  Flymake
 (defun py-toggle-flymake-intern (name command)
-  ;; (clear-flymake-allowed-file-name-masks)
+  "Clear flymake allowed file-name masks.
+
+Takes NAME COMMAND"
   (unless (string-match "pyflakespep8" name)
     (unless (executable-find name)
-      (when py-verbose-p (message "Don't see %s. Use `easy_install' %s? " name name))))
+      (when py-verbose-p (message "Don't see %s. Use ‘easy_install’ %s? " name name))))
   (if (py--buffer-filename-remote-maybe)
       (let* ((temp-file (flymake-init-create-temp-buffer-copy
                          'flymake-create-temp-inplace))
@@ -1101,12 +1104,12 @@ i.e. spaces, tabs, carriage returns, newlines and newpages. "
                           (file-name-directory (py--buffer-filename-remote-maybe)))))
         (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-allowed-file-name-masks)
         (list command (list local-file)))
-    (message "%s" "flymake needs a `file-name'. Please save before calling.")))
+    (message "%s" "flymake needs a ‘file-name’. Please save before calling.")))
 
 (defun py-flycheck-mode (&optional arg)
-  "Toggle `flycheck-mode'.
+  "Toggle ‘flycheck-mode’.
 
-With negative argument switch off flycheck-mode
+With negative ARG switch off ‘flycheck-mode’
 See menu \"Tools/Syntax Checking\""
   (interactive "p")
   (setq arg (or arg (if flycheck-mode 0 1)))
@@ -1120,7 +1123,7 @@ See menu \"Tools/Syntax Checking\""
     (error "Can't find flycheck - see README.org")))
 
 (defun pylint-flymake-mode ()
-  "Toggle `pylint' `flymake-mode'. "
+  "Toggle ‘pylint’ ‘flymake-mode’."
   (interactive)
   (if flymake-mode
       ;; switch off
@@ -1129,7 +1132,7 @@ See menu \"Tools/Syntax Checking\""
     (flymake-mode 1)))
 
 (defun pyflakes-flymake-mode ()
-  "Toggle `pyflakes' `flymake-mode'. "
+  "Toggle ‘pyflakes’ ‘flymake-mode’."
   (interactive)
   (if flymake-mode
       ;; switch off
@@ -1138,7 +1141,7 @@ See menu \"Tools/Syntax Checking\""
     (flymake-mode)))
 
 (defun pychecker-flymake-mode ()
-  "Toggle `pychecker' `flymake-mode'. "
+  "Toggle ‘pychecker’ ‘flymake-mode’."
   (interactive)
   (if flymake-mode
       ;; switch off
@@ -1147,7 +1150,7 @@ See menu \"Tools/Syntax Checking\""
     (flymake-mode)))
 
 (defun pep8-flymake-mode ()
-  "Toggle `pep8' `flymake-mode'. "
+  "Toggle ‘pep8’ ‘flymake-mode’."
   (interactive)
   (if flymake-mode
       ;; switch off
@@ -1156,7 +1159,7 @@ See menu \"Tools/Syntax Checking\""
     (flymake-mode)))
 
 (defun pyflakespep8-flymake-mode ()
-  "Toggle `pyflakespep8' `flymake-mode'.
+  "Toggle ‘pyflakespep8’ ‘flymake-mode’.
 
 Joint call to pyflakes and pep8 as proposed by
 Keegan Carruthers-Smith"
@@ -1169,15 +1172,16 @@ Keegan Carruthers-Smith"
 
 ;; ;
 (defun variables-state (&optional buffer directory-in directory-out)
-  "Diplays state of python-mode variables in an org-mode buffer.
+  "Diplays state of ‘python-mode’ variables in an ‘org-mode’ BUFFER.
 
+Optional DIRECTORY-IN DIRECTORY-OUT
 Reads variables from python-mode.el as current buffer.
 
 Variables which would produce a large output are left out:
 - syntax-tables
-- python-mode-map
+- ‘python-mode-map’
 
-Maybe call M-x describe-variable RET to query its value. "
+Maybe call \\[describe-variable] RET to query its value."
   (interactive)
   (variables-prepare "state"))
 
