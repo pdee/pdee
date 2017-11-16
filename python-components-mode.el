@@ -11,6 +11,7 @@
 
 ;; URL: https://gitlab.com/groups/python-mode-devs
 
+;; Package-Requires: (emacs "24")
 ;; Copyright (C) 1992,1993,1994  Tim Peters
 
 ;; Author: 2015-2017 https://gitlab.com/groups/python-mode-devs
