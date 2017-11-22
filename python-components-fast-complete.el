@@ -28,7 +28,7 @@ completions on the current context."
 (defun py--fast--do-completion-at-point (process imports input orig code output-buffer)
   "Do completion at point for PROCESS."
   ;; send setup-code
-  (let (py-return-result-p)
+  (let (py-store-result-p)
     (when imports
       ;; (message "%s" imports)
       (py--fast-send-string-no-output imports process output-buffer)))

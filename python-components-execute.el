@@ -796,7 +796,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	 (proc (or proc (get-buffer-process buffer)
 		   (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch))))
 	 (fast (or fast py-fast-process-p))
-	 (return (or return py-return-result-p)))
+	 (return (or return py-return-result-p py-return-store-p)))
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end shell fast return)
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
@@ -1045,7 +1045,7 @@ Returns position where output starts."
       (goto-char (point-max))
       (setq orig (copy-marker (point)))
       (py-send-string cmd proc)
-      (when py-return-result-p
+      (when (or py-return-result-p py-store-result-p)
 	(setq erg (py--postprocess-comint buffer origline orig))
 	(if py-error
 	    (setq py-error (prin1-to-string py-error))
