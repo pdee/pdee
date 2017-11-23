@@ -2970,7 +2970,8 @@ See also `py-object-reference-face'"
 
 (defun py--python-send-setup-code-intern (name &optional msg)
   (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))
-	(buf (current-buffer)))
+	(buf (current-buffer))
+	py-return-result-p py-store-result-p)
     (unless (file-readable-p setup-file)
       (with-temp-buffer
 	(insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
