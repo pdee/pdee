@@ -893,7 +893,8 @@ Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source b
 
 (defun py--fetch-result (orig)
   "Return ‘buffer-substring’ from ORIG to ‘point-max’."
-  (switch-to-buffer (current-buffer))
+  ;; (switch-to-buffer (current-buffer))
+  ;; otherwise py-ert-fast-complete-1 fails
   (goto-char orig)
   (if (derived-mode-p 'comint-mode)
       (replace-regexp-in-string
@@ -918,7 +919,7 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
     ;; (when py-debug-p (message "py-result: %s" py-result))
     (and (string-match "\n$" py-result)
 	 (setq py-result (replace-regexp-in-string py-fast-filter-re "" (substring py-result 0 (match-beginning 0)))))
-    (if py-result
+    (if (and py-result (not (string= "" py-result)))
 	(if (string-match "^Traceback" py-result)
 	    (progn
 	      (with-temp-buffer
