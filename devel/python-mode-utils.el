@@ -1135,7 +1135,8 @@
     (when py-master-file
       (let* ((filename (expand-file-name py-master-file))
 	     (buffer (or (get-file-buffer filename)
-			 (find-file-noselect filename))))
+			 (find-file-noselect filename)))
+             (wholebuf t))
 	(set-buffer buffer))))\n"))
 
 (defun write--unified-extended-execute-shells (elt)
