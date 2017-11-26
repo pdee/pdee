@@ -1280,7 +1280,7 @@ Optional OUTPUT-BUFFER and ERROR-BUFFER might be given."
     (unless (buffer-live-p output-buffer)
       (set-buffer (get-buffer-create output-buffer)))
     (shell-command (concat pcmd " " filename) output-buffer error-buffer)
-    (when (called-interactively-p 'any) (switch-to-buffer output-buffer))))
+    (when py-switch-buffers-on-execute-p (switch-to-buffer output-buffer))))
 
 (defvar py-last-exeption-buffer nil
   "Internal use only - when ‘py-up-exception’ is called.
