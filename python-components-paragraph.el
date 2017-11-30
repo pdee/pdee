@@ -1,4 +1,4 @@
-;;; python-components-paragraph.el --- filling -*- lexical-binding: t; -*- 
+;;; python-components-paragraph.el --- filling -*- lexical-binding: t; -*-
 
 ;; Original Author: Fabián E. Gallina <fabian@anue.biz>
 ;; Maintainer: Andreas Röhler <andreas.roehler@online.de>
@@ -360,22 +360,23 @@ See lp:1066489 "
 
 (defun py--fill-docstring-first-line (beg end thisbeg thisend style)
   "Refill first line after newline maybe. "
-  (fill-region beg (line-end-position))
-  (forward-line 1)
-  (fill-region (line-beginning-position) end)
-  (save-restriction
-    (widen)
-    (setq multi-line-p (string-match "\n" (buffer-substring-no-properties thisbeg thisend))))
-  (when multi-line-p
-    ;; adjust the region to fill according to style
-    (goto-char beg)
-    (skip-chars-forward "\"'")
-    ;; style might be nil
-    (when style
-      (unless (or (eq style 'pep-257-nn)(eq style 'pep-257)(eq (char-after) ?\n))
-	(newline-and-indent)
-	;; if TQS is at a single line, re-fill remaining line
-	(fill-region (point) end)))))
+  (let (multi-line-p)
+    (fill-region beg (line-end-position))
+    (forward-line 1)
+    (fill-region (line-beginning-position) end)
+    (save-restriction
+      (widen)
+      (setq multi-line-p (string-match "\n" (buffer-substring-no-properties thisbeg thisend))))
+    (when multi-line-p
+      ;; adjust the region to fill according to style
+      (goto-char beg)
+      (skip-chars-forward "\"'")
+      ;; style might be nil
+      (when style
+	(unless (or (eq style 'pep-257-nn)(eq style 'pep-257)(eq (char-after) ?\n))
+	  (newline-and-indent)
+	  ;; if TQS is at a single line, re-fill remaining line
+	  (fill-region (point) end))))))
 
 (defun py--fill-docstring (justify style docstring orig py-current-indent)
   ;; Delete spaces after/before string fence
