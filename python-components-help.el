@@ -1171,6 +1171,17 @@ Keegan Carruthers-Smith"
     (flymake-mode)))
 
 ;; ;
+(defun variables-prepare (kind)
+  "Used by variable-finds, variable-states. "
+  (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
+         ;; (file (buffer-file-name))
+         (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
+         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
+         (directory-in default-directory)
+         (directory-out (or directory-out (expand-file-name finds-directory-out)))
+	 (command (concat "variables-base-" kind)))
+    (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
+
 (defun variables-state (&optional buffer directory-in directory-out)
   "Diplays state of ‘python-mode’ variables in an ‘org-mode’ BUFFER.
 
