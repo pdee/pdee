@@ -574,7 +574,7 @@ Use `defcustom' to keep value across sessions "
   "Return `t' if emacs major version is above 23"
   (< 23 (string-to-number (car (split-string emacs-version "\\.")))))
 
-(defun py--empty-arglist-indent (nesting &optional indent-offset indent-offset)
+(defun py--empty-arglist-indent (nesting &optional indent-offset)
   "Internally used by `py-compute-indentation'"
   (if
       (and (eq 1 nesting)
@@ -760,7 +760,7 @@ LIEP stores line-end-position at point-of-interest
 				      ((and (looking-at "\\s([ \t]*$") py-closing-list-keeps-space)
 				       (+ (current-column) py-closing-list-space))
 				      ((looking-at "\\s([ \t]*$")
-				       (py--empty-arglist-indent nesting py-indent-offset indent-offset))
+				       (py--empty-arglist-indent nesting indent-offset))
 				      ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
 				       (goto-char (match-beginning 1))
 				       (if py-indent-paren-spanned-multilines-p
@@ -774,7 +774,7 @@ LIEP stores line-end-position at point-of-interest
 				     (+ (current-indentation) (or indent-offset py-indent-offset)))
 				    (t (py--fetch-previous-indent orig)))
 				 (cond ((looking-at "\\s([ \t]*$")
-					(py--empty-arglist-indent nesting py-indent-offset indent-offset))
+					(py--empty-arglist-indent nesting indent-offset))
 				       ((looking-at "\\s([ \t]*\\([^ \t]+.*\\)$")
 					(if
 					    (and (or (bolp) (eq (char-before) 32)) py-indent-paren-spanned-multilines-p)
