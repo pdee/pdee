@@ -1452,6 +1452,7 @@ Depends from kind of Python shell."
 (defalias 'py-ipython-shell-command-on-region 'py-execute-region-ipython)
 (defalias 'py-shell-command-on-region 'py-execute-region)
 (defalias 'py-send-region-ipython 'py-execute-region-ipython)
+(defalias 'py-send-region 'py-execute-region)
 
 (provide 'python-components-execute);
 ;;;  python-components-execute.el ends here
