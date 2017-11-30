@@ -796,7 +796,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	 (proc (or proc (get-buffer-process buffer)
 		   (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch))))
 	 (fast (or fast py-fast-process-p))
-	 (return (or return py-return-result-p py-return-store-p)))
+	 (return (or return py-return-result-p py-store-result-p)))
     (setq py-buffer-name buffer)
     (py--execute-base-intern strg filename proc file wholebuf buffer origline execute-directory start end shell fast return)
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
