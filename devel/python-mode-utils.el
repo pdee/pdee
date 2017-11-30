@@ -1073,7 +1073,7 @@
          (insert " (point-min) (point-max)"))
 	;; (t (insert " beg end"))
 	)
-  (insert " nil fast proc wholebuf split))\n"))
+  (insert " nil fast proc split))\n"))
 
 (defun write--unified-extended-execute-forms-docu (ele elt pyo)
   (insert (concat "
@@ -1121,7 +1121,7 @@
   (let ((erst (if (string= "" elt)
 		  "&optional shell"
 		"&optional"))
-	(arglist "dedicated fast split switch proc wholebuf"))
+	(arglist "dedicated fast split switch proc"))
     (write--unified-extended-execute-forms-arglist-intern ele pyo elt arglist)))
 
 (defun write--unified-extended-execute-forms-interactive-spec (ele)
