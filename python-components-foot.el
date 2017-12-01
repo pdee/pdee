@@ -417,6 +417,9 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (sit-for 0.5 t)
   (force-mode-line-update))
 
+;; bug #40
+(autoload 'python-mode "python-mode" "Python Mode." t)
+
 (defalias 'py-backward-decorator-bol 'py-backward-decorator)
 (defalias 'py-beginning-of-block 'py-backward-block)
 (defalias 'py-beginning-of-block-bol 'py-backward-block-bol)
