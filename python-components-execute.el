@@ -720,7 +720,7 @@ Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
 	(py--create-new-shell executable args py-buffer-name exception-buffer))
       (when (or (called-interactively-p 'any)
 		(eq 1 argprompt)
-		(or switch py-switch-buffers-on-execute-p))
+		(or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
 	(py--shell-manage-windows py-buffer-name py-exception-buffer split switch)))
     py-buffer-name))
 
@@ -875,7 +875,7 @@ Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source b
 				(goto-char (match-end 0))))
 
 			    (skip-chars-forward " \t\r\n\f")(point)) (line-end-position))
-      (insert (concat "    File " py-exception-buffer ", line "
+      (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
 		      (prin1-to-string origline))))
     (when erg
       (goto-char erg)
