@@ -152,7 +152,7 @@ impo")))
         self._keys = d.keys()
         dict.__init__(self, d)"
     (search-backward "\"")
-    (forward-char 1) 
+    (forward-char 1)
     (py-down-statement)
     (should (eq (char-after) ?d))))
 
@@ -196,7 +196,7 @@ impo")))
       "def gen_segments(x, y):
     for i in range(0, len(x)-1):
         yield (x[i], x[i+1]), (y[i], y[i+1])"
-    (back-to-indentation) 
+    (back-to-indentation)
     (py-forward-statement)
     (should (eobp))))
 
@@ -205,16 +205,48 @@ impo")))
       "print(\"don't\")"
     (py-execute-statement)))
 
-(ert-deftest support-PEP-553-built-in-breakpoint-42-test ()
+(ert-deftest py-support-PEP-553-built-in-breakpoint-42-test ()
   (py-test-with-temp-buffer
   "# point is at the end, now hit return
 # point ends up here when it should line up under the 'b'
 def foo(x):
     if x == 7:
         breakpoint()"
-  (should (eq 8 (py-compute-indentation))))) 
+  (should (eq 8 (py-compute-indentation)))))
+
+;; (ert-deftest py-pdbtrack-input-prompt-45-test ()
+;;   (py-test-with-temp-buffer
+;;       "def exercise():
+;;   import pdb\; pdb.set_trace()
+;;   x = \"hello\"
+;;   y = \"darkness\"
+;;   print(x)
+
+;; exercise()"
+;;     (py-execute-buffer)
+;;     (set-buffer py-buffer-name)
+;;     (switch-to-buffer (current-buffer))
+;;     (message "prompt-45: %s" (buffer-name (current-buffer)))
+;;     (message "Nach Prompt: %s" (buffer-substring-no-properties (line-beginning-position) (point)))
+;;     (sit-for 1) 
+;;     (should (looking-back py-pdbtrack-input-prompt))))
+
+;; (ert-deftest py-pdbtrack-is-tracking-45-test ()
+;;   (py-test-with-temp-buffer
+;;       "def exercise():
+;;   import pdb\; pdb.set_trace()
+;;   x = \"hello\"
+;;   y = \"darkness\"
+;;   print(x)
+
+;; exercise()"
+;;     (py-execute-buffer)
+;;     (switch-to-buffer py-buffer-name)
+;;     (should py-pdbtrack-is-tracking-p)
+;;     ))
 
 
+;; py-pdbtrack-is-tracking-p
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here
