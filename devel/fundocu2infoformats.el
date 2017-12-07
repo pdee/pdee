@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t; -*- 
+;;; -*- lexical-binding: t; -*-
 
 (defcustom py-devel-directory-out ""
   "Output directory when developing Python-mode. "
@@ -50,7 +50,7 @@
 (defun variable-docu (&optional buffer directory-in directory-out)
   "Writes all variable in BUFFER alongside with their documentation into directory \"doc\" as \*.org and \*rst file ."
   (interactive)
-  (variables-prepare "docu"))
+  (variables-prepare "docu" directory-in directory-out))
 
 (defun variables-base-docu (oldbuf orgname reSTname directory-in directory-out)
   (save-restriction
@@ -110,7 +110,7 @@
         (write-file (concat directory-out "variables-" reSTname))
         (find-file (concat directory-out "variables-" reSTname))))))
 
-(defun finds (&optional buffer directory-in directory-out)
+(defun finds (buffer directory-in directory-out)
   "Writes all commands in BUFFER alongside with their documentation into directory \"doc\" as \*.org and \*rst file ."
   (interactive)
   (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
@@ -171,15 +171,13 @@
         (write-file (concat directory-out "commands-" reSTname))
         (find-file (concat directory-out "commands-" reSTname))))))
 
-(defun write-defcustom-docus (&optional buffer directory-in directory-out)
+(defun write-defcustom-docus (buffer directory-in directory-out)
   "Writes all customizable variables w/ documentation into directory \"doc\" as \*.org and \*rst file ."
   (interactive)
   (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
          ;; (file (buffer-file-name))
          (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
-         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
-         (directory-in (or directory-in (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory))
-         (directory-out (or directory-out (expand-file-name finds-directory-out))))
+         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst")))
     (defcustom-docu-base oldbuf orgname reSTname directory-in directory-out)))
 
 (defun defcustom-docu-base (oldbuf orgname reSTname directory-in directory-out)
@@ -324,7 +322,7 @@
       (while (and (not (eobp))(re-search-forward "^(defun [[:alpha:]]+" nil t 1)) ;
 	(unless (or (save-match-data (commandp (setq name (symbol-at-point))))
 		    (save-excursion
-		      (goto-char (point-min)) 
+		      (goto-char (point-min))
 		      (re-search-forward (concat "\\_<\(" (prin1-to-string name) "\\_>") nil t 1)))
 	  (add-to-list 'functionslist name))
 	(forward-line 1))
@@ -339,13 +337,15 @@
       (sit-for 0.01))))
 
 (defun py-all-docu ()
-  "Write documentations commands and user-defined variables "
+  "Write documentations commands and user-defined variables."
   (interactive)
-  (find-file "~/arbeit/emacs/python-modes/python-mode/python-mode.el")
-  (eval-buffer)
-  (sit-for 0.1 t) 
-  (finds)
-  (sit-for 0.1 t)
-  (write-defcustom-docus))
-  
-  
+  (let (buffer
+	(directory-in "~/arbeit/emacs/python-modes/python-mode")
+	(directory-out "~/arbeit/emacs/python-modes/components-python-mode/doc/"))
+    (find-file "~/arbeit/emacs/python-modes/python-mode/python-mode.el")
+    (setq buffer (current-buffer))
+    (eval-buffer)
+    (sit-for 0.1 t)
+    (finds buffer directory-in directory-out)
+    (sit-for 0.1 t)
+    (write-defcustom-docus buffer directory-in directory-out)))

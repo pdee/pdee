@@ -651,7 +651,8 @@ Receives a ‘buffer-name’ as argument"
 	(if (string-match "^i" (process-name proc))
 	    (py-ipython-shell-mode)
 	  (py-python-shell-mode)))
-      (setq py-output-buffer (current-buffer))
+      (unless  py-force-default-output-buffer-p
+	  (setq py-output-buffer (current-buffer)))
       (sit-for 0.1 t)
       (goto-char (point-max))
       ;; otherwise comint might initialize it with point-min

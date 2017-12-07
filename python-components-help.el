@@ -1171,7 +1171,7 @@ Keegan Carruthers-Smith"
     (flymake-mode)))
 
 ;; ;
-(defun variables-prepare (kind)
+(defun variables-prepare (kind &optional buffer directory-out)
   "Used by variable-finds, variable-states. "
   (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
          ;; (file (buffer-file-name))
