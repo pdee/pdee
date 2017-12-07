@@ -1,6 +1,5 @@
-Syntactic Close [![Build Status](https://travis-ci.org/pdee/pdee.svg?branch=master)](https://travis-ci.org/pdee/pdee)
+PDEE [![Build Status](https://travis-ci.org/pdee/pdee.svg?branch=master)](https://travis-ci.org/pdee/pdee)
 ===
-
 
 # Initialize
   Put the following into your initialization file:
@@ -52,7 +51,6 @@ Syntactic Close [![Build Status](https://travis-ci.org/pdee/pdee.svg?branch=mast
   (py-shell &optional ARGPROMPT DEDICATED SHELL BUFFER-NAME FAST-PROCESS
 EXCEPTION-BUFFER)
 
-
   if DEDICATED is set to `t', shell will get an unique name.
 
   Install a local shell by evaluating
@@ -66,7 +64,7 @@ EXCEPTION-BUFFER)
     M-x py-shell RET ==> "*Python*"
     M-x python RET ==> "*Python*"
     M-x ipython RET ==> "*IPython*"
-    M-x python3 RET ==> "*Python3*" 
+    M-x python3 RET ==> "*Python3*"
 
     When Path/To/Executable is given
     C-u python RET ==> "*PTE Python*"
@@ -89,7 +87,7 @@ EXCEPTION-BUFFER)
 - non-interactive Python (`py-fast-process-p')
   The latter, while design for large output, seems more reliable - see  also PROBLEMS.org.
 
-Both processes might run in 
+Both processes might run in
 - session, i.e. start from possible previous state (DEFAULT)
 - dedicated, (`py-dedicated-process-p') run in separate process
 
@@ -105,15 +103,15 @@ There is also
 
   `py-execute-...'-commands arrive in buffer created by
   `py-shell'. It's name is composed WRT to Python
-  version used, it's path etc. 
+  version used, it's path etc.
 
   Result of commands ending  "-fast"
   arrives in `py-fast-output-buffer'
-  
+
 # Window management
   Variables in question:
 
-  ** py-keep-windows-configuration 
+  ** py-keep-windows-configuration
 
   Default is nil.
   When non-nil, it takes precedence over
@@ -164,16 +162,15 @@ There is also
 
   Extern tools like jedi-server/mode should work too.
 
-
 # Moving
 
   Beside common moves like `defun', `statement', block
   called via py-end-of-..., py-beginning-...
   specific Python-mode edits are delivered:
 
-  `py-expression' and `py-partial-expression'. 
+  `py-expression' and `py-partial-expression'.
 
-  Statement below is considered composed of two `py-expression' 
+  Statement below is considered composed of two `py-expression'
 
   a = ['spam', 'eggs', 100, 1234]
   ||  |_________________________|
@@ -190,10 +187,9 @@ There is also
   all levels encountered, i.e. at opening `[' `py-expression' would return ['spam', 'eggs', 100, 1234], while one char behind at `''
   it yields `'spam','
 
-- py-sexp-function, 
+- py-sexp-function,
   When set, it's value is called instead of `forward-sexp', `backward-sexp
   Choices are py-partial-expression, py-expression, default nil
-
 
 # Filling
   Customize boolean `py-set-fill-column-p'
@@ -255,4 +251,3 @@ There is also
   (note that I not only have to add the python command, but also fully
   qualify the script file, since otherwise it complains it can't find
   the file).
-
