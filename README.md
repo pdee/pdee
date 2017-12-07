@@ -1,3 +1,7 @@
+Syntactic Close [![Build Status](https://travis-ci.org/pdee/pdee.svg?branch=master)](https://travis-ci.org/pdee/pdee)
+===
+
+
 # Initialize
   Put the following into your initialization file:
 
