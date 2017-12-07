@@ -1073,7 +1073,7 @@
          (insert " (point-min) (point-max)"))
 	;; (t (insert " beg end"))
 	)
-  (insert " nil fast proc split))\n"))
+  (insert " nil fast proc wholebuf split)))\n"))
 
 (defun write--unified-extended-execute-forms-docu (ele elt pyo)
   (insert (concat "
@@ -1131,13 +1131,16 @@
    (t (insert "  (interactive)\n"))))
 
 (defun write--unified-extended-execute-buffer-form ()
-  (insert "  (let ((py-master-file (or py-master-file (py-fetch-py-master-file))))
+  (insert "  (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
+        (wholebuf t))
     (when py-master-file
-      (let* ((filename (expand-file-name py-master-file))
-	     (buffer (or (get-file-buffer filename)
-			 (find-file-noselect filename)))
-             (wholebuf t))
-	(set-buffer buffer))))\n"))
+      (setq filename (expand-file-name py-master-file)
+	    buffer (or (get-file-buffer filename)
+		       (find-file-noselect filename)))
+      (set-buffer buffer))\n"))
+
+(defun write--unified-extended-execute-let-form ()
+  (insert "  (let (wholebuf)\n"))
 
 (defun write--unified-extended-execute-shells (elt)
   (if (string= "" elt)
@@ -1158,9 +1161,11 @@
 	(write--unified-extended-execute-forms-arglist ele pyo elt)
 	(write--unified-extended-execute-forms-docu ele elt pyo)
 	(write--unified-extended-execute-forms-interactive-spec ele)
-	(when (string= "buffer" ele)
-	  (write--unified-extended-execute-buffer-form))
-	(insert (concat "  (py--execute-prepare '"ele))
+	(if (string= "buffer" ele)
+	  (write--unified-extended-execute-buffer-form)
+	  (write--unified-extended-execute-let-form)
+	  )
+	(insert (concat "    (py--execute-prepare '"ele))
 	(write--unified-extended-execute-shells elt)
 	(write--extended-execute-switches ele pyo)))))
 
