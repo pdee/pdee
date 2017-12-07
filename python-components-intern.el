@@ -1203,9 +1203,8 @@ Must find start first "
   "When above any beginning of FORM, search downward. "
   (let* ((orig (point))
          (erg orig)
-         (last orig)
          pps)
-    (while (and (setq last (point)) (not (eobp)) (re-search-forward regexp nil t 1)(setq erg (match-beginning 0)) (setq pps (parse-partial-sexp (point-min) (point)))
+    (while (and (not (eobp)) (re-search-forward regexp nil t 1)(setq erg (match-beginning 0)) (setq pps (parse-partial-sexp (point-min) (point)))
                 (or (nth 8 pps) (nth 1 pps))))
     (cond ((not (or (nth 8 pps) (nth 1 pps) (or (looking-at comment-start))))
            (when (ignore-errors (< orig erg))
