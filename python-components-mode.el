@@ -2025,6 +2025,16 @@ Default is nil"
 Output buffer is created dynamically according to Python version and kind of process-handling")
 (make-variable-buffer-local 'py-output-buffer)
 
+(defcustom py-force-default-output-buffer-p nil
+  "Enforce sending output to the default output buffer-name.
+
+Set by defvar ‘py-output-buffer’
+Bug #31 - wrong fontification caused by string-delimiters in output"
+
+  :type 'boolean
+  :tag "py-force-default-output-buffer-p"
+  :group 'python-mode)
+
 (defvar py-ffap-string-code
   "__FFAP_get_module_path('''%s''')\n"
   "Python code used to get a string with the path of a module.")
