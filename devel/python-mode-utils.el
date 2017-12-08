@@ -1132,7 +1132,8 @@
 
 (defun write--unified-extended-execute-buffer-form ()
   (insert "  (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
-        (wholebuf t))
+        (wholebuf t)
+        filename)
     (when py-master-file
       (setq filename (expand-file-name py-master-file)
 	    buffer (or (get-file-buffer filename)
