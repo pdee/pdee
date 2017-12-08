@@ -172,7 +172,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p erg)
-    (cond (fast-complete (py--fast-complete-base shell pos word imports))
+    (cond (fast-complete (py--fast-complete-base shell word imports))
 	  ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
