@@ -44,7 +44,7 @@ impo")))
       "obj"
     (let ((py-return-result-p t)
 	  py-result py-store-result-p)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (py-fast-complete)
       (should (eq (char-before) 40)))))
 
