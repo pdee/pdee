@@ -294,7 +294,7 @@ See lp:1066489 "
     (forward-char 1))
   (skip-chars-forward "\'\""))
 
-(defun py--fill-fix-end (thisend orig docstring delimiters-style)
+(defun py--fill-fix-end (thisend orig delimiters-style)
   ;; Add the number of newlines indicated by the selected style
   ;; at the end.
   ;; (widen)
@@ -343,7 +343,7 @@ See lp:1066489 "
       (forward-line 1)
       (beginning-of-line)
       (unless (empty-line-p) (newline)))
-    (py--fill-fix-end thisend orig docstring delimiters-style)))
+    (py--fill-fix-end thisend orig delimiters-style)))
 
 (defun py--fill-docstring-last-line (thisend beg end multi-line-p)
   (widen)
