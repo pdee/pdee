@@ -2190,11 +2190,8 @@
 (ert-deftest py-ert-pyflakespep8-flymake-mode-functionp-test ()
   (should (functionp 'pyflakespep8-flymake-mode)))
 
-(ert-deftest py-ert-variables-state-functionp-test ()
-  (should (functionp 'variables-state)))
-
-(ert-deftest py-ert-variables-base-state-functionp-test ()
-  (should (functionp 'variables-base-state)))
+(ert-deftest py-display-state-of-variables-functionp-test ()
+  (should (functionp 'py-display-state-of-variables)))
 
 (ert-deftest py-ert-smart-operator-check-functionp-test ()
   (should (functionp 'py-smart-operator-check)))

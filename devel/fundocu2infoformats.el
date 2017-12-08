@@ -117,8 +117,7 @@
          ;; (file (buffer-file-name))
          (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
          (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
-         (directory-in (or directory-in (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory))
-         (directory-out (or directory-out (expand-file-name finds-directory-out))))
+         (directory-in (or directory-in (and (not (string= "" py-devel-directory-in)) py-devel-directory-in) default-directory)))
     (finds-base oldbuf orgname reSTname directory-in directory-out)))
 
 (defun finds-base (oldbuf orgname reSTname directory-in directory-out)
@@ -228,19 +227,17 @@
         (find-file (concat directory-out "variables-" reSTname))
       ))))
 
-(defun py-variables-unused (&optional buffer directory-in directory-out)
+(defun py-variables-unused (directory-in directory-out)
   "Report unused variables. "
   (interactive)
-  (variables-prepare "unused"))
+  (variables-prepare "unused" directory-in directory-out))
 
-(defun variables-prepare (kind)
+(defun variables-prepare (kind directory-in directory-out)
   "Used by variable-finds, variable-states. "
   (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
          ;; (file (buffer-file-name))
          (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
          (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
-         (directory-in default-directory)
-         (directory-out (or directory-out (expand-file-name finds-directory-out)))
 	 (command (concat "variables-base-" kind)))
     (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
 
@@ -301,14 +298,13 @@
   (interactive)
   (functions-prepare "unused"))
 
-(defun functions-prepare (kind)
+(defun functions-prepare (kind directory-in directory-out)
   "Used by variable-finds, variable-states. "
   (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
          ;; (file (buffer-file-name))
          (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
          (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
-         (directory-in default-directory)
-         (directory-out (or directory-out (expand-file-name finds-directory-out)))
+         ;; (directory-in default-directory)
 	 (command (concat "functions-base-" kind)))
     (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
 

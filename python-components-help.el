@@ -1171,36 +1171,24 @@ Keegan Carruthers-Smith"
     (flymake-mode)))
 
 ;; ;
-(defun variables-prepare (kind &optional buffer directory-out)
-  "Used by variable-finds, variable-states. "
-  (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
-         ;; (file (buffer-file-name))
-         (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
-         (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
-         (directory-in default-directory)
-         (directory-out (or directory-out (expand-file-name finds-directory-out)))
-	 (command (concat "variables-base-" kind)))
-    (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
+;; (defun variables-prepare (kind buffer directory-out &optional directory-in)
+;;   "Used by variable-finds, variable-states. "
+;;   (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
+;;          ;; (file (buffer-file-name))
+;;          (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
+;;          (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
+;;          (directory-in (or directory-in default-directory))
+;; 	 (command (concat "variables-base-" kind)))
+;;     (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
 
-(defun variables-state (&optional buffer directory-in directory-out)
-  "Diplays state of ‘python-mode’ variables in an ‘org-mode’ BUFFER.
+(defun py-display-state-of-variables ()
+  "Read the state of ‘python-mode’ variables.
 
-Optional DIRECTORY-IN DIRECTORY-OUT
-Reads variables from python-mode.el as current buffer.
-
-Variables which would produce a large output are left out:
-- syntax-tables
-- ‘python-mode-map’
-
-Maybe call \\[describe-variable] RET to query its value."
+Display the result in an org-mode buffer.
+Assumes vars are defined in current source buffer"
   (interactive)
-  (variables-prepare "state"))
-
-(defun variables-base-state (exception-buffer orgname reSTname directory-in directory-out)
   (save-restriction
-    (let ((suffix (file-name-nondirectory (py--buffer-filename-remote-maybe)))
-          variableslist)
-      ;; (widen)
+    (let (variableslist)
       (goto-char (point-min))
       ;; (eval-buffer)
       (while (and (not (eobp))(re-search-forward "^(defvar [[:alpha:]]\\|^(defcustom [[:alpha:]]\\|^(defconst [[:alpha:]]" nil t 1))
