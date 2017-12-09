@@ -2026,7 +2026,7 @@ Output buffer is created dynamically according to Python version and kind of pro
 (make-variable-buffer-local 'py-output-buffer)
 
 (defcustom py-force-default-output-buffer-p nil
-  "Enforce sending output to the default output buffer-name.
+  "Enforce sending output to the default output ‘buffer-name’.
 
 Set by defvar ‘py-output-buffer’
 Bug #31 - wrong fontification caused by string-delimiters in output"
