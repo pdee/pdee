@@ -67,7 +67,7 @@ completions on the current context."
       (erase-buffer))
     (py--fast--do-completion-at-point proc imports word code py-buffer-name)))
 
-(defun py-fast-complete (&optional shell debug beg end word)
+(defun py-fast-complete (&optional shell beg end word)
   "Complete word before point, if any.
 
 Use `py-fast-process' "
