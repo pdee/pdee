@@ -28,36 +28,35 @@
 
 ;;  Keymap
 
-(defun py--beginning-of-form-intern (regexp &optional iact indent orig lc)
-  "Go to beginning of FORM.
+;; (defun py--beginning-of-form-intern (regexp &optional indent orig lc)
+;;   "Go to beginning of FORM.
 
-With INDENT, go to beginning one level above.
-Whit IACT, print result in message buffer.
+;; With INDENT, go to beginning one level above.
 
-Returns beginning of FORM if successful, nil otherwise"
-  (interactive "P")
-  (let (erg)
-    (unless (bobp)
-      (let* ((orig (or orig (point)))
-             (indent (or indent (progn
-                                  (back-to-indentation)
-                                  (or (py--beginning-of-statement-p)
-                                      (ar-backward-statement))
-                                  (current-indentation)))))
-        (setq erg (cond ((and (< (point) orig) (looking-at (symbol-value regexp)))
-                         (point))
-                        ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
-                         (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-                           (ar-backward-statement)
-                           (unless (looking-at (symbol-value regexp))
-                             (cdr (py--go-to-keyword (symbol-value regexp) (current-indentation))))))
-                        ((numberp indent)
-			 (cdr (py--go-to-keyword (symbol-value regexp) indent)))
-                        (t (ignore-errors
-                             (cdr (py--go-to-keyword (symbol-value regexp)
-                                                    (- (progn (if (py--beginning-of-statement-p) (current-indentation) (save-excursion (ar-backward-statement) (current-indentation)))) py-indent-offset)))))))
-        (when lc (beginning-of-line) (setq erg (point)))))
-    erg))
+;; Returns beginning of FORM if successful, nil otherwise"
+;;   (interactive "P")
+;;   (let (erg)
+;;     (unless (bobp)
+;;       (let* ((orig (or orig (point)))
+;;              (indent (or indent (progn
+;;                                   (back-to-indentation)
+;;                                   (or (py--beginning-of-statement-p)
+;;                                       (ar-backward-statement))
+;;                                   (current-indentation)))))
+;;         (setq erg (cond ((and (< (point) orig) (looking-at (symbol-value regexp)))
+;;                          (point))
+;;                         ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
+;;                          (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+;;                            (ar-backward-statement)
+;;                            (unless (looking-at (symbol-value regexp))
+;;                              (cdr (py--go-to-keyword (symbol-value regexp) (current-indentation))))))
+;;                         ((numberp indent)
+;; 			 (cdr (py--go-to-keyword (symbol-value regexp) indent)))
+;;                         (t (ignore-errors
+;;                              (cdr (py--go-to-keyword (symbol-value regexp)
+;;                                                     (- (progn (if (py--beginning-of-statement-p) (current-indentation) (save-excursion (ar-backward-statement) (current-indentation)))) py-indent-offset)))))))
+;;         (when lc (beginning-of-line) (setq erg (point)))))
+;;     erg))
 
 (defun py--indent-prepare (inter-re)
   (progn (back-to-indentation)
@@ -82,7 +81,7 @@ Returns beginning of FORM if successful, nil otherwise"
           (setq erg (point))
           ;; (when (and ar-verbose-p iact) (message "%s" erg))
           erg)
-      (py--beginning-of-form-intern final-re iact indent orig lc))))
+      (py--beginning-of-form-intern final-re indent orig lc))))
 
 (defun py--end-of-prepare (indent final-re &optional inter-re iact lc)
   (let ((orig (point))
@@ -106,7 +105,7 @@ Returns beginning of FORM if successful, nil otherwise"
           (setq erg (point))
           ;; (when (and ar-verbose-p iact) (message "%s" erg))
           erg)
-      (py--beginning-of-form-intern final-re iact indent orig lc))))
+      (py--beginning-of-form-intern final-re indent orig lc))))
 
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
