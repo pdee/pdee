@@ -1771,7 +1771,7 @@ If BOL is t, mark from beginning-of-line"
 	(cons beg end)
       nil)))
 
-(defun py--mark-base-bol (form &optional py-mark-decorators)
+(defun py--mark-base-bol (form &optional mark-decorators)
   (let* ((begform (intern-soft (concat "py-backward-" form "-bol")))
          (endform (intern-soft (concat "py-forward-" form "-bol")))
          (begcheckform (intern-soft (concat "py--beginning-of-" form "-bol-p")))
@@ -1780,7 +1780,7 @@ If BOL is t, mark from beginning-of-line"
                   (setq beg (funcall begcheckform))
                   beg
                 (funcall begform)))
-    (when py-mark-decorators
+    (when mark-decorators
       (save-excursion
         (when (setq erg (py-backward-decorator))
           (setq beg erg))))
