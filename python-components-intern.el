@@ -41,42 +41,6 @@
 		    (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
 		  py-indent-offset)))))
 
-;; (defun py--beginning-of-prepare (indent final-re &optional inter-re iact lc)
-;;   (let ((orig (point))
-;;         (indent (or indent (py--indent-prepare inter-re)))
-;;         erg)
-;;     (if (and (< (point) orig) (looking-at (symbol-value final-re)))
-;;         (progn
-;;           (and lc (beginning-of-line))
-;;           (setq erg (point))
-;;           ;; (when (and ar-verbose-p iact) (message "%s" erg))
-;;           erg)
-;;       (py--beginning-of-form-intern final-re indent orig lc))))
-
-;; (defun py--end-of-prepare (indent final-re &optional inter-re iact lc)
-;;   (let ((orig (point))
-;;         (indent
-;;          (or indent
-;;              (progn (back-to-indentation)
-;;                     (or (py--beginning-of-statement-p)
-;;                         (ar-backward-statement))
-;;                     (cond ((eq 0 (current-indentation))
-;;                            (current-indentation))
-;;                           ((looking-at (symbol-value inter-re))
-;;                            (current-indentation))
-;;                           (t
-;;                            (if (<= py-indent-offset (current-indentation))
-;;                                (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
-;;                              py-indent-offset))))))
-;;         erg)
-;;     (if (and (< orig (point)) (looking-at (symbol-value final-re)))
-;;         (progn
-;;           (and lc (beginning-of-line))
-;;           (setq erg (point))
-;;           ;; (when (and ar-verbose-p iact) (message "%s" erg))
-;;           erg)
-;;       (py--beginning-of-form-intern final-re indent orig lc))))
-
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
 
@@ -1316,10 +1280,6 @@ This function does not modify point or mark."
                (t (error "Unknown buffer position requested: %s" position))) (point))))
     erg))
 
-(defun py-install-search-local ()
-  (interactive)
-  (let ((erg (split-string (shell-command-to-string (concat "find " default-directory " -maxdepth 9 -type f -name \"*python\"")))))))
-
 (defun py-install-local-shells (&optional local)
   "Builds Python-shell commands from executable found in LOCAL.
 
@@ -1383,9 +1343,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
       (error (concat "py-end-of-string: don't see end-of-string at " (buffer-name (current-buffer)) "at pos " (point))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
-
-;;  (goto-char (match-end 0))
-;;  (search-forward (match-string-no-properties 0))))
 
 (defun py--until-found (search-string liste)
   "Search liste for search-string until found. "

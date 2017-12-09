@@ -1998,9 +1998,6 @@
 (ert-deftest py-ert--point-functionp-test ()
   (should (functionp 'py--point)))
 
-(ert-deftest py-ert-install-search-local-functionp-test ()
-  (should (functionp 'py-install-search-local)))
-
 (ert-deftest py-ert-install-local-shells-functionp-test ()
   (should (functionp 'py-install-local-shells)))
 
