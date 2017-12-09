@@ -1092,8 +1092,8 @@ Must find start first "
 	     (indent (or indent
 			 ;; avoid costly moves by statement
 			 (when (and (not (nth 8 pps))
-				    (or (looking-back py-decorator-re)
-					(looking-back (concat (symbol-value regexp) ".+"))))
+				    (or (looking-back py-decorator-re (line-beginning-position))
+					(looking-back (concat (symbol-value regexp) ".+") (line-beginning-position))))
 			   (current-indentation))
 			 (if (py--beginning-of-statement-p)
 			     (current-indentation)
@@ -1103,12 +1103,12 @@ Must find start first "
 	     (this
 	      (cond ((and (looking-at thisregexp) (not (or (nth 1 pps) (nth 8 pps))))
 		     (point))
-		    ((and (not (nth 8 pps))(looking-back py-decorator-re))
+		    ((and (not (nth 8 pps))(looking-back py-decorator-re (line-beginning-position)))
 		     (and (re-search-forward thisregexp nil t 1)
 			  (match-beginning 0)))
 		    ;; when building the index, avoid costly moves by
 		    ;; statement
-		    ((and (not (nth 8 pps))(looking-back (symbol-value regexp)))
+		    ((and (not (nth 8 pps))(looking-back (symbol-value regexp) (line-beginning-position)))
 		     (match-beginning 0))
 		    (t (py--go-to-keyword thisregexp indent))))
 	     ;; (done done)
