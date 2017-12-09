@@ -114,7 +114,6 @@ Interal used. Takes INPUT COMPLETION"
   "Do completion at point for PROCESS.
 
 Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
-  ;; (py--send-string-no-output py-shell-completion-setup-code process)
   (when imports
     (py--send-string-no-output imports process))
   ;; (py--delay-process-dependent process)

@@ -1364,7 +1364,7 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
       (sit-for py-ipython-send-delay t)
     (sit-for py-python-send-delay t)))
 
-(defun py--send-string-no-output (strg &optional process msg)
+(defun py--send-string-no-output (strg &optional process)
   "Send STRING to PROCESS and inhibit output display.
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
