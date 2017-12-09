@@ -1383,7 +1383,7 @@ the output."
 	    (py--string-strip
 	     (format "[ \n]*%s[ \n]*" py-fast-filter-re)))))
 
-(defun py--send-string-return-output (strg &optional process msg)
+(defun py--send-string-return-output (strg &optional process)
   "Send STRING to PROCESS and return output.
 
 When MSG is non-nil messages the first line of STRING.  Return
@@ -1483,7 +1483,7 @@ Used by variable `which-func-functions' "
     (let ((erg (symbol-value regexp)))
       (substring erg (1+ (string-match "\*" erg)))))
 
-(defun py--beginning-of-form-intern (final-re &optional inter-re iact indent orig lc decorator)
+(defun py--beginning-of-form-intern (final-re &optional inter-re iact indent orig lc)
   "Go to beginning of FORM.
 
 With INDENT, go to beginning one level above.
@@ -1557,7 +1557,7 @@ Returns beginning of FORM if successful, nil otherwise"
           (setq erg (point))
           (when (and py-verbose-p iact) (message "%s" erg))
           erg)
-      (py--beginning-of-form-intern final-re inter-re iact indent orig lc decorator))))
+      (py--beginning-of-form-intern final-re inter-re iact indent orig lc))))
 
 (defun py--fetch-first-python-buffer ()
   "Returns first (I)Python-buffer found in `buffer-list'"
