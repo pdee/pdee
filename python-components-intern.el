@@ -28,36 +28,6 @@
 
 ;;  Keymap
 
-;; (defun py--beginning-of-form-intern (regexp &optional indent orig lc)
-;;   "Go to beginning of FORM.
-
-;; With INDENT, go to beginning one level above.
-
-;; Returns beginning of FORM if successful, nil otherwise"
-;;   (interactive "P")
-;;   (let (erg)
-;;     (unless (bobp)
-;;       (let* ((orig (or orig (point)))
-;;              (indent (or indent (progn
-;;                                   (back-to-indentation)
-;;                                   (or (py--beginning-of-statement-p)
-;;                                       (ar-backward-statement))
-;;                                   (current-indentation)))))
-;;         (setq erg (cond ((and (< (point) orig) (looking-at (symbol-value regexp)))
-;;                          (point))
-;;                         ((and (eq 0 (current-column)) (numberp indent) (< 0 indent))
-;;                          (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-;;                            (ar-backward-statement)
-;;                            (unless (looking-at (symbol-value regexp))
-;;                              (cdr (py--go-to-keyword (symbol-value regexp) (current-indentation))))))
-;;                         ((numberp indent)
-;; 			 (cdr (py--go-to-keyword (symbol-value regexp) indent)))
-;;                         (t (ignore-errors
-;;                              (cdr (py--go-to-keyword (symbol-value regexp)
-;;                                                     (- (progn (if (py--beginning-of-statement-p) (current-indentation) (save-excursion (ar-backward-statement) (current-indentation)))) py-indent-offset)))))))
-;;         (when lc (beginning-of-line) (setq erg (point)))))
-;;     erg))
-
 (defun py--indent-prepare (inter-re)
   (progn (back-to-indentation)
 	 (or (py--beginning-of-statement-p)
@@ -71,41 +41,41 @@
 		    (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
 		  py-indent-offset)))))
 
-(defun py--beginning-of-prepare (indent final-re &optional inter-re iact lc)
-  (let ((orig (point))
-        (indent (or indent (py--indent-prepare inter-re)))
-        erg)
-    (if (and (< (point) orig) (looking-at (symbol-value final-re)))
-        (progn
-          (and lc (beginning-of-line))
-          (setq erg (point))
-          ;; (when (and ar-verbose-p iact) (message "%s" erg))
-          erg)
-      (py--beginning-of-form-intern final-re indent orig lc))))
+;; (defun py--beginning-of-prepare (indent final-re &optional inter-re iact lc)
+;;   (let ((orig (point))
+;;         (indent (or indent (py--indent-prepare inter-re)))
+;;         erg)
+;;     (if (and (< (point) orig) (looking-at (symbol-value final-re)))
+;;         (progn
+;;           (and lc (beginning-of-line))
+;;           (setq erg (point))
+;;           ;; (when (and ar-verbose-p iact) (message "%s" erg))
+;;           erg)
+;;       (py--beginning-of-form-intern final-re indent orig lc))))
 
-(defun py--end-of-prepare (indent final-re &optional inter-re iact lc)
-  (let ((orig (point))
-        (indent
-         (or indent
-             (progn (back-to-indentation)
-                    (or (py--beginning-of-statement-p)
-                        (ar-backward-statement))
-                    (cond ((eq 0 (current-indentation))
-                           (current-indentation))
-                          ((looking-at (symbol-value inter-re))
-                           (current-indentation))
-                          (t
-                           (if (<= py-indent-offset (current-indentation))
-                               (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
-                             py-indent-offset))))))
-        erg)
-    (if (and (< orig (point)) (looking-at (symbol-value final-re)))
-        (progn
-          (and lc (beginning-of-line))
-          (setq erg (point))
-          ;; (when (and ar-verbose-p iact) (message "%s" erg))
-          erg)
-      (py--beginning-of-form-intern final-re indent orig lc))))
+;; (defun py--end-of-prepare (indent final-re &optional inter-re iact lc)
+;;   (let ((orig (point))
+;;         (indent
+;;          (or indent
+;;              (progn (back-to-indentation)
+;;                     (or (py--beginning-of-statement-p)
+;;                         (ar-backward-statement))
+;;                     (cond ((eq 0 (current-indentation))
+;;                            (current-indentation))
+;;                           ((looking-at (symbol-value inter-re))
+;;                            (current-indentation))
+;;                           (t
+;;                            (if (<= py-indent-offset (current-indentation))
+;;                                (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
+;;                              py-indent-offset))))))
+;;         erg)
+;;     (if (and (< orig (point)) (looking-at (symbol-value final-re)))
+;;         (progn
+;;           (and lc (beginning-of-line))
+;;           (setq erg (point))
+;;           ;; (when (and ar-verbose-p iact) (message "%s" erg))
+;;           erg)
+;;       (py--beginning-of-form-intern final-re indent orig lc))))
 
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
