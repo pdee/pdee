@@ -1536,7 +1536,7 @@ Returns beginning of FORM if successful, nil otherwise"
 		(if (save-excursion
 		      (< (py-forward-statement) orig))
 		    (progn (goto-char orig)
-			   (back-to-indentation) 
+			   (back-to-indentation)
 			   (current-indentation))
 		  (cond ((looking-back "^[ \t]*" (line-beginning-position))
 			 (current-indentation))
@@ -1713,12 +1713,14 @@ Returns position if successful, nil otherwise"
   (interactive "P")
   (let* ((orig (point))
          erg
-         (indent (if
-                     (py--beginning-of-statement-p)
-                     (current-indentation)
-                   (progn
-                     (py-backward-statement)
-                     (current-indentation))))
+         (indent (or
+		  indent
+		  (if
+		      (py--beginning-of-statement-p)
+		      (current-indentation)
+		    (progn
+		      (py-backward-statement)
+		      (current-indentation)))))
          last)
     (while (and (setq last (point)) (py-forward-statement) (py-forward-statement) (py-backward-statement) (eq (current-indentation) indent)))
     (if (< indent (current-indentation))
