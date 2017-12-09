@@ -1272,7 +1272,7 @@ Put point inside the parentheses of a multiline import and hit
 Optional argument LIM indicates the beginning of the containing form,
 i.e. the limit on how far back to scan."
   (let* ((lim (or lim (point-min)))
-         (state (parse-partial-sexp (point-min) (point))))
+         (state (parse-partial-sexp lim (point))))
     (cond
      ((nth 3 state) 'string)
      ((nth 4 state) 'comment))))
