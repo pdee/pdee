@@ -144,7 +144,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 
 (defun py--complete-prepare (&optional shell beg end word fast-complete)
   (let* ((exception-buffer (current-buffer))
-         (pos (copy-marker (point)))
+         ;; (pos (copy-marker (point)))
 	 (pps (parse-partial-sexp (or
 				   (ignore-errors comint-last-prompt)
 				   (line-beginning-position)) (point)))
