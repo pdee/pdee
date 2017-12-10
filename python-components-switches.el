@@ -93,31 +93,6 @@ Returns value of `py-autopair-mode'."
   (interactive)
   (setq py-autopair-mode (autopair-mode 0)))
 
-;; Smart operator
-;; py-smart-operator-mode-p forms
-(defun toggle-py-smart-operator-mode-p ()
-  "If `py-smart-operator-mode-p' should be on or off.
-
-  Returns value of `py-smart-operator-mode-p' switched to."
-  (interactive)
-  (and (py-smart-operator-check)
-       (setq py-smart-operator-mode-p (smart-operator-mode (if smart-operator-mode 0 1)))))
-
-(defun py-smart-operator-mode-p-on ()
-  "Make sure, py-smart-operator-mode-p' is on.
-
-Returns value of `py-smart-operator-mode-p'."
-  (interactive)
-  (and (py-smart-operator-check)
-       (setq py-smart-operator-mode-p (smart-operator-mode 1))))
-
-(defun py-smart-operator-mode-p-off ()
-  "Make sure, py-smart-operator-mode-p' is off.
-
-Returns value of `py-smart-operator-mode-p'."
-  (interactive)
-  (setq py-smart-operator-mode-p (smart-operator-mode 0)))
-
 ;;  py-switch-buffers-on-execute-p forms
 (defun toggle-py-switch-buffers-on-execute-p (&optional arg)
   "Toggle `py-switch-buffers-on-execute-p' according to ARG.

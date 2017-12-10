@@ -487,9 +487,6 @@
 (ert-deftest py-ert-smart-indentation-test ()
   (should (boundp 'py-smart-indentation)))
 
-(ert-deftest py-ert-smart-operator-mode-p-test ()
-  (should (boundp 'py-smart-operator-mode-p)))
-
 (ert-deftest py-ert-split-window-on-execute-test ()
   (should (boundp 'py-split-window-on-execute)))
 

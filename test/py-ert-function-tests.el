@@ -1569,15 +1569,6 @@
 (ert-deftest py-ert-autopair-mode-off-functionp-test ()
   (should (functionp 'py-autopair-mode-off)))
 
-(ert-deftest py-ert-toggle-py-smart-operator-mode-p-functionp-test ()
-  (should (functionp 'toggle-py-smart-operator-mode-p)))
-
-(ert-deftest py-ert-smart-operator-mode-p-on-functionp-test ()
-  (should (functionp 'py-smart-operator-mode-p-on)))
-
-(ert-deftest py-ert-smart-operator-mode-p-off-functionp-test ()
-  (should (functionp 'py-smart-operator-mode-p-off)))
-
 (ert-deftest py-ert-toggle-py-switch-buffers-on-execute-p-functionp-test ()
   (should (functionp 'toggle-py-switch-buffers-on-execute-p)))
 
@@ -2189,12 +2180,6 @@
 
 (ert-deftest py-display-state-of-variables-functionp-test ()
   (should (functionp 'py-display-state-of-variables)))
-
-(ert-deftest py-ert-smart-operator-check-functionp-test ()
-  (should (functionp 'py-smart-operator-check)))
-
-(ert-deftest py-ert-autopair-check-functionp-test ()
-  (should (functionp 'py-autopair-check)))
 
 (ert-deftest py-ert--set-ffap-form-functionp-test ()
   (should (functionp 'py--set-ffap-form)))
