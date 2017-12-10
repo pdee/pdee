@@ -62,7 +62,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-block-or-clause-position)))
-          (end (or end (py-end-of-block-or-clause-position))))
+          (end (or end (py--end-of-block-or-clause-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -79,7 +79,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-class-position)))
-          (end (or end (py-end-of-class-position))))
+          (end (or end (py--end-of-class-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -96,7 +96,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-clause-position)))
-          (end (or end (py-end-of-clause-position))))
+          (end (or end (py--end-of-clause-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -113,7 +113,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-def-position)))
-          (end (or end (py-end-of-def-position))))
+          (end (or end (py--end-of-def-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -130,7 +130,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-def-or-class-position)))
-          (end (or end (py-end-of-def-or-class-position))))
+          (end (or end (py--end-of-def-or-class-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -147,7 +147,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-indent-position)))
-          (end (or end (py-end-of-indent-position))))
+          (end (or end (py--end-of-indent-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -164,7 +164,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-minor-block-position)))
-          (end (or end (py-end-of-minor-block-position))))
+          (end (or end (py--end-of-minor-block-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -181,7 +181,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-section-position)))
-          (end (or end (py-end-of-section-position))))
+          (end (or end (py--end-of-section-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -198,7 +198,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-statement-position)))
-          (end (or end (py-end-of-statement-position))))
+          (end (or end (py--end-of-statement-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
@@ -215,7 +215,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-top-level-position)))
-          (end (or end (py-end-of-top-level-position))))
+          (end (or end (py--end-of-top-level-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
