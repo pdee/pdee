@@ -45,7 +45,7 @@ the default"
                              py-block-comment-prefix
                            comment-start))
           (beg (or beg (py--beginning-of-block-position)))
-          (end (or end (py-end-of-block-position))))
+          (end (or end (py--end-of-block-position))))
       (goto-char beg)
       (push-mark)
       (goto-char end)
