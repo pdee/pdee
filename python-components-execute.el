@@ -808,11 +808,12 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 Optional STRG PROC OUTPUT-BUFFER RETURN"
   (let ((output-buffer (or output-buffer (process-buffer proc))))
-  (with-current-buffer output-buffer
-    (py--fast-send-string-intern strg
-				 proc
-				 output-buffer return)
-    (sit-for 0.1))))
+    (with-current-buffer output-buffer
+      (erase-buffer)
+      (py--fast-send-string-intern strg
+				   proc
+				   output-buffer return)
+      (sit-for 0.1))))
 
 (defun py--delete-temp-file (tempfile &optional tempbuf)
   "After ‘py--execute-buffer-finally’ returned delete TEMPFILE &optional TEMPBUF."

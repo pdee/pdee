@@ -96,10 +96,11 @@ See also `py-fast-shell'
       (sit-for 1 t)
       (delete-region orig (point-max)))))
 
-(defun py-process-region-fast (beg end)
+(defalias 'py-process-region-fast 'py-execute-region-fast)
+(defun py-execute-region-fast (beg end &optional shell dedicated split switch proc)
   (interactive "r")
   (let ((py-fast-process-p t))
-    (py-execute-region beg end)))
+    (py-execute-region beg end shell dedicated t split switch proc)))
 
 (defun py-execute-block-fast (&optional shell dedicated switch beg end file)
   "Process block at point by a Python interpreter.
