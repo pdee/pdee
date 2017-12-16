@@ -81,7 +81,8 @@ class bar:
       "
 # -*- coding: utf-8 -*-
 class bar:
-    def foo ():
+    # https://www.python.org/dev/peps/pep-3107/#implementation
+    def foo () -> max(2, 9):
         try:
             if True:
                 for a in range(anzahl):

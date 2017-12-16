@@ -29,7 +29,10 @@
    "\\(class[ \t]+[a-zA-Z0-9_]+\\)"     ; class name
                                         ; possibly multiple superclasses
    "\\([ \t]*\\((\\([a-zA-Z0-9_,. \t\n]\\)*)\\)?\\)"
-   "[ \t]*:"                            ; and the final :
+   "[ \t]*-?>?[ \t]*"                   ; maybe arrow in whitespace
+   ".*"                              ; maybe return value annotation
+   ;; "[ \t]*"
+   ":"                            ; and the final :
    "\\)"                                ; >>classes<<
    )
   "Regexp for Python classes for use with the Imenu package."

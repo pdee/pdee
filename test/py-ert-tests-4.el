@@ -132,7 +132,8 @@ impo")))
         return True
 
     @asdf
-    def baz():
+    # https://www.python.org/dev/peps/pep-3107/#implementation
+    def baz() -> max(2, 9):
         \"\"\"\"\"\"
         pass"
     (search-backward "@asdf")
