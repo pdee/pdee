@@ -54,6 +54,20 @@
   "Regexp for Python methods/functions for use with the Imenu package."
   )
 
+(setq py-imenu-method-regexp
+      (concat                               ; <<classes>>
+       "\\("                                ;
+       "^[ \t]*"                            ; newline and maybe whitespace
+       "\\(def[ \t]+[a-zA-Z0-9_]+\\)"     ; class name
+                                        ; possibly multiple superclasses
+       "\\([ \t]*\\((\\([a-zA-Z0-9_,. \t\n]\\)*)\\)?\\)"
+       "[ \t]*-?>?[ \t]*"                   ; maybe arrow in whitespace
+       ".*"                              ; maybe return value annotation
+       ;; "[ \t]*"
+       ":"                            ; and the final :
+       "\\)"                                ; >>classes<<
+       ))
+
 (defvar py-imenu-method-no-arg-parens '(2 8)
   "Indices into groups of the Python regexp for use with Imenu.
 
@@ -86,6 +100,16 @@ information.")
 Used by setting the variable `imenu-generic-expression' to this value.
 Also, see the function \\[py--imenu-create-index] for a better
 alternative for finding the index.")
+
+;; (setq py-imenu-generic-expression
+;;   (cons
+;;    (concat
+;;     py-imenu-class-regexp
+;;     "\\|"                               ; or...
+;;     py-imenu-method-regexp
+;;     )
+;;    py-imenu-method-no-arg-parens))
+
 
 ;; These next two variables are used when searching for the Python
 ;; class/definitions. Just saving some time in accessing the
