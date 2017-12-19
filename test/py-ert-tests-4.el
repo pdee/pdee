@@ -214,6 +214,22 @@ def foo(x):
         breakpoint()"
   (should (eq 8 (py-compute-indentation)))))
 
+;; (ert-deftest py-return-value-annotations-break-imenu-46-test ()
+;;   (py-test-with-temp-buffer
+;;       "def main():
+;;     if len(sys.argv) == 1:
+;;         usage()
+;;         # sys.exit()
+
+;;     class asdf(object):
+;;         zeit = time.strftime('%Y%m%d--%H-%M-%S')
+
+;;         def Utf8_Exists(filename) -> a[1:2]:
+;;             return os.path.exists(filename.encode('utf-8'))"
+;;     (switch-to-buffer (current-buffer)) 
+;;     (member "Utf8_Exists" index-alist)))
+
+
 ;; (ert-deftest py-pdbtrack-input-prompt-45-test ()
 ;;   (py-test-with-temp-buffer
 ;;       "def exercise():

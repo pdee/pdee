@@ -2346,9 +2346,6 @@
 (ert-deftest py-ert-delete-minor-block-functionp-test ()
   (should (functionp 'py-delete-minor-block)))
 
-(ert-deftest py-ert-switch-imenu-index-function-functionp-test ()
-  (should (functionp 'py-switch-imenu-index-function)))
-
 (ert-deftest py-ert--imenu-create-index-functionp-test ()
   (should (functionp 'py--imenu-create-index)))
 

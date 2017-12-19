@@ -201,6 +201,16 @@ See available customizations listed in files variables-python-mode at directory 
                            (list #'autopair-default-handle-action
                                  #'autopair-python-triple-quote-action))))
        (py-autopair-mode-on))
+  (when (and py--imenu-create-index-p
+             (fboundp 'imenu-add-to-menubar)
+             (ignore-errors (require 'imenu)))
+    (setq imenu-create-index-function 'py--imenu-create-index-function)
+    (setq imenu--index-alist (funcall py--imenu-create-index-function))
+    ;; fallback
+    (unless imenu--index-alist
+      (setq imenu--index-alist (py--imenu-create-index-new)))
+    ;; (message "imenu--index-alist: %s" imenu--index-alist)
+    (imenu-add-to-menubar "PyIndex"))
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local))
   (when py-pdbtrack-do-tracking-p
@@ -241,16 +251,7 @@ See available customizations listed in files variables-python-mode at directory 
   (when py-sexp-use-expression-p
     (define-key python-mode-map [(control meta f)] 'py-forward-expression)
     (define-key python-mode-map [(control meta b)] 'py-backward-expression))
-  (when (and py--imenu-create-index-p
-             (fboundp 'imenu-add-to-menubar)
-             (ignore-errors (require 'imenu)))
-    (setq imenu-create-index-function 'py--imenu-create-index-function)
-    (setq imenu--index-alist (funcall py--imenu-create-index-function))
-    ;; fallback
-    (unless imenu--index-alist
-      (setq imenu--index-alist (py--imenu-create-index-new)))
-    ;; (message "imenu--index-alist: %s" imenu--index-alist)
-    (imenu-add-to-menubar "PyIndex"))
+
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   (when py-outline-minor-mode-p (outline-minor-mode 1))
   (when (interactive-p)

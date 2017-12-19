@@ -121,14 +121,14 @@ alternative for finding the index.")
 (defvar py-imenu-generic-regexp nil)
 (defvar py-imenu-generic-parens nil)
 
-(defun py-switch-imenu-index-function ()
-  "Switch between series 5. index machine `py--imenu-create-index' and `py--imenu-create-index-new', which also lists modules variables "
-  (interactive)
-  (if (eq py--imenu-create-index-function 'py--imenu-create-index-new)
-      (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index)
-    (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index-new))
-  (when py-verbose-p (message "imenu-create-index-function: %s" (prin1-to-string py--imenu-create-index-function)))
-  (funcall imenu-create-index-function))
+;; (defun py-switch-imenu-index-function ()
+;;   "Switch between series 5. index machine `py--imenu-create-index' and `py--imenu-create-index-new', which also lists modules variables "
+;;   (interactive)
+;;   (if (eq py--imenu-create-index-function 'py--imenu-create-index-new)
+;;       (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index)
+;;     (set (make-local-variable 'py--imenu-create-index-function) 'py--imenu-create-index-new))
+;;   (when py-verbose-p (message "imenu-create-index-function: %s" (prin1-to-string py--imenu-create-index-function)))
+;;   (funcall imenu-create-index-function))
 
 (defun py--imenu-create-index ()
   "Python interface function for the Imenu package.
@@ -296,6 +296,166 @@ of the first definition found."
             index-alist))
     (goto-char orig)
     index-alist))
+
+;; A modified slice from python.el
+
+  ;; (set (make-local-variable 'imenu-create-index-function)
+  ;;      #'python-imenu-create-index)
+
+(defvar py-imenu-format-item-label-function
+  'py-imenu-format-item-label
+  "Imenu function used to format an item label.
+It must be a function with two arguments: TYPE and NAME.")
+
+(defvar py-imenu-format-parent-item-label-function
+  'py-imenu-format-parent-item-label
+  "Imenu function used to format a parent item label.
+It must be a function with two arguments: TYPE and NAME.")
+
+(defvar py-imenu-format-parent-item-jump-label-function
+  'py-imenu-format-parent-item-jump-label
+  "Imenu function used to format a parent jump item label.
+It must be a function with two arguments: TYPE and NAME.")
+
+(defun py-imenu-format-item-label (type name)
+  "Return Imenu label for single node using TYPE and NAME."
+  (format "%s (%s)" name type))
+
+(defun py-imenu-format-parent-item-label (type name)
+  "Return Imenu label for parent node using TYPE and NAME."
+  (format "%s..." (py-imenu-format-item-label type name)))
+
+(defun py-imenu-format-parent-item-jump-label (type _name)
+  "Return Imenu label for parent node jump using TYPE and NAME."
+  (if (string= type "class")
+      "*class definition*"
+    "*function definition*"))
+
+(defun py-imenu--put-parent (type name pos tree)
+  "Add the parent with TYPE, NAME and POS to TREE."
+  (let ((label
+         (funcall py-imenu-format-item-label-function type name))
+        (jump-label
+         (funcall py-imenu-format-parent-item-jump-label-function type name)))
+    (if (not tree)
+        (cons label pos)
+      (cons label (cons (cons jump-label pos) tree)))))
+
+(defun py-imenu--build-tree (&optional min-indent prev-indent tree)
+  "Recursively build the tree of nested definitions of a node.
+Arguments MIN-INDENT, PREV-INDENT and TREE are internal and should
+not be passed explicitly unless you know what you are doing."
+  (setq min-indent (or min-indent 0)
+        prev-indent (or prev-indent py-indent-offset))
+  (save-restriction
+    (narrow-to-region (point-min) (point))
+    (let* ((pos
+	    (progn
+	      ;; finds a top-level class
+	      (py-backward-def-or-class)
+	      ;; stops behind the indented form at EOL
+	      (py-forward-def-or-class)
+	      ;; may find an inner def-or-class
+	      (py-backward-def-or-class)))
+	   type
+	   (name (when (and pos (looking-at py-def-or-class-re))
+		   (let ((split (split-string (match-string-no-properties 0))))
+		     (setq type (car split))
+		     (cadr split))))
+	   (label (when name
+		    (funcall py-imenu-format-item-label-function type name)))
+	   (indent (current-indentation))
+	   (children-indent-limit (+ py-indent-offset min-indent)))
+      (cond ((not pos)
+	     ;; Nothing found, probably near to bobp.
+	     nil)
+	    ((<= indent min-indent)
+	     ;; The current indentation points that this is a parent
+	     ;; node, add it to the tree and stop recursing.
+	     (py-imenu--put-parent type name pos tree))
+	    (t
+	     (py-imenu--build-tree
+	      min-indent
+	      indent
+	      (if (<= indent children-indent-limit)
+		  ;; This lies within the children indent offset range,
+		  ;; so it's a normal child of its parent (i.e., not
+		  ;; a child of a child).
+		  (cons (cons label pos) tree)
+		;; Oh no, a child of a child?!  Fear not, we
+		;; know how to roll.  We recursively parse these by
+		;; swapping prev-indent and min-indent plus adding this
+		;; newly found item to a fresh subtree.  This works, I
+		;; promise.
+		(cons
+		 (py-imenu--build-tree
+		  prev-indent indent (list (cons label pos)))
+		 tree))))))))
+
+(defun py--imenu-index ()
+  "Return tree Imenu alist for the current Python buffer.
+Change `py-imenu-format-item-label-function',
+`py-imenu-format-parent-item-label-function',
+`py-imenu-format-parent-item-jump-label-function' to
+customize how labels are formatted."
+  ;; (switch-to-buffer (current-buffer))
+  (save-excursion
+    (goto-char (point-max))
+    (let ((index)
+	  (tree))
+      (while (setq tree (py-imenu--build-tree))
+	(setq index (cons tree index)))
+      index)))
+
+(defun py-imenu-create-flat-index (&optional alist prefix)
+  "Return flat outline of the current Python buffer for Imenu.
+Optional argument ALIST is the tree to be flattened; when nil
+`py-imenu-build-index' is used with
+`py-imenu-format-parent-item-jump-label-function'
+`py-imenu-format-parent-item-label-function'
+`py-imenu-format-item-label-function' set to
+  (lambda (type name) name)
+Optional argument PREFIX is used in recursive calls and should
+not be passed explicitly.
+
+Converts this:
+
+    ((\"Foo\" . 103)
+     (\"Bar\" . 138)
+     (\"decorator\"
+      (\"decorator\" . 173)
+      (\"wrap\"
+       (\"wrap\" . 353)
+       (\"wrapped_f\" . 393))))
+
+To this:
+
+    ((\"Foo\" . 103)
+     (\"Bar\" . 138)
+     (\"decorator\" . 173)
+     (\"decorator.wrap\" . 353)
+     (\"decorator.wrapped_f\" . 393))"
+  ;; Inspired by imenu--flatten-index-alist removed in revno 21853.
+  (apply
+   'nconc
+   (mapcar
+    (lambda (item)
+      (let ((name (if prefix
+                      (concat prefix "." (car item))
+                    (car item)))
+            (pos (cdr item)))
+        (cond ((or (numberp pos) (markerp pos))
+               (list (cons name pos)))
+              ((listp pos)
+               (cons
+                (cons name (cdar pos))
+                (py-imenu-create-flat-index (cddr item) name))))))
+    (or alist
+        (let* ((fn (lambda (_type name) name))
+               (py-imenu-format-item-label-function fn)
+              (py-imenu-format-parent-item-label-function fn)
+              (py-imenu-format-parent-item-jump-label-function fn))
+          (py--imenu-index))))))
 
 (provide 'python-components-imenu)
 ;;; python-components-imenu.el ends here

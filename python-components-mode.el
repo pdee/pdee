@@ -1806,11 +1806,15 @@ Use the following as the value of this variable:
   "';'.join(module_completion('''%s'''))"
   "See also `py-ipython-module-completion-code'.")
 
-(defcustom py--imenu-create-index-function 'py--imenu-create-index
+(defcustom py--imenu-create-index-function 'py--imenu-index
   "Switch between `py--imenu-create-index-new', which also lists modules variables,  and series 5. index-machine."
-  :type '(choice (const :tag "'py--imenu-create-index-new, also lists modules variables " py--imenu-create-index-new)
+  :type '(choice
+	  (const :tag "'py--imenu-create-index-new, also lists modules variables " py--imenu-create-index-new)
 
-                 (const :tag "py--imenu-create-index, series 5. index-machine" py--imenu-create-index))
+	  (const :tag "py--imenu-create-index, series 5. index-machine" py--imenu-create-index)
+	  (const :tag "py--imenu-index, honor type annotations" py--imenu-index)
+
+	  )
   :tag "py--imenu-create-index-function"
   :group 'python-mode)
 
