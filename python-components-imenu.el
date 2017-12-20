@@ -309,12 +309,16 @@ It must be a function with two arguments: TYPE and NAME.")
       "*class definition*"
     "*function definition*"))
 
-(defun py--imenu--put-parent (type name pos tree)
+(defun py-imenu--put-parent (type name pos tree)
   "Add the parent with TYPE, NAME and POS to TREE."
-  (let ((label
+  (let* ((label
          (funcall py-imenu-format-item-label-function type name))
-        (jump-label
-         (funcall py-imenu-format-parent-item-jump-label-function type name)))
+        ;; (jump-label
+	;; (funcall py-imenu-format-parent-item-jump-label-function type name))
+	(jump-label label
+         ;; (funcall py-imenu-format-parent-item-jump-label-function type name)
+	 )
+	)
     (if (not tree)
         (cons label pos)
       (cons label (cons (cons jump-label pos) tree)))))
@@ -350,21 +354,13 @@ not be passed explicitly unless you know what you are doing."
 	    ((<= indent min-indent)
 	     ;; The current indentation points that this is a parent
 	     ;; node, add it to the tree and stop recursing.
-	     (py--imenu--put-parent type name pos tree))
+	     (py-imenu--put-parent type name pos tree))
 	    (t
 	     (py-imenu--build-tree
 	      min-indent
 	      indent
 	      (if (<= indent children-indent-limit)
-		  ;; This lies within the children indent offset range,
-		  ;; so it's a normal child of its parent (i.e., not
-		  ;; a child of a child).
 		  (cons (cons label pos) tree)
-		;; Oh no, a child of a child?!  Fear not, we
-		;; know how to roll.  We recursively parse these by
-		;; swapping prev-indent and min-indent plus adding this
-		;; newly found item to a fresh subtree.  This works, I
-		;; promise.
 		(cons
 		 (py-imenu--build-tree
 		  prev-indent indent (list (cons label pos)))
