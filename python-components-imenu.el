@@ -276,10 +276,6 @@ of the first definition found."
     index-alist))
 
 ;; A modified slice from python.el
-
-  ;; (set (make-local-variable 'imenu-create-index-function)
-  ;;      #'python-imenu-create-index)
-
 (defvar py-imenu-format-item-label-function
   'py-imenu-format-item-label
   "Imenu function used to format an item label.
@@ -303,6 +299,7 @@ It must be a function with two arguments: TYPE and NAME.")
   "Return Imenu label for parent node using TYPE and NAME."
   (format "%s..." (py-imenu-format-item-label type name)))
 
+;; overengineering?
 (defun py-imenu-format-parent-item-jump-label (type _name)
   "Return Imenu label for parent node jump using TYPE and NAME."
   (if (string= type "class")
@@ -367,11 +364,7 @@ not be passed explicitly unless you know what you are doing."
 		 tree))))))))
 
 (defun py--imenu-index ()
-  "Return tree Imenu alist for the current Python buffer.
-Change `py-imenu-format-item-label-function',
-`py-imenu-format-parent-item-label-function',
-`py-imenu-format-parent-item-jump-label-function' to
-customize how labels are formatted."
+  "Return tree Imenu alist for the current Python buffer. "
   ;; (switch-to-buffer (current-buffer))
   (save-excursion
     (goto-char (point-max))
