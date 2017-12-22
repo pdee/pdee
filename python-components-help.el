@@ -1205,7 +1205,6 @@ Assumes vars are defined in current source buffer"
             (message "don't see a state for %s" (prin1-to-string name))))
         (forward-line 1))
       (setq variableslist (nreverse variableslist))
-      ;; (with-temp-buffer
       (set-buffer (get-buffer-create "State-of-Python-mode-variables.org"))
       (erase-buffer)
       ;; org

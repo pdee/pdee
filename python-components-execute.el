@@ -1165,11 +1165,17 @@ See ‘py-if-name-main-permission-p’"
 Takes STRG
 Avoid empty lines at the beginning."
   ;; (when py-debug-p (message "py--fix-start:"))
-  (with-temp-buffer
-    (python-mode)
-    (let (erg)
+  (let (py--imenu-create-index-p
+	py-guess-py-install-directory-p
+	py-autopair-mode
+	py-complete-function
+	py-load-pymacs-p
+	py-load-skeletons-p
+	erg)
+    (with-temp-buffer
+      (python-mode)
       (insert strg)
-      (goto-char 1)
+      (goto-char (point-min)) 
       (when (< 0 (setq erg (skip-chars-forward " \t\r\n\f" (line-end-position))))
 	(dotimes (_ erg)
 	  (indent-rigidly-left (point-min) (point-max))))
