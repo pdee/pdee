@@ -359,5 +359,15 @@ class bar:
     (py-forward-statement-bol)
     (should (eq (point) 115))))
 
+(ert-deftest py-ert-forward-statement-test-1 ()
+  (py-test-with-temp-buffer-point-min
+	"def wwwwww_wwwwwww(self, text):
+		# wwwwww www wwww wwww wwwwwww, w.w. <!-- wwwwww wwwwwwwwww wwww wwww -->
+		# wwwwwwwwwww www wwwwwwww wwwwwww.
+		self.wwwwww.append(\"<!--%(text)s-->\" % locals())"
+    (end-of-line)
+    (py-forward-statement)
+    (should (eq (char-before) ?\)))))
+
 (provide 'py-ert-forward-tests)
 ;;; py-ert-forward-tests.el ends here

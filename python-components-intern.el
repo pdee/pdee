@@ -1611,7 +1611,7 @@ Returns `t' if point was moved"
               (forward-comment 99999)))
   ;; forward-comment fails sometimes
   (and (eq pos (point)) (prog1 (forward-line 1) (back-to-indentation))
-       (while (member (char-after) (list comment-start 10))(forward-line 1)(back-to-indentation))))
+       (while (member (char-after) (list  (string-to-char comment-start) 10))(forward-line 1)(back-to-indentation))))
 
 (defun py--skip-to-comment-or-semicolon (done)
   "Returns position if comment or semicolon found. "
