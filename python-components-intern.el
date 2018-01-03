@@ -1526,38 +1526,39 @@ Returns beginning of FORM if successful, nil otherwise"
     erg))
 
 (defun py--backward-prepare (&optional indent final-re inter-re iact decorator lc)
-  (let* ((orig (point))
-	 (indent
-	  (or indent
-	      (progn
-		(or (py--beginning-of-statement-p)
-		    (py-backward-statement))
-		;; maybe after last statement?
-		(if (save-excursion
-		      (< (py-forward-statement) orig))
-		    (progn (goto-char orig)
-			   (back-to-indentation)
+  (unless (bobp)
+    (let* ((orig (point))
+	   (indent
+	    (or indent
+		(progn
+		  (or (py--beginning-of-statement-p)
+		      (py-backward-statement))
+		  ;; maybe after last statement?
+		  (if (save-excursion
+			(< (py-forward-statement) orig))
+		      (progn (goto-char orig)
+			     (back-to-indentation)
+			     (current-indentation))
+		    (cond ((looking-back "^[ \t]*" (line-beginning-position))
 			   (current-indentation))
-		  (cond ((looking-back "^[ \t]*" (line-beginning-position))
-			 (current-indentation))
-			(t (progn (back-to-indentation)
-				  (cond ((eq 0 (current-indentation))
-					 (current-indentation))
-					((and inter-re (looking-at (symbol-value inter-re)))
-					 (current-indentation))))))))))
-	 erg)
-    ;; def and class need lesser value
-    (when (and
-	   (member final-re (list 'py-def-or-class-re 'py-class-re 'py-def-re))
-	   (<= 0 (- indent (if py-smart-indentation (py-guess-indent-offset) py-indent-offset))))
-      (setq indent (- indent (if py-smart-indentation (py-guess-indent-offset) py-indent-offset))))
-    (if (and (< (point) orig) (looking-at (symbol-value final-re)))
-        (progn
-          (and lc (beginning-of-line))
-          (setq erg (point))
-          (when (and py-verbose-p iact) (message "%s" erg))
-          erg)
-      (py--beginning-of-form-intern final-re inter-re iact indent orig lc))))
+			  (t (progn (back-to-indentation)
+				    (cond ((eq 0 (current-indentation))
+					   (current-indentation))
+					  ((and inter-re (looking-at (symbol-value inter-re)))
+					   (current-indentation))))))))))
+	   erg)
+      ;; def and class need lesser value
+      (when (and
+	     (member final-re (list 'py-def-or-class-re 'py-class-re 'py-def-re))
+	     (<= 0 (- indent (if py-smart-indentation (py-guess-indent-offset) py-indent-offset))))
+	(setq indent (- indent (if py-smart-indentation (py-guess-indent-offset) py-indent-offset))))
+      (if (and (< (point) orig) (looking-at (symbol-value final-re)))
+	  (progn
+	    (and lc (beginning-of-line))
+	    (setq erg (point))
+	    (when (and py-verbose-p iact) (message "%s" erg))
+	    erg)
+	(py--beginning-of-form-intern final-re inter-re iact indent orig lc)))))
 
 (defun py--fetch-first-python-buffer ()
   "Returns first (I)Python-buffer found in `buffer-list'"
