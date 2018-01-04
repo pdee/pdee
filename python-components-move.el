@@ -1,6 +1,6 @@
 ;;; python-components-move.el --- Functions moving point which need special treatment -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2017 Andreas Röhler
+;; Copyright (C) 2015-2018 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 

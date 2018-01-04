@@ -14,7 +14,7 @@
 ;; Package-Requires: (emacs "24")
 ;; Copyright (C) 1992,1993,1994  Tim Peters
 
-;; Author: 2015-2017 https://gitlab.com/groups/python-mode-devs
+;; Author: 2015-2018 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
 ;;         1992-1994 Tim Peters
