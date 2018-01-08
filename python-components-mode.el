@@ -3132,47 +3132,44 @@ This does the following:
 
 When interactivly called, messages the shell name.
 
-With \\[universal-argument] 4 is called `py-switch-shell'.
-Optional argument ARG switch shell with universal argument.
 Optional argument FAST use fast-process."
   (interactive "P")
-  (if (eq 4 (prefix-numeric-value arg))
-      (py-switch-shell '(4))
-    (let* (res done
-	       (erg (cond (py-force-py-shell-name-p
-			   (default-value 'py-shell-name))
-			  (py-use-local-default
-			   (if (not (string= "" py-shell-local-path))
-			       (expand-file-name py-shell-local-path)
-			     (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-			  ((and (or fast py-fast-process-p)
-				(comint-check-proc (current-buffer))
-				(string-match "ython" (process-name (get-buffer-process (current-buffer)))))
-			   (progn
-			     (setq res (process-name (get-buffer-process (current-buffer))))
-			     (py--cleanup-process-name res)))
-			  ((and (not py-fast-process-p)
-				(comint-check-proc (current-buffer))
-				(setq done t)
-				(string-match "ython" (process-name (get-buffer-process (current-buffer)))))
-			   (setq res (process-name (get-buffer-process (current-buffer))))
-			   (py--cleanup-process-name res))
-			  ((py-choose-shell-by-shebang))
-			  ((py--choose-shell-by-import))
-			  ((py-choose-shell-by-path))
-			  (t (or
-			      (default-value 'py-shell-name)
-			      "python"))))
-	       (cmd (if (or
-			 ;; comint-check-proc was succesful
-			 done
-			 py-edit-only-p) erg
-		      (executable-find erg))))
-      (if cmd
-          (when (called-interactively-p 'any)
-            (message "%s" cmd))
-        (when (called-interactively-p 'any) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
-      erg)))
+  (let* (res
+	 done
+	 (erg (cond (py-force-py-shell-name-p
+		     (default-value 'py-shell-name))
+		    (py-use-local-default
+		     (if (not (string= "" py-shell-local-path))
+			 (expand-file-name py-shell-local-path)
+		       (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+		    ((and (or fast py-fast-process-p)
+			  (comint-check-proc (current-buffer))
+			  (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
+		     (progn
+		       (setq res (process-name (get-buffer-process (current-buffer))))
+		       (py--cleanup-process-name res)))
+		    ((and (not py-fast-process-p)
+			  (comint-check-proc (current-buffer))
+			  (setq done t)
+			  (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
+		     (setq res (process-name (get-buffer-process (current-buffer))))
+		     (py--cleanup-process-name res))
+		    ((py-choose-shell-by-shebang))
+		    ((py--choose-shell-by-import))
+		    ((py-choose-shell-by-path))
+		    (t (or
+			(default-value 'py-shell-name)
+			"python"))))
+	 (cmd (if (or
+		   ;; comint-check-proc was succesful
+		   done
+		   py-edit-only-p) erg
+		(executable-find erg))))
+    (if cmd
+	(when (called-interactively-p 'any)
+	  (message "%s" cmd))
+      (when (called-interactively-p 'any) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
+    erg))
 
 
 (defun py--normalize-directory (directory)

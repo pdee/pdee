@@ -1851,9 +1851,6 @@
 (ert-deftest py-ert-guess-pdb-path-functionp-test ()
   (should (functionp 'py-guess-pdb-path)))
 
-(ert-deftest py-ert-switch-shell-functionp-test ()
-  (should (functionp 'py-switch-shell)))
-
 (ert-deftest py-ert-toggle-local-default-use-functionp-test ()
   (should (functionp 'py-toggle-local-default-use)))
 
