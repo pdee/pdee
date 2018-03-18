@@ -121,7 +121,7 @@ Returns position reached if successful"
            (end (unless file
                   (or end (funcall (intern-soft (concat "py-forward-" form))))))
            filename)
-      (setq py-buffer-name nil)
+      ;; (setq py-buffer-name nil)
       (if file
           (progn
             (setq filename (expand-file-name form))

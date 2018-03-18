@@ -103,7 +103,7 @@
       py-forward-text 
     (search-forward "for")
     (py-forward-for-block)
-    (should (eq (char-before) ?)))))
+    (should (eq (char-before) ?\)))))
 
 (ert-deftest py-ert-forward-if-block-test ()
   (py-test-with-temp-buffer-point-min

@@ -48,6 +48,7 @@
 (defun py-show-base (form &optional beg end)
   "Remove invisibility of existing form at point."
   (save-excursion
+    (hs-discard-overlays (line-beginning-position) (point))
     (let* ((form (prin1-to-string form))
            (beg (or beg (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
                             (funcall (intern-soft (concat "py-backward-" form))))))
