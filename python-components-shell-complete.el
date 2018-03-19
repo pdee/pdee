@@ -146,7 +146,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
          ;; (pos (copy-marker (point)))
 	 (pps (parse-partial-sexp
 	       (or
-		(cdr-safe comint-last-prompt)
+		(ignore-errors (cdr-safe comint-last-prompt))
 		(ignore-errors comint-last-prompt)
 		(line-beginning-position))
 	       (point)))

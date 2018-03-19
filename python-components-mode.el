@@ -2825,7 +2825,7 @@ Default is nil"
   "Internal use, unfontify BUFFER."
   (save-excursion
     (goto-char (point-min))
-    (let ((erg (or (ignore-errors (car comint-last-prompt))
+    (let ((erg (or (ignore-errors (car-safe comint-last-prompt))
 		   (and
 		    (re-search-forward py-fast-filter-re nil t 1)
 		    (match-beginning 0))
