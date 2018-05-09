@@ -493,8 +493,8 @@ Give some hints, if not."
 (defvar py-result nil
   "Internally used.  May store result from Python process.")
 
-(defvar py-error nil
-  "Internally used.  Takes the error-messages from Python process.")
+;; (defvar py-error nil
+;;   "Internally used.  Takes the error-messages from Python process.")
 
 (defvar py-python-completions "*Python Completions*"
   "Buffer name for Python-shell completions, internally used.")

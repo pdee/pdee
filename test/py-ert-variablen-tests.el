@@ -592,9 +592,6 @@
 (ert-deftest py-ert-encoding-string-re-test ()
   (should (boundp 'py-encoding-string-re)))
 
-(ert-deftest py-ert-error-test ()
-  (should (boundp 'py-error)))
-
 (ert-deftest py-ert-ert-test-default-executables-test ()
   (should (boundp 'py-ert-test-default-executables)))
 
