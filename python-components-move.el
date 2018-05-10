@@ -632,44 +632,47 @@ From a programm use macro `py-backward-comment' instead"
        (setq done (point))))
     (when (< (point) orig) (point))))
 
-(defun py--go-to-keyword (regexp &optional maxindent)
+(defun py--go-to-keyword (regexp &optional maxindent limit)
   "Return a list, whose car is indentation, cdr position.
 
 Keyword detected from REGEXP
 Honor MAXINDENT if provided"
-  (let ((maxindent
-	 (or maxindent
-	     (if (empty-line-p)
-		 (progn
-		   (py-backward-statement)
-		   (current-indentation))
-	       (or maxindent (and (< 0 (current-indentation))(current-indentation))
-		   ;; make maxindent large enough if not set
-		   (* 99 py-indent-offset)))))
-        done erg)
-    (if (eq 0 maxindent)
-	;; faster jump to top-level forms
-	(setq erg (py--go-to-keyword-bol regexp))
-      (while (and (not done) (not (bobp)))
-	(py-backward-statement)
-	(cond ((eq 0 (current-indentation))
-	       (when (looking-at regexp) (setq erg (point)))
-	       (setq done t))
-	      ;; ((and (< (current-indentation) maxindent)
-	      ;; 	  (setq maxindent (current-indentation))
-	      ;; 	  (looking-at regexp))
-	      ;;  (setq erg (point))
-	      ;;  (setq done t))
-	      ((and (<= (current-indentation) maxindent)
-		    (setq maxindent (current-indentation))
-		    (looking-at regexp))
-	       (setq erg (point))
-	       (setq done t)))))
-    (when (and py-mark-decorators (looking-at py-def-or-class-re))
-      (setq done (py--up-decorators-maybe (current-indentation)))
-      (when done (setq erg done)))
-    (when erg (setq erg (cons (current-indentation) erg)))
-    erg))
+  (save-restriction
+    (when limit
+      (narrow-to-region limit (point-max)))
+    (let ((maxindent
+	   (or maxindent
+	       (if (empty-line-p)
+		   (progn
+		     (py-backward-statement)
+		     (current-indentation))
+		 (or maxindent (and (< 0 (current-indentation))(current-indentation))
+		     ;; make maxindent large enough if not set
+		     (* 99 py-indent-offset)))))
+          done erg)
+      (if (eq 0 maxindent)
+	  ;; faster jump to top-level forms
+	  (setq erg (py--go-to-keyword-bol regexp))
+	(while (and (not done) (not (bobp)))
+	  (py-backward-statement)
+	  (cond ((eq 0 (current-indentation))
+		 (when (looking-at regexp) (setq erg (point)))
+		 (setq done t))
+		;; ((and (< (current-indentation) maxindent)
+		;; 	  (setq maxindent (current-indentation))
+		;; 	  (looking-at regexp))
+		;;  (setq erg (point))
+		;;  (setq done t))
+		((and (<= (current-indentation) maxindent)
+		      (setq maxindent (current-indentation))
+		      (looking-at regexp))
+		 (setq erg (point))
+		 (setq done t)))))
+      (when (and py-mark-decorators (looking-at py-def-or-class-re))
+	(setq done (py--up-decorators-maybe (current-indentation)))
+	(when done (setq erg done)))
+      (when erg (setq erg (cons (current-indentation) erg)))
+      erg)))
 
 (defun py--clause-lookup-keyword (regexp arg &optional indent origline)
   "Return a list, whose car is indentation, cdr position.

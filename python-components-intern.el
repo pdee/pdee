@@ -1008,7 +1008,9 @@ Must find start first "
   (unless (eobp)
     (if (eq regexp 'py-paragraph-re)
 	(py--end-of-paragraph regexp)
-      (let* ((pps (parse-partial-sexp (point-min) (point)))
+      (let* (;; if statement starts in column 0, must be wanted form-(delete-file
+	     upper-limit
+	     (pps (parse-partial-sexp (point-min) (point)))
 	     ;; (repeat (or (and repeat (1+ repeat)) 0))
 	     (orig (or orig (point)))
 	     (regexp (or regexp (symbol-value 'py-extended-block-or-clause-re)))
@@ -1025,8 +1027,12 @@ Must find start first "
 			   (current-indentation))
 			 (if (py--beginning-of-statement-p)
 			     (current-indentation)
-			   (save-excursion (py-backward-statement) (current-indentation)))))
-
+			   (save-excursion
+			     (py-backward-statement)
+			     (prog1
+				 (current-indentation)
+			       (when (eq (current-indentation) 0)
+				 (setq upper-limit (point)))) ))))
 	     ;; start of form maybe inside
 	     (this
 	      (cond ((and (looking-at thisregexp) (not (or (nth 1 pps) (nth 8 pps))))
@@ -1038,7 +1044,7 @@ Must find start first "
 		    ;; statement
 		    ((and (not (nth 8 pps))(looking-back (symbol-value regexp) (line-beginning-position)))
 		     (match-beginning 0))
-		    (t (py--go-to-keyword thisregexp indent))))
+		    (t (py--go-to-keyword thisregexp indent upper-limit))))
 	     ;; (done done)
 	     erg)
 	(cond
@@ -1056,8 +1062,8 @@ Must find start first "
 			    (if (py--beginning-of-statement-p)
 				(- (current-indentation) py-indent-offset)
 			      (save-excursion (py-backward-statement) (- (current-indentation) py-indent-offset))) t
-			    ;; indent
-			    ))))
+			      ;; indent
+			      ))))
 	erg))))
 
 (defun py--look-downward-for-beginning (regexp)
