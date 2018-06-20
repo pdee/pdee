@@ -1,4 +1,4 @@
-;;; py-ert-tests-4.el --- Tests expected to succeed interactively -*- lexical-binding: t; -*-
+;;; py-interactive-tests.el --- Tests expected to succeed interactively -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015  Andreas Röhler
 
@@ -264,5 +264,5 @@ def foo(x):
 
 ;; py-pdbtrack-is-tracking-p
 
-(provide 'py-ert-tests-4)
-;;; py-ert-tests-4.el ends here
+(provide 'py-interactive-tests)
+;;; py-interactive-tests.el ends here

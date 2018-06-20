@@ -23,7 +23,7 @@
 
 ;; pdbtrack constants
 (defconst py-pdbtrack-stack-entry-regexp
-   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
+   (concat ".*\\("py-shell-input-prompt-1-regexp">\\|"py-ipython-input-prompt-re">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
   "Regular expression pdbtrack uses to find a stack trace entry.")
 
 (defconst py-pdbtrack-marker-regexp-file-group 2
@@ -137,7 +137,9 @@ problem as best as we can determine."
            ;; pydb integration still to be done
            ;; (not (string-match py-pydbtrack-stack-entry-regexp block))
 	   )
-      "Traceback cue not found"
+      (prog1
+	  "Traceback cue not found"
+	(message "Block: %s" block))
     (let* ((remote-prefix (or (file-remote-p default-directory) ""))
            (filename (concat remote-prefix
                              (match-string
@@ -217,12 +219,12 @@ named for funcname or define a function funcname."
          (setq py-pdbtrack-do-tracking-p nil))
         ((> (prefix-numeric-value arg) 0)
          (setq py-pdbtrack-do-tracking-p t)))
-  (if py-pdbtrack-do-tracking-p
-      (progn
-        (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
-        (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
-    (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
-    )
+  ;; (if py-pdbtrack-do-tracking-p
+  ;;     (progn
+  ;;       (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
+  ;;       (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
+  ;;   (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
+  ;;   )
   (message "%sabled Python's pdbtrack"
            (if py-pdbtrack-do-tracking-p "En" "Dis")))
 

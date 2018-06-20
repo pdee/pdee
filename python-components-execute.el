@@ -676,7 +676,7 @@ Receives a ‘buffer-name’ as argument"
 	(t (mapconcat 'identity py-python-command-args " "))))
 
 ;;;###autoload
-(defun py-shell (&optional argprompt dedicated shell buffer fast exception-buffer split switch)
+(defun py-shell (&optional argprompt dedicated shell buffer fast exception-buffer split switch input-prompt)
   "Start an interactive Python interpreter in another window.
 Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
   \\[universal-argument] 2 prompts for ‘py-python-command-args’.
@@ -692,7 +692,11 @@ Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
   SWITCH see var ‘py-switch-buffers-on-execute-p’"
   (interactive "P")
   ;; done by py-shell-mode
-  (let* (
+  (let* ((py-pdbtrack-input-prompt
+	  (or input-prompt
+	      (pcase shell
+		(ipython py-pydbtrack-input-prompt)
+		(_  py-pdbtrack-input-prompt)))) 
 	 ;; (windows-config (window-configuration-to-register 313465889))
 	 (fast (or fast py-fast-process-p))
 	 (dedicated (or dedicated py-dedicated-process-p))
@@ -748,7 +752,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 (defun py--store-result-maybe (erg)
   "If no error occurred and ‘py-store-result-p’ store ERG for yank."
-  (and erg (or py-debug-p py-store-result-p) (kill-new erg)))
+  (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 
 (defun py--close-execution (tempbuf tempfile)
   "Delete TEMPBUF and TEMPFILE."
@@ -757,9 +761,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated split switch return)
   "Update optionial variables START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH RETURN."
-
-  (let* ((py-error nil)
-	 (exception-buffer (current-buffer))
+  (setq py-error nil)
+  (let* ((exception-buffer (current-buffer))
 	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
 	 (end (or end (and (use-region-p) (region-end)) (point-max)))
 	 (strg-raw (if py-if-name-main-permission-p
@@ -841,7 +844,8 @@ Optional STRG PROC OUTPUT-BUFFER RETURN"
 STRG FILENAME PROC FILE WHOLEBUF
 BUFFER ORIGLINE EXECUTE-DIRECTORY START END WHICH-SHELL
 Optional FAST RETURN"
-  (let ((py-error nil))
+  (let ()
+    (setq py-error nil)
     (py--update-execute-directory proc buffer execute-directory)
     (cond (fast (py--send-to-fast-process strg proc buffer return))
 	  ;; enforce proceeding as python-mode.el v5
@@ -862,7 +866,7 @@ If an exception occurred return error-string, otherwise return nil.
 BUF must exist.
 
 Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source buffer"
-  (let* (erg py-error)
+  (let* (erg)
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char (point-min))
     (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
@@ -939,9 +943,7 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
 	  ;; position no longer needed, no need to correct
 	  (when py-store-result-p
 	    (when (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result))) (kill-new py-result)))
-	  (if py-error
-	      (cons py-error py-result)
-	  py-result))
+	  py-result)
       (message "py--postprocess-comint: %s" "Don't see any result"))))
 
 (defun py--execute-ge24.3 (start end execute-directory which-shell &optional exception-buffer proc file origline)
@@ -952,8 +954,7 @@ Optional EXCEPTION-BUFFER PROC FILE ORIGLINE
 May we get rid of the temporary file?"
   (and (py--buffer-filename-remote-maybe) buffer-offer-save (buffer-modified-p (py--buffer-filename-remote-maybe)) (y-or-n-p "Save buffer before executing? ")
        (write-file (py--buffer-filename-remote-maybe)))
-  (let* (py-error
-	 (start (copy-marker start))
+  (let* ((start (copy-marker start))
          (end (copy-marker end))
          (exception-buffer (or exception-buffer (current-buffer)))
          (line (py-count-lines (point-min) (if (eq start (line-beginning-position)) (1+ start) start)))
@@ -988,8 +989,7 @@ May we get rid of the temporary file?"
     (sit-for 0.1 t)
     (if (and (setq py-error (save-excursion (py--postprocess-intern origline exception-buffer)))
              (car py-error)
-             ;; (not (markerp py-error))
-)
+             (not (markerp py-error)))
         (py--jump-to-exception py-error origline)
       (unless (string= (buffer-name (current-buffer)) (buffer-name procbuf))
         (when py-verbose-p (message "Output buffer: %s" procbuf))))))
@@ -1005,8 +1005,7 @@ May we get rid of the temporary file?"
 (defun py-execute-python-mode-v5 (start end &optional exception-buffer origline)
   "Take START END &optional EXCEPTION-BUFFER ORIGLINE."
   (interactive "r")
-  (let (py-error
-	(exception-buffer (or exception-buffer (current-buffer)))
+  (let ((exception-buffer (or exception-buffer (current-buffer)))
         (pcmd (concat py-shell-name (if (string-equal py-which-bufname
                                                       "Jython")
                                         " -"
@@ -1018,7 +1017,7 @@ May we get rid of the temporary file?"
     (if (not (get-buffer py-output-buffer))
         (message "No output.")
       (setq py-error (py--postprocess-intern origline exception-buffer))
-      (let* ((line (ignore-errors (cadr py-error))))
+      (let* ((line (cadr py-error)))
         (if py-error
             (when (and py-jump-on-exception line)
               (pop-to-buffer exception-buffer))
@@ -1055,10 +1054,9 @@ Returns position where output starts."
       (py-send-string cmd proc)
       (when (or py-return-result-p py-store-result-p)
 	(setq erg (py--postprocess-comint buffer origline orig))
-	;; (if py-error
-	;;     (setq py-error (prin1-to-string py-error))
-	;;   erg)
-	))))
+	(if py-error
+	    (setq py-error (prin1-to-string py-error))
+	  erg)))))
 
 (defun py-execute-file (filename)
   "When called interactively, user is prompted for FILENAME."
@@ -1181,7 +1179,7 @@ Avoid empty lines at the beginning."
     (with-temp-buffer
       (python-mode)
       (insert strg)
-      (goto-char (point-min))
+      (goto-char (point-min)) 
       (when (< 0 (setq erg (skip-chars-forward " \t\r\n\f" (line-end-position))))
 	(dotimes (_ erg)
 	  (indent-rigidly-left (point-min) (point-max))))

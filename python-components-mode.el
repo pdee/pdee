@@ -91,6 +91,7 @@
 
 (defconst py-version "6.2.3")
 
+(defvar py-install-directory "")
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed.
 
@@ -493,8 +494,8 @@ Give some hints, if not."
 (defvar py-result nil
   "Internally used.  May store result from Python process.")
 
-;; (defvar py-error nil
-;;   "Internally used.  Takes the error-messages from Python process.")
+(defvar py-error nil
+  "Internally used.  Takes the error-messages from Python process.")
 
 (defvar py-python-completions "*Python Completions*"
   "Buffer name for Python-shell completions, internally used.")
@@ -2220,7 +2221,7 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
                           `py-custom-temp-directory' will take precedence when setq")
 
-(defvar py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ "
+(defvar py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ *"
   "Recognize the prompt.")
 
 (defvar py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ "
@@ -2230,7 +2231,7 @@ can write into: the value (if any) of the environment variable TMPDIR,
   "A regular expression to match the IPython input prompt.")
 
  ;; prevent ipython.el's setting
-(setq py-ipython-input-prompt-re   "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
+(setq py-ipython-input-prompt-re   "[IO][un]t? \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
 
 (defvar py-exec-command nil
   "Internally used.")

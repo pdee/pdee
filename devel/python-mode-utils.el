@@ -2314,17 +2314,20 @@ class bar:
       (insert "\n;;;###autoload"))
     ;; beg-end check forms
     (insert (concat "
-\(defun py-forward-" ele " (&optional decorator bol)
+\(defun py-forward-" ele " (&optional arg decorator bol)
   \"Go to end of " ele ".
 
 Return end of " ele " if successful, nil otherwise
 Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match.\"
-  (interactive)
-  (let\* ((orig (point))
-         (erg (py--end-base 'py-" ele "-re orig decorator bol)))
+  (interactive \"p\")
+  (let (erg)
+    (dotimes (i (or arg 1))
+      (let ((orig (point)))
+	(setq erg (py--end-base 'py-" ele "-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
     erg))
+
 
 \(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of " ele ".
