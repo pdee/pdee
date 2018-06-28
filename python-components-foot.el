@@ -23,6 +23,64 @@
 
 ;;; Code:
 
+;; sliced from python.el
+(defun py-pdbtrack-comint-output-filter-function (output)
+  "Move overlay arrow to current pdb line in tracked buffer.
+Argument OUTPUT is a string with the output from the comint process."
+  (when (and py-pdbtrack-do-tracking-p (not (string= output "")))
+    (let* ((full-output (ansi-color-filter-apply
+                         (buffer-substring comint-last-input-end (point-max))))
+           (line-number)
+           (file-name
+            (with-temp-buffer
+              (insert full-output)
+              ;; When the debugger encounters a pdb.set_trace()
+              ;; command, it prints a single stack frame.  Sometimes
+              ;; it prints a bit of extra information about the
+              ;; arguments of the present function.  When ipdb
+              ;; encounters an exception, it prints the _entire_ stack
+              ;; trace.  To handle all of these cases, we want to find
+              ;; the _last_ stack frame printed in the most recent
+              ;; batch of output, then jump to the corresponding
+              ;; file/line number.
+              (goto-char (point-max))
+              (when (re-search-backward py-pdbtrack-stacktrace-info-regexp nil t)
+                (setq line-number (string-to-number
+                                   (match-string-no-properties 2)))
+                (match-string-no-properties 1)))))
+      (if (and file-name line-number)
+          (let* ((tracked-buffer
+                  ;; (python-pdbtrack-set-tracked-buffer file-name)
+		  ;; (python-pdbtrack-set-tracked-buffer (buffer-name py-exception-buffer)
+		  (buffer-name py-exception-buffer))
+                 (shell-buffer (current-buffer))
+                 (tracked-buffer-window (get-buffer-window tracked-buffer))
+                 (tracked-buffer-line-pos))
+            (with-current-buffer tracked-buffer
+              (set (make-local-variable 'overlay-arrow-string) "=>")
+              (set (make-local-variable 'overlay-arrow-position) (make-marker))
+              (setq tracked-buffer-line-pos (progn
+                                              (goto-char (point-min))
+                                              (forward-line (1- line-number))
+                                              (point-marker)))
+              (when tracked-buffer-window
+                (set-window-point
+                 tracked-buffer-window tracked-buffer-line-pos))
+              (set-marker overlay-arrow-position tracked-buffer-line-pos))
+            (pop-to-buffer tracked-buffer)
+            (switch-to-buffer-other-window shell-buffer)
+	    (goto-char (point-max)))
+        ;; (when python-pdbtrack-tracked-buffer
+        ;;   (with-current-buffer python-pdbtrack-tracked-buffer
+        ;;     (set-marker overlay-arrow-position nil))
+        ;;   (mapc #'(lambda (buffer)
+        ;;             (ignore-errors (kill-buffer buffer)))
+        ;;         python-pdbtrack-buffers-to-kill)
+        ;;   (setq python-pdbtrack-tracked-buffer nil
+        ;;         python-pdbtrack-buffers-to-kill nil))
+	)))
+  output)
+
 (defun py-shell-fontify ()
   "Fontifies input in shell buffer. "
   ;; causes delay in fontification until next trigger
@@ -210,8 +268,9 @@ See available customizations listed in files variables-python-mode at directory 
     (imenu-add-to-menubar "PyIndex"))
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local))
-  (when py-pdbtrack-do-tracking-p
-    (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file))
+  ;; this should go into interactive modes
+  ;; (when py-pdbtrack-do-tracking-p
+  ;;   (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file))
   (cond
    (py-complete-function
     (add-hook 'completion-at-point-functions
@@ -288,44 +347,6 @@ See available customizations listed in files variables-python-mode at directory 
     (remove-hook 'py-python-shell-mode-hook 'py--run-unfontify-timer t)
     (remove-hook 'post-command-hook 'py-shell-fontify t)))
 
-(defun py--all-shell-mode-setting ()
-  (py--shell-setup-fontification)
-  (setenv "PAGER" "cat")
-  (setenv "TERM" "dumb")
-  (set-syntax-table python-mode-syntax-table)
-  (if py-auto-complete-p
-      (add-hook 'py-shell-mode-hook 'py--run-completion-timer)
-    (remove-hook 'py-shell-mode-hook 'py--run-completion-timer))
-  ;; comint settings
-  (set (make-local-variable 'comint-prompt-regexp)
-       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-	      (concat "\\("
-		      (mapconcat 'identity
-				 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-				 "\\|")
-		      "\\)"))
-	     (t (concat "\\("
-			(mapconcat 'identity
-				   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
-				   "\\|")
-			"\\)"))))
-  (remove-hook 'comint-output-filter-functions 'font-lock-extend-jit-lock-region-after-change t)
-  ;; (set (make-local-variable 'comint-output-filter-functions)
-  ;; 'set-text-properties comint-last-input-start comint-last-input-end 'nil)
-  (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
-  (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
-  ;; (set (make-local-variable 'comint-use-prompt-regexp) nil)
-  (set (make-local-variable 'compilation-error-regexp-alist)
-       py-compilation-regexp-alist)
-  (set (make-local-variable 'comment-start) "# ")
-  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
-  (set (make-local-variable 'comment-column) 40)
-  (set (make-local-variable 'comment-indent-function) #'py--comment-indent-function)
-  (set (make-local-variable 'indent-region-function) 'py-indent-region)
-  (set (make-local-variable 'indent-line-function) 'py-indent-line)
-  (set (make-local-variable 'inhibit-point-motion-hooks) t)
-  (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send))
-
 ;;;###autoload
 (define-derived-mode py-python-shell-mode comint-mode "Py"
   "Major mode for interacting with a Python process.
@@ -343,28 +364,11 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   ;; (sit-for 0.1)
   (when py-verbose-p (message "%s" "Initializing Python shell, please wait"))
   (py--all-shell-mode-setting)
-  (py--python-send-completion-setup-code)
-  (py--python-send-ffap-setup-code)
-  (py--python-send-eldoc-setup-code)
+  ;; (py--python-send-completion-setup-code)
+  ;; (py--python-send-ffap-setup-code)
+  ;; (py--python-send-eldoc-setup-code)
   (set-process-sentinel (get-buffer-process (current-buffer)) #'shell-write-history-on-exit)
-
-  ;; (setq comint-input-ring-file-name
-  ;;       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
-  ;;              (if py-honor-IPYTHONDIR-p
-  ;;                  (if (getenv "IPYTHONDIR")
-  ;;                      (concat (getenv "IPYTHONDIR") "/history")
-  ;;                    py-ipython-history)
-  ;;                py-ipython-history))
-  ;;             (t
-  ;;              (if py-honor-PYTHONHISTORY-p
-  ;;                  (if (getenv "PYTHONHISTORY")
-  ;;                      (concat (getenv "PYTHONHISTORY") "/" (py--report-executable py-buffer-name) "_history")
-  ;;                    py-ipython-history)
-  ;;                py-ipython-history)))
-  ;;)
-  (comint-read-input-ring t)
-  (compilation-shell-minor-mode 1)
-  ;;
+    (comint-read-input-ring t)
   (if py-complete-function
       (progn
   	(add-hook 'completion-at-point-functions
@@ -378,44 +382,86 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     (define-key py-python-shell-mode-map [(control meta b)] 'py-backward-expression))
   (force-mode-line-update))
 
+(defun py--all-shell-mode-setting ()
+  (py--shell-setup-fontification)
+  (setenv "PAGER" "cat")
+  (setenv "TERM" "dumb")
+  ;; provide next-error etc.
+  (compilation-shell-minor-mode 1)
+  (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       py-shell-compilation-regexp-alist)
+  (set (make-local-variable 'comint-prompt-read-only) py-shell-prompt-read-only)
+  (setq mode-line-process '(":%s"))
+  ;; (set (make-local-variable 'inhibit-eol-conversion) t)
+  (set (make-local-variable 'comint-move-point-for-output) t)
+  (set (make-local-variable 'comint-scroll-show-maximum-output) t)
+  (set-syntax-table python-mode-syntax-table)
+  (set (make-local-variable 'comint-output-filter-functions)
+       '(ansi-color-process-output
+         ;; python-shell-comint-watch-for-first-prompt-output-filter
+         py-pdbtrack-comint-output-filter-function
+         ;; python-comint-postoutput-scroll-to-bottom
+         comint-watch-for-password-prompt))
+  (if py-auto-complete-p
+      (add-hook 'py-shell-mode-hook 'py--run-completion-timer)
+    (remove-hook 'py-shell-mode-hook 'py--run-completion-timer))
+  ;; comint settings
+  (set (make-local-variable 'comint-prompt-regexp)
+       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+	      (concat "\\("
+		      (mapconcat 'identity
+				 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+				 "\\|")
+		      "\\)"))
+	     (t (concat "\\("
+			(mapconcat 'identity
+				   (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-pdbtrack-input-prompt py-pydbtrack-input-prompt))
+				   "\\|")
+			"\\)"))))
+  (remove-hook 'comint-output-filter-functions 'font-lock-extend-jit-lock-region-after-change t)
+  (set (make-local-variable 'comint-input-filter) 'py-history-input-filter)
+  (set (make-local-variable 'comment-start) "# ")
+  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+  (set (make-local-variable 'comment-column) 40)
+  (set (make-local-variable 'comment-indent-function) #'py--comment-indent-function)
+  (set (make-local-variable 'indent-region-function) 'py-indent-region)
+  (set (make-local-variable 'indent-line-function) 'py-indent-line)
+  (set (make-local-variable 'inhibit-point-motion-hooks) t)
+  (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send)
+  (py--python-send-completion-setup-code)
+  (py--python-send-ffap-setup-code)
+  (py--python-send-eldoc-setup-code)
+  (force-mode-line-update))
+
 ;;;###autoload
 (define-derived-mode py-ipython-shell-mode comint-mode "IPy"
-  "Major mode for interacting with a Python process.
+  "Major mode for interacting with a (I)Python process.
 A Python process can be started with \\[py-shell].
 
-You can send text to the Python process from other buffers
+You can send text to the (I)Python process from other buffers
 containing Python source.
  * \\[py-execute-region] sends the current region to the Python process.
 
 Sets basic comint variables, see also versions-related stuff in `py-shell'.
 \\{py-ipython-shell-mode-map}"
-  :group 'python-mode
-  ;; (require 'ansi-color) ; for ipython
-  (setq mode-line-process '(":%s"))
-  (when py-verbose-p (message "%s" "Initializing IPython shell, please wait"))
-  ;; (set (make-local-variable 'inhibit-eol-conversion) (getenv "PYTHONUNBUFFERED"))
-  (set (make-local-variable 'inhibit-eol-conversion) t)
   (py--all-shell-mode-setting)
-  (py--python-send-completion-setup-code)
-  (py--python-send-ffap-setup-code)
-  (py--python-send-eldoc-setup-code)
   (py--ipython-import-module-completion)
   (py-set-ipython-completion-command-string (process-name (get-buffer-process (current-buffer))))
-  (sit-for 0.1 t)
-  (comint-read-input-ring t)
-  (compilation-shell-minor-mode 1)
+  ;; (sit-for 0.1 t)
   (if py-complete-function
       (progn
   	(add-hook 'completion-at-point-functions
   		  py-complete-function nil 'local)
-  	(push py-complete-function  comint-dynamic-complete-functions))
+  	(push py-complete-function comint-dynamic-complete-functions))
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)
-    (push 'py-shell-complete  comint-dynamic-complete-functions))
-  (sit-for 0.5 t)
-  (force-mode-line-update))
+    (push 'py-shell-complete comint-dynamic-complete-functions))
+  ;; (sit-for 0.5 t)
+  (add-hook 'completion-at-point-functions
+            #'python-shell-completion-at-point nil 'local)
+    )
 
-;; bug #40
 (autoload 'python-mode "python-mode" "Python Mode." t)
 
 (defalias 'py-backward-decorator-bol 'py-backward-decorator)

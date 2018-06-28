@@ -18,6 +18,8 @@
 
 # Code:
 
+ARSUBR=~/werkstatt/thingatpt-utils-core/ar-subr.el
+PYTHON=~/emacs-20180529/lisp/progmodes/python.el
 PDIR=$PWD
 echo "\$PWD: $PWD"
 # WERKSTATT set in .bashrc, thus unset remotly

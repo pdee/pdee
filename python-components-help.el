@@ -596,7 +596,7 @@ Interactively, prompt for SYMBOL."
   ;; (set-register 98888888 (list (current-window-configuration) (point-marker)))
   (let* ((last-window-configuration
           (current-window-configuration))
-         (py-exception-buffer (current-buffer))
+         (exception-buffer (current-buffer))
          (imports (py-find-imports))
          (symbol (or symbol (with-syntax-table py-dotted-expression-syntax-table
                               (current-word))))
@@ -640,7 +640,7 @@ Interactively, prompt for SYMBOL."
 		      (setq sourcefile (replace-regexp-in-string "'" "" (py--send-string-return-output (concat "inspect.getsourcefile(" symbol ")")))))
 		 (message "%s" sourcefile)
 		 (py--find-definition-in-source sourcefile symbol)
-		 (display-buffer py-exception-buffer)))
+		 (display-buffer exception-buffer)))
 	(error "Couldn't find source, please consider a bug-report"))
     erg)))
 
@@ -693,12 +693,9 @@ Returns imports"
 Imports done are displayed in message buffer."
   (interactive)
   (save-excursion
-    (let ((py-exception-buffer (current-buffer))
+    (let (
           (orig (point))
           (erg (py-find-imports)))
-
-      ;; (mapc 'py-execute-string (split-string (car (read-from-string (py-find-imports))) "\n" t)))
-      ;; (setq erg (car (read-from-string python-imports)))
       (goto-char orig)
       (when (called-interactively-p 'any)
         (switch-to-buffer (current-buffer))
@@ -970,9 +967,10 @@ See ‘py-check-command’ for the default."
                                     (file-name-nondirectory name)))))))
   (require 'compile)                    ;To define compilation-* variables.
   (save-some-buffers (not compilation-ask-about-save) nil)
-  (let ((compilation-error-regexp-alist
-	 (cons '("(\\([^,]+\\), line \\([0-9]+\\))" 1 2)
-	       compilation-error-regexp-alist)))
+  (let ((compilation-error-regexp-alist py-compilation-regexp-alist)
+	;; (cons '("(\\([^,]+\\), line \\([0-9]+\\))" 1)
+	;; compilation-error-regexp-alist)
+	)
     (compilation-start command)))
 
 ;;  flake8

@@ -152,6 +152,22 @@ Results arrive in output buffer, which is not in comint-mode"
   :tag "py-fast-process-p"
   :group 'python-mode)
 
+;; credits to python.el
+(defcustom py-shell-compilation-regexp-alist
+  `((,(rx line-start (1+ (any " \t")) "File \""
+          (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
+          "\", line " (group (1+ digit)))
+     1 2)
+    (,(rx " in file " (group (1+ not-newline)) " on line "
+          (group (1+ digit)))
+     1 2)
+    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
+          "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
+     1 2))
+  "`compilation-error-regexp-alist' for py-shell."
+  :type '(alist string)
+  :group 'python-mode)
+
 (defcustom py-shift-require-transient-mark-mode-p t
  "If py-shift commands on regions should require variable ‘transient-mark-mode’.
 
@@ -267,12 +283,12 @@ Default is nil"
 (defvar py-shell--font-lock-buffer " *PSFLB*"
   "May contain the `py-buffer-name' currently fontified." )
 
-(defvar py-return-result-p t
+(defvar py-return-result-p nil
   "Internally used.
 
 When non-nil, return resulting string of `py-execute-...'.
 Imports will use it with nil.
-Default is t")
+Default is nil")
 
 (defcustom py--execute-use-temp-file-p nil
  "Assume execution at a remote machine.
@@ -2221,8 +2237,18 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
                           `py-custom-temp-directory' will take precedence when setq")
 
+(defcustom py-pdbtrack-stacktrace-info-regexp
+  "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
+  "Regular expression matching stacktrace information.
+Used to extract the current line and module being inspected."
+  :type 'string
+  :group 'python-mode
+  :safe 'stringp)
+
 (defvar py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ *"
   "Recognize the prompt.")
+
+(setq py-pdbtrack-input-prompt "^[(< \t]*[Ii]?[Pp]y?db[>)]*.*")
 
 (defvar py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ "
   "Recognize the pydb-prompt.")
@@ -2230,7 +2256,7 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-ipython-input-prompt-re "In \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:"
   "A regular expression to match the IPython input prompt.")
 
- ;; prevent ipython.el's setting
+;; prevent ipython.el's setting
 (setq py-ipython-input-prompt-re   "[IO][un]t? \\[[0-9]+\\]:\\|^[ ]\\{3\\}[.]\\{3,\\}:" )
 
 (defvar py-exec-command nil
@@ -3285,18 +3311,18 @@ See original source: http://pymacs.progiciels-bpi.ca"
 (defun py-set-load-path ()
   "Include needed subdirs of ‘python-mode’ directory."
   (interactive)
-  (let ((py-install-directory (py--normalize-directory py-install-directory)))
-    (cond ((and (not (string= "" py-install-directory))(stringp py-install-directory))
-           (push (expand-file-name py-install-directory) load-path)
-           (push (concat (expand-file-name py-install-directory) "completion")  load-path)
-           (push (concat (expand-file-name py-install-directory) "extensions")  load-path)
-           (push (concat (expand-file-name py-install-directory) "test") load-path)
-           (push (concat (expand-file-name py-install-directory) "tools")  load-path)
-           (push (concat (expand-file-name py-install-directory) "autopair")  load-path))
-          (py-guess-py-install-directory-p
-	   (let ((guessed-py-install-directory (py-guess-py-install-directory)))
-	     (when guessed-py-install-directory
-	       (push guessed-py-install-directory  load-path))))
+  (let ((install-directory (py--normalize-directory py-install-directory)))
+    (cond ((and (not (string= "" install-directory))(stringp install-directory))
+           (push (expand-file-name install-directory) load-path)
+           (push (concat (expand-file-name install-directory) "completion")  load-path)
+           (push (concat (expand-file-name install-directory) "extensions")  load-path)
+           (push (concat (expand-file-name install-directory) "test") load-path)
+           (push (concat (expand-file-name install-directory) "tools")  load-path)
+           (push (concat (expand-file-name install-directory) "autopair")  load-path))
+          (py-guess-install-directory-p
+	   (let ((guessed-install-directory (py-guess-install-directory)))
+	     (when guessed-install-directory
+	       (push guessed-install-directory  load-path))))
           (t (error "Please set `py-install-directory', see INSTALL"))
           (when (called-interactively-p 'any) (message "%s" load-path)))))
 
