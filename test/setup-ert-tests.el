@@ -117,7 +117,7 @@ def foo():
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
  at the beginning of buffer."
-  (declare (indent 1) (debug t))
+  ;; (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
@@ -133,7 +133,7 @@ BODY is code to be executed within the temp buffer.  Point is
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
  at the end of buffer."
-  (declare (indent 1) (debug t))
+  ;; (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)

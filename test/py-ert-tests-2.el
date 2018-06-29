@@ -621,24 +621,20 @@ that, needs, to_be, wrapped)
 
 (ert-deftest py-ert-indent-in-arglist-test ()
   (py-test-with-temp-buffer
-      "def foo (a,
-
-):"
+      "def foo (a,):"
     (let (py-indent-paren-spanned-multilines-p)
       (should (eq 9 (py-compute-indentation))))
     (let ((py-indent-paren-spanned-multilines-p t))
       (should (eq 13 (py-compute-indentation))))))
 
 (ert-deftest py-complete-in-python-shell-test ()
-  (let ((py-shell-name "python")
-	(py-switch-buffers-on-execute-p t))
-    (py-kill-buffer-unconditional "*Python*")
-    (python)
-    (goto-char (point-max))
-    (insert "pri")
-    (py-indent-or-complete)
-    (forward-word -1)
-    (should (eq ?p (char-after)))))
+  (py-kill-buffer-unconditional "*Python*")
+  (set-buffer (python))
+  (goto-char (point-max))
+  (insert "pri")
+  (py-indent-or-complete)
+  (forward-word -1)
+  (should (eq ?p (char-after))))
 
 (ert-deftest py-complete-in-python3-shell-test ()
   (let ((py-shell-name "python3")
@@ -653,14 +649,12 @@ that, needs, to_be, wrapped)
     (should (eq ?p (char-after)))))
 
 (ert-deftest py-complete-empty-string-result-test ()
-  (let ((py-shell-name "python3")
-	(py-switch-buffers-on-execute-p t))
-    (py-kill-buffer-unconditional "*Python3*")
-    (python3)
-    (goto-char (point-max))
-    (insert "foo")
-    (py-indent-or-complete)
-    (should (looking-back "foo"))))
+  (py-kill-buffer-unconditional "*Python3*")
+  (set-buffer (python3))
+  (goto-char (point-max))
+  (insert "foo")
+  (py-indent-or-complete)
+  (should (looking-back "foo")))
 
 (ert-deftest py-ert-close-block-test ()
   (py-test-with-temp-buffer-point-min
@@ -854,21 +848,96 @@ elif treffer in schwarz:
 
 (ert-deftest py-ert-narrow-to-class-test ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (search-backward "treffer")
     (py-narrow-to-class)
     (should (eq 710 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-def-test ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (search-backward "treffer")
     (py-narrow-to-def)
     (should (< 480 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-def-or-class-test ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (search-backward "treffer")
     (py-narrow-to-def-or-class)
     (should (< 480 (length (buffer-substring-no-properties (point-min)(point-max)))))
@@ -876,7 +945,32 @@ elif treffer in schwarz:
 
 (ert-deftest py-ert-narrow-to-statement-test ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (search-backward "treffer")
     (py-narrow-to-statement)
     (should (eq 32 (length (buffer-substring-no-properties (point-min)(point-max)))))))
@@ -927,7 +1021,32 @@ print(\"%(language)s has %(number)03d quote types.\" %
 
 (ert-deftest py-ert-jump-matching-indent-test ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (search-backward "if ")
     (forward-line -1)
     (indent-to 12)
@@ -956,7 +1075,32 @@ print(\"%(language)s has %(number)03d quote types.\" %
 
 (ert-deftest py-markup-region-as-section-test ()
   (py-test-with-temp-buffer-point-min
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
       (search-forward "fertig")
       (py-sectionize-region (match-beginning 0) (line-end-position))
       (py-mark-section)

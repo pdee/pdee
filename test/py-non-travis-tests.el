@@ -27,7 +27,8 @@
 
 (ert-deftest py-complete-in-ipython-shell-test ()
   (let ((py-shell-name "ipython")
-	(py-switch-buffers-on-execute-p t))
+	;; (py-switch-buffers-on-execute-p t)
+)
     (py-kill-buffer-unconditional "*IPython*")
     (ipython)
     (goto-char (point-max))

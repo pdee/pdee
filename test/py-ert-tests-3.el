@@ -617,7 +617,6 @@ Bar
 print(u'\\xA9')"
     (py-execute-buffer)
     (set-buffer "*Python3*")
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
     (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))
 
 (ert-deftest py-execute-region-ipython-test-1 ()

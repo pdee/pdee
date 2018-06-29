@@ -51,8 +51,6 @@ if __name__ == \"__main__\":
     main()
 ")
 
-(setq ert-test-default-buffer "*Python*")
-
 (add-to-list 'load-path default-directory)
 
 (ert-deftest py-ert-electric-kill-backward-bracket-test ()
@@ -949,7 +947,32 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest py-ert-moves-up-forward-expression-test ()
     (py-test-with-temp-buffer-point-min
-	py-def-and-class-test-string
+	"class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
       (py-forward-expression)
       (should (eq (char-before) ?s))
       (py-forward-expression)
@@ -990,7 +1013,32 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest py-ert-moves-up-backward-expression-test ()
     (py-test-with-temp-buffer
-	py-def-and-class-test-string
+	"class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
       (py-backward-expression)
       (should (eq (char-after) ?m))
       (py-backward-expression)
@@ -1017,7 +1065,32 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest py-ert-which-def-or-class-test-1 ()
   (py-test-with-temp-buffer-point-min
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (search-forward "kugel")
     (should (string-match "kugel" (py-which-def-or-class)))
     (search-forward "pylauf")
@@ -1113,7 +1186,32 @@ else:
 
 (ert-deftest py-ert-match-paren-test-7 ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (skip-chars-backward "^\]")
     (forward-char -1)
     (py-match-paren)
@@ -1123,14 +1221,64 @@ else:
 
 (ert-deftest py-ert-match-paren-test-8 ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
       (skip-chars-backward "^:")
       (py-match-paren)
       (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-match-paren-test-9 ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
       (search-backward "pylauf")
       (py-match-paren)
       (should (eq (char-after) ?\"))
@@ -1259,7 +1407,32 @@ except:
 
 (ert-deftest py-ert-moves-up-match-paren-test-2 ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (forward-line -3)
     (indent-to 12)
     (py-match-paren)
@@ -1267,7 +1440,32 @@ except:
 
 (ert-deftest py-ert-moves-up-match-paren-test-10 ()
   (py-test-with-temp-buffer
-      py-def-and-class-test-string
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = []
+    gruen = [0]
+    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe[0] = treffer
+        fertig = ''
+#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
+        if treffer in gruen:
+            # print \"0, Gruen\"
+            ausgabe[1] = treffer
+            ausgabe[2] = treffer
+
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+
+if __name__ == \"__main__\":
+    main()
+"
     (forward-line -3)
     (indent-to 8)
     (py-match-paren)
