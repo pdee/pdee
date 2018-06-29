@@ -735,7 +735,6 @@ Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
     (when (or (called-interactively-p 'any)
     	      (eq 1 argprompt)
     	      (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
-      ;; (pop-to-buffer py-buffer-name t)
       (py--shell-manage-windows buffer exception-buffer split switch))
     py-buffer-name))
 
