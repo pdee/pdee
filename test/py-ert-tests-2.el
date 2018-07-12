@@ -21,6 +21,8 @@
 
 ;; tests are expected to run from directory test
 
+(require 'setup-ert-tests)
+
 (add-to-list 'load-path default-directory)
 (load "py-ert-tests-1.el" nil t)
 
@@ -30,25 +32,24 @@
 (ert-deftest py-ert-keyword-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
       " and as assert break continue del elif else except exec finally for global if in is lambda not or pass raise return while with yield"
-    (font-lock-fontify-buffer)
+    (font-lock-fontify-region (point-min)(point-max))
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
       (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
 
 (ert-deftest py-ert-builtins-face-lp-1294742 ()
-  (let ((py-shell-name "python3"))
-    (py-test-with-temp-buffer-point-min
-	"_ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
-      (font-lock-fontify-buffer)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+  (py-test-with-temp-buffer-point-min
+      "_ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
+    (font-lock-fontify-region (point-min)(point-max))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
 
-      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-      (should (eq 'py-builtins-face (get-char-property (point) 'face))))))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+    (should (eq 'py-builtins-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-pseudo-keyword-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
       "  Ellipsis True False None  __debug__ NotImplemented"
-    (font-lock-fontify-buffer)
+    (font-lock-fontify-region (point-min)(point-max))
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
       (should (eq 'py-pseudo-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
@@ -56,7 +57,6 @@
 (ert-deftest py-ert-object-reference-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
       " self cls"
-    (font-lock-fontify-buffer)
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
       (should (eq 'py-object-reference-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
@@ -81,22 +81,21 @@ def baz(self):
 # baz(self):
 #     some_actual_code()
 "
-    (font-lock-fontify-buffer)
+    (font-lock-fontify-region (point-min)(point-max))
     (search-forward "def baz(self):")
     (fill-paragraph)
     (forward-line -1)
     (should (eq (char-after) ?\n))))
 
 (ert-deftest py-ert-respect-paragraph-1294829 ()
-
   (py-test-with-temp-buffer-point-min
-      "# py-fill-paragraph doesn';t respect existing paragraph breaks when
+      "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
 
 def foo(self)
     \"\"\"First one-line summary.
 
-    Some other stuff which I don't want a paragraph break inserted into
+    Some other stuff which I don\'t want a paragraph break inserted into
     the middle of.
 
     And another para hjkdfgh fdjkg hfdjkg hdfjk ghdfk ghjkdf
@@ -104,14 +103,14 @@ def foo(self)
     \"\"\"
 
 def foo(self)
-    \"\"\"Second one-line summary. Some other stuff which I don't want a
+    \"\"\"Second one-line summary. Some other stuff which I don\'t want a
 paragraph
 
     break inserted into the middle of. And another para hjkdfgh
 fdjkg
     hfdjkg hdfjk ghdfk ghjkdf ghjkdf ghjdf ghjdkf k \"\"\"
 
-# I feel it would be better if it didn't attempt to
+# I feel it would be better if it didn\'t attempt to
 # reflow the whole docstring, rather just reflow the
 # particular paragraph within it which the point is
 # positioned in.
@@ -160,8 +159,7 @@ by the
 # manually while still being able to flow other
 # paragraphs using M-q.
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (font-lock-fontify-buffer)
+    ;; (font-lock-fontify-region (point-min)(point-max))
     (search-forward "Some other" nil t 1)
     (sit-for 0.1 t)
     (fill-paragraph)
@@ -214,7 +212,7 @@ by the
         finally:
             pass
 "
-    (font-lock-fontify-buffer)
+    (font-lock-fontify-region (point-min)(point-max))
     (goto-char 632)
     (py-backward-same-level)
     (should (looking-at "except"))
@@ -458,47 +456,79 @@ class bar:
   ;; (and (bufferp (get-buffer "*Python*"))(buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
   ;; (and (bufferp (get-buffer "*IPython*"))(buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*")))
 
-(defun nested-dictionaries-indent-lp:328791-test (&optional arg)
-  "With ARG greater 1 keep test buffer open.
+;; (defmacro py-bug-tests-intern (testname arg teststring)
+;;   "Just interally. "
+;;   (declare (debug (edebug-form-spec t)))
+;;   `(let ((debug-on-error t)
+;;          (enable-local-variables :all)
+;;          py-load-pymacs-p
+;;          ;; py-split-window-on-execute
+;;          ;; py-switch-buffers-on-execute-p
+;;          py-start-run-py-shell
+;;          proc
+;;          py-fontify-shell-buffer-p
+;;   	 (test-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
+;;      (with-current-buffer test-buffer
+;;        (delete-other-windows)
+;;        (erase-buffer)
+;;        (fundamental-mode)
+;;        (python-mode)
+;;        (insert ,teststring)
+;;        (when py-debug-p (switch-to-buffer test-buffer))
+;;        (local-unset-key (kbd "RET"))
+;;        (sit-for 0.1)
+;;        (when (and (boundp 'company-mode) company-mode) (company-abort))
+;;        (funcall ,testname ,arg)
+;;        (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
+;;        ;; (unless (< 1 arg)
+;;        (unless (eq 2 arg)
+;;   	 (set-buffer-modified-p 'nil)
+;;   	 (and (get-buffer-process test-buffer)
+;;   	      (set-process-query-on-exit-flag (get-buffer-process test-buffer) nil)
+;;   	      (kill-process (get-buffer-process test-buffer)))
+;;   	 (kill-buffer test-buffer)))))
 
-If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
-  (interactive "p")
-  (let ((teststring "
+;; (defun nested-dictionaries-indent-lp:328791-test (&optional arg)
+;;   "With ARG greater 1 keep test buffer open.
 
-# hanging
-asdf = {
-    'a':{
-         'b':3,
-         'c':4
-        }
-    }
+;; If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
+;;   (interactive "p")
+;;   (let ((teststring "
 
-# closing
-asdf = {
-    'a':{
-        'b':3,
-        'c':4
-    }
-}
+;; # hanging
+;; asdf = {
+;;     'a':{
+;;          'b':3,
+;;          'c':4
+;;         }
+;;     }
 
-data = {
-    'key':
-    {
-        'objlist': [
-            {
-                'pk': 1,
-                'name': 'first',
-            },
-            {
-                'pk': 2,
-                'name': 'second',
-            }
-        ]
-    }
-}
+;; # closing
+;; asdf = {
+;;     'a':{
+;;         'b':3,
+;;         'c':4
+;;     }
+;; }
 
-"))
-    (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791-base arg teststring)))
+;; data = {
+;;     'key':
+;;     {
+;;         'objlist': [
+;;             {
+;;                 'pk': 1,
+;;                 'name': 'first',
+;;             },
+;;             {
+;;                 'pk': 2,
+;;                 'name': 'second',
+;;             }
+;;         ]
+;;     }
+;; }
+
+;; "))
+;;     (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791-base arg teststring)))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test ()
   (py-test-with-temp-buffer-point-min
@@ -621,7 +651,7 @@ that, needs, to_be, wrapped)
 
 (ert-deftest py-ert-indent-in-arglist-test ()
   (py-test-with-temp-buffer
-      "def foo (a,):"
+      "def foo (a,\n):"
     (let (py-indent-paren-spanned-multilines-p)
       (should (eq 9 (py-compute-indentation))))
     (let ((py-indent-paren-spanned-multilines-p t))
@@ -629,24 +659,22 @@ that, needs, to_be, wrapped)
 
 (ert-deftest py-complete-in-python-shell-test ()
   (py-kill-buffer-unconditional "*Python*")
+  (py-kill-buffer-unconditional "*Python3*")
   (set-buffer (python))
+  (goto-char (point-max))
+  (insert "pri")
+  (py-indent-or-complete)
+  (should (eq ?\( (char-before))))
+
+(ert-deftest py-complete-in-python3-shell-test ()
+  (py-kill-buffer-unconditional "*Python3*")
+  (set-buffer (python3))
+  (should (eq (current-buffer) (get-buffer "*Python3*")))
   (goto-char (point-max))
   (insert "pri")
   (py-indent-or-complete)
   (forward-word -1)
   (should (eq ?p (char-after))))
-
-(ert-deftest py-complete-in-python3-shell-test ()
-  (let ((py-shell-name "python3")
-	(py-switch-buffers-on-execute-p t))
-    (py-kill-buffer-unconditional "*Python3*")
-    (python3)
-    (should (eq (current-buffer) (get-buffer "*Python3*")))
-    (goto-char (point-max))
-    (insert "pri")
-    (py-indent-or-complete)
-    (forward-word -1)
-    (should (eq ?p (char-after)))))
 
 (ert-deftest py-complete-empty-string-result-test ()
   (py-kill-buffer-unconditional "*Python3*")
@@ -731,8 +759,6 @@ class asdf:
 	"#! /usr/bin/env python2
 file.close()"
       (beginning-of-line)
-      (font-lock-fontify-buffer)
-      (sit-for 0.1)
       (should (eq (face-at-point) 'py-builtins-face)))))
 
 ;; Setting of py-python-edit-version should precede
@@ -742,20 +768,15 @@ file.close()"
 	"#! /usr/bin/env python3
 file.close()"
       (beginning-of-line)
-      (font-lock-fontify-buffer)
       (sit-for 0.1)
       (should (eq (face-at-point) 'py-builtins-face)))))
 
 (ert-deftest py-face-lp-1454858-python2-3-test ()
   (let ((py-python-edit-version ""))
-    (with-temp-buffer
-      (insert "#! /usr/bin/env python2
-print()")
-      (switch-to-buffer (current-buffer))
+    (py-test-with-temp-buffer
+      "#! /usr/bin/env python2
+print()"
       (beginning-of-line)
-      (python-mode)
-      (font-lock-fontify-buffer)
-      (sit-for 0.1)
       (should (eq (face-at-point) 'font-lock-keyword-face)))))
 
 (ert-deftest py-ert-in-comment-p-test ()
@@ -1123,5 +1144,12 @@ if __name__ == \"__main__\":
     (back-to-indentation)
     (should (eq 8 (py-compute-indentation)))))
 
+(ert-deftest py-test-embedded-51-test ()
+  (py-test-with-temp-buffer-point-min
+      "from PrintEngine import *
+
+GeomSim."
+    
+    ))
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

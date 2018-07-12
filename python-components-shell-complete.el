@@ -64,6 +64,25 @@ Takes END"
       (insert erg))
     erg))
 
+;; (defun py--try-completion (input completion)
+;; "Repeat `try-completion' as long as match are found.
+;; 
+;; Interal used. Takes INPUT COMPLETION"
+;; (let (erg newlist)
+;; (setq erg (py--try-completion-intern input completion))
+;; (when erg
+;; (dolist (elt completion)
+;; (unless (string= erg elt)
+;; (push elt newlist)))
+;; (if (< 1 (length newlist))
+;; (with-output-to-temp-buffer py-python-completions
+;; (display-completion-list
+;; (all-completions input (or newlist completion))))
+;; (when newlist (py--try-completion erg newlist)))
+;; (skip-chars-forward "^ \t\r\n\f")
+;; ;; (move-marker orig (point))
+;; nil)))
+;; 
 (defun py--try-completion (input completion)
   "Repeat `try-completion' as long as match are found.
 
@@ -192,7 +211,7 @@ Optional SHELL BEG END WORD"
 	 (py-kill-buffer-unconditional "*Python Completions*")))
   (setq py-last-window-configuration
         (current-window-configuration))
-  (py--complete-prepare shell beg end word nil))
+  (py--complete-prepare shell beg end word t))
 
 (defun py-indent-or-complete ()
   "Complete or indent depending on the context.
@@ -217,7 +236,7 @@ in (I)Python shell-modes `py-shell-complete'"
 	     (py-shell-complete)
 	   (funcall py-complete-function)))
 	((comint-check-proc (current-buffer))
-	 (py-shell-complete (process-name (get-buffer-process (current-buffer)))))
+	 (py-shell-complete (substring (process-name (get-buffer-process (current-buffer))) 0 (string-match "<" (process-name (get-buffer-process (current-buffer)))))))
 	(t
 	 (funcall py-complete-function))))
 

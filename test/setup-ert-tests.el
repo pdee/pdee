@@ -22,6 +22,17 @@
 
 ;;; Code:
 
+(require 'font-lock)
+
+;; from jit-lock.el
+(defmacro with-buffer-prepared-for-jit-lock (&rest body)
+  "Execute BODY in current buffer, overriding several variables.
+Preserves the `buffer-modified-p' state of the current buffer."
+  (declare (debug t))
+  `(let ((inhibit-point-motion-hooks t))
+     (with-silent-modifications
+       ,@body)))
+
 (defvar py-debug-p nil
   "Avoid error")
 
@@ -118,13 +129,16 @@ def foo():
 BODY is code to be executed within the temp buffer.  Point is
  at the beginning of buffer."
   ;; (declare (indent 1) (debug t))
+  (require 'font-lock)
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
        (goto-char (point-min))
        (when py-debug-p (switch-to-buffer (current-buffer))
-	     (font-lock-fontify-buffer))
+	     ;; (font-lock-fontify-buffer)
+	     ;;(font-lock-fontify-region (point-min)(point-max))
+)
        ,@body)
      ;; (sit-for 0.1)
      ))
@@ -133,16 +147,51 @@ BODY is code to be executed within the temp buffer.  Point is
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
  at the end of buffer."
+  (require 'font-lock)
   ;; (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
        (when py-debug-p (switch-to-buffer (current-buffer))
-       	     (font-lock-fontify-buffer))
+       	     ;; (font-lock-fontify-buffer)
+	     ;; (font-lock-fontify-region (point-min)(point-max))
+)
        ,@body)
      ;; (sit-for 0.1)
-     ))
+))
+
+(defmacro py-bug-tests-intern (testname arg teststring)
+  "Just interally. "
+  (declare (debug (edebug-form-spec t)))
+  `(let ((debug-on-error t)
+         (enable-local-variables :all)
+         py-load-pymacs-p
+         ;; py-split-window-on-execute
+         ;; py-switch-buffers-on-execute-p
+         py-start-run-py-shell
+         proc
+         py-fontify-shell-buffer-p
+  	 (test-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
+     (with-current-buffer test-buffer
+       (delete-other-windows)
+       (erase-buffer)
+       (fundamental-mode)
+       (python-mode)
+       (insert ,teststring)
+       (when py-debug-p (switch-to-buffer test-buffer))
+       (local-unset-key (kbd "RET"))
+       (sit-for 0.1)
+       (when (and (boundp 'company-mode) company-mode) (company-abort))
+       (funcall ,testname ,arg)
+       (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
+       ;; (unless (< 1 arg)
+       (unless (eq 2 arg)
+  	 (set-buffer-modified-p 'nil)
+  	 (and (get-buffer-process test-buffer)
+  	      (set-process-query-on-exit-flag (get-buffer-process test-buffer) nil)
+  	      (kill-process (get-buffer-process test-buffer)))
+  	 (kill-buffer test-buffer)))))
 
 (provide 'setup-ert-tests)
 ;; setup-ert-tests.el ends here

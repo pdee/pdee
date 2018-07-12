@@ -39,12 +39,14 @@ completions on the current context."
 	   nil)
 	  ((null completion)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "Don't see a completion"))
+	   (set-window-configuration py-last-window-configuration)
 	   nil)
 	  ((and completion
 		(or (and (listp completion)
 			 (string= input (car completion)))
 		    (and (stringp completion)
 			 (string= input completion))))
+	   (set-window-configuration py-last-window-configuration)
 	   nil)
 	  ((and completion (stringp completion)(not (string= input completion)))
 	   (progn (delete-char (- (length input)))
@@ -63,8 +65,8 @@ completions on the current context."
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 py-shell-module-completion-code)))
-    (with-current-buffer py-buffer-name
-      (erase-buffer))
+    ;; (with-current-buffer py-buffer-name
+    ;;   (erase-buffer))
     (py--fast--do-completion-at-point proc imports word code py-buffer-name)))
 
 (defun py-fast-complete (&optional shell beg end word)

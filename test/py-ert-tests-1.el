@@ -727,7 +727,7 @@ def baz():
     \"\"\"
     return 7
 "
-      (font-lock-fontify-buffer)
+      (font-lock-fontify-region (point-min)(point-max))
       (goto-char 49)
       (fill-paragraph)
       (end-of-line)
@@ -758,7 +758,7 @@ def baz():
     \"\"\"
     return 7
 "
-      (font-lock-fontify-buffer)
+      (font-lock-fontify-region (point-min)(point-max))
       (goto-char 49)
       (fill-paragraph)
       (search-backward "\"\"\"")
@@ -801,7 +801,7 @@ def baz():
     \"\"\"
     return 7
 "
-      (font-lock-fontify-buffer)
+      (font-lock-fontify-region (point-min)(point-max))
       (goto-char 49)
       (fill-paragraph)
       (search-backward "\"\"\"")

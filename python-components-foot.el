@@ -408,7 +408,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     (remove-hook 'py-shell-mode-hook 'py--run-completion-timer))
   ;; comint settings
   (set (make-local-variable 'comint-prompt-regexp)
-       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" py-buffer-name)
+       (cond ((string-match "[iI][pP]ython[[:alnum:]*-]*$" (buffer-name (current-buffer)))
 	      (concat "\\("
 		      (mapconcat 'identity
 				 (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt))

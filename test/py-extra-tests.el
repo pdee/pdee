@@ -86,8 +86,7 @@ finally:
   (let (erg
 	;; py-split-window-on-execute
 	py-switch-buffers-on-execute-p)
-    (with-temp-buffer
-      (python-mode)
+    (py-test-with-temp-buffer
       (setq erg (python-dedicated))
       (with-current-buffer erg
 	(goto-char (point-max))

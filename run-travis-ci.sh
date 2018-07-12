@@ -18,6 +18,7 @@
 
 # Code:
 
+emacs27=~$HOME/emacs-20180529/src/emacs-27.0.50.1
 ARSUBR=~/werkstatt/thingatpt-utils-core/ar-subr.el
 PYTHON=~/emacs-20180529/lisp/progmodes/python.el
 PDIR=$PWD
@@ -61,8 +62,8 @@ TEST15=$TESTDIR/py-ert-forward-tests.el
 TEST16=$TESTDIR/py-ert-tests-4.el
 TEST17=$TESTDIR/py-extra-tests.el
 
-if [ -s emacs24 ]; then
-    EMACS=emacs24
+if [ -s emacs27 ]; then
+    EMACS=emacs27
 else
     EMACS=emacs
 fi

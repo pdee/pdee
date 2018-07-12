@@ -33,7 +33,7 @@ impo")))
 
 (defun py-shell-complete-base ()
   (when (and (interactive-p) py-debug-p) (switch-to-buffer (current-buffer))
-	(font-lock-fontify-buffer))
+	(jit-lock-fontify-now))
   ;; (sit-for 0.1 t)
   (py-shell-complete)
   ;; (sit-for 0.1)
