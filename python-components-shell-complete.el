@@ -57,32 +57,13 @@ Takes END"
 
 (defun py--try-completion-intern (input completion)
   (let (erg)
-    (when (and (stringp (setq erg (try-completion input completion)))
+    (when (and (setq erg (try-completion input completion))
 	       (looking-back input (line-beginning-position))
 	       (not (string= input erg)))
       (delete-region (match-beginning 0) (match-end 0))
       (insert erg))
     erg))
 
-;; (defun py--try-completion (input completion)
-;; "Repeat `try-completion' as long as match are found.
-;; 
-;; Interal used. Takes INPUT COMPLETION"
-;; (let (erg newlist)
-;; (setq erg (py--try-completion-intern input completion))
-;; (when erg
-;; (dolist (elt completion)
-;; (unless (string= erg elt)
-;; (push elt newlist)))
-;; (if (< 1 (length newlist))
-;; (with-output-to-temp-buffer py-python-completions
-;; (display-completion-list
-;; (all-completions input (or newlist completion))))
-;; (when newlist (py--try-completion erg newlist)))
-;; (skip-chars-forward "^ \t\r\n\f")
-;; ;; (move-marker orig (point))
-;; nil)))
-;; 
 (defun py--try-completion (input completion)
   "Repeat `try-completion' as long as match are found.
 
@@ -96,11 +77,8 @@ Interal used. Takes INPUT COMPLETION"
       (if (< 1 (length newlist))
 	  (with-output-to-temp-buffer py-python-completions
 	    (display-completion-list
-	     (all-completions input (or newlist completion))))
-	(when newlist (py--try-completion erg newlist)))
-      (skip-chars-forward "^ \t\r\n\f")
-      ;; (move-marker orig (point))
-      nil)))
+	     (all-completions input (or newlist completion)))))
+      (skip-chars-forward "^ \t\r\n\f"))))
 
 (defun py--shell-insert-completion-maybe (completion input)
   (cond ((eq completion t)

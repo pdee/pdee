@@ -56,10 +56,10 @@
 
 (ert-deftest py-ert-object-reference-face-lp-1294742 ()
   (py-test-with-temp-buffer-point-min
-      " self cls"
-    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
-      (should (eq 'py-object-reference-face (get-char-property (point) 'face)))
-      (skip-chars-forward "^ \n"))))
+      "self cls"
+    (font-lock-fontify-region (point-min) (point-max))
+    (should (eq 'py-object-reference-face (get-char-property (point) 'face)))))
+
 
 (ert-deftest py-ert-borks-all-lp-1294820 ()
   (py-test-with-temp-buffer-point-min
@@ -664,7 +664,7 @@ that, needs, to_be, wrapped)
   (goto-char (point-max))
   (insert "pri")
   (py-indent-or-complete)
-  (should (eq ?\( (char-before))))
+  (should (eq ?t (char-before))))
 
 (ert-deftest py-complete-in-python3-shell-test ()
   (py-kill-buffer-unconditional "*Python3*")
@@ -758,7 +758,8 @@ class asdf:
     (py-test-with-temp-buffer
 	"#! /usr/bin/env python2
 file.close()"
-      (beginning-of-line)
+      (font-lock-fontify-region (point-min) (point-max))
+      (forward-line 1) 
       (should (eq (face-at-point) 'py-builtins-face)))))
 
 ;; Setting of py-python-edit-version should precede
@@ -767,8 +768,8 @@ file.close()"
     (py-test-with-temp-buffer
 	"#! /usr/bin/env python3
 file.close()"
-      (beginning-of-line)
-      (sit-for 0.1)
+      (font-lock-fontify-region (point-min) (point-max))
+      (forward-line 1) 
       (should (eq (face-at-point) 'py-builtins-face)))))
 
 (ert-deftest py-face-lp-1454858-python2-3-test ()
@@ -776,7 +777,8 @@ file.close()"
     (py-test-with-temp-buffer
       "#! /usr/bin/env python2
 print()"
-      (beginning-of-line)
+      (font-lock-fontify-region (point-min) (point-max))
+      (forward-line 1) 
       (should (eq (face-at-point) 'font-lock-keyword-face)))))
 
 (ert-deftest py-ert-in-comment-p-test ()
@@ -1149,7 +1151,7 @@ if __name__ == \"__main__\":
       "from PrintEngine import *
 
 GeomSim."
-    
+
     ))
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

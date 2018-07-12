@@ -135,13 +135,8 @@ BODY is code to be executed within the temp buffer.  Point is
        (insert ,contents)
        (python-mode)
        (goto-char (point-min))
-       (when py-debug-p (switch-to-buffer (current-buffer))
-	     ;; (font-lock-fontify-buffer)
-	     ;;(font-lock-fontify-region (point-min)(point-max))
-)
-       ,@body)
-     ;; (sit-for 0.1)
-     ))
+       (when py-debug-p (switch-to-buffer (current-buffer)))
+       ,@body)))
 
 (defmacro py-test-with-temp-buffer (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
@@ -153,13 +148,8 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
-       (when py-debug-p (switch-to-buffer (current-buffer))
-       	     ;; (font-lock-fontify-buffer)
-	     ;; (font-lock-fontify-region (point-min)(point-max))
-)
-       ,@body)
-     ;; (sit-for 0.1)
-))
+       (when py-debug-p (switch-to-buffer (current-buffer)))
+       ,@body)))
 
 (defmacro py-bug-tests-intern (testname arg teststring)
   "Just interally. "
