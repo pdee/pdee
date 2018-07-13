@@ -184,11 +184,12 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 
 Optional SHELL BEG END WORD"
   (interactive)
-  (save-excursion
-    (and (buffer-live-p (get-buffer "*Python Completions*"))
-	 (py-kill-buffer-unconditional "*Python Completions*")))
+  ;; (save-excursion
+  ;;   (and (buffer-live-p (get-buffer "*Python Completions*"))
+  ;; 	 (py-kill-buffer-unconditional "*Python Completions*")))
   (setq py-last-window-configuration
         (current-window-configuration))
+  ;; fast-complete is called
   (py--complete-prepare shell beg end word t))
 
 (defun py-indent-or-complete ()
@@ -208,7 +209,6 @@ in (I)Python shell-modes `py-shell-complete'"
 	((or (bolp)
 	     (member (char-before)(list 9 10 12 13 32 ?: ?\) ?\] ?\}))
 	     (not (looking-at "[ \t]*$")))
-	 ;; (not (eolp)))
 	 (py-indent-line))
 	((or (eq major-mode 'python-mode)(derived-mode-p 'python-mode))	 (if (string-match "ipython" (py-choose-shell))
 	     (py-shell-complete)

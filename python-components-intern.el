@@ -1859,7 +1859,6 @@ Use current region unless optional args BEG END are delivered."
     (indent-to-column cui)
     cui))
 
-;; /usr/lib/python2.7/pdb.py eyp.py
 (defalias 'IPython 'ipython)
 (defalias 'Ipython 'ipython)
 (defalias 'Python 'python)

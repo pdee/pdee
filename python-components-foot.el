@@ -399,9 +399,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (set-syntax-table python-mode-syntax-table)
   (set (make-local-variable 'comint-output-filter-functions)
        '(ansi-color-process-output
-         ;; python-shell-comint-watch-for-first-prompt-output-filter
          py-pdbtrack-comint-output-filter-function
-         ;; python-comint-postoutput-scroll-to-bottom
          comint-watch-for-password-prompt))
   (if py-auto-complete-p
       (add-hook 'py-shell-mode-hook 'py--run-completion-timer)
