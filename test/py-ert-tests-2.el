@@ -1147,10 +1147,12 @@ if __name__ == \"__main__\":
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-test-embedded-51-test ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       "from PrintEngine import *
 
 GeomSim."
+    (py-indent-or-complete)
+    (should (eq (char-before) ?.))
 
     ))
 (provide 'py-ert-tests-2)

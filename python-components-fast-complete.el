@@ -67,6 +67,7 @@ completions on the current context."
 		 py-shell-module-completion-code)))
     ;; (with-current-buffer py-buffer-name
     ;;   (erase-buffer))
+    (py--python-send-completion-setup-code)
     (py--fast--do-completion-at-point proc imports word code py-buffer-name)))
 
 (defun py-fast-complete (&optional shell beg end word)

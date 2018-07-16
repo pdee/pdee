@@ -128,15 +128,16 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
          (proc (or
 		;; completing inside a shell
 		(get-buffer-process exception-buffer)
-		   (and (comint-check-proc shell)
-			(get-process shell))
-	       (prog1
-		   (get-buffer-process (py-shell nil nil shell))
-		 (sit-for py-new-shell-delay))))
-    (code (if (string-match "[Ii][Pp]ython*" shell)
-	      (py-set-ipython-completion-command-string shell)
-	    py-shell-module-completion-code)))
-  (py--shell-do-completion-at-point proc imports word exception-buffer code)))
+		(and (comint-check-proc shell)
+		     (get-process shell))
+		(prog1
+		    (get-buffer-process (py-shell nil nil shell))
+		  (sit-for py-new-shell-delay))))
+	 (code (if (string-match "[Ii][Pp]ython*" shell)
+		   (py-set-ipython-completion-command-string shell)
+		 py-shell-module-completion-code)))
+    (py--python-send-completion-setup-code)
+    (py--shell-do-completion-at-point proc imports word exception-buffer code)))
 
 (defun py--complete-prepare (&optional shell beg end word fast-complete)
   (let* ((exception-buffer (current-buffer))
@@ -190,7 +191,7 @@ Optional SHELL BEG END WORD"
   (setq py-last-window-configuration
         (current-window-configuration))
   ;; fast-complete is called
-  (py--complete-prepare shell beg end word t))
+  (py--complete-prepare shell beg end word))
 
 (defun py-indent-or-complete ()
   "Complete or indent depending on the context.
@@ -210,9 +211,9 @@ in (I)Python shell-modes `py-shell-complete'"
 	     (member (char-before)(list 9 10 12 13 32 ?: ?\) ?\] ?\}))
 	     (not (looking-at "[ \t]*$")))
 	 (py-indent-line))
-	((or (eq major-mode 'python-mode)(derived-mode-p 'python-mode))	 (if (string-match "ipython" (py-choose-shell))
-	     (py-shell-complete)
-	   (funcall py-complete-function)))
+	;; ((or (eq major-mode 'python-mode)(derived-mode-p 'python-mode))	 (if (string-match "ipython" (py-choose-shell))
+	;;      (py-shell-complete)
+	;;    (funcall py-complete-function)))
 	((comint-check-proc (current-buffer))
 	 (py-shell-complete (substring (process-name (get-buffer-process (current-buffer))) 0 (string-match "<" (process-name (get-buffer-process (current-buffer)))))))
 	(t

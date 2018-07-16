@@ -427,7 +427,6 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'inhibit-point-motion-hooks) t)
   (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send)
-  (py--python-send-completion-setup-code)
   (py--python-send-ffap-setup-code)
   (py--python-send-eldoc-setup-code)
   (force-mode-line-update))

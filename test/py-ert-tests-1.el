@@ -834,9 +834,7 @@ def baz():
       (py-execute-statement)
       (set-buffer "*Python2*")
       (goto-char (point-max))
-      ;; (sit-for 0.3 t)
       (and (should (search-backward "py-execute-statement-test" nil t 1))
-	   ;; (sit-for 0.1 t)
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-1-test ()

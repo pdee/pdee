@@ -61,21 +61,9 @@ Optional BEG END"
 		       (get-buffer-process (py-shell))
 		     (comint-send-string (get-buffer-process (py-shell)) "\n"))))
 	 (buffer (process-buffer proc)))
-    ;; (with-current-buffer buffer
-    ;; (goto-char (point-max))
-    ;; (switch-to-buffer (current-buffer))
-    (unless (string-match "\\`" strg)
+    (unless (string-match "\n$" strg)
       (setq strg (concat strg "\n")))
-    (process-send-string proc strg)
-     ;; (comint-send-string proc strg)
-    ;; (goto-char (point-max))
-    ;; (unless (string-match "\n\\'" strg)
-    ;; Make sure the text is properly LF-terminated.
-    ;; (comint-send-string proc "\n"))
-    ;; (when py-debug-p (message "%s" (current-buffer)))
-    ;; (goto-char (point-max))
-    ;; (switch-to-buffer (current-buffer))
-    ))
+    (process-send-string proc strg)))
 
 (provide 'python-components-send)
 ;;; python-components-send.el ends here
