@@ -1316,24 +1316,23 @@ the output."
 
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
-  (let ((process (or process (get-buffer-process (py-shell)))))
+  (let ((process (or process (get-buffer-process (py-shell))))
+	erg)
     (with-current-buffer (process-buffer process)
-      (let* (erg
-	     (comint-preoutput-filter-functions
-	      (append comint-preoutput-filter-functions
-		      '(ansi-color-filter-apply
-			(lambda (strg)
-			  strg)))))
+      (let ((orig (or (and comint-last-prompt (cdr comint-last-prompt)) (point))))
 	(py-send-string strg process)
-	(accept-process-output process 5)
-	(sit-for 0.1 t)
+	(accept-process-output process)
+	(setq erg
+
+	      (buffer-substring-no-properties orig (or (and comint-last-prompt (1- (car comint-last-prompt))) (point))))
 	(when (and erg (not (string= "" erg)))
 	  (setq erg
 		(replace-regexp-in-string
 		 (format "[ \n]*%s[ \n]*" py-fast-filter-re)
 		 "" erg)))
 	;; (sit-for 0.1 t)
-	erg))))
+))
+    erg))
 
 (defun py-which-def-or-class (&optional orig)
   "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.
