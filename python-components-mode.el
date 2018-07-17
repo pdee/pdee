@@ -2986,28 +2986,27 @@ See also `py-object-reference-face'"
   :tag "py-exception-name-face"
   :group 'python-mode)
 
-(defun py--python-send-setup-code-intern (name &optional msg)
+(defun py--python-send-setup-code-intern (name buffer &optional msg)
   (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))
-	(buf (current-buffer))
 	py-return-result-p py-store-result-p)
     (unless (file-readable-p setup-file)
       (with-temp-buffer
 	(insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
 	(write-file setup-file)))
-    (py--execute-file-base nil setup-file nil buf)
-    (when msg (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buf)))))))
+    (py--execute-file-base nil setup-file nil buffer)
+    (when msg (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buffer)))))))
 
-(defun py--python-send-completion-setup-code ()
+(defun py--python-send-completion-setup-code (buffer)
   "For Python see py--python-send-setup-code."
-  (py--python-send-setup-code-intern "shell-completion" py-verbose-p))
+  (py--python-send-setup-code-intern "shell-completion" buffer py-verbose-p))
 
-(defun py--python-send-ffap-setup-code ()
+(defun py--python-send-ffap-setup-code (buffer)
   "For Python see py--python-send-setup-code."
-  (py--python-send-setup-code-intern "ffap" py-verbose-p))
+  (py--python-send-setup-code-intern "ffap" buffer py-verbose-p))
 
-(defun py--python-send-eldoc-setup-code ()
+(defun py--python-send-eldoc-setup-code (buffer)
   "For Python see py--python-send-setup-code."
-  (py--python-send-setup-code-intern "eldoc" py-verbose-p))
+  (py--python-send-setup-code-intern "eldoc" buffer py-verbose-p))
 
 (defun py--ipython-import-module-completion ()
   "Setup IPython v0.11 or greater.

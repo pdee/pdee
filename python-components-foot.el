@@ -363,12 +363,9 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (setq mode-line-process '(":%s"))
   ;; (sit-for 0.1)
   (when py-verbose-p (message "%s" "Initializing Python shell, please wait"))
-  (py--all-shell-mode-setting)
-  ;; (py--python-send-completion-setup-code)
-  ;; (py--python-send-ffap-setup-code)
-  ;; (py--python-send-eldoc-setup-code)
+  (py--all-shell-mode-setting (current-buffer))
   (set-process-sentinel (get-buffer-process (current-buffer)) #'shell-write-history-on-exit)
-    (comint-read-input-ring t)
+  (comint-read-input-ring t)
   (if py-complete-function
       (progn
   	(add-hook 'completion-at-point-functions
@@ -376,15 +373,15 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   	(push py-complete-function comint-dynamic-complete-functions))
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)
-    (push 'py-shell-complete  comint-dynamic-complete-functions))
+    (push 'py-shell-complete comint-dynamic-complete-functions))
   (when py-sexp-use-expression-p
     (define-key py-python-shell-mode-map [(control meta f)] 'py-forward-expression)
     (define-key py-python-shell-mode-map [(control meta b)] 'py-backward-expression))
   (force-mode-line-update))
 
-(defun py--all-shell-mode-setting ()
+(defun py--all-shell-mode-setting (buffer)
   (py--shell-setup-fontification)
-  (setenv "PAGER" "cat")
+  (setenv "PAGER" "cat")   
   (setenv "TERM" "dumb")
   ;; provide next-error etc.
   (compilation-shell-minor-mode 1)
@@ -427,8 +424,8 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'inhibit-point-motion-hooks) t)
   (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send)
-  (py--python-send-ffap-setup-code)
-  (py--python-send-eldoc-setup-code)
+  (py--python-send-ffap-setup-code buffer)
+  (py--python-send-eldoc-setup-code buffer)
   (force-mode-line-update))
 
 ;;;###autoload
@@ -442,7 +439,7 @@ containing Python source.
 
 Sets basic comint variables, see also versions-related stuff in `py-shell'.
 \\{py-ipython-shell-mode-map}"
-  (py--all-shell-mode-setting)
+  (py--all-shell-mode-setting (current-buffer))
   (py--ipython-import-module-completion)
   (py-set-ipython-completion-command-string (process-name (get-buffer-process (current-buffer))))
   ;; (sit-for 0.1 t)

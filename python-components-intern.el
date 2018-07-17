@@ -1323,16 +1323,14 @@ the output."
 	(py-send-string strg process)
 	(accept-process-output process)
 	(setq erg
-
 	      (buffer-substring-no-properties orig (or (and comint-last-prompt (1- (car comint-last-prompt))) (point))))
-	(when (and erg (not (string= "" erg)))
-	  (setq erg
+	(if (and erg (not (or (string= "" erg) (string= "''" erg))))
 		(replace-regexp-in-string
 		 (format "[ \n]*%s[ \n]*" py-fast-filter-re)
-		 "" erg)))
-	;; (sit-for 0.1 t)
-))
-    erg))
+		 "" erg)
+	  ;; don't insert empty completion string
+	  (delete-region orig (or (and comint-last-prompt (1- (car comint-last-prompt))) (point))))
+	  ))))
 
 (defun py-which-def-or-class (&optional orig)
   "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.

@@ -48,7 +48,7 @@ py_if_name_main_permission_test()
       ;; (forward-line -1)
       (end-of-line)
       (sit-for 0.2)
-      (assert (looking-back "run") nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
+      (assert (looking-back "run" (line-beginning-position)) nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
 
 (ert-deftest py-ert-indent-try-test ()
   (py-test-with-temp-buffer-point-min

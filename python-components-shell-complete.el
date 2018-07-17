@@ -26,9 +26,10 @@ completions on the current context."
   (let ((erg
 	 (py--send-string-return-output
 	  (format completion-code input) process)))
-    (sit-for 0.2 t)
-    (when (and erg (> (length erg) 2))
-      (setq erg (split-string erg "^'\\|^\"\\|;\\|'$\\|\"$" t)))
+    ;; (sit-for 0.2 t)
+    (if (and erg (> (length erg) 2))
+      (setq erg (split-string erg "^'\\|^\"\\|;\\|'$\\|\"$" t))
+      (and py-verbose-p (message "py--shell-completion-get-completions: %s" "Don't see a completion")))
     erg))
 
 ;; post-command-hook
@@ -82,30 +83,19 @@ Interal used. Takes INPUT COMPLETION"
 
 (defun py--shell-insert-completion-maybe (completion input)
   (cond ((eq completion t)
-	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "`t' is returned, not completion. Might be a bug."))
-	 nil)
-	((or (null completion)
-	     (and completion (stringp completion)
-		  (or
-		   (string-match "\\`''\\'" completion)
-		   (string= "" completion))))
-	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "Don't see a completion"))
-	 nil)
+	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "`t' is returned, not completion. Might be a bug.")))
+	((null completion)
+	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "Don't see a completion")))
 	((and completion
 	      (or (and (listp completion)
 		       (string= input (car completion)))
 		  (and (stringp completion)
-		       (string= input completion))))
-	 nil)
+		       (string= input completion)))))
 	((and completion (stringp completion)(not (string= input completion)))
 	 (progn (delete-char (- (length input)))
-		(insert completion)
-		;; (move-marker orig (point))
-		;; minibuffer.el expects a list, a bug IMO
-		nil))
+		(insert completion)))
 	(t (py--try-completion input completion)))
-
-  nil)
+  )
 
 (defun py--shell-do-completion-at-point (process imports input exception-buffer code)
   "Do completion at point for PROCESS.
@@ -121,7 +111,8 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
     (set-buffer exception-buffer)
     ;; (py--delay-process-dependent process)
     ;; (sit-for 1 t)
-    (py--shell-insert-completion-maybe completion input)))
+    (when completion
+      (py--shell-insert-completion-maybe completion input))))
 
 (defun py--complete-base (shell word imports exception-buffer)
   (let* ((shell (or shell (py-choose-shell)))
@@ -133,10 +124,11 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 		(prog1
 		    (get-buffer-process (py-shell nil nil shell))
 		  (sit-for py-new-shell-delay))))
+	 (buffer (process-buffer proc))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 py-shell-module-completion-code)))
-    (py--python-send-completion-setup-code)
+    (py--python-send-completion-setup-code buffer)
     (py--shell-do-completion-at-point proc imports word exception-buffer code)))
 
 (defun py--complete-prepare (&optional shell beg end word fast-complete)
@@ -188,8 +180,6 @@ Optional SHELL BEG END WORD"
   ;; (save-excursion
   ;;   (and (buffer-live-p (get-buffer "*Python Completions*"))
   ;; 	 (py-kill-buffer-unconditional "*Python Completions*")))
-  (setq py-last-window-configuration
-        (current-window-configuration))
   ;; fast-complete is called
   (py--complete-prepare shell beg end word))
 
@@ -205,13 +195,15 @@ Use `C-q TAB' to insert a literally TAB-character
 In ‘python-mode’ `py-complete-function' is called,
 in (I)Python shell-modes `py-shell-complete'"
   (interactive "*")
+  (setq py-last-window-configuration
+        (current-window-configuration))
   (cond ((use-region-p)
 	 (py-indent-region (region-beginning) (region-end)))
 	((or (bolp)
 	     (member (char-before)(list 9 10 12 13 32 ?: ?\) ?\] ?\}))
 	     (not (looking-at "[ \t]*$")))
 	 (py-indent-line))
-	;; ((or (eq major-mode 'python-mode)(derived-mode-p 'python-mode))	 (if (string-match "ipython" (py-choose-shell))
+	;; ((or (eq major-mode 'python-mode)(derived-mode-p 'python-mode))	(if (string-match "ipython" (py-choose-shell))
 	;;      (py-shell-complete)
 	;;    (funcall py-complete-function)))
 	((comint-check-proc (current-buffer))
