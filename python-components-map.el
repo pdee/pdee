@@ -110,8 +110,6 @@ Default is t")
 	  (setq map (py-define-menu map)))
         map))
 
-(defvaralias 'py-mode-map 'python-mode-map)
-
 (defvar py-python-shell-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "RET") 'comint-send-input)
