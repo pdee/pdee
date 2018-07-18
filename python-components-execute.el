@@ -112,7 +112,7 @@ See also commands
   (let ((arg (or arg (if py-force-local-shell-p -1 1))))
     (if (< 0 arg)
         (progn
-          (setq py-shell-name (or py-local-command (py-choose-shell nil fast)))
+          (setq py-shell-name (or py-local-command (py-choose-shell)))
           (setq py-force-local-shell-p t))
       (setq py-shell-name (default-value 'py-shell-name))
       (setq py-force-local-shell-p nil))
@@ -709,8 +709,7 @@ Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
   (let* ((exception-buffer (or exception-buffer (current-buffer)))
 	 (fast (or fast py-fast-process-p))
 	 (dedicated (or dedicated py-dedicated-process-p))
-	 (shell (or shell
-		    (py-choose-shell nil fast)))
+	 (shell (or shell (py-choose-shell)))
 	 (args (py--provide-command-args fast argprompt))
 	 (py-use-local-default (py--determine-local-default))
 	 (buffer-raw (or buffer
@@ -796,7 +795,10 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 		      (or (and (stringp shell) shell)
 			  (ignore-errors (eval shell))
 			  (and (symbolp shell) (format "%s" shell))))
-		 (save-excursion (py-choose-shell nil fast))))
+		 ;; (save-excursion
+		 (py-choose-shell)
+		 ;;)
+		 ))
 	 (execute-directory
 	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
 		((and py-use-current-dir-when-execute-p (buffer-file-name))
@@ -814,10 +816,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
 	 (proc (or proc (get-buffer-process buffer)
 		   (prog1
-		    (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch))
-		    (sit-for 0.1)
-		    )
-		   ))
+		       (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch))
+		     (sit-for 0.1))))
 	 (fast (or fast py-fast-process-p))
 	 (return (or return py-return-result-p py-store-result-p)))
     (setq py-buffer-name buffer)

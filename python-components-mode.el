@@ -3143,47 +3143,39 @@ Returns RES or substring of RES"
     res))
 
 (defalias 'py-which-shell 'py-choose-shell)
-(defun py-choose-shell (&optional arg fast)
+(defun py-choose-shell ()
   "Return an appropriate executable as a string.
 
-Returns nil, if no executable found.
-
-This does the following:
+Does the following:
  - look for an interpreter with `py-choose-shell-by-shebang'
  - examine imports using `py--choose-shell-by-import'
  - look if Path/To/File indicates a Python version
  - if not successful, return default value of `py-shell-name'
 
-When interactivly called, messages the shell name.
-
-Optional argument FAST use fast-process."
+When interactivly called, messages the shell name
+Return nil, if no executable found."
   (interactive "P")
   (let* (res
 	 done
-	 (erg (cond (py-force-py-shell-name-p
-		     (default-value 'py-shell-name))
-		    (py-use-local-default
-		     (if (not (string= "" py-shell-local-path))
-			 (expand-file-name py-shell-local-path)
-		       (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-		    ((and (or fast py-fast-process-p)
-			  (comint-check-proc (current-buffer))
-			  (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
-		     (progn
-		       (setq res (process-name (get-buffer-process (current-buffer))))
-		       (py--cleanup-process-name res)))
-		    ((and (not py-fast-process-p)
-			  (comint-check-proc (current-buffer))
-			  (setq done t)
-			  (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
-		     (setq res (process-name (get-buffer-process (current-buffer))))
-		     (py--cleanup-process-name res))
-		    ((py-choose-shell-by-shebang))
-		    ((py--choose-shell-by-import))
-		    ((py-choose-shell-by-path))
-		    (t (or
-			(default-value 'py-shell-name)
-			"python"))))
+	 (erg
+	  (cond (py-force-py-shell-name-p
+		 (default-value 'py-shell-name))
+		(py-use-local-default
+		 (if (not (string= "" py-shell-local-path))
+		     (expand-file-name py-shell-local-path)
+		   (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+		((and (not py-fast-process-p)
+		      (comint-check-proc (current-buffer))
+		      (setq done t)
+		      (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
+		 (setq res (process-name (get-buffer-process (current-buffer))))
+		 (py--cleanup-process-name res))
+		((py-choose-shell-by-shebang))
+		((py--choose-shell-by-import))
+		((py-choose-shell-by-path))
+		(t (or
+		    (default-value 'py-shell-name)
+		    "python"))))
 	 (cmd (if (or
 		   ;; comint-check-proc was succesful
 		   done
