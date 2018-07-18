@@ -217,34 +217,184 @@ result = some_function_that_takes_arguments(
 
 (ert-deftest py-ert-moves-up-class-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (should (eq 1 (py-up-class-bol)))))
 
 (ert-deftest py-ert-moves-up-def-or-class-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
 (ert-deftest py-ert-moves-up-minor-block-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (py-up-minor-block-bol)
     (should (bobp))))
 
 (ert-deftest py-ert-moves-up-block-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (py-up-block-bol)
     (should (looking-at " +def f():"))))
 
 (ert-deftest py-ert-moves-up-block-2 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "pass")
     (py-up-block)
     (should (looking-at "def f():"))))
@@ -275,41 +425,221 @@ result = some_function_that_takes_arguments(
 
 (ert-deftest py-ert-moves-up-block-bol-2 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "pass")
     (py-up-block-bol)
     (should (looking-at " +def f"))))
 
 (ert-deftest py-ert-moves-up-def-bol-2 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (py-up-def-bol)
     (should (bobp))))
 
 (ert-deftest py-ert-moves-up-class-bol-2 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (should (eq 1 (py-up-class)))))
 
 (ert-deftest py-ert-moves-up-def-or-class-bol-2 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "pass")
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
 (ert-deftest py-ert-moves-down-block-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 264)
     (py-down-block-bol)
     (should (bolp))))
 
 (ert-deftest py-ert-moves-down-def-bol-1 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "__init__")
     (py-down-def-bol)
     (should (bolp)) 
@@ -317,13 +647,73 @@ result = some_function_that_takes_arguments(
 
 (ert-deftest py-ert-down-class-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (should (not (py-down-class-bol)))))
 
 (ert-deftest py-ert-moves-down-def-or-class-bol-1 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "__init__")
     (py-down-def-or-class-bol)
     (should (bolp))
@@ -331,14 +721,74 @@ result = some_function_that_takes_arguments(
 
 (ert-deftest py-ert-moves-down-block-1 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "__init__") 
     (py-down-block)
     (should (looking-at "def"))))
 
 (ert-deftest py-ert-moves-down-block-bol-2 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "__init__") 
     (py-down-block-bol)
     (should (bolp))
@@ -410,64 +860,364 @@ result = some_function_that_takes_arguments(
 
 (ert-deftest py-ert-moves-down-def-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (should (py-down-def))))
 
 (ert-deftest py-ert-moves-down-def-2 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "__init__")
     (py-down-def)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-moves-down-class-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (should (not (py-down-class)))))
 
 (ert-deftest py-ert-moves-down-def-or-class-1 ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (search-backward "__init__")
     (py-down-def-or-class)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-moves-backward-statement-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (should (eq 332 (py-backward-statement-bol)))))
 
 (ert-deftest py-ert-moves-backward-block-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (indent-to 8)
     (should (eq 317 (py-backward-block-bol)))))
 
 (ert-deftest py-ert-moves-backward-clause-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (indent-to 8)
     (should (eq 317 (py-backward-clause-bol)))))
 
 (ert-deftest py-ert-moves-backward-block-or-clause-bol-1 ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (indent-to 8)
     (should (eq 317 (py-backward-block-or-clause-bol)))))
 
 (ert-deftest py-ert-moves-backward-class-bol ()
   (py-test-with-temp-buffer
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (should (eq 1 (py-backward-class-bol)))))
 
 (ert-deftest py-ert-moves-backward-def-or-class-bol ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 410)
     (indent-to 4)
     (py-backward-def-or-class-bol)
@@ -475,27 +1225,113 @@ result = some_function_that_takes_arguments(
 
 (ert-deftest py-ert-moves-forward-clause-bol ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 576)
     (should (eq 594 (py-forward-clause-bol)))))
 
 (ert-deftest py-ert-moves-forward-block-or-clause-bol ()
   (py-test-with-temp-buffer-point-min
-      py-ert-moves-text
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+"
     (goto-char 576)
     (should (eq 594 (py-forward-block-or-clause-bol)))))
 
 (ert-deftest py-ert-moves-up-position-tests-4 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "else:")
     (should (eq 190 (py--beginning-of-minor-block-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-5 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "else:")
     (end-of-line) 
     (should (eq 362 (py--beginning-of-clause-position)))))
@@ -503,21 +1339,60 @@ result = some_function_that_takes_arguments(
 (ert-deftest py-ert-moves-up-position-tests-6 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "else:")
     (should (eq 362 (py--beginning-of-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-7 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "else:")
     (should (eq 445 (py--end-of-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-8 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "else:")
     (end-of-line) 
     (should (eq 362 (py--beginning-of-block-or-clause-position)))))
@@ -525,28 +1400,80 @@ result = some_function_that_takes_arguments(
 (ert-deftest py-ert-moves-up-position-tests-9 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "else:")
     (should (eq 445 (py--end-of-block-or-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-10 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "se:")
     (should (eq 445 (py--end-of-block-or-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-11 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "se:")
     (should (eq 71 (py--beginning-of-def-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-12 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "self")
     (end-of-line)
     (py-forward-statement)
@@ -555,49 +1482,140 @@ result = some_function_that_takes_arguments(
 (ert-deftest py-ert-moves-up-position-tests-13 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "se:")
     (should (eq 445 (py--end-of-def-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-14 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "se:")
     (should (eq 1 (py--beginning-of-class-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-15 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "se:")
     (should (eq 445 (py--end-of-class-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-16 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "se:")
     (should (eq 71 (py--beginning-of-def-or-class-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-17 ()
   (interactive)
   (py-test-with-temp-buffer
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-backward "se:")
     (should (eq 445 (py--end-of-def-or-class-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-18 ()
   (interactive)
   (py-test-with-temp-buffer-point-min
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-forward "#")
     (should (eq 223 (py--beginning-of-comment-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-19 ()
   (interactive)
   (py-test-with-temp-buffer-point-min
-      py-kugel-text
+      "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
     (search-forward "#")
     (should (eq 241 (py--end-of-comment-position)))))
 

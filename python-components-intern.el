@@ -1327,7 +1327,7 @@ the output."
     (with-current-buffer (process-buffer process)
       (let ((orig (or (ignore-errors (and comint-last-prompt (cdr comint-last-prompt))) (point))))
 	(py-send-string strg process)
-	(accept-process-output process)
+	;; (accept-process-output process)
 	(setq erg
 	      (buffer-substring-no-properties orig (or (ignore-errors (and comint-last-prompt (1- (car comint-last-prompt)))) (point))))
 	(if (and erg (not (or (string= "" erg) (string= "''" erg))))
