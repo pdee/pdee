@@ -53,17 +53,6 @@ Optional BEG END"
       (sit-for 0.1 t))
     erg))
 
-(defun py-send-string (strg &optional process)
-  "Evaluate STRG in Python PROCESS."
-  (interactive "sPython command: ")
-  (let* ((proc (or process
-		   (prog1
-		       (get-buffer-process (py-shell))
-		     (comint-send-string (get-buffer-process (py-shell)) "\n"))))
-	 (buffer (process-buffer proc)))
-    (unless (string-match "\n$" strg)
-      (setq strg (concat strg "\n")))
-    (process-send-string proc strg)))
 
 (provide 'python-components-send)
 ;;; python-components-send.el ends here

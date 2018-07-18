@@ -52,7 +52,12 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
         (erase-buffer))
       proc)))
 
-(defun py-fast-send-string (strg proc output-buffer return)
+(defun py-fast-send-string-intern (strg proc)
+  (process-send-string proc strg)
+  (or (string-match "\n$" strg)
+      (process-send-string proc "\n")))
+
+(defun py-fast-send-string (strg proc output-buffer &optional return)
   ;; (process-send-string proc "\n")
   (with-current-buffer output-buffer
     (let ((orig (point)))
@@ -61,11 +66,6 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (when return
 	(setq py-result (py--filter-result (py--fetch-result orig))))
       py-result)))
-
-(defun py-fast-send-string-intern (strg proc)
-  (process-send-string proc strg)
-  (or (string-match "\n$" strg)
-      (process-send-string proc "\n")))
 
 (defalias 'py-process-region-fast 'py-execute-region-fast)
 (defun py-execute-region-fast (beg end &optional shell dedicated split switch proc)

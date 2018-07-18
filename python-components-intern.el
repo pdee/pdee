@@ -1000,7 +1000,6 @@ Unclosed-string errors are not handled here, as made visible by fontification al
 		       regexp)))
     (while (and (not (eobp)) (re-search-forward regexp nil 'move 1)(nth 8 (parse-partial-sexp (point-min) (point)))))))
 
-
 (defun py--end-base (regexp &optional orig decorator bol indent done)
   "Used internal by functions going to the end forms.
 
@@ -1292,6 +1291,13 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
       (sit-for py-ipython-send-delay t)
     (sit-for py-python-send-delay t)))
 
+(defun py-send-string (strg &optional process)
+  "Evaluate STRG in Python PROCESS."
+  (interactive "sPython command: ")
+  (let* ((buffer (if process (process-buffer process) (py-shell)))
+	 (proc (or process (get-buffer-process buffer))))
+    (py-fast-send-string strg proc buffer)))
+
 (defun py--send-string-no-output (strg &optional process)
   "Send STRING to PROCESS and inhibit output display.
 When MSG is non-nil messages the first line of STRING.  Return
@@ -1402,7 +1408,6 @@ Used by variable `which-func-functions' "
     (goto-char orig)
     (when (called-interactively-p 'any) (message "%s" erg))
     erg))
-
 
 (defun py--trim-regexp-empty-spaces-left (regexp)
     (let ((erg (symbol-value regexp)))
