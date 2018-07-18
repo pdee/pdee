@@ -119,23 +119,23 @@ See also commands
         (when py-verbose-p (message "py-shell-name default restored to: %s" py-shell-name))))
     py-shell-name))
 
-(defun py-force-local-shell-on (&optional fast)
+(defun py-force-local-shell-on ()
   "Make sure, ‘py-force-local-shell-p’ is on.
 
 Returns value of ‘py-force-local-shell-p’.
 Optional FAST
 Kind of an option 'follow', local shell sets ‘py-shell-name’, enforces its use afterwards"
   (interactive)
-  (toggle-force-local-shell 1 fast)
+  (toggle-force-local-shell 1)
   (when (or py-verbose-p (called-interactively-p 'any))
     (message "Enforce %s" py-shell-name)))
 
-(defun py-force-local-shell-off (&optional fast)
+(defun py-force-local-shell-off ()
   "Restore ‘py-shell-name’ default value and ‘behaviour’.
 
 Optional FAST"
   (interactive)
-  (toggle-force-local-shell 1 fast)
+  (toggle-force-local-shell 1)
   (when (or py-verbose-p (called-interactively-p 'any))
     (message "py-shell-name default restored to: %s" py-shell-name)))
 
