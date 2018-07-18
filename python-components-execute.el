@@ -1101,15 +1101,12 @@ Returns position where output starts."
 
 (defun py--update-execute-directory (proc procbuf execute-directory)
   (let ((py-exception-buffer (current-buffer))
-        orig cwd)
+        cwd)
     (set-buffer procbuf)
     (setq cwd (py--current-working-directory))
-    (setq orig (point))
     (unless (string= execute-directory (concat cwd "/"))
       (py--update-execute-directory-intern (or py-execute-directory execute-directory) proc)
-      ;; (switch-to-buffer (current-buffer))
-      ;; (delete-region orig (point-max)))
-    (set-buffer py-exception-buffer))))
+      (set-buffer py-exception-buffer))))
 
 (defun py-execute-string (&optional strg shell dedicated switch fast)
   "Send the optional argument STRG to Python default interpreter.
