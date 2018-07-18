@@ -948,15 +948,7 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
 		(with-temp-buffer
 		  (insert py-result)
 		  (sit-for 0.1 t)
-		  (setq py-error (py--fetch-error origline)))
-		;; (with-current-buffer output-buffer
-		;; 	;; ‘comint-last-prompt’ must not exist
-		;; 	(delete-region (point) (or (ignore-errors (car comint-last-prompt)) (point-max)))
-		;; 	(sit-for 0.1 t)
-		;; 	(insert py-error)
-		;; 	(newline)
-		;; 	(goto-char (point-max)))
-		)
+		  (setq py-error (py--fetch-error origline))))
 	    ;; position no longer needed, no need to correct
 	    (when py-store-result-p
 	      (when (and py-result (not (string= "" py-result))(not (string= (car kill-ring) py-result))) (kill-new py-result)))
