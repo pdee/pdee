@@ -94,16 +94,13 @@ FILE-NAME."
       file-name file-name)
      process)))
 
-(defun toggle-force-local-shell (&optional arg fast)
+(defun toggle-force-local-shell (&optional arg)
   "If locally indicated Python shell should be taken.
 
 Enforced upon sessions execute commands.
 
 Toggles boolean ‘py-force-local-shell-p’ along with ‘py-force-py-shell-name-p’
 Returns value of ‘toggle-force-local-shell’ switched to.
-Optional ARG FAST
-When on, kind of an option 'follow'
-local shell sets ‘py-shell-name’, enforces its use afterwards.
 
 See also commands
 ‘py-force-local-shell-on’
