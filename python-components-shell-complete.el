@@ -78,8 +78,10 @@ Interal used. Takes INPUT COMPLETION"
       (if (< 1 (length newlist))
 	  (with-output-to-temp-buffer py-python-completions
 	    (display-completion-list
-	     (all-completions input (or newlist completion)))))
-      (skip-chars-forward "^ \t\r\n\f"))))
+	     (all-completions input (or newlist completion))))
+	(set-window-configuration py-last-window-configuration))
+      ;; (skip-chars-forward "^ \t\r\n\f")
+)))
 
 (defun py--shell-insert-completion-maybe (completion input)
   (cond ((eq completion t)
@@ -209,7 +211,7 @@ in (I)Python shell-modes `py-shell-complete'"
 	((comint-check-proc (current-buffer))
 	 (py-shell-complete (substring (process-name (get-buffer-process (current-buffer))) 0 (string-match "<" (process-name (get-buffer-process (current-buffer)))))))
 	(t
-	 (funcall py-complete-function))))
+	 (py-fast-complete))))
 
 (provide 'python-components-shell-complete)
 ;;; python-components-shell-complete.el ends here

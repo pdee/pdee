@@ -759,7 +759,7 @@ class asdf:
 	"#! /usr/bin/env python2
 file.close()"
       (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1) 
+      (forward-line 1)
       (should (eq (face-at-point) 'py-builtins-face)))))
 
 ;; Setting of py-python-edit-version should precede
@@ -769,7 +769,7 @@ file.close()"
 	"#! /usr/bin/env python3
 file.close()"
       (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1) 
+      (forward-line 1)
       (should (eq (face-at-point) 'py-builtins-face)))))
 
 (ert-deftest py-face-lp-1454858-python2-3-test ()
@@ -778,7 +778,7 @@ file.close()"
       "#! /usr/bin/env python2
 print()"
       (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1) 
+      (forward-line 1)
       (should (eq (face-at-point) 'font-lock-keyword-face)))))
 
 (ert-deftest py-ert-in-comment-p-test ()
@@ -1152,8 +1152,7 @@ if __name__ == \"__main__\":
 
 GeomSim."
     (py-indent-or-complete)
-    (should (eq (char-before) ?.))
+    (should (eq (char-before) ?.))))
 
-    ))
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here

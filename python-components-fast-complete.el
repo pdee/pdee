@@ -1,4 +1,4 @@
-;;; python-components-fast-complete.el -- Don't touch interactive shell when completing -*- lexical-binding: t; -*- 
+;;; python-components-fast-complete.el -- Don't touch interactive shell when completing -*- lexical-binding: t; -*-
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -19,11 +19,13 @@
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
-  (let ((completions
-	 (py--fast-send-string-intern
-	  (format completion-code input) process buffer t)))
-    (when (> (length completions) 2)
-      (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
+  (with-current-buffer buffer
+    (erase-buffer)
+    (let ((completions
+	   (py-fast-send-string
+	    (format completion-code input) process buffer t)))
+      (when (> (length completions) 2)
+	(split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
 (defun py--fast--do-completion-at-point (process imports input code output-buffer)
   "Do completion at point for PROCESS."
@@ -31,9 +33,10 @@ completions on the current context."
   (let (py-store-result-p)
     (when imports
       ;; (message "%s" imports)
-      (py--fast-send-string-no-output imports process output-buffer)))
+      (py-fast-send-string-intern imports process)))
   (let* ((completion
 	  (py--fast-completion-get-completions input process code output-buffer)))
+    (sit-for 0.1)
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug.")))
 	  ((null completion)
@@ -50,15 +53,13 @@ completions on the current context."
 		  (insert completion)
 		  ;; (move-marker orig (point))
 		  ;; minibuffer.el expects a list
-		  ))
-	  (t (py--try-completion input completion)))
-
-    ))
+))
+	  (t (py--try-completion input completion)))))
 
 (defun py--fast-complete-base (shell word imports)
-  (let* ((shell (or shell (py-choose-shell nil t)))
-	 (buffer (py-shell nil nil shell nil t))
-	 (proc (get-buffer-process buffer))
+  (let* ((shell (or shell "python"))
+	 (buffer (get-buffer-create "*Python Fast*"))
+	 (proc (or (prog1 (get-buffer-process buffer)(setq done t)) (py--start-fast-process shell buffer)))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 py-shell-module-completion-code)))
@@ -73,7 +74,7 @@ completions on the current context."
 Use `py-fast-process' "
   (interactive)
   (setq py-last-window-configuration
-        (current-window-configuration))
+  (current-window-configuration))
   (py--complete-prepare shell beg end word t))
 
 (provide 'python-components-fast-complete)

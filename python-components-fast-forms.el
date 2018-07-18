@@ -52,53 +52,20 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
         (erase-buffer))
       proc)))
 
-(defun py--fast-send-string-intern (strg proc output-buffer return)
+(defun py-fast-send-string (strg proc output-buffer return)
+  ;; (process-send-string proc "\n")
   (with-current-buffer output-buffer
-    (process-send-string proc "\n")
     (let ((orig (point)))
-      (process-send-string proc strg)
-      (process-send-string proc "\n")
-      (accept-process-output proc 5)
-      (sit-for py-fast-completion-delay t)
+      (py-fast-send-string-intern strg proc)
+      (accept-process-output proc 1)
       (when return
 	(setq py-result (py--filter-result (py--fetch-result orig))))
-	py-result)))
+      py-result)))
 
-(defun py--fast-send-string (strg)
-  "Process Python strings, being prepared for large output.
-
-Output buffer displays \"Fast\"  by default
-See also `py-fast-shell'
-
-"
-  (let ((proc (or (get-buffer-process (get-buffer py-fast-output-buffer))
-                  (py-fast-process))))
-    ;;    (with-current-buffer py-fast-output-buffer
-    ;;      (erase-buffer))
-    (process-send-string proc strg)
-    (or (string-match "\n$" strg)
-        (process-send-string proc "\n"))
-    (accept-process-output proc 1)
-    (set-buffer py-fast-output-buffer)
-    (beginning-of-line)
-    (skip-chars-backward "\r\n")
-    (delete-region (point) (point-max))))
-
-
-(defun py--fast-send-string-no-output (strg proc output-buffer)
-  (with-current-buffer output-buffer
-    (switch-to-buffer (current-buffer)) 
-    (erase-buffer) 
-    ;; (process-send-string proc "\n")
-    ;; (let ((orig (point-max)))
-      ;; (sit-for 1 t)
-      (process-send-string proc strg)
-      (process-send-string proc "\n")
-      ;; (accept-process-output proc 5)
-      ;; (sit-for 1 t)
-      ;; (erase-buffer)
-      ))
-;; )
+(defun py-fast-send-string-intern (strg proc)
+  (process-send-string proc strg)
+  (or (string-match "\n$" strg)
+      (process-send-string proc "\n")))
 
 (defalias 'py-process-region-fast 'py-execute-region-fast)
 (defun py-execute-region-fast (beg end &optional shell dedicated split switch proc)

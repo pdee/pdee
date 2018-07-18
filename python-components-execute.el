@@ -626,7 +626,7 @@ Receives a ‘buffer-name’ as argument"
 
 (defun py--grab-prompt-ps1 (proc buffer)
   (py--send-string-no-output "import sys")
-  (py--fast-send-string-intern "sys.ps1" proc buffer t))
+  (py-fast-send-string "sys.ps1" proc buffer t))
 
 ;; (defun py--start-fast-process (shell buffer)
 ;;   (let ((proc))
@@ -636,24 +636,13 @@ Receives a ‘buffer-name’ as argument"
 ;;     proc))
 
 (defun py--start-fast-process (shell buffer)
-  (let ((proc (start-process shell buffer shell)))
-    (with-current-buffer buffer
-      (erase-buffer))
-    proc))
-
-;; (defun py--shell-fast-proceeding (proc buffer shell setup-code)
-;;   (let ((proc proc))
-;;     (unless proc
-;;       (or (setq proc (get-buffer-process (get-buffer buffer)))
-;; 	  (setq proc (start-process shell buffer shell)))
-;;       (py--fast-send-string-no-output setup-code proc buffer))
-;;     proc))
+  (start-process shell buffer shell))
 
 (defun py--shell-fast-proceeding (proc buffer shell setup-code)
   (unless (get-buffer-process (get-buffer buffer))
     (setq proc (py--start-fast-process shell buffer))
     (setq py-output-buffer buffer)
-    (py--fast-send-string-no-output setup-code proc buffer)))
+    (py-fast-send-string-intern setup-code proc)))
 
 (defun py--reuse-existing-shell (exception-buffer)
   (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) py-buffer-name)))
@@ -843,7 +832,7 @@ Optional STRG PROC OUTPUT-BUFFER RETURN"
   (let ((output-buffer (or output-buffer (process-buffer proc))))
     (with-current-buffer output-buffer
       (erase-buffer)
-      (py--fast-send-string-intern strg
+      (py-fast-send-string strg
 				   proc
 				   output-buffer return)
       (sit-for 0.1))))

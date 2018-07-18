@@ -1865,7 +1865,6 @@ Use current region unless optional args BEG END are delivered."
 (defalias 'iyp 'ipython)
 (defalias 'py-execute-region-default 'py-execute-region)
 (defalias 'py-execute-region-default-dedicated 'py-execute-region-dedicated)
-(defalias 'py-fast-send-string 'py-execute-string-fast)
 (defalias 'py-kill-minor-expression 'py-kill-partial-expression)
 (defalias 'pyhotn 'python)
 (defalias 'pyhton 'python)

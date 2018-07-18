@@ -405,7 +405,7 @@ Default is  nil"
   :group 'python-mode)
 
 (defcustom py-fast-completion-delay 0.1
-  "Used by ‘py--fast-send-string-intern’."
+  "Used by ‘py-fast-send-string’."
 
   :type 'float
   :tag "py-fast-completion-delay"
@@ -2986,7 +2986,7 @@ See also `py-object-reference-face'"
   :tag "py-exception-name-face"
   :group 'python-mode)
 
-(defun py--python-send-setup-code-intern (name buffer &optional msg)
+(defun py--python-send-setup-code-intern (name buffer)
   (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))
 	py-return-result-p py-store-result-p)
     (unless (file-readable-p setup-file)
@@ -2994,19 +2994,19 @@ See also `py-object-reference-face'"
 	(insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
 	(write-file setup-file)))
     (py--execute-file-base nil setup-file nil buffer)
-    (when msg (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buffer)))))))
+    (when py-verbose-p (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buffer)))))))
 
 (defun py--python-send-completion-setup-code (buffer)
   "For Python see py--python-send-setup-code."
-  (py--python-send-setup-code-intern "shell-completion" buffer py-verbose-p))
+  (py--python-send-setup-code-intern "shell-completion" buffer))
 
 (defun py--python-send-ffap-setup-code (buffer)
   "For Python see py--python-send-setup-code."
-  (py--python-send-setup-code-intern "ffap" buffer py-verbose-p))
+  (py--python-send-setup-code-intern "ffap" buffer))
 
 (defun py--python-send-eldoc-setup-code (buffer)
   "For Python see py--python-send-setup-code."
-  (py--python-send-setup-code-intern "eldoc" buffer py-verbose-p))
+  (py--python-send-setup-code-intern "eldoc" buffer))
 
 (defun py--ipython-import-module-completion ()
   "Setup IPython v0.11 or greater.

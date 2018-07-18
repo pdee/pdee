@@ -471,17 +471,11 @@
 (ert-deftest py-ert--filter-result-functionp-test ()
   (should (functionp 'py--filter-result)))
 
-(ert-deftest py-ert--fast-send-string-no-output-functionp-test ()
-  (should (functionp 'py--fast-send-string-no-output)))
-
 (ert-deftest py-ert--fast-send-string-intern-functionp-test ()
-  (should (functionp 'py--fast-send-string-intern)))
-
-(ert-deftest py-ert--fast-send-string-functionp-test ()
-  (should (functionp 'py--fast-send-string)))
+  (should (functionp 'py-fast-send-string-intern)))
 
 (ert-deftest py-ert-fast-send-string-functionp-test ()
-  (should (functionp 'py--fast-send-string)))
+  (should (functionp 'py-fast-send-string)))
 
 (ert-deftest py-ert-process-region-fast-functionp-test ()
   (should (functionp 'py-process-region-fast)))
