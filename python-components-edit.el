@@ -119,7 +119,7 @@ Requires BEG, END as the boundery of region"
 		    (eq this-command 'py-indent-line))
 		(if (and py-tab-shifts-region-p region)
 		    (while (and (goto-char beg) (< 0 (current-indentation)))
-		      (py-shift-region-left 1 beg end))
+		      (py-shift-region-left 1))
 		  (beginning-of-line)
 		  (delete-horizontal-space)
 		  (if (<= (line-beginning-position) (+ (point) (- col cui)))
