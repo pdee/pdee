@@ -42,7 +42,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-block-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -68,7 +68,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-block-or-clause-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -95,7 +95,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-class-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -121,7 +121,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-clause-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -148,7 +148,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-def-or-class-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -175,7 +175,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-def-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -201,7 +201,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-if-block-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -227,7 +227,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-elif-block-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -253,7 +253,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-else-block-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -279,7 +279,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-for-block-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -305,7 +305,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-except-block-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -331,7 +331,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-try-block-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
@@ -357,7 +357,7 @@ Optional arg DECORATOR is used if form supports one
 With optional BOL, go to beginning of line following match."
   (interactive "p")
   (let (erg)
-    (dotimes (i (or arg 1))
+    (dotimes (_ (or arg 1))
       (let ((orig (point)))
 	(setq erg (py--end-base 'py-minor-block-re orig decorator bol))))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
