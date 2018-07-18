@@ -31,7 +31,7 @@
 
 Optional ARG \\[universal-argument] prompts for path to the interpreter."
   (interactive "P")
-  (py-shell argprompt nil "ipython" buffer fast exception-buffer split switch py-ipython-input-prompt-re))
+  (py-shell argprompt nil "ipython" buffer fast exception-buffer split switch))
 
 ;;;###autoload
 (defun ipython2.7 (&optional argprompt buffer fast exception-buffer split switch)
