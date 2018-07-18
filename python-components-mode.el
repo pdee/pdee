@@ -3308,10 +3308,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
            (push (concat (expand-file-name install-directory) "test") load-path)
            (push (concat (expand-file-name install-directory) "tools")  load-path)
            (push (concat (expand-file-name install-directory) "autopair")  load-path))
-          (py-guess-install-directory-p
-	   (let ((guessed-install-directory (py-guess-install-directory)))
-	     (when guessed-install-directory
-	       (push guessed-install-directory  load-path))))
           (t (error "Please set `py-install-directory', see INSTALL"))
           (when (called-interactively-p 'any) (message "%s" load-path)))))
 
