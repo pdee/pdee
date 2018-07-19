@@ -28,18 +28,18 @@
 
 ;;  Keymap
 
-(defun py--indent-prepare (inter-re)
-  (progn (back-to-indentation)
-	 (or (py--beginning-of-statement-p)
-	     (ar-backward-statement))
-	 (cond ((eq 0 (current-indentation))
-		(current-indentation))
-	       ((looking-at (symbol-value inter-re))
-		(current-indentation))
-	       (t
-		(if (<= py-indent-offset (current-indentation))
-		    (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
-		  py-indent-offset)))))
+;; (defun py--indent-prepare (inter-re)
+;;   (progn (back-to-indentation)
+;; 	 (or (py--beginning-of-statement-p)
+;; 	     (ar-backward-statement))
+;; 	 (cond ((eq 0 (current-indentation))
+;; 		(current-indentation))
+;; 	       ((looking-at (symbol-value inter-re))
+;; 		(current-indentation))
+;; 	       (t
+;; 		(if (<= py-indent-offset (current-indentation))
+;; 		    (- (current-indentation) (if ar-smart-indentation (ar-guess-indent-offset) py-indent-offset))
+;; 		  py-indent-offset)))))
 
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
@@ -1413,7 +1413,7 @@ Used by variable `which-func-functions' "
     (let ((erg (symbol-value regexp)))
       (substring erg (1+ (string-match "\*" erg)))))
 
-(defun py--beginning-of-form-intern (final-re &optional inter-re iact indent orig lc)
+(defun py--beginning-of-form-intern (final-re &optional iact indent orig lc)
   "Go to beginning of FORM.
 
 With INDENT, go to beginning one level above.
@@ -1422,12 +1422,9 @@ Whit IACT, print result in message buffer.
 Returns beginning of FORM if successful, nil otherwise"
   (interactive "P")
   (let ((regexp
-	 ;; (if inter-re
-	 ;; (concat (symbol-value inter-re) "\\|" (symbol-value final-re))
 	 (if (eq 0 indent)
 	     (py--trim-regexp-empty-spaces-left final-re)
-		  (symbol-value final-re)))
-		  ;; ))
+	   (symbol-value final-re)))
 	erg)
     (unless (bobp)
       (let* ((orig (or orig (point)))
@@ -1455,7 +1452,7 @@ Returns beginning of FORM if successful, nil otherwise"
     (when (and py-verbose-p iact) (message "%s" erg))
     erg))
 
-(defun py--backward-prepare (&optional indent final-re inter-re iact decorator lc)
+(defun py--backward-prepare (&optional indent final-re iact decorator lc)
   (unless (bobp)
     (let* ((orig (point))
 	   (indent
@@ -1473,8 +1470,6 @@ Returns beginning of FORM if successful, nil otherwise"
 			   (current-indentation))
 			  (t (progn (back-to-indentation)
 				    (cond ((eq 0 (current-indentation))
-					   (current-indentation))
-					  ((and inter-re (looking-at (symbol-value inter-re)))
 					   (current-indentation))))))))))
 	   erg)
       ;; def and class need lesser value
@@ -1488,7 +1483,7 @@ Returns beginning of FORM if successful, nil otherwise"
 	    (setq erg (point))
 	    (when (and py-verbose-p iact) (message "%s" erg))
 	    erg)
-	(py--beginning-of-form-intern final-re inter-re iact indent orig lc)))))
+	(py--beginning-of-form-intern final-re iact indent orig lc)))))
 
 (defun py--fetch-first-python-buffer ()
   "Returns first (I)Python-buffer found in `buffer-list'"

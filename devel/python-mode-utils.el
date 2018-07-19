@@ -1864,12 +1864,12 @@ Return beginning of ‘" ele "’ if successful, nil otherwise\"\n"))
     (insert "  (interactive)")
     (cond ((string-match "clause" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
+  (py--backward-prepare indent 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
 	  ((string-match "def\\|class" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-" ele "-re (called-interactively-p 'any) decorator bol))\n")))
+  (py--backward-prepare indent 'py-" ele "-re (called-interactively-p 'any) decorator bol))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-" ele "-re (called-interactively-p 'any)))\n")))
+  (py--backward-prepare indent 'py-" ele "-re (called-interactively-p 'any)))\n")))
 	  )))
 
 (defun py--insert-backward-bol-forms ()
@@ -1894,12 +1894,12 @@ Return beginning of ‘" ele "’ if successful, nil otherwise"))
     (insert "  (interactive)")
     (cond ((string-match "def\\|class" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-extended-block-or-clause-re (called-interactively-p 'any) decorator t))\n")))
+  (py--backward-prepare indent 'py-" ele "-re (called-interactively-p 'any) decorator t))\n")))
 	  ((string-match "clause" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re 'py-extended-block-or-clause-re (called-interactively-p 'any) nil t))\n")))
+  (py--backward-prepare indent 'py-extended-block-or-clause-re  (called-interactively-p 'any) nil t))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re 'py-clause-re (called-interactively-p 'any) nil t))\n"))))))
+  (py--backward-prepare indent 'py-" ele "-re (called-interactively-p 'any) nil t))\n"))))))
 
 (defun py-write-backward-forms ()
   "Uses py-backward-forms, not ‘py-navigate-forms’.
