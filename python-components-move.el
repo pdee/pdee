@@ -632,7 +632,7 @@ From a programm use macro `py-backward-comment' instead"
        (setq done (point))))
     (when (< (point) orig) (point))))
 
-(defun py--go-to-keyword (regexp &optional maxindent)
+(defun py--go-to-keyword (regexp &optional maxindent decorator)
   "Return a list, whose car is indentation, cdr position.
 
 Keyword detected from REGEXP
@@ -665,7 +665,7 @@ Honor MAXINDENT if provided"
 		    (looking-at regexp))
 	       (setq erg (point))
 	       (setq done t)))))
-    (when (and py-mark-decorators (looking-at py-def-or-class-re))
+    (when (and (or decorator py-mark-decorators) (looking-at py-def-or-class-re))
       (setq done (py--up-decorators-maybe (current-indentation)))
       (when done (setq erg done)))
     (when erg (setq erg (cons (current-indentation) erg)))
