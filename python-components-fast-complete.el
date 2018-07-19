@@ -59,7 +59,7 @@ completions on the current context."
 (defun py--fast-complete-base (shell word imports)
   (let* ((shell (or shell "python"))
 	 (buffer (get-buffer-create "*Python Fast*"))
-	 (proc (or (prog1 (get-buffer-process buffer)(setq done t)) (py--start-fast-process shell buffer)))
+	 (proc (or (get-buffer-process buffer) (py--start-fast-process shell buffer)))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 py-shell-module-completion-code)))
@@ -74,7 +74,7 @@ completions on the current context."
 Use `py-fast-process' "
   (interactive)
   (setq py-last-window-configuration
-  (current-window-configuration))
+	(current-window-configuration))
   (py--complete-prepare shell beg end word t))
 
 (provide 'python-components-fast-complete)
