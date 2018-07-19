@@ -415,14 +415,11 @@ See lp:1066489 "
 JUSTIFY should be used (if applicable) as in `fill-paragraph'.
 
 Fill according to `py-docstring-style' "
-  (interactive
-   (list
-    (progn
-      (barf-if-buffer-read-only)
-      (list (if current-prefix-arg 'full) t))
-    py-docstring-style
-    (or docstring (py--in-or-behind-or-before-a-docstring))))
-  (let* ((pps (parse-partial-sexp (point-min) (point)))
+  (interactive "*")
+  (let* ((justify (if current-prefix-arg 'full t))
+	 (style (or style py-docstring-style))
+	 (docstring (or docstring (py--in-or-behind-or-before-a-docstring)))
+	 (pps (parse-partial-sexp (point-min) (point)))
 	 (indent (save-excursion (and (nth 3 pps) (goto-char (nth 8 pps)) (current-indentation))))
 	 ;; fill-paragraph sets orig
 	 (orig (if (boundp 'orig) (copy-marker orig) (copy-marker (point))))
