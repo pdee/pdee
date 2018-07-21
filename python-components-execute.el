@@ -730,9 +730,11 @@ Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
       (if (comint-check-proc buffer)
       	  (py--reuse-existing-shell exception-buffer)
       	;; buffer might exist but not being empty
-      	(when (buffer-live-p buffer)
-      	  (with-current-buffer buffer
-      	    (erase-buffer)))
+      	(when (or (buffer-live-p buffer)(bufferp (get-buffer buffer))) 
+	  ;; kill-buffer-unconditional buffer
+	  (with-current-buffer buffer
+          (set-buffer-modified-p 'nil)
+          (kill-buffer (current-buffer))))
       	(py--create-new-shell executable args buffer exception-buffer)))
     (when (or (called-interactively-p 'any)
     	      (eq 1 argprompt)
@@ -812,7 +814,7 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
 	 (filename (or (and filename (expand-file-name filename))
 		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
-	 (proc (or proc (get-buffer-process buffer)
+ 	 (proc (or proc (get-buffer-process buffer)
 		   (prog1
 		       (get-buffer-process (py-shell nil dedicated shell buffer fast exception-buffer split switch))
 		     (sit-for 0.1))))

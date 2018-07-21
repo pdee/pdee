@@ -1155,5 +1155,14 @@ GeomSim."
     (py-indent-or-complete)
     (should (eq (char-before) ?.))))
 
+(ert-deftest py-beginning-of-block-test ()
+  (py-test-with-temp-buffer
+      "if False:
+    print(\"Nein\")
+else:
+    print(\"Ja\")"
+    (py-beginning-of-block)
+    (should (eq (char-after) ?i))))
+
 (provide 'py-ert-tests-2)
 ;;; py-ert-tests-2.el ends here
