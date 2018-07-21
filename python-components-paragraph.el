@@ -305,7 +305,7 @@ See lp:1066489 "
     (and
      (cdr delimiters-style)
      (or (newline (cdr delimiters-style)) t)))
-  ;; (py-indent-region docstring thisend)
+  (py-indent-line)
   (goto-char orig))
 
 (defun py--fill-docstring-base (thisbeg thisend style multi-line-p beg end py-current-indent orig)
@@ -387,7 +387,7 @@ See lp:1066489 "
                      (goto-char thisbeg)
 		     (py--skip-raw-string-front-fence)
 		     (skip-syntax-forward "^\|")
-                     (point))))
+                     (1+ (point)))))
          (parabeg (progn (goto-char orig) (py--beginning-of-paragraph-position)))
          (paraend (progn (goto-char orig) (py--end-of-paragraph-position)))
          ;; if paragraph is a substring, take it
@@ -422,7 +422,7 @@ Fill according to `py-docstring-style' "
 	 (pps (parse-partial-sexp (point-min) (point)))
 	 (indent (save-excursion (and (nth 3 pps) (goto-char (nth 8 pps)) (current-indentation))))
 	 ;; fill-paragraph sets orig
-	 (orig (if (boundp 'orig) (copy-marker orig) (copy-marker (point))))
+	 (orig (copy-marker (point)))
 	 (docstring (if (and docstring (not (number-or-marker-p docstring)))
 			(py--in-or-behind-or-before-a-docstring)
 		      docstring)))

@@ -663,7 +663,6 @@ os.chmod"
     ;; (switch-to-buffer (current-buffer))
     (should (looking-at "Help on built-in function chmod in os:"))))
 
-
 (ert-deftest py-execute-import-or-reload-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python
@@ -672,6 +671,18 @@ import os"
     (py-execute-import-or-reload)
     (should t)))
 
+(ert-deftest py-fill-docstring-pep-257-nn-test ()
+  (py-test-with-temp-buffer
+  "def usage():
+	\'\'\' asdf\' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+\'\'\'
+        pass"
+  (font-lock-fontify-region (point-min)(point-max))
+  (forward-line -2)
+  (search-forward "'''") 
+  (py-fill-string nil 'pep-257-nn)
+  (search-forward "'''") 
+  (should (eq 4 (current-indentation))))) 
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
