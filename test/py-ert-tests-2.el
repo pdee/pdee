@@ -664,6 +664,7 @@ that, needs, to_be, wrapped)
   (goto-char (point-max))
   (insert "pri")
   (py-indent-or-complete)
+  (sit-for 0.1) 
   (should (eq ?t (char-before))))
 
 (ert-deftest py-complete-in-python3-shell-test ()
