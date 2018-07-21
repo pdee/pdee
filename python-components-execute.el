@@ -666,13 +666,13 @@ Receives a ‘buffer-name’ as argument"
     (when py-use-local-default
       (error "Abort: ‘py-use-local-default’ is set to t but ‘py-shell-local-path’ is empty. Maybe call ‘py-toggle-local-default-use’"))))
 
-(defun py--provide-command-args (fast-process argprompt)
-  (cond (fast-process "-u")
+(defun py--provide-command-args (shell fast-process argprompt)
+  (cond ((and fast-process (not (string-match "^[Ii]" shell))) "-u")
 	((eq 2 (prefix-numeric-value argprompt))
 	 (mapconcat 'identity py-python2-command-args " "))
-	((string-match "^[Ii]" py-shell-name)
+	((string-match "^[Ii]" shell)
 	 py-ipython-command-args)
-	((string-match "^[^-]+3" py-shell-name)
+	((string-match "^[^-]+3" shell)
 	 (mapconcat 'identity py-python3-command-args " "))
 	(t (mapconcat 'identity py-python-command-args " "))))
 
@@ -707,7 +707,7 @@ Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
 	 (fast (or fast py-fast-process-p))
 	 (dedicated (or dedicated py-dedicated-process-p))
 	 (shell (or shell (py-choose-shell)))
-	 (args (py--provide-command-args fast argprompt))
+	 (args (py--provide-command-args shell fast argprompt))
 	 (py-use-local-default (py--determine-local-default))
 	 (buffer-raw (or buffer
 			 ;; Guess according to ARGPROMPT DEDICATED.
