@@ -625,13 +625,6 @@ Receives a ‘buffer-name’ as argument"
   (py--send-string-no-output "import sys")
   (py-fast-send-string "sys.ps1" proc buffer t))
 
-;; (defun py--start-fast-process (shell buffer)
-;;   (let ((proc))
-;;     (with-current-buffer buffer
-;;       (erase-buffer))
-;;     (start-process shell buffer shell)
-;;     proc))
-
 (defun py--start-fast-process (shell buffer)
   (start-process shell buffer shell))
 

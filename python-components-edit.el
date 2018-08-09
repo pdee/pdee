@@ -89,6 +89,12 @@ Requires BEG, END as the boundery of region"
           (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
           (indent-to (py-compute-indentation)))))))
 
+(defun py-indent-current-line (need)
+  "Indent current line to NEED."
+  (beginning-of-line)
+  (delete-horizontal-space)
+  (indent-to need))
+
 (defun py--indent-line-intern (need cui indent col &optional beg end region)
   (let (erg)
     (if py-tab-indent
@@ -152,7 +158,7 @@ Requires BEG, END as the boundery of region"
 		(beginning-of-line))))))
       (insert-tab))))
 
-(defun py--indent-line-base (beg end region cui need arg this-indent-offset col)
+(defun py--indent-line-or-region-base (beg end region cui need arg this-indent-offset col)
   (cond ((eq 4 (prefix-numeric-value arg))
 	 (if (and (eq cui (current-indentation))
 		  (<= need cui))
@@ -226,7 +232,7 @@ If `py-tab-indents-region-p' is t and first TAB doesn't shift
 		((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
 		 py-already-guessed-indent-offset)
 		(t (default-value 'py-indent-offset))))
-    (setq outmost (py-compute-indentation nil nil nil nil nil nil this-indent-offset))
+    (setq outmost (py-compute-indentation nil nil nil nil nil nil nil this-indent-offset))
     ;; now choose the indent
     (setq need
 	  (cond ((eq this-command last-command)
@@ -244,7 +250,7 @@ If `py-tab-indents-region-p' is t and first TAB doesn't shift
     ;; if at outmost
     ;; and not (eq this-command last-command), need remains nil
     (when need
-      (py--indent-line-base beg end region cui need arg this-indent-offset col)
+      (py--indent-line-or-region-base beg end region cui need arg this-indent-offset col)
       (and region (or py-tab-shifts-region-p
 		      py-tab-indents-region-p)
 	   (not (eq (point) orig))

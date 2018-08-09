@@ -694,31 +694,62 @@ When non-nil, `py-end-of-def' and related will work faster"
   :tag "py-dedent-keep-relative-column"
   :group 'python-mode)
 
-(defcustom py-indent-honors-multiline-listing nil
-  "If t, indents to 1+ column of opening delimiter.  If nil, indent adds one level to the beginning of statement.  Default is nil."
-  :type 'boolean
-  :tag "py-indent-honors-multiline-listing"
-  :group 'python-mode)
+(defcustom py-indent-list-style 'line-up-with-first-element
+  "LINE-UP-WITH-FIRST-ELEMENT: indents to 1+ column of opening delimiter
+def foo (a,
+         b):
 
-(defcustom py-indent-paren-spanned-multilines-p t
-  "If non-nil, indents elements of list to first element.
+ONE-LEVEL-TO-BEGINNING-OF-STATEMENT: add ‘py-indent-offset’ to beginning of statement
+def foo (a,
+    b):
 
+ONE-LEVEL-FROM-OPENER: add ‘py-indent-offset’ from first element
 def foo():
     if (foo &&
             baz):
-        bar()
-
-If nil line up with first element:
-
-def foo():
-    if (foo &&
-        baz):
-        bar()
-
-Default is t"
-  :type 'boolean
-  :tag "py-indent-paren-spanned-multilines-p"
+        bar()"
+  :type '(choice
+          (const :tag "line up with first element" line-up-with-first-element)
+          (const :tag "plus ‘py-indent-offset’ from beginning of statement" one-level-to-beginning-of-statement)
+          (const :tag "plus ‘py-indent-offset’ from first-element" one-level-from-first-element))
+  :tag "py-list-indent-style"
   :group 'python-mode)
+
+;; (defcustom py-indent-honors-multiline-listing nil
+;;   "If t, indents to 1+ column of opening delimiter.
+
+;; def foo (a,
+;;          b):
+
+;; If nil, indent adds one level to the beginning of statement.
+
+;; def foo (a,
+;;     b):
+
+;; Default is nil."
+;;   :type 'boolean
+;;   :tag "py-indent-honors-multiline-listing"
+;;   :group 'python-mode)
+
+;; (defcustom py-indent-paren-spanned-multilines-p t
+;;   "If non-nil, indents elements of list to first element.
+
+;; def foo():
+;;     if (foo &&
+;;             baz):
+;;         bar()
+
+;; If nil line up with first element:
+
+;; def foo():
+;;     if (foo &&
+;;         baz):
+;;         bar()
+
+;; Default is t"
+;;   :type 'boolean
+;;   :tag "py-indent-paren-spanned-multilines-p"
+;;   :group 'python-mode)
 
 (defcustom py-closing-list-dedents-bos nil
   "When non-nil, indent list's closing delimiter like start-column.
@@ -2368,11 +2399,6 @@ See also `py-assignment-re'")
 
 ;; (setq py-operator-re "[ \t]*\\(\\.\\|+\\|-\\|*\\|//\\|//\\|&\\|%\\||\\|\\^\\|>>\\|<<\\|<\\|<=\\|>\\|>=\\|==\\|!=\\|=\\)[ \t]*")
 
-(defvar py-assignment-re "[ \t]*=[^=]"
-  "Matches assignment operator inclusive whitespaces around.
-
-See also `py-operator-re'")
-
 (defvar py-delimiter-re "\\(\\.[[:alnum:]]\\|,\\|;\\|:\\)[ \t\n]"
   "Delimiting elements of lists or other programming constructs.")
 
@@ -2541,7 +2567,7 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 
 See ‘py-no-outdent-re-raw’ for better readable content")
 
-(defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)"
+(defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\).*"
   "If looking at the beginning of an assignment.")
 
 (defconst py-block-re "[ \t]*\\_<\\(class\\|def\\|async def\\|async for\\|for\\|if\\|try\\|while\\|with\\|async with\\)\\_>[:( \n\t]*"
@@ -2617,7 +2643,6 @@ Second group grabs the name")
 ;;    "[ \t]*\\_<\\("
 ;;    (regexp-opt  py-block-or-clause-re-raw)
 ;;    "\\)\\_>[( \t]*.*:?"))
-
 
 (defcustom py-block-re-raw
   (list

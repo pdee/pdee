@@ -76,6 +76,7 @@ hier() {
     $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq py-verbose-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \

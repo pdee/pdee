@@ -649,13 +649,26 @@ that, needs, to_be, wrapped)
       (goto-char 202)
       (assert (eq 6 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed"))))
 
-(ert-deftest py-ert-indent-in-arglist-test ()
+(ert-deftest py-ert-indent-in-arglist-test-1 ()
   (py-test-with-temp-buffer
       "def foo (a,\n):"
-    (let (py-indent-paren-spanned-multilines-p)
-      (should (eq 9 (py-compute-indentation))))
-    (let ((py-indent-paren-spanned-multilines-p t))
-      (should (eq 13 (py-compute-indentation))))))
+    (let ((py-indent-list-style 'line-up-with-first-element))
+      (py-indent-current-line (py-compute-indentation))
+      (should (eq 9 (current-indentation))))))
+
+(ert-deftest py-ert-indent-in-arglist-test-2 ()
+  (py-test-with-temp-buffer
+      "def foo (a,\n):"
+    (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
+      (py-indent-current-line (py-compute-indentation))
+      (should (eq 4 (current-indentation))))))
+
+(ert-deftest py-ert-indent-in-arglist-test-3 ()
+  (py-test-with-temp-buffer
+      "def foo (a,\n):"
+    (let ((py-indent-list-style 'one-level-from-opener))
+      (py-indent-current-line (py-compute-indentation))
+      (should (eq 13 (current-indentation))))))
 
 (ert-deftest py-complete-in-python-shell-test ()
   (py-kill-buffer-unconditional "*Python*")
@@ -664,7 +677,7 @@ that, needs, to_be, wrapped)
   (goto-char (point-max))
   (insert "pri")
   (py-indent-or-complete)
-  (sit-for 0.1) 
+  (sit-for 0.1)
   (should (eq ?t (char-before))))
 
 (ert-deftest py-complete-in-python3-shell-test ()
