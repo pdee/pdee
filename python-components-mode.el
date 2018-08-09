@@ -700,8 +700,10 @@ def foo (a,
          b):
 
 ONE-LEVEL-TO-BEGINNING-OF-STATEMENT: add ‘py-indent-offset’ to beginning of statement
-def foo (a,
-    b):
+def long_function_name(
+    var_one, var_two, var_three,
+    var_four):
+    print(var_one)
 
 ONE-LEVEL-FROM-OPENER: add ‘py-indent-offset’ from first element
 def foo():
