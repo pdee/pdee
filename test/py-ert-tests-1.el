@@ -316,8 +316,8 @@ my_list = [
     'd', 'e', 'f')"
     (should (eq 4 (py-compute-indentation)))))
 
-(ert-deftest py-ert-moves-up-class-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-up-class-bol-uzF3su ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -336,24 +336,11 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (should (eq 1 (py-up-class-bol)))))
 
-(ert-deftest py-ert-moves-up-def-or-class-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-up-def-or-class-bol-iPn4ge ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -372,25 +359,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
-(ert-deftest py-ert-moves-up-minor-block-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-up-minor-block-bol-sqyjbT ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -409,25 +383,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (py-up-minor-block-bol)
     (should (bobp))))
 
-(ert-deftest py-ert-moves-up-block-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-up-block-bol-u0LDDH ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -446,24 +407,11 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (py-up-block-bol)
     (should (looking-at " +def f():"))))
 
-(ert-deftest py-ert-moves-up-block-2 ()
+(ert-deftest py-ert-moves-up-block-w7eExs ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -491,12 +439,7 @@ my_list = [
         elif b:
             pass
         else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
-"
-    (search-backward "pass")
+            pass"
     (py-up-block)
     (should (looking-at "def f():"))))
 
@@ -524,7 +467,7 @@ my_list = [
     (py-up-minor-block)
     (should (looking-at "if a:"))))
 
-(ert-deftest py-ert-moves-up-block-bol-2 ()
+(ert-deftest py-ert-moves-up-block-bol-FneFQi ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -552,17 +495,12 @@ my_list = [
         elif b:
             pass
         else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
-"
-    (search-backward "pass")
+            pass"
     (py-up-block-bol)
     (should (looking-at " +def f"))))
 
-(ert-deftest py-ert-moves-up-def-bol-2 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-up-def-bol-wTMxJq ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -581,25 +519,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (py-up-def-bol)
     (should (bobp))))
 
-(ert-deftest py-ert-moves-up-class-bol-2 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-up-class-bol-hObRZJ ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -618,20 +543,7 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (should (eq 1 (py-up-class)))))
 
 (ert-deftest py-ert-moves-up-def-or-class-bol-2 ()
@@ -746,8 +658,8 @@ my_list = [
     (should (bolp))
     (should (looking-at " +def"))))
 
-(ert-deftest py-ert-down-class-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-down-class-bol-ubMUm6 ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -766,20 +678,7 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (should (not (py-down-class-bol)))))
 
 (ert-deftest py-ert-moves-down-def-or-class-bol-1 ()
@@ -1031,8 +930,8 @@ my_list = [
     (py-down-def)
     (should (eq (char-after) ?d))))
 
-(ert-deftest py-ert-moves-down-class-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-down-class-5kkTKq ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1051,20 +950,7 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (should (not (py-down-class)))))
 
 (ert-deftest py-ert-moves-down-def-or-class-1 ()
@@ -1104,8 +990,8 @@ my_list = [
     (py-down-def-or-class)
     (should (eq (char-after) ?d))))
 
-(ert-deftest py-ert-moves-backward-statement-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-backward-statement-bol-Njn9my ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1124,24 +1010,11 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (should (eq 332 (py-backward-statement-bol)))))
 
-(ert-deftest py-ert-moves-backward-block-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-backward-block-bol-x9If7W ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1160,25 +1033,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (indent-to 8)
     (should (eq 317 (py-backward-block-bol)))))
 
-(ert-deftest py-ert-moves-backward-clause-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-backward-clause-bol-RpODhD ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1197,25 +1057,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (indent-to 8)
     (should (eq 317 (py-backward-clause-bol)))))
 
-(ert-deftest py-ert-moves-backward-block-or-clause-bol-1 ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-backward-block-or-clause-bol-ZDM7aD ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1234,24 +1081,11 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
-    (goto-char 410)
     (indent-to 8)
     (should (eq 317 (py-backward-block-or-clause-bol)))))
 
-(ert-deftest py-ert-moves-backward-class-bol ()
+(ert-deftest py-ert-moves-backward-class-bol-PFB3qC ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -1280,14 +1114,11 @@ my_list = [
             pass
         else b:
             pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
     (should (eq 1 (py-backward-class-bol)))))
 
-(ert-deftest py-ert-moves-backward-def-or-class-bol ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-moves-backward-def-or-class-bol-xTvIPv ()
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1305,27 +1136,12 @@ my_list = [
         if a:
 
             ar_atpt_python_list_roh = ([
-                'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
-"
-    (goto-char 410)
-    (indent-to 4)
+                'python-expression',"
     (py-backward-def-or-class-bol)
     (should (looking-at "^ +def"))))
 
 (ert-deftest py-ert-moves-forward-clause-bol ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1351,17 +1167,12 @@ my_list = [
             ])
         elif b:
             pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
     (goto-char 576)
     (should (eq 594 (py-forward-clause-bol)))))
 
 (ert-deftest py-ert-moves-forward-block-or-clause-bol ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1389,9 +1200,6 @@ my_list = [
             pass
         else b:
             pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
 "
     (goto-char 576)
     (should (eq 594 (py-forward-block-or-clause-bol)))))

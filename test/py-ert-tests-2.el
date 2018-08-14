@@ -566,7 +566,7 @@ asdf = {
     }"
     (forward-char -1)
     (let ((py-closing-list-dedents-bos t))
-      (indent-line-to (py-compute-indentation)) 
+      (indent-line-to (py-compute-indentation))
       (should (eq 0 (current-column))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-12 ()
@@ -670,8 +670,8 @@ that, needs, to_be, wrapped)"
   (goto-char (point-max))
   (insert "pri")
   (py-indent-or-complete)
-  (sit-for 0.1)
-  (should (eq ?t (char-before))))
+  (sit-for 0.1) 
+  (should (or (eq ?t (char-before))(eq ?\( (char-before)))))
 
 (ert-deftest py-complete-in-python3-shell-test ()
   (py-kill-buffer-unconditional "*Python3*")
