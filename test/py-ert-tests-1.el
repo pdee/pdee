@@ -1,4 +1,4 @@
-;; py-ert-tests.el --- Tests, some adapted from python.el -*- lexical-binding: t; -*- 
+;; py-ert-tests.el --- Tests, some adapted from python.el -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013 Free Software Foundation, Inc.
 ;; Copyright (C) 2014-2015 Andreas Röhler, <andreas.roehler@online.de>
@@ -24,34 +24,10 @@
 
 ;; tests are expected to run from directory test
 
-(defvar py-def-and-class-test-string "class kugel(object):
-    zeit = time.strftime('%Y%m%d--%H-%M-%S')
-    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
-    spiel = []
-    gruen = [0]
-    rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+;; (add-to-list 'load-path default-directory)
 
-    def pylauf(self):
-        \"\"\"Eine Doku fuer pylauf\"\"\"
-        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
-        ausgabe[0] = treffer
-        fertig = ''
-#        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
-        if treffer in gruen:
-            # print \"0, Gruen\"
-            ausgabe[1] = treffer
-            ausgabe[2] = treffer
-
-        elif treffer in schwarz:
-            # print \"%i, Schwarz\" % (treffer)
-            ausgabe[1] = treffer
-
-if __name__ == \"__main__\":
-    main()
-")
-
-(add-to-list 'load-path default-directory)
+(ert-deftest py-ert-list-indent-style-test ()
+  (should py-indent-list-style))
 
 (ert-deftest py-ert-electric-kill-backward-bracket-test ()
   (let ((py-electric-kill-backward-p t))
@@ -110,45 +86,122 @@ if __name__ == \"__main__\":
       (py-electric-backspace 1)
       (should (eq ?\} (char-after))))))
 
-(ert-deftest py-ert-indent-dedenters-1 ()
+(ert-deftest py-ert-indent-dedenters-WoWM6j ()
   "Check all dedenters."
 
-  (py-test-with-temp-buffer-point-min
-    "def foo(a, b, c):
+  (py-test-with-temp-buffer
+      "def foo(a, b, c):
+    if a:"
+    (should (eq 4 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-dedenters-4qujpk ()
+  "Check all dedenters."
+
+  (py-test-with-temp-buffer
+      "def foo(a, b, c):
     if a:
-        print (a)
+        print(a)
+"
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-dedenters-OmirYx ()
+  "Check all dedenters."
+
+  (py-test-with-temp-buffer
+      "def foo(a, b, c):
+    if a:
+        print(a)
+    elif b:"
+    (should (eq 4 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-dedenters-P9MB72 ()
+  "Check all dedenters."
+
+  (py-test-with-temp-buffer
+      "def foo(a, b, c):
+    if a:
+        print(a)
     elif b:
-        print (b)
+        print(b)"
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-dedenters-SFnpJ4 ()
+  "Check all dedenters."
+
+  (py-test-with-temp-buffer
+      "def foo(a, b, c):
+    if a:
+        print(a)
+    elif b:
+        print(b)
+    else:
+        try:"
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-dedenters-m0FUAw ()
+  "Check all dedenters."
+
+  (py-test-with-temp-buffer
+      "def foo(a, b, c):
+    if a:
+        print(a)
+    elif b:
+        print(b)
     else:
         try:
-            print (c.pop())
+            print(c.pop())"
+    (should (eq 12 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-dedenters-nK9iWx ()
+  "Check all dedenters."
+
+  (py-test-with-temp-buffer
+      "def foo(a, b, c):
+    if a:
+        print(a)
+    elif b:
+        print(b)
+    else:
+        try:
+            print(c.pop())
+        except (IndexError, AttributeError):"
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-dedenters-WRXYEM ()
+  "Check all dedenters."
+
+  (py-test-with-temp-buffer
+      "def foo(a, b, c):
+    if a:
+        print(a)
+    elif b:
+        print(b)
+    else:
+        try:
+            print(c.pop())
         except (IndexError, AttributeError):
-            print (c)
+            print(c)
         finally:
-            print ('nor a, nor b are true')
-"
-   (search-forward "if a:")
-   (should (= (py-compute-indentation) 4))
-   (search-forward "print (a)")
-   (should (= (py-compute-indentation) 8))
-   (search-forward "elif b:")
-   (should (= (py-compute-indentation) 4))
-   (search-forward "print (b)")
-   (should (= (py-compute-indentation) 8))
-   (search-forward "else:")
-   (should (= (py-compute-indentation) 4))
-   (search-forward "try:")
-   (should (= (py-compute-indentation) 8))
-   (search-forward "print (c.pop())")
-   (should (= (py-compute-indentation) 12))
-   (search-forward "except (IndexError, AttributeError):")
-   (should (= (py-compute-indentation) 8))
-   (search-forward "print (c)")
-   (should (= (py-compute-indentation) 12))
-   (search-forward "finally:")
-   (should (= (py-compute-indentation) 8))
-   (search-forward "print ('nor a, nor b are true')")
-   (should (= (py-compute-indentation) 12))))
+            print('nor a, nor b are true')"
+    (should (eq 12 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-after-backslash-lp-852052-ztz4Yn ()
+  (py-test-with-temp-buffer
+      "from foo.bar.baz import something, something_1 \\"
+    (should (eq 0 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-after-backslash-lp-852052-LlOrDK ()
+  (py-test-with-temp-buffer
+      "from foo.bar.baz import something, something_1 \\
+     something_2 something_3, \\"
+    (should (eq 5 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-after-backslash-lp-852052-nvVJgu ()
+  (py-test-with-temp-buffer
+      "from foo.bar.baz import something, something_1 \\
+     something_2 something_3, \\
+     something_4, something_5"
+    (should (eq 5 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-after-backslash-lp-852052-1 ()
   "The most common case."
@@ -158,62 +211,110 @@ from foo.bar.baz import something, something_1 \\
      something_2 something_3, \\
      something_4, something_5
 "
-    (search-forward "from foo.bar.baz import something, something_1")
-    (should (= (py-compute-indentation) 0))
     (search-forward "something_2 something_3,")
     (should (= (py-compute-indentation) 5))
     (search-forward "something_4, something_5")
     (should (= (py-compute-indentation) 5))))
 
-(ert-deftest py-ert-indent-closing ()
+(ert-deftest py-ert-bracket-closing-1 ()
   ""
-  (py-test-with-temp-buffer-point-min
-   "
+  (py-test-with-temp-buffer
+      "
 my_list = [
     1, 2, 3,
     4, 5, 6,
-    ]
-result = some_function_that_takes_arguments(
+    ]"
+    (beginning-of-line)
+    (let ((py-closing-list-dedents-bos t))
+      (should (eq 0 (py-compute-indentation))))))
+
+(ert-deftest py-ert-bracket-closing-2 ()
+  ""
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]"
+    (forward-char -1)
+    (let ((py-closing-list-dedents-bos t))
+      (should (eq 0 (py-compute-indentation))))))
+
+(ert-deftest py-ert-bracket-closing-3 ()
+  ""
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]"
+    (let ((py-closing-list-dedents-bos t))
+      (should (eq 0 (py-compute-indentation))))))
+
+(ert-deftest py-ert-bracket-closing-4 ()
+  ""
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]"
+    (beginning-of-line)
+    (let ((py-closing-list-dedents-bos nil))
+      (should (eq 4 (py-compute-indentation))))))
+
+(ert-deftest py-ert-bracket-closing-5 ()
+  ""
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]"
+    (forward-char -1)
+    (let ((py-closing-list-dedents-bos nil))
+      (should (eq 4 (py-compute-indentation))))))
+
+(ert-deftest py-ert-bracket-closing-6 ()
+  ""
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]"
+    (let ((py-closing-list-dedents-bos nil))
+      (should (eq 4 (py-compute-indentation))))))
+
+(ert-deftest py-ert-indent-closing-tx8E5Q ()
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]"
+    (should (eq 4 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-closing-GOD79x ()
+  (py-test-with-temp-buffer
+      "result = some_function_that_takes_arguments(
     'a', 'b', 'c',
-    'd', 'e', 'f',
-    )
-"
-   (goto-char 40)
-   (should (eq 4 (py-compute-indentation)))
-   (goto-char 129)
-   (should (eq 4 (py-compute-indentation)))))
+    'd', 'e', 'f')"
+    (should (eq 4 (py-compute-indentation)))))
 
-(setq py-ert-moves-text "class OrderedDict1(dict):
-    \"\"\"
-    This implementation of a dictionary keeps track of the order
-    in which keys were inserted.
-    \"\"\"
+(ert-deftest py-ert-indent-closing-06uwom ()
+  (py-test-with-temp-buffer
+      "result = some_function_that_takes_arguments(
+    'a', 'b', 'c',
+    'd', 'e', 'f')"
+    (should (eq 4 (py-compute-indentation)))))
 
-    def __init__(self, d={}):
-        self._keys = d.keys()
-        dict.__init__(self, d)
-
-    def f():
-        \"\"\"
-        class for in 'for in while with blah'
-        \"\"\"
-        if a:
-
-            ar_atpt_python_list_roh = ([
-                'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
-")
+(ert-deftest py-ert-indent-closing-GOD79x ()
+  (py-test-with-temp-buffer
+      "result = some_function_that_takes_arguments(
+    'a', 'b', 'c',
+    'd', 'e', 'f')"
+    (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-moves-up-class-bol-1 ()
   (py-test-with-temp-buffer-point-min
@@ -642,7 +743,7 @@ result = some_function_that_takes_arguments(
 "
     (search-backward "__init__")
     (py-down-def-bol)
-    (should (bolp)) 
+    (should (bolp))
     (should (looking-at " +def"))))
 
 (ert-deftest py-ert-down-class-bol-1 ()
@@ -752,7 +853,7 @@ result = some_function_that_takes_arguments(
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    (search-backward "__init__") 
+    (search-backward "__init__")
     (py-down-block)
     (should (looking-at "def"))))
 
@@ -789,7 +890,7 @@ result = some_function_that_takes_arguments(
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    (search-backward "__init__") 
+    (search-backward "__init__")
     (py-down-block-bol)
     (should (bolp))
     (should (looking-at " +def"))))
@@ -821,8 +922,8 @@ result = some_function_that_takes_arguments(
             ])
         if b:
             pass"
-    (switch-to-buffer (current-buffer)) 
-    (search-backward "a:") 
+    (switch-to-buffer (current-buffer))
+    (search-backward "a:")
     (py-down-minor-block)
     (should (eq (char-after) ?i))))
 
@@ -853,7 +954,7 @@ result = some_function_that_takes_arguments(
             ])
         if b:
             pass"
-    (search-backward "__init__") 
+    (search-backward "__init__")
     (py-down-minor-block-bol)
     (should (bolp))
     (should (looking-at " +if"))))
@@ -1333,7 +1434,7 @@ result = some_function_that_takes_arguments(
             ausgabe[7] = treffer
 "
     (search-backward "else:")
-    (end-of-line) 
+    (end-of-line)
     (should (eq 362 (py--beginning-of-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-6 ()
@@ -1394,7 +1495,7 @@ result = some_function_that_takes_arguments(
             ausgabe[7] = treffer
 "
     (search-backward "else:")
-    (end-of-line) 
+    (end-of-line)
     (should (eq 362 (py--beginning-of-block-or-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-9 ()
@@ -1855,7 +1956,7 @@ def baz():
       (and (should (search-backward "py-execute-statement-test" nil t 1))
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
-(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-1-test ()
+(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-1 ()
   "Indent line-by-line as first line is okay "
   (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
@@ -1872,63 +1973,87 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
    (search-forward "True")
    (save-excursion
      (py-indent-region (line-beginning-position) (point-max)))
-   (should (eq 4 (current-indentation)))
-   (search-forward "with file")
-   (should (eq 8 (current-indentation)))
-   (search-forward "for i ")
-   (should (eq 12 (current-indentation)))
-   (search-forward "bar.")
-   (should (eq 16 (current-indentation)))
-   (search-forward "datei.write")
-   (should (eq 16 (current-indentation)))))
+   (should (eq 4 (current-indentation)))))
 
-(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-2-test ()
-  "Keep indent of remaining block as first line was fixed. "
+(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-2 ()
+  "Indent line-by-line as first line is okay "
   (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
-    if True:
-	print(123)
+if True:
+    print(123)
 
 with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     for i in range(anzahl):
-	bar.dosomething()
-	datei.write(str(baz[i]) + \"\\n\")
+        bar.dosomething()
+        datei.write(str(baz[i]) + \"\\n\")
 "
-   (search-forward "for i ")
+   (search-forward "True")
    (save-excursion
      (py-indent-region (line-beginning-position) (point-max)))
-   (should (eq 4 (current-indentation)))
-   (search-forward "bar.")
-   (should (eq 8 (current-indentation)))
-   (search-forward "datei.write")
+   (search-forward "with file")
    (should (eq 8 (current-indentation)))))
 
-(ert-deftest indent-region-lp-997958-lp-1426903-arg-1-test ()
-  (py-test-with-temp-buffer
+(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-3 ()
+  "Indent line-by-line as first line is okay "
+  (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
-print(123)
+if True:
+    print(123)
 
 with file(\"foo\" + zeit + \".ending\", 'w') as datei:
-for i in range(anzahl):
-bar.dosomething()
-datei.write(str(baz[i]) + \"\\n\")
+    for i in range(anzahl):
+        bar.dosomething()
+        datei.write(str(baz[i]) + \"\\n\")
 "
-   (py-indent-region 48 (point-max))
-   (goto-char (point-min))
-   (search-forward "print(123)")
-   (should (eq 4 (current-indentation)))
-   (search-forward "with file")
-   (should (eq 4 (current-indentation)))
+   (search-forward "True")
+   (save-excursion
+     (py-indent-region (line-beginning-position) (point-max)))
    (search-forward "for i ")
-   (should (eq 8 (current-indentation)))
-   (search-forward "bar.")
-   (should (eq 12 (current-indentation)))
-   (search-forward "datei.write")
    (should (eq 12 (current-indentation)))))
+
+(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-4 ()
+  "Indent line-by-line as first line is okay "
+  (py-test-with-temp-buffer-point-min
+   "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo ():
+if True:
+    print(123)
+
+with file(\"foo\" + zeit + \".ending\", 'w') as datei:
+    for i in range(anzahl):
+        bar.dosomething()
+        datei.write(str(baz[i]) + \"\\n\")
+"
+   (search-forward "True")
+   (save-excursion
+     (py-indent-region (line-beginning-position) (point-max)))
+   (search-forward "bar.")
+   (should (eq 16 (current-indentation)))))
+
+(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-5 ()
+  "Indent line-by-line as first line is okay "
+  (py-test-with-temp-buffer-point-min
+   "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo ():
+if True:
+    print(123)
+
+with file(\"foo\" + zeit + \".ending\", 'w') as datei:
+    for i in range(anzahl):
+        bar.dosomething()
+        datei.write(str(baz[i]) + \"\\n\")
+"
+   (search-forward "True")
+   (save-excursion
+     (py-indent-region (line-beginning-position) (point-max)))
+   (search-forward "datei.write")
+   (should (eq 16 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-arg-2-test ()
   "Indent line-by-line as first line is okay "

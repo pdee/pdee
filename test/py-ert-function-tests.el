@@ -27,6 +27,9 @@
 (ert-deftest py-ert-virtualenv-filter-functionp-test ()
   (should (functionp 'virtualenv-filter)))
 
+(ert-deftest py-ert-py-beginning-of-statement-p-functionp-test ()
+  (should (functionp 'py-beginning-of-statement-p)))
+
 (ert-deftest py-ert-virtualenv-append-path-functionp-test ()
   (should (functionp 'virtualenv-append-path)))
 
@@ -1290,8 +1293,8 @@
 (ert-deftest py-ert--indent-line-intern-functionp-test ()
   (should (functionp 'py--indent-line-intern)))
 
-(ert-deftest py-ert--indent-line-base-functionp-test ()
-  (should (functionp 'py--indent-line-base)))
+(ert-deftest py-compute-comment-indentation-functionp-test ()
+  (should (functionp 'py-compute-comment-indentation)))
 
 (ert-deftest py-ert--calculate-indent-backwards-functionp-test ()
   (should (functionp 'py--calculate-indent-backwards)))
@@ -1866,9 +1869,6 @@
 (ert-deftest py-ert---emacs-version-greater-23-functionp-test ()
   (should (functionp 'py---emacs-version-greater-23)))
 
-(ert-deftest py-ert--empty-arglist-indent-functionp-test ()
-  (should (functionp 'py--empty-arglist-indent)))
-
 (ert-deftest py-ert-symbol-at-point-functionp-test ()
   (should (functionp 'py-symbol-at-point)))
 
@@ -1884,8 +1884,8 @@
 (ert-deftest py-ert-compute-indentation-functionp-test ()
   (should (functionp 'py-compute-indentation)))
 
-(ert-deftest py-ert--fetch-previous-indent-functionp-test ()
-  (should (functionp 'py--fetch-previous-indent)))
+(ert-deftest py-ert--py--fetch-indent-statement-above-functionp-test ()
+  (should (functionp 'py--fetch-indent-statement-above)))
 
 (ert-deftest py-ert-continuation-offset-functionp-test ()
   (should (functionp 'py-continuation-offset)))

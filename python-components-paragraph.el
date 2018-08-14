@@ -416,7 +416,7 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'.
 
 Fill according to `py-docstring-style' "
   (interactive "*")
-  (let* ((justify (if current-prefix-arg 'full t))
+  (let* ((justify (or justify (if current-prefix-arg 'full t)))
 	 (style (or style py-docstring-style))
 	 (docstring (or docstring (py--in-or-behind-or-before-a-docstring)))
 	 (pps (parse-partial-sexp (point-min) (point)))

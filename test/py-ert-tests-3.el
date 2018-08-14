@@ -44,7 +44,7 @@ py_if_name_main_permission_test()
       (py-execute-buffer-python2)
       (set-buffer "*Python2*")
       (goto-char (point-max))
-      (skip-chars-backward " >\t\r\n\f") 
+      (skip-chars-backward " >\t\r\n\f")
       ;; (forward-line -1)
       (end-of-line)
       (sit-for 0.2)
@@ -179,26 +179,9 @@ def foo():
             baz):
         bar()
 "
-  (let (py-indent-paren-spanned-multilines-p)
+  (let ((py-indent-list-style 'one-level-from-first-element))
     (search-forward "b")
-    (should (eq 8 (py-compute-indentation)))
-    (search-forward "def foo():")
-    (search-forward "b")
-    (setq py-indent-paren-spanned-multilines-p t)
     (should (eq 12 (py-compute-indentation))))))
-
-;; (ert-deftest py-raw-docstring-test-1 ()
-;;   (py-test-with-temp-buffer-point-min
-;;       "def f():
-;;     r\"\"\" This is the docstring for my function.It's a raw docstring because I want to type \\t here, and maybe \\n,for example in LaTeX code like \\tau or \\nu.
-
-;; More docstring here.
-;; \"\"\"
-;;  pass"
-;;     (search-forward "docstring")
-;;     (py-backward-statement)
-;;     (sit-for 0.1)
-;;     (should (eq (char-after) ?r))))
 
 (ert-deftest py-raw-docstring-test-2 ()
   (py-test-with-temp-buffer-point-min
@@ -369,7 +352,6 @@ More docstring here.
       "print('test'
           'string'
           'here')"
-    (forward-line -1)
     (beginning-of-line)
     (should (eq 6 (py-compute-indentation)))))
 
@@ -380,21 +362,28 @@ More docstring here.
     # Yes, so break the lock.
     self._break()
     log.error('lifetime has expired, breaking')"
-    (search-backward "datetime.datetime.now")
-    (beginning-of-line)
-    (should (eq 8 (py-compute-indentation)))))
+    (let ((py-indent-list-style 'line-up-with-first-element))
+      (search-backward "datetime.datetime.now")
+      (indent-line-to (py-compute-indentation))
+      (should (eq 4 (current-indentation))))))
 
 (ert-deftest py-ert-list-indent-test-3 ()
-  (let (py-indent-paren-spanned-multilines-p)
   (py-test-with-temp-buffer
-	"if (release_time != -1 and
+      "if (release_time != -1 and
     datetime.datetime.now() > release_time + CLOCK_SLOP):
     # Yes, so break the lock.
     self._break()
     log.error('lifetime has expired, breaking')"
-	(search-backward "datetime.datetime.now")
-	(beginning-of-line)
-	(should (eq 4 (py-compute-indentation))))))
+    (let ((py-indent-list-style 'one-level-from-first-element))
+      (search-backward "datetime.datetime.now")
+      (indent-line-to (py-compute-indentation))
+      (should (eq 8 (current-indentation))))))
+
+(ert-deftest py-ert-list-indent-test-4 ()
+  (py-test-with-temp-buffer
+	"if (release_time != -1 and
+    datetime.datetime.now() > release_time + CLOCK_SLOP):"
+	(should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-dont-stop-embedded-def-or-class-test-1 ()
   (py-test-with-temp-buffer
@@ -679,10 +668,10 @@ import os"
         pass"
   (font-lock-fontify-region (point-min)(point-max))
   (forward-line -2)
-  (search-forward "'''") 
+  (search-forward "'''")
   (py-fill-string nil 'pep-257-nn)
-  (search-forward "'''") 
-  (should (eq 4 (current-indentation))))) 
+  (search-forward "'''")
+  (should (eq 4 (current-indentation)))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

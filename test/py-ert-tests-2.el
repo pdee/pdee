@@ -60,7 +60,6 @@
     (font-lock-fontify-region (point-min) (point-max))
     (should (eq 'py-object-reference-face (get-char-property (point) 'face)))))
 
-
 (ert-deftest py-ert-borks-all-lp-1294820 ()
   (py-test-with-temp-buffer-point-min
       "# M-q within some code (not in= a docstring) completely borks all previous
@@ -257,7 +256,6 @@ by the
     (py-up-block)
     (should (looking-at "else:"))))
 
-
 (ert-deftest py-ert-deletes-too-much-lp:1300270 ()
   (py-test-with-temp-buffer "
 x = {'abc':'def',
@@ -453,221 +451,216 @@ class bar:
     (py-backward-except-block-bol)
     (should (eq (char-after) ?\ ))))
 
-  ;; (and (bufferp (get-buffer "*Python*"))(buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
-  ;; (and (bufferp (get-buffer "*IPython*"))(buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*")))
-
-;; (defmacro py-bug-tests-intern (testname arg teststring)
-;;   "Just interally. "
-;;   (declare (debug (edebug-form-spec t)))
-;;   `(let ((debug-on-error t)
-;;          (enable-local-variables :all)
-;;          py-load-pymacs-p
-;;          ;; py-split-window-on-execute
-;;          ;; py-switch-buffers-on-execute-p
-;;          py-start-run-py-shell
-;;          proc
-;;          py-fontify-shell-buffer-p
-;;   	 (test-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
-;;      (with-current-buffer test-buffer
-;;        (delete-other-windows)
-;;        (erase-buffer)
-;;        (fundamental-mode)
-;;        (python-mode)
-;;        (insert ,teststring)
-;;        (when py-debug-p (switch-to-buffer test-buffer))
-;;        (local-unset-key (kbd "RET"))
-;;        (sit-for 0.1)
-;;        (when (and (boundp 'company-mode) company-mode) (company-abort))
-;;        (funcall ,testname ,arg)
-;;        (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
-;;        ;; (unless (< 1 arg)
-;;        (unless (eq 2 arg)
-;;   	 (set-buffer-modified-p 'nil)
-;;   	 (and (get-buffer-process test-buffer)
-;;   	      (set-process-query-on-exit-flag (get-buffer-process test-buffer) nil)
-;;   	      (kill-process (get-buffer-process test-buffer)))
-;;   	 (kill-buffer test-buffer)))))
-
-;; (defun nested-dictionaries-indent-lp:328791-test (&optional arg)
-;;   "With ARG greater 1 keep test buffer open.
-
-;; If no `load-branch-function' is specified, make sure the appropriate branch is loaded. Otherwise default python-mode will be checked. "
-;;   (interactive "p")
-;;   (let ((teststring "
-
-;; # hanging
-;; asdf = {
-;;     'a':{
-;;          'b':3,
-;;          'c':4
-;;         }
-;;     }
-
-;; # closing
-;; asdf = {
-;;     'a':{
-;;         'b':3,
-;;         'c':4
-;;     }
-;; }
-
-;; data = {
-;;     'key':
-;;     {
-;;         'objlist': [
-;;             {
-;;                 'pk': 1,
-;;                 'name': 'first',
-;;             },
-;;             {
-;;                 'pk': 2,
-;;                 'name': 'second',
-;;             }
-;;         ]
-;;     }
-;; }
-
-;; "))
-;;     (py-bug-tests-intern 'nested-dictionaries-indent-lp:328791-base arg teststring)))
-
-(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test ()
-  (py-test-with-temp-buffer-point-min
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-1 ()
+  (py-test-with-temp-buffer
       "
+asdf = {
+    'a':{"
+    (beginning-of-line)
+    (should (eq 4 (py-compute-indentation)))))
 
-# hanging
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-2 ()
+  (py-test-with-temp-buffer
+      "
+asdf = {
+    'a':{"
+    (forward-char -2)
+    (should (eq 4 (py-compute-indentation)))))
+
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-3 ()
+  (py-test-with-temp-buffer
+      "
+asdf = {
+    'a':{"
+    (should (eq 4 (py-compute-indentation)))))
+
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-4 ()
+  (py-test-with-temp-buffer
+      "
+asdf = {
+    'a':{
+         'b':3,
+         'c':4"
+    (beginning-of-line)
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-5 ()
+  (py-test-with-temp-buffer
+      "
+asdf = {
+    'a':{
+         'b':3,
+         'c':4"
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-6 ()
+  (py-test-with-temp-buffer
+      "
+asdf = {
+    'a':{
+         'b':3,
+         'c':4"
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-7 ()
+  (py-test-with-temp-buffer
+      "
+# hanging, py-closing-list-dedents-bos nil
 asdf = {
     'a':{
          'b':3,
          'c':4
-        }
-    }
+         }"
+    (beginning-of-line)
+    (let ((py-closing-list-dedents-bos nil))
+      (should (eq 9 (py-compute-indentation))))))
 
-# closing
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-8 ()
+  (py-test-with-temp-buffer
+      "
+# hanging, py-closing-list-dedents-bos nil
 asdf = {
     'a':{
-        'b':3,
-        'c':4
-    }
-}
+         'b':3,
+         'c':4
+         }"
+    (forward-char -1)
+    (let ((py-closing-list-dedents-bos nil))
+      (should (eq 9 (py-compute-indentation))))))
 
-data = {
-    'key':
-    {
-        'objlist': [
-            {
-                'pk': 1,
-                'name': 'first',
-            },
-            {
-                'pk': 2,
-                'name': 'second',
-            }
-        ]
-    }
-}
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-9 ()
+  (py-test-with-temp-buffer
+      "
+# hanging, py-closing-list-dedents-bos nil
+asdf = {
+    'a':{
+         'b':3,
+         'c':4
+         }"
+    (let ((py-closing-list-dedents-bos nil))
+      (should (eq 9 (py-compute-indentation))))))
 
-"
-    (let ((py-indent-honors-multiline-listing t)
-	  py-closing-list-dedents-bos)
-      (search-forward "'a':{")
-      (should (eq 4 (py-compute-indentation)))
-      (search-forward "}")
-      (should (eq 8 (py-compute-indentation)))
-      (search-forward "}")
-      (should (eq 4 (py-compute-indentation)))
-      ;; py-closing-list-dedents-bos
-      (setq py-closing-list-dedents-bos t)
-      (search-forward "'a':{")
-      (should (eq 4 (py-compute-indentation)))
-      (search-forward "}")
-      (should (eq 4 (py-compute-indentation)))
-      (search-forward "}")
-      (should (eq 0 (py-compute-indentation)))
-      (search-forward "}" nil nil 2)
-      (should (eq 12 (py-compute-indentation)))
-      (search-forward "]")
-      (should (eq 8 (py-compute-indentation)))
-      (search-forward "}")
-      (should (eq 4 (py-compute-indentation)))
-      (search-forward "}")
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-10 ()
+  (py-test-with-temp-buffer
+      "
+# closing, py-closing-list-dedents-bos t
+asdf = {
+    'a':{
+         'b':3,
+         'c':4
+    }
+    }"
+    (beginning-of-line)
+    (let ((py-closing-list-dedents-bos t))
+      (should (eq 0 (py-compute-indentation))))))
+
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-11 ()
+  (py-test-with-temp-buffer
+      "
+# closing, py-closing-list-dedents-bos t
+asdf = {
+    'a':{
+         'b':3,
+         'c':4
+    }
+    }"
+    (forward-char -1)
+    (let ((py-closing-list-dedents-bos t))
+      (indent-line-to (py-compute-indentation)) 
+      (should (eq 0 (current-column))))))
+
+(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-12 ()
+  (py-test-with-temp-buffer
+      "
+# closing, py-closing-list-dedents-bos t
+asdf = {
+    'a':{
+         'b':3,
+         'c':4
+    }
+    }"
+    (let ((py-closing-list-dedents-bos t))
       (should (eq 0 (py-compute-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-1 ()
   (py-test-with-temp-buffer-point-min
       "\(long, sequence, of_items,
- that, needs, to_be, wrapped) = input_list
-
-packed_entry = (long, sequence, of_items,
-that, needs, to_be, wrapped)
-
-\( whitespaced, long, sequence, of_items,
-    that, needs, to_be, wrapped) = input_list
-"
-    (let ((py-indent-honors-multiline-listing t))
-        (search-forward "(long")
-      (forward-char -1)
-      ;; (goto-char 6)
+ that, needs, to_be, wrapped) = input_list"
+    (let ((py-indent-list-style 'one-level-from-first-element))
+      (forward-char 1)
       (should (eq nil (get-char-property (point) 'face))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-2 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       "\(long, sequence, of_items,
- that, needs, to_be, wrapped) = input_list
-
-packed_entry = (long, sequence, of_items,
-that, needs, to_be, wrapped)
-
-\( whitespaced, long, sequence, of_items,
-    that, needs, to_be, wrapped) = input_list
-"
-    (let ((py-indent-honors-multiline-listing t)
-	  py-indent-paren-spanned-multilines-p)
-      (goto-char 33)
-      (assert (eq 1 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
-      (goto-char 115)
-      (assert (eq 16 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
-      (goto-char 202)
-      (assert (eq 2 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed"))))
+ that, needs, to_be, wrapped) = input_list"
+    (let ((py-indent-list-style 'one-level-from-first-element))
+      (should (eq 5 (py-compute-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-3 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       "\(long, sequence, of_items,
- that, needs, to_be, wrapped) = input_list
+ that, needs, to_be, wrapped) = input_list"
+    (let ((py-indent-list-style 'line-up-with-first-element))
+      (indent-line-to (py-compute-indentation))
+      (should (eq 5 (current-indentation))))))
 
-packed_entry = (long, sequence, of_items,
-that, needs, to_be, wrapped)
+(ert-deftest py-ert-flexible-indentation-lp-328842-test-4 ()
+  (py-test-with-temp-buffer
+      "packed_entry = (long, sequence, of_items,
+that, needs, to_be, wrapped)"
+    (let ((py-indent-list-style 'one-level-from-first-element))
+      (indent-line-to (py-compute-indentation))
+      (should  (eq 20 (current-indentation))))))
 
-\( whitespaced, long, sequence, of_items,
-    that, needs, to_be, wrapped) = input_list
-"
-    (let ((py-indent-honors-multiline-listing t)
-	  (py-indent-paren-spanned-multilines-p t))
-      (goto-char 33)
-      (assert (eq 5 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
-      (goto-char 115)
-      (assert (eq 20 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed")
-      (goto-char 202)
-      (assert (eq 6 (py-compute-indentation)) nil "flexible-indentation-lp-328842-test failed"))))
+(ert-deftest py-ert-flexible-indentation-lp-328842-test-5 ()
+  (py-test-with-temp-buffer
+      "\( whitespaced, long, sequence, of_items,
+    that, needs, to_be, wrapped) = input_list"
+    (let ((py-indent-list-style 'one-level-from-first-element))
+      (indent-line-to (py-compute-indentation))
+      (should (eq 5 (py-compute-indentation))))))
+
+;; (ert-deftest py-ert-flexible-indentation-lp-328842-test-6 ()
+;;   (py-test-with-temp-buffer
+;;       "\(long, sequence, of_items,
+;;  that, needs, to_be, wrapped) = input_list
+
+;; packed_entry = (long, sequence, of_items,
+;; that, needs, to_be, wrapped)
+
+;; \( whitespaced, long, sequence, of_items,
+;;     that, needs, to_be, wrapped) = input_list"
+;;     (let ((py-indent-list-style 'one-level-from-first-element))
+;;       (goto-char 33)
+;;       (indent-line-to (py-compute-indentation))
+;;       (should (eq 5 (current-indentation)))
+;;       (goto-char 115)
+;;       (indent-line-to (py-compute-indentation))
+;;       (should (eq 20 (current-indentation)))
+;;       (goto-char 202)
+;;       (indent-line-to (py-compute-indentation))
+;;       (should (eq 6 (current-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-1 ()
   (py-test-with-temp-buffer
       "def foo (a,\n):"
     (let ((py-indent-list-style 'line-up-with-first-element))
-      (py-indent-current-line (py-compute-indentation))
+      (indent-line-to  (py-compute-indentation))
       (should (eq 9 (current-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-2 ()
   (py-test-with-temp-buffer
       "def foo (a,\n):"
     (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
-      (py-indent-current-line (py-compute-indentation))
+      (indent-line-to (py-compute-indentation))
       (should (eq 4 (current-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-3 ()
   (py-test-with-temp-buffer
       "def foo (a,\n):"
-    (let ((py-indent-list-style 'one-level-from-opener))
-      (py-indent-current-line (py-compute-indentation))
+    (let ((py-indent-list-style 'one-level-from-first-element))
+      (indent-line-to (py-compute-indentation))
       (should (eq 13 (current-indentation))))))
 
 (ert-deftest py-complete-in-python-shell-test ()
@@ -765,7 +758,6 @@ class asdf:
    (should (empty-line-p))
    (forward-line -1)
    (should (eq 4 (current-indentation)))))
-
 
 (ert-deftest py-face-lp-1454858-python2-1-test ()
   (let ((py-python-edit-version ""))
@@ -1143,7 +1135,6 @@ if __name__ == \"__main__\":
       (py-mark-section)
       (should (eq 371 (region-beginning)))
       (should (eq 408 (region-end)))))
-
 
 (ert-deftest py-indent-in-docstring-gh6 ()
   (py-test-with-temp-buffer-point-min

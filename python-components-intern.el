@@ -505,10 +505,11 @@ Use `defcustom' to keep value across sessions "
     (py--computer-closing-inner-list))
    ;; just close an maybe outer list
    ((eq 1 (nth 0 pps))
+    (goto-char (nth 1 pps))
     (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep))))
 
 (defun py-compute-indentation--according-to-list-style (pps iact orig origline line nesting repeat indent-offset liep)
-  "See ‘py-indent-list-style’
+   "See ‘py-indent-list-style’
 
 Choices are:
 
@@ -518,60 +519,98 @@ Choices are:
   (save-excursion
     (pcase py-indent-list-style
       (`line-up-with-first-element
-       (goto-char (nth 1 pps))
        (1+ (current-column)))
       (`one-level-to-beginning-of-statement
        (py-backward-statement)
        (+ py-indent-offset (current-indentation)))
-      (`one-level-from-opener
-       (goto-char (nth 1 pps))
+      (`one-level-from-first-element
        (+ 1 py-indent-offset (current-column))))))
 
+(defun py-compute-list-indent--according-to-circumstance (pps &optional iact orig origline closing line nesting repeat indent-offset liep)
+  (goto-char (nth 1 pps))
+  (if (looking-at "[({][ \t]*$")
+      (+ (current-indentation) py-indent-offset)
+    ;; (py-compute--dict-indent pps)
+    (cond ((and line (eq 0 (current-column)))
+	   (1+ py-indent-offset))
+	  (t (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep)))))
+
 (defun py-compute-indentation-in-list (pps &optional iact orig origline closing line nesting repeat indent-offset liep)
-  "Honor different styles of dictionaries:
+  (if closing
+      (py-compute-indentation-closing-list pps iact orig origline line nesting repeat indent-offset liep)
+    (cond ((and (not line)(looking-back py-assignment-re (line-beginning-position)))
+	   (py--fetch-indent-statement-above orig))
+	  ;; (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep)
+	  (t (when (looking-back "[ \t]*\\(\\s(\\)" (line-beginning-position))
+	       (goto-char (match-beginning 1))
+	       (setq pps (parse-partial-sexp (point-min) (point))))
+	     (py-compute-list-indent--according-to-circumstance pps iact orig origline line nesting repeat indent-offset liep)))))
 
-# hanging, ‘py-closing-list-dedents-bos’ is nil
-asdf = {
-        'a':{
-        'b':3,
-        'c':4
-        }
-    }
+(defun py-compute-comment-indentation (pps iact orig origline closing line nesting repeat indent-offset liep)
+  (cond ((nth 8 pps)
+	 (goto-char (nth 8 pps))
+	 (cond ((and line (eq (current-column) (current-indentation)))
+		(current-indentation))
+	       ((and (eq liep (line-end-position))py-indent-honors-inline-comment)
+		(current-column))
+	       ((py--line-backward-maybe)
+		(setq line t)
+		(skip-chars-backward " \t")
+		(py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))
+	       (t (if py-indent-comments
+		      (progn
+			(py-backward-comment)
+			(py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))
+		    0))))
+	((and
+	  (looking-at (concat "[ \t]*" comment-start))
+	  (looking-back "^[ \t]*" (line-beginning-position))(not line)
+	  (eq liep (line-end-position)))
+	 (if py-indent-comments
+	     (progn
+	       (setq line t)
+	       (skip-chars-backward " \t\r\n\f")
+	       ;; as previous comment-line might
+	       ;; be wrongly unindented, travel
+	       ;; whole commented section
+	       (py-backward-comment)
+	       (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))
+	   0))
+	((and
+	  (looking-at (concat "[ \t]*" comment-start))
+	  (looking-back "^[ \t]*" (line-beginning-position))
+	  (not (eq liep (line-end-position))))
+	 (current-indentation))
+	((and (eq 11 (syntax-after (point))) line py-indent-honors-inline-comment)
+	 (current-column))))
 
-# closing, ‘py-closing-list-dedents-bos’ is t
-asdf = {
-    'a':{
-        'b':3,
-        'c':4
-    }
-}
+(defun py-close-according-to-style (pps)
+  (goto-char (nth 1 pps))
+  (if py-closing-list-dedents-bos
+      (current-indentation)
+    (pcase py-indent-list-style
+      (`line-up-with-first-element
+       (1+ (current-column)))
+      (`one-level-to-beginning-of-statement
+       (+ (current-indentation) py-indent-offset))
+      (`one-level-from-first-element
+       (+ 1 (current-column) py-indent-offset)))))
 
-data = {
-    'key':
-    {
-        'objlist': [
-            {
-                'pk': 1,
-                'name': 'first',
-            },
-            {
-                'pk': 2,
-                'name': 'second',
-            }
-        ]
-    }
-}"
-  (cond (closing
-	 (py-compute-indentation-closing-list pps iact orig origline line nesting repeat indent-offset liep))
-	((and (not line)(looking-back py-assignment-re))
-	 (py--fetch-previous-indent orig))
-	(line
-	 (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep))
-	(t
-	 (back-to-indentation)
-	 (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))))
+(defun py-compute-indentation--at-closer-maybe (pps)
+  (save-excursion
+    (when (looking-back "^[ \t]*\\(\\s)\\)" (line-beginning-position))
+      (forward-char -1)
+      (setq pps (parse-partial-sexp (point-min) (point))))
+    (when (and (nth 1 pps)
+	       (looking-at "[ \t]*\\(\\s)\\)")(nth 0 pps))
+      (if
+	  ;; beyond list start?
+	   (< (progn (unless (bobp) (forward-line -1) (line-beginning-position))) (nth 1 pps))
+	  (py-close-according-to-style pps)
+	(if py-closing-list-dedents-bos
+	    (- (current-indentation) py-indent-offset)
+	  (current-indentation))))))
 
-  (defalias 'py-count-indentation 'py-compute-indentation)
 (defun py-compute-indentation (&optional iact orig origline closing line nesting repeat indent-offset liep)
   "Compute Python indentation.
 
@@ -602,16 +641,13 @@ LIEP stores line-end-position at point-of-interest
              (liep (or liep (line-end-position)))
              (line line)
              (pps (progn (skip-chars-backward " " (line-beginning-position))
-			 (when (eq 5 (car (syntax-after (1- (point)))))
-			   (forward-char -1))
+			 ;; (when (eq 5 (car (syntax-after (1- (point)))))
+			 ;;   (forward-char -1))
 			 (parse-partial-sexp (point-min) (point))))
              (closing
               (or closing
-		  (progn
-		    (and (nth 1 pps)
-			 (looking-at ".*\\(\\s)\\)")(nth 0 pps)
-			 ;; char doesn't matter for now, maybe drop
-			 (string-to-char (match-string-no-properties 1))))))
+		  ;; returns update pps
+		  (py-compute-indentation--at-closer-maybe pps)))
              ;; in a recursive call already
              (repeat (if repeat
 			 (setq repeat (1+ repeat))
@@ -633,7 +669,8 @@ LIEP stores line-end-position at point-of-interest
 	      (error "`py-compute-indentation' reached loops max.")
 	    (setq nesting (nth 0 pps))
 	    (setq indent
-		  (cond ((bobp)
+		  (cond (closing)
+			((bobp)
 			 (cond ((eq liep (line-end-position))
 				0)
 			       ((looking-at py-outdent-re)
@@ -654,46 +691,13 @@ LIEP stores line-end-position at point-of-interest
 			 (py-backward-statement)
 			 (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))
 			;; comments
-			((nth 8 pps)
-			 (if (eq liep (line-end-position))
-			     (progn
-			       (goto-char (nth 8 pps))
-			       (when (py--line-backward-maybe) (setq line t))
-			       (skip-chars-backward " \t")
-			       (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))
-			   (goto-char (nth 8 pps))
-			   (if
-			       line
-			       (if py-indent-honors-inline-comment
-				   (current-column)
-				 (if py-indent-comments
-				     (progn
-				       (py-backward-comment)
-				       (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))
-				   0))
-			     (forward-char -1)
-			     (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))))
-			((and
-			  (looking-at (concat "[ \t]*" comment-start))
-			  (looking-back "^[ \t]*" (line-beginning-position))(not line)
-			  (eq liep (line-end-position)))
-			 (if py-indent-comments
-			     (progn
-			       (setq line t)
-			       (skip-chars-backward " \t\r\n\f")
-			       ;; as previous comment-line might
-			       ;; be wrongly unindented, travel
-			       ;; whole commented section
-			       (py-backward-comment)
-			       (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))
-			   0))
-			((and
-			  (looking-at (concat "[ \t]*" comment-start))
-			  (looking-back "^[ \t]*" (line-beginning-position))
-			  (not (eq liep (line-end-position))))
-			 (current-indentation))
-			((and (eq 11 (syntax-after (point))) line py-indent-honors-inline-comment)
-			 (current-column))
+			((or
+			  (nth 8 pps)
+			  (and
+			   (looking-at (concat "[ \t]*" comment-start))
+			   (looking-back "^[ \t]*" (line-beginning-position))(not line))
+			  (and (eq 11 (syntax-after (point))) line py-indent-honors-inline-comment))
+                         (py-compute-comment-indentation pps iact orig origline closing line nesting repeat indent-offset liep))
 			;; lists
 			((nth 1 pps)
 			 (py-compute-indentation-in-list pps iact orig origline closing line nesting repeat indent-offset liep))
@@ -704,7 +708,7 @@ LIEP stores line-end-position at point-of-interest
 			   (py-backward-statement)
 			   (setq this-line (py-count-lines))
 			   (if (< 1 (- origline this-line))
-			       (py--fetch-previous-indent orig)
+			       (py--fetch-indent-line-above orig)
 			     (if (looking-at "from +\\([^ \t\n]+\\) +import")
 				 py-backslashed-lines-indent-offset
 			       (+ (current-indentation) py-continuation-offset)))))
@@ -806,7 +810,15 @@ LIEP stores line-end-position at point-of-interest
 	    (when py-verbose-p (message "%s" indent))
 	    indent))))))
 
-(defun py--fetch-previous-indent (orig)
+(defun py-beginning-of-statement-p ()
+  (interactive)
+  (save-restriction
+    (eq (point)
+    (save-excursion
+      (py-forward-statement)
+      (py-backward-statement)))))
+
+(defun py--fetch-indent-statement-above (orig)
   "Report the preceding indent. "
   (save-excursion
     (goto-char orig)
@@ -818,6 +830,13 @@ LIEP stores line-end-position at point-of-interest
 	(current-indentation)
       (py-backward-statement)
       (current-indentation))))
+
+(defun py--fetch-indent-line-above (&optional orig)
+  "Report the preceding indent. "
+  (save-excursion
+    (when orig (goto-char orig))
+    (forward-line -1)
+    (current-indentation)))
 
 (defun py-continuation-offset (&optional arg)
   "With numeric ARG different from 1 py-continuation-offset is set to that value; returns py-continuation-offset. "

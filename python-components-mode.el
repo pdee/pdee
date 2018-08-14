@@ -695,27 +695,32 @@ When non-nil, `py-end-of-def' and related will work faster"
   :group 'python-mode)
 
 (defcustom py-indent-list-style 'line-up-with-first-element
-  "LINE-UP-WITH-FIRST-ELEMENT: indents to 1+ column of opening delimiter
+  "Sets the basic indentation style of lists. 
+
+Setting here might be ignored in case of canonical indent.
+
+‘line-up-with-first-element’ indents to 1+ column of opening delimiter
 def foo (a,
          b):
 
-ONE-LEVEL-TO-BEGINNING-OF-STATEMENT: add ‘py-indent-offset’ to beginning of statement
+‘one-level-to-beginning-of-statement’ adds ‘py-indent-offset’ to beginning of statement
 def long_function_name(
     var_one, var_two, var_three,
     var_four):
     print(var_one)
 
-ONE-LEVEL-FROM-OPENER: add ‘py-indent-offset’ from first element
+‘one-level-from-first-element’ adds ‘py-indent-offset’ from first element
 def foo():
     if (foo &&
             baz):
         bar()"
   :type '(choice
-          (const :tag "line up with first element" line-up-with-first-element)
-          (const :tag "plus ‘py-indent-offset’ from beginning of statement" one-level-to-beginning-of-statement)
-          (const :tag "plus ‘py-indent-offset’ from first-element" one-level-from-first-element))
-  :tag "py-list-indent-style"
+          (const :tag "line-up-with-first-element" line-up-with-first-element)
+          (const :tag "one-level-to-beginning-of-statement" one-level-to-beginning-of-statement)
+          (const :tag "one-level-from-first-element" one-level-from-first-element))
+  :tag "py-indent-list-style"
   :group 'python-mode)
+(make-variable-buffer-local 'py-indent-list-style) 
 
 ;; (defcustom py-indent-honors-multiline-listing nil
 ;;   "If t, indents to 1+ column of opening delimiter.
@@ -2572,6 +2577,9 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 (defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\).*"
   "If looking at the beginning of an assignment.")
 
+;; 'name':
+(defconst py-dict-re "'\\_<\\w+\\_>':")
+
 (defconst py-block-re "[ \t]*\\_<\\(class\\|def\\|async def\\|async for\\|for\\|if\\|try\\|while\\|with\\|async with\\)\\_>[:( \n\t]*"
   "Matches the beginning of a compound statement.")
 
@@ -3419,6 +3427,14 @@ Optional argument END specify end."
      (progn
        (beginning-of-line)
        (looking-at "\\s-*$"))))
+
+(defun py-toggle-closing-list-dedents-bos (&optional arg)
+  "Switches boolean variable ‘py-closing-list-dedents-bos’.
+
+With optional ARG message state switched to"
+  (interactive "p")
+  (setq py-closing-list-dedents-bos (not py-closing-list-dedents-bos))
+  (when arg (message "py-closing-list-dedents-bos: %s" py-closing-list-dedents-bos)))
 
 (require 'python-components-map)
 (require 'python-components-switches)

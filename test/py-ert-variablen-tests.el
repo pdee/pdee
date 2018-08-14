@@ -253,17 +253,14 @@
 (ert-deftest py-ert-indent-honors-inline-comment-test ()
   (should (boundp 'py-indent-honors-inline-comment)))
 
-(ert-deftest py-ert-indent-honors-multiline-listing-test ()
-  (should (boundp 'py-indent-honors-multiline-listing)))
+(ert-deftest py-ert-indent-list-style-test ()
+  (should (boundp 'py-indent-list-style)))
 
 (ert-deftest py-ert-indent-no-completion-p-test ()
   (should (boundp 'py-indent-no-completion-p)))
 
 (ert-deftest py-ert-indent-offset-test ()
   (should (boundp 'py-indent-offset)))
-
-(ert-deftest py-ert-indent-paren-spanned-multilines-p-test ()
-  (should (boundp 'py-indent-paren-spanned-multilines-p)))
 
 (ert-deftest py-ert-indent-tabs-mode-test ()
   (should (boundp 'py-indent-tabs-mode)))

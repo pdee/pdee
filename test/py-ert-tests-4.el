@@ -46,6 +46,7 @@ impo")))
 	  py-result py-store-result-p)
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (py-fast-complete)
+      (sit-for 0.1) 
       (should (eq (char-before) 40)))))
 
 (ert-deftest py-ert-shift-right-test-1 ()

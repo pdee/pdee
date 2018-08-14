@@ -496,6 +496,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
 (defalias 'py-next-statement 'py-forward-statement)
 (defalias 'py-markup-region-as-section 'py-sectionize-region)
 (defalias 'py-up 'py-up-block)
+(defalias 'py-count-indentation 'py-compute-indentation)
 
 ;;;
 (provide 'python-components-foot)
