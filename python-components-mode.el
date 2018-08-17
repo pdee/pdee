@@ -2545,9 +2545,9 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
 
 (defconst py-outdent-re
   (concat
-   "[ \t]*\\_<"
-   (regexp-opt py-outdent-re-raw)
-   "\\_>[)\t]*")
+   "[ \t]*"
+   (regexp-opt py-outdent-re-raw 'symbols)
+   "[)\t]*")
   "Regular expression matching lines not to augment indent after.
 
 See ‘py-no-outdent-re-raw’ for better readable content")
@@ -2560,17 +2560,17 @@ See ‘py-no-outdent-re-raw’ for better readable content")
    "pass"
    "raise"
    "return")
-  "Uused by o‘py-no-outdent-re’."
+  "Uused by ‘py-no-outdent-re’."
   :type '(repeat string)
   :tag "py-no-outdent-re-raw"
   :group 'python-mode)
 
 (defconst py-no-outdent-re
   (concat
-   "[ \t]*\\_<"
-   (regexp-opt py-no-outdent-re-raw)
-   "\\_>[)\t]*$")
-  "Regular expression matching lines not to augment indent after.
+   "[ \t]*"
+   (regexp-opt py-no-outdent-re-raw 'symbols)
+   "[)\t]*$")
+"Regular expression matching lines not to augment indent after.
 
 See ‘py-no-outdent-re-raw’ for better readable content")
 
@@ -2643,16 +2643,10 @@ Second group grabs the name")
 
 (defvar py-block-or-clause-re
   (concat
-   "[ \t]*\\_<\\("
-   (regexp-opt  py-block-or-clause-re-raw)
-   "\\)\\_>[( \t]*.*:?")
+   "[ \t]*"
+   (regexp-opt  py-block-or-clause-re-raw 'symbols)
+   "[( \t]*.*:?")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
-
-;; (setq py-block-or-clause-re
-;;   (concat
-;;    "[ \t]*\\_<\\("
-;;    (regexp-opt  py-block-or-clause-re-raw)
-;;    "\\)\\_>[( \t]*.*:?"))
 
 (defcustom py-block-re-raw
   (list
@@ -2669,9 +2663,9 @@ Second group grabs the name")
 
 (defvar py-block-re
   (concat
-   "[ \t]*\\_<\\("
-   (regexp-opt  py-block-re-raw)
-   "\\)\\_>[( \t]*.*:?")
+   "[ \t]*"
+   (regexp-opt  py-block-re-raw 'symbols)
+   "[( \t]*.*:?")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
 
 (defconst py-clause-re
@@ -2710,16 +2704,16 @@ Second group grabs the name")
 
 (defconst py-extended-block-or-clause-re
   (concat
-   "[ \t]*\\_<\\("
-   (regexp-opt  py-extended-block-or-clause-re-raw)
-   "\\)\\_>[( \t]*.*:?")
+   "[ \t]*"
+   (regexp-opt  py-extended-block-or-clause-re-raw 'symbols)
+   "[( \t]*.*:?")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
 
 (defcustom py-top-level-re
   (concat
-   "^\\_<[a-zA-Z_]\\|^\\_<\\("
+   "^[a-zA-Z_]"
    (regexp-opt  py-extended-block-or-clause-re-raw)
-   "\\)\\_>[( \t]*.*:?")
+   "[( \t]*.*:?")
   "A form which starts at zero indent level, but is not a comment."
   :type '(regexp)
   :tag "py-top-level-re"
@@ -2730,10 +2724,7 @@ Second group grabs the name")
   "Needed for normalized processing.")
 
 (defconst py-block-keywords
-  (concat
-   "\\_<\\("
-   (regexp-opt py-block-or-clause-re-raw)
-   "\\)\\_>")
+   (regexp-opt py-block-or-clause-re-raw 'symbols)
   "Matches known keywords opening a block.
 
 Customizing `py-block-or-clause-re-raw'  will change values here")
@@ -2752,9 +2743,9 @@ Customizing `py-block-or-clause-re-raw'  will change values here")
 
 (defconst py-clause-re
   (concat
-   "[ \t]*\\_<\\("
-   (regexp-opt  py-clause-re-raw)
-   "\\)\\_>[( \t]*.*:?")
+   "[ \t]*"
+   (regexp-opt  py-clause-re-raw 'symbols)
+   "[( \t]*.*:?")
   "See ‘py-clause-re-raw’, which it reads.")
 
 (defconst py-elif-re "[ \t]*\\_<\\elif\\_>[:( \n\t]*"
