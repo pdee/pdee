@@ -119,7 +119,7 @@ Returns position reached if successful"
                           (funcall (intern-soft (concat "py-backward-" form)))
                           (push-mark)))))
            (end (unless file
-                  (or end (funcall (intern-soft (concat "py-forward-" form))))))
+                  (or end (save-excursion (funcall (intern-soft (concat "py-forward-" form)))))))
            filename)
       ;; (setq py-buffer-name nil)
       (if file
@@ -661,7 +661,7 @@ LIEP stores line-end-position at point-of-interest
                       (re-search-backward (concat py-shell-prompt-regexp "\\|" py-ipython-output-prompt-re "\\|" py-ipython-input-prompt-re) nil t 1)))
             ;; common recursion not suitable because of prompt
             (with-temp-buffer
-	      (switch-to-buffer (current-buffer))
+	      ;; (switch-to-buffer (current-buffer))
               (insert-buffer-substring cubuf (match-end 0) orig)
 	      (python-mode)
               (setq indent (py-compute-indentation)))
@@ -1923,6 +1923,12 @@ Use current region unless optional args BEG END are delivered."
       (fixup-whitespace))
     (indent-to-column cui)
     cui))
+
+(defun py-escaped-p (&optional pos)
+  "Return t if char at POS is preceded by an odd number of backslashes. "
+  (save-excursion
+    (when pos (goto-char pos))
+    (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
 
 (defalias 'IPython 'ipython)
 (defalias 'Ipython 'ipython)

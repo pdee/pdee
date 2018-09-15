@@ -425,19 +425,38 @@ Fill according to `py-docstring-style' "
 	 (orig (copy-marker (point)))
 	 (docstring (if (and docstring (not (number-or-marker-p docstring)))
 			(py--in-or-behind-or-before-a-docstring)
-		      docstring)))
+		      docstring))
+	 (beg (and (nth 3 pps) (nth 8 pps)))
+	 end tqs)
     (if docstring
 	(py--fill-docstring justify style docstring orig indent)
-      (py-fill-paragraph justify))))
+      (save-excursion
+	(setq end
+	      (progn (goto-char beg)
+		     (setq tqs (looking-at "\"\"\"\|'''"))
+		     (forward-sexp) (point))))
+      (save-restriction
+	(narrow-to-region beg end)
+	(py-fill-paragraph justify pps beg end)))))
 
-(defun py-fill-paragraph (&optional justify)
+(defun py--continue-lines-region (beg end)
+  (save-excursion
+    (goto-char beg)
+    (while (< (line-end-position) end)
+      (end-of-line)
+      (unless (py-escaped-p) (insert-and-inherit 32)(insert-and-inherit 92))
+      (ignore-errors (forward-line 1)))))
+
+(defun py-fill-paragraph (&optional justify pps beg end tqs)
   (interactive "*")
   (save-excursion
     (save-restriction
       (window-configuration-to-register py-windows-config-register)
-      (let* ((pps (parse-partial-sexp (point-min) (point)))
+      (let* ((tqs tqs)
+	     (pps (or pps (parse-partial-sexp (point-min) (point))))
 	     (docstring (unless (not py-docstring-style)(py--in-or-behind-or-before-a-docstring)))
-	     (fill-column py-comment-fill-column))
+	     (fill-column py-comment-fill-column)
+	     (in-string (nth 3 pps)))
 	(cond ((or (nth 4 pps)
 		   (and (bolp) (looking-at "[ \t]*#[# \t]*")))
 	       (py-fill-comment))
@@ -445,19 +464,30 @@ Fill according to `py-docstring-style' "
 	       (setq fill-column py-docstring-fill-column)
 	       (py-fill-string justify py-docstring-style docstring))
 	      (t
-	       (let* ((beg (save-excursion
-			       (if (looking-at paragraph-start)
-				   (point)
-				 (backward-paragraph)
-				 (when (looking-at paragraph-start)
-				   (point)))))
-		      (end
-		       (when beg
-			 (save-excursion
-			   (forward-paragraph)
-			   (when (looking-at paragraph-separate)
-			     (point))))))
-		 (and beg end (fill-region beg end))))))
+	       (let* ((beg (or beg (save-excursion
+				     (if (looking-at paragraph-start)
+					 (point)
+				       (backward-paragraph)
+				       (when (looking-at paragraph-start)
+					 (point))))
+			       (and (nth 3 pps) (nth 8 pps))))
+		      (end (or end
+			       (when beg
+				 (save-excursion
+				   (or
+				    (and in-string
+					 (progn
+					   (goto-char beg)
+					   (setq tqs (looking-at "\"\"\"\\|'''"))
+					   (forward-sexp) (point)))
+				    (progn
+				      (forward-paragraph)
+				      (when (looking-at paragraph-separate)
+					(point)))
+				    ))))))
+		 (and beg end (fill-region beg end))
+		 (when (and in-string (not tqs))
+		   (py--continue-lines-region beg end))))))
       (jump-to-register py-windows-config-register))))
 
 (provide 'python-components-paragraph)

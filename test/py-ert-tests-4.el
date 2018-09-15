@@ -47,7 +47,7 @@ impo")))
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (py-fast-complete)
       (sit-for 0.1) 
-      (should (eq (char-before) 40)))))
+      (should (search-backward "ect")))))
 
 (ert-deftest py-ert-shift-right-test-1 ()
   (py-test-with-temp-buffer

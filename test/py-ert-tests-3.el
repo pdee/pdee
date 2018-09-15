@@ -143,9 +143,11 @@ def foo():
 (ert-deftest py-ert-execute-statement-fast-test ()
   (py-test-with-temp-buffer-point-min
       "print(123234)"
-    (py-execute-statement-fast)
-    (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
-    (should (search-backward "123234"))))
+    (let (py-split-window-on-execute py-switch-buffers-on-execute-p)
+      (py-execute-statement-fast)
+      (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
+      ;; (switch-to-buffer (current-buffer))
+      (should (search-backward "123234")))))
 
 (ert-deftest py-ert-fill-comment-test ()
   (py-test-with-temp-buffer-point-min
@@ -672,6 +674,17 @@ import os"
   (py-fill-string nil 'pep-257-nn)
   (search-forward "'''")
   (should (eq 4 (current-indentation)))))
+
+;; https://bugs.launchpad.net/python-mode/+bug/1321266
+(ert-deftest py-fill-string-lp-1321266-test ()
+  (py-test-with-temp-buffer
+      "print(\"%(language)s has %(number)03d quote types. asdf asdf asdf asdfa sasdf asdfasdfasdfasdfasdfasda asd asdfa a asdf asdfa asdf \" %
+       {'language': \"Python\", \"number\": 2})"
+    (search-backward "asdf")
+    (py-fill-string)
+    (goto-char (point-min))
+    (end-of-line)
+    (should (eq (char-before) 92))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
