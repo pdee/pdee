@@ -1530,7 +1530,7 @@ Returns beginning of FORM if successful, nil otherwise"
 		      (py-backward-statement))
 		  ;; maybe after last statement?
 		  (if (save-excursion
-			(< (py-forward-statement) orig))
+			(ignore-errors (< (py-forward-statement) orig)))
 		      (progn (goto-char orig)
 			     (back-to-indentation)
 			     (current-indentation))
@@ -1599,6 +1599,17 @@ Returns `t' if point was moved"
   (prog1
       (< 0 (abs (skip-chars-backward "^;" (or limit (line-beginning-position)))))
     (skip-chars-forward " \t" (line-end-position))))
+
+(defun py-forward-comment ()
+  "Go to the end of comment at point."
+  (let ((orig (point))
+	last)
+    (while (and (not (eobp)) (nth 4 (parse-partial-sexp (line-beginning-position) (point))) (setq last (line-end-position)))
+      (forward-line 1)
+      (end-of-line))
+    (when
+	(< orig last)
+      (goto-char last)(point))))
 
 (defun py--end-of-comment-intern (pos)
   (while (and (not (eobp))

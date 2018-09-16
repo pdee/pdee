@@ -310,19 +310,17 @@ More docstring here.
         print(123)"
     (search-forward "sdfasde" nil t 3)
     (py-backward-comment)
-    (should (eq (char-after) ?#))))
+    (should (eq 43 (point)))))
 
-(ert-deftest py-ert-forward-comment-test ()
+(ert-deftest py-ert-forward-comment-test-ibueq9 ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         # sdfasde
-        # sdfasde
-        # sdfasde
-        print(123)"
-    (search-forward "sdfasde")
+        pass"
+    (search-forward "sdf")
     (py-forward-comment)
-    (should (eq (char-before) ?\)))))
+    (should (eq (char-before) ?e))))
 
 (ert-deftest py-ert-else-clause-test ()
   (py-test-with-temp-buffer

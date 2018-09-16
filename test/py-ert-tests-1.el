@@ -1205,7 +1205,6 @@ my_list = [
     (should (eq 594 (py-forward-block-or-clause-bol)))))
 
 (ert-deftest py-ert-moves-up-position-tests-4 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1225,7 +1224,6 @@ my_list = [
     (should (eq 190 (py--beginning-of-minor-block-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-5 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1246,7 +1244,6 @@ my_list = [
     (should (eq 362 (py--beginning-of-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-6 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1266,7 +1263,6 @@ my_list = [
     (should (eq 362 (py--beginning-of-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-7 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1286,7 +1282,6 @@ my_list = [
     (should (eq 445 (py--end-of-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-8 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1307,7 +1302,6 @@ my_list = [
     (should (eq 362 (py--beginning-of-block-or-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-9 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1327,7 +1321,6 @@ my_list = [
     (should (eq 445 (py--end-of-block-or-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-10 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1347,7 +1340,6 @@ my_list = [
     (should (eq 445 (py--end-of-block-or-clause-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-11 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1367,7 +1359,6 @@ my_list = [
     (should (eq 71 (py--beginning-of-def-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-12 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1389,7 +1380,6 @@ my_list = [
     (should (eq (char-before) ?\]))))
 
 (ert-deftest py-ert-moves-up-position-tests-13 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1409,7 +1399,6 @@ my_list = [
     (should (eq 445 (py--end-of-def-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-14 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1429,7 +1418,6 @@ my_list = [
     (should (eq 1 (py--beginning-of-class-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-15 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1449,7 +1437,6 @@ my_list = [
     (should (eq 445 (py--end-of-class-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-16 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1469,7 +1456,6 @@ my_list = [
     (should (eq 71 (py--beginning-of-def-or-class-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-17 ()
-  (interactive)
   (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1489,7 +1475,6 @@ my_list = [
     (should (eq 445 (py--end-of-def-or-class-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-18 ()
-  (interactive)
   (py-test-with-temp-buffer-point-min
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1509,7 +1494,6 @@ my_list = [
     (should (eq 223 (py--beginning-of-comment-position)))))
 
 (ert-deftest py-ert-moves-up-position-tests-19 ()
-  (interactive)
   (py-test-with-temp-buffer-point-min
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -1529,7 +1513,6 @@ my_list = [
     (should (eq 241 (py--end-of-comment-position)))))
 
 (ert-deftest py-ert-moves-up-copy-statement-test ()
-  (interactive)
   (py-test-with-temp-buffer-point-min
    "from foo.bar.baz import something
 "
