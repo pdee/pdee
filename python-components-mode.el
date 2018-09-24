@@ -695,7 +695,7 @@ When non-nil, `py-end-of-def' and related will work faster"
   :group 'python-mode)
 
 (defcustom py-indent-list-style 'line-up-with-first-element
-  "Sets the basic indentation style of lists. 
+  "Sets the basic indentation style of lists.
 
 Setting here might be ignored in case of canonical indent.
 
@@ -720,7 +720,7 @@ def foo():
           (const :tag "one-level-from-first-element" one-level-from-first-element))
   :tag "py-indent-list-style"
   :group 'python-mode)
-(make-variable-buffer-local 'py-indent-list-style) 
+(make-variable-buffer-local 'py-indent-list-style)
 
 ;; (defcustom py-indent-honors-multiline-listing nil
 ;;   "If t, indents to 1+ column of opening delimiter.
@@ -3049,16 +3049,18 @@ Used by `py-ipython-module-completion-string'"
   "If at beginning of a raw-string."
   (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R))))
 
-(defun py--docstring-p (pos)
+(defun py--docstring-p (&optional pos)
   "Check to see if there is a docstring at POS."
-    (save-excursion
-      (goto-char pos)
-	(when (py--at-raw-string)
-	  (forward-char -1)
-	  (setq pos (point)))
-	(when (py-backward-statement)
-	  (when (looking-at py-def-or-class-re)
-	    pos))))
+  (let ((pos (or pos (nth 8 (parse-partial-sexp (point-min) (point))))))
+    (and pos
+	 (save-excursion
+	   (goto-char pos)
+	   (when (py--at-raw-string)
+	     (forward-char -1)
+	     (setq pos (point)))
+	   (when (py-backward-statement)
+	     (when (looking-at py-def-or-class-re)
+	       pos))))))
 
 (defun py--font-lock-syntactic-face-function (state)
   "STATE expected as result von (parse-partial-sexp (point-min) (point)."

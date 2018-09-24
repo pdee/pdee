@@ -146,7 +146,7 @@ def foo():
     (let (py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py-execute-statement-fast)
       (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
-      ;; (switch-to-buffer (current-buffer))
+      (switch-to-buffer (current-buffer))
       (should (search-backward "123234")))))
 
 (ert-deftest py-ert-fill-comment-test ()
@@ -683,6 +683,14 @@ import os"
     (goto-char (point-min))
     (end-of-line)
     (should (eq (char-before) 92))))
+
+(ert-deftest syntax-highlighting-for-builtin-functions-55-test ()
+  (py-test-with-temp-buffer
+      "range(len(list((1, 2, 3))))"
+      ;; (goto-char (point-max))
+      (font-lock-fontify-region (point-min) (point-max))
+    (search-backward "le")
+    (should (face-equal (face-at-point) 'py-builtins-face))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
