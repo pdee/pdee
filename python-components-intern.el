@@ -496,19 +496,7 @@ Use `defcustom' to keep value across sessions "
       (current-indentation)
     (+ (current-indentation) py-indent-offset)))
 
-(defun py-compute-indentation-closing-list (pps &optional iact orig origline line nesting repeat indent-offset liep)
-  (cond
-   ((< 1 (nth 0 pps))
-    (goto-char (nth 1 pps))
-    ;; reach the outer list
-    (goto-char (nth 1 (parse-partial-sexp (point-min) (point))))
-    (py--computer-closing-inner-list))
-   ;; just close an maybe outer list
-   ((eq 1 (nth 0 pps))
-    (goto-char (nth 1 pps))
-    (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep))))
-
-(defun py-compute-indentation--according-to-list-style (pps iact orig origline line nesting repeat indent-offset liep)
+(defun py-compute-indentation--according-to-list-style ()
    "See ‘py-indent-list-style’
 
 Choices are:
@@ -526,6 +514,19 @@ Choices are:
       (`one-level-from-first-element
        (+ 1 py-indent-offset (current-column))))))
 
+(defun py-compute-indentation-closing-list (pps &optional iact orig origline line nesting repeat indent-offset liep)
+  (cond
+   ((< 1 (nth 0 pps))
+    (goto-char (nth 1 pps))
+    ;; reach the outer list
+    (goto-char (nth 1 (parse-partial-sexp (point-min) (point))))
+    (py--computer-closing-inner-list))
+   ;; just close an maybe outer list
+   ((eq 1 (nth 0 pps))
+    (goto-char (nth 1 pps))
+    (py-compute-indentation--according-to-list-style))))
+
+
 (defun py-compute-list-indent--according-to-circumstance (pps &optional iact orig origline closing line nesting repeat indent-offset liep)
   (goto-char (nth 1 pps))
   (if (looking-at "[({][ \t]*$")
@@ -533,7 +534,7 @@ Choices are:
     ;; (py-compute--dict-indent pps)
     (cond ((and line (eq 0 (current-column)))
 	   (1+ py-indent-offset))
-	  (t (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep)))))
+	  (t (py-compute-indentation--according-to-list-style)))))
 
 (defun py-compute-indentation-in-list (pps &optional iact orig origline closing line nesting repeat indent-offset liep)
   (if closing
