@@ -571,34 +571,34 @@ Start from POS if specified"
     (when last (goto-char last))
     last))
 
-(defun py-forward-comment (&optional pos char)
-  "Go to end of commented section.
+;; (defun py-forward-comment (&optional pos char)
+;;   "Go to end of commented section.
 
-Optional args position and ‘comment-start’ character
-Travel empty lines
-Start from POS if specified
-Use CHAR as ‘comment-start’ if provided"
-  (interactive)
-  (let ((orig (or pos (point)))
-	(char (or char (string-to-char comment-start)))
-	py-forward-comment-last erg)
-    (while (and (not (eobp))
-		(or
-		 (forward-comment 99999)
-		 (when (py--in-comment-p)
-		   (progn
-		     (end-of-line)
-		     (skip-chars-backward " \t\r\n\f")
-		     (setq py-forward-comment-last (point))))
-		 (prog1 (forward-line 1)
-		   (end-of-line)))))
-    (when py-forward-comment-last (goto-char py-forward-comment-last))
-    ;; forward-comment fails sometimes
-    (and (eq orig (point)) (prog1 (forward-line 1) (back-to-indentation))
-	 (while (member (char-after) (list char 10))(forward-line 1)(back-to-indentation)))
-    (when (< orig (point)) (setq erg (point)))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+;; Optional args position and ‘comment-start’ character
+;; Travel empty lines
+;; Start from POS if specified
+;; Use CHAR as ‘comment-start’ if provided"
+;;   (interactive)
+;;   (let ((orig (or pos (point)))
+;; 	(char (or char (string-to-char comment-start)))
+;; 	py-forward-comment-last erg)
+;;     (while (and (not (eobp))
+;; 		(or
+;; 		 (forward-comment 99999)
+;; 		 (when (py--in-comment-p)
+;; 		   (progn
+;; 		     (end-of-line)
+;; 		     (skip-chars-backward " \t\r\n\f")
+;; 		     (setq py-forward-comment-last (point))))
+;; 		 (prog1 (forward-line 1)
+;; 		   (end-of-line)))))
+;;     (when py-forward-comment-last (goto-char py-forward-comment-last))
+;;     ;; forward-comment fails sometimes
+;;     (and (eq orig (point)) (prog1 (forward-line 1) (back-to-indentation))
+;; 	 (while (member (char-after) (list char 10))(forward-line 1)(back-to-indentation)))
+;;     (when (< orig (point)) (setq erg (point)))
+;;     (when (called-interactively-p 'any) (message "%s" erg))
+;;     erg))
 
 ;;  Helper functions
 (defun py-go-to-beginning-of-comment ()

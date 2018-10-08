@@ -689,6 +689,7 @@ import os"
       "range(len(list((1, 2, 3))))"
       ;; (goto-char (point-max))
       (font-lock-fontify-region (point-min) (point-max))
+      (sit-for 0.1) 
     (search-backward "le")
     (should (face-equal (face-at-point) 'py-builtins-face))))
 
