@@ -1205,7 +1205,10 @@ Optional ARG \\\\[universal-argument] prompts for path to the"))
   \"Dedent region according to ‘py-indent-offset’ by COUNT times.
 
 If no region is active, current line is dedented.
-Return indentation reached.\"
+Return indentation reached
+Optional COUNT: COUNT times ‘py-indent-offset’
+Optional START: region beginning
+Optional END: region end\"
   (interactive \"p\")
   (let ((erg (py--shift-intern (- count) start end)))
     (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
@@ -1215,7 +1218,10 @@ Return indentation reached.\"
   \"Indent region according to ‘py-indent-offset’ by COUNT times.
 
 If no region is active, current line is indented.
-Return indentation reached.\"
+Return indentation reached
+Optional COUNT: COUNT times ‘py-indent-offset’
+Optional BEG: region beginning
+Optional END: region end\"
   (interactive \"p\")
   (let ((erg (py--shift-intern count beg end)))
     (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
