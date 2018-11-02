@@ -1,4 +1,5 @@
 PDEE [![Build Status](https://travis-ci.org/pdee/pdee.svg?branch=master)](https://travis-ci.org/pdee/pdee)
+[![MELPA](https://melpa.org/packages/python-mode-badge.svg)](https://melpa.org/#/python-mode)
 ===
 
 # Initialize
