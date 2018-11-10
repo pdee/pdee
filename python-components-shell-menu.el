@@ -1486,30 +1486,30 @@ Default is `t'. See lp:1100892 Use `M-x customize-variable' to set it permanentl
 	      :help "If point should follow dedent or kind of electric move to end of line. Default is t - keep relative position. Use `M-x customize-variable' to set it permanently"
 	      :style toggle :selected py-dedent-keep-relative-column]
 
-	     ["Indent paren spanned multilines "
-	      (setq py-indent-paren-spanned-multilines-p
-		    (not py-indent-paren-spanned-multilines-p))
-	      :help "If non-nil, indents elements of list a value of `py-indent-offset' to first element:
+;; 	     ["Indent paren spanned multilines "
+;; 	      (setq py-indent-paren-spanned-multilines-p
+;; 		    (not py-indent-paren-spanned-multilines-p))
+;; 	      :help "If non-nil, indents elements of list a value of `py-indent-offset' to first element:
 
-def foo():
-    if (foo &&
-            baz):
-        bar()
+;; def foo():
+;;     if (foo &&
+;;             baz):
+;;         bar()
 
-Default lines up with first element:
+;; Default lines up with first element:
 
-def foo():
-    if (foo &&
-        baz):
-        bar()
-Use `M-x customize-variable' to set it permanently"
-	      :style toggle :selected py-indent-paren-spanned-multilines-p]
+;; def foo():
+;;     if (foo &&
+;;         baz):
+;;         bar()
+;; Use `M-x customize-variable' to set it permanently"
+;; 	      :style toggle :selected py-indent-paren-spanned-multilines-p]
 
-	     ["Indent honors multiline listing"
-	      (setq py-indent-honors-multiline-listing
-		    (not py-indent-honors-multiline-listing))
-	      :help "If `t', indents to 1\+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. Use `M-x customize-variable' to set it permanently"
-	      :style toggle :selected py-indent-honors-multiline-listing]
+	     ;; ["Indent honors multiline listing"
+	     ;;  (setq py-indent-honors-multiline-listing
+	     ;; 	    (not py-indent-honors-multiline-listing))
+	     ;;  :help "If `t', indents to 1\+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. Use `M-x customize-variable' to set it permanently"
+	     ;;  :style toggle :selected py-indent-honors-multiline-listing]
 
 	     ["Indent comment "
 	      (setq py-indent-comments

@@ -426,6 +426,7 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (set (make-local-variable 'inhibit-point-motion-hooks) t)
   (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send)
   (py--python-send-eldoc-setup-code buffer)
+  (and (ignore-errors py-ffap-p (py--python-send-ffap-setup-code buffer)))
   (force-mode-line-update))
 
 ;;;###autoload
