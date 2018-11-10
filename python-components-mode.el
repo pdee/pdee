@@ -3447,6 +3447,7 @@ With optional ARG message state switched to"
 (require 'python-components-close-forms)
 (require 'python-components-section-forms)
 (require 'python-components-narrow)
+(require 'python-components-ffap)
 (require 'python-components-shell-menu)
 (require 'python-components-hide-show)
 (require 'python-components-foot)

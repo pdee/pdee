@@ -60,12 +60,12 @@
     (should (string= "4" py-result))
     (should (< 1 comint-last-input-end))))
 
-(ert-deftest py-ert-ipython2.7-shell-test ()
-  (let ((py-ipython2.7-command-args  (list "-i -c\"abc=4\"")))
-    (py-kill-buffer-unconditional "*IPython2.7*")
-    (ipython2.7)
-    (should (buffer-live-p (get-buffer "*IPython2.7*")))
-    (set-buffer (get-buffer "*IPython2.7*"))
+(ert-deftest py-ert-ipython2-shell-test ()
+  (let ((py-ipython2-command-args  (list "-i -c\"abc=4\"")))
+    (py-kill-buffer-unconditional "*IPython2*")
+    (ipython2)
+    (should (buffer-live-p (get-buffer "*IPython2*")))
+    (set-buffer (get-buffer "*IPython2*"))
     (should (string= "4" py-result))
     (should (< 1 comint-last-input-end))))
 
