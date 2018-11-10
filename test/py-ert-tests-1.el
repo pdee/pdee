@@ -335,9 +335,9 @@ my_list = [
         if a:
 
             ar_atpt_python_list_roh = ([
-                'python-expression',
-"
-    (should (eq 1 (py-up-class-bol)))))
+                'python-expression',"
+    (py-up-class-bol)
+    (should (bobp))))
 
 (ert-deftest py-ert-moves-up-def-or-class-bol-iPn4ge ()
   (py-test-with-temp-buffer
@@ -358,8 +358,7 @@ my_list = [
         if a:
 
             ar_atpt_python_list_roh = ([
-                'python-expression',
-"
+                'python-expression',"
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
@@ -382,10 +381,14 @@ my_list = [
         if a:
 
             ar_atpt_python_list_roh = ([
-                'python-expression',
-"
+                'python-expression'])
+
+            if b:
+                ar_atpt_python_list_roh = ([
+                    'python-expression'])"
+    (goto-char (point-max)) 
     (py-up-minor-block-bol)
-    (should (bobp))))
+    (should (looking-at " +if a:"))))
 
 (ert-deftest py-ert-moves-up-block-bol-u0LDDH ()
   (py-test-with-temp-buffer
@@ -406,8 +409,7 @@ my_list = [
         if a:
 
             ar_atpt_python_list_roh = ([
-                'python-expression',
-"
+                'python-expression',"
     (py-up-block-bol)
     (should (looking-at " +def f():"))))
 
@@ -441,7 +443,7 @@ my_list = [
         else b:
             pass"
     (py-up-block)
-    (should (looking-at "def f():"))))
+    (should  (looking-at "def f():"))))
 
 (ert-deftest py-ert-moves-up-minor-block-bol-2 ()
   (py-test-with-temp-buffer
@@ -462,13 +464,55 @@ my_list = [
         if a:
         # if c
             if b:
-                pass
-"
+                pass"
     (py-up-minor-block)
     (should (looking-at "if a:"))))
 
-(ert-deftest py-ert-moves-up-block-bol-FneFQi ()
+(ert-deftest py-ert-moves-up-def-bol-wTMxJq ()
   (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+        def f():
+	    \"\"\"
+	    class for in 'for in while with blah'
+	    \"\"\""
+    (py-up-def-bol)
+    (should (looking-at " +def __init__"))))
+
+(ert-deftest py-ert-moves-up-class-bol-hObRZJ ()
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+"
+    (py-up-class)
+    (should (bolp))))
+
+(ert-deftest py-ert-moves-up-def-or-class-bol-2 ()
+  (py-test
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -496,90 +540,8 @@ my_list = [
             pass
         else b:
             pass"
-    (py-up-block-bol)
-    (should (looking-at " +def f"))))
-
-(ert-deftest py-ert-moves-up-def-bol-wTMxJq ()
-  (py-test-with-temp-buffer
-      "class OrderedDict1(dict):
-    \"\"\"
-    This implementation of a dictionary keeps track of the order
-    in which keys were inserted.
-    \"\"\"
-
-    def __init__(self, d={}):
-        self._keys = d.keys()
-        dict.__init__(self, d)
-
-    def f():
-        \"\"\"
-        class for in 'for in while with blah'
-        \"\"\"
-        if a:
-
-            ar_atpt_python_list_roh = ([
-                'python-expression',
-"
-    (py-up-def-bol)
-    (should (bobp))))
-
-(ert-deftest py-ert-moves-up-class-bol-hObRZJ ()
-  (py-test-with-temp-buffer
-      "class OrderedDict1(dict):
-    \"\"\"
-    This implementation of a dictionary keeps track of the order
-    in which keys were inserted.
-    \"\"\"
-
-    def __init__(self, d={}):
-        self._keys = d.keys()
-        dict.__init__(self, d)
-
-    def f():
-        \"\"\"
-        class for in 'for in while with blah'
-        \"\"\"
-        if a:
-
-            ar_atpt_python_list_roh = ([
-                'python-expression',
-"
-    (should (eq 1 (py-up-class)))))
-
-(ert-deftest py-ert-moves-up-def-or-class-bol-2 ()
-  (py-test-with-temp-buffer
-      "class OrderedDict1(dict):
-    \"\"\"
-    This implementation of a dictionary keeps track of the order
-    in which keys were inserted.
-    \"\"\"
-
-    def __init__(self, d={}):
-        self._keys = d.keys()
-        dict.__init__(self, d)
-
-    def f():
-        \"\"\"
-        class for in 'for in while with blah'
-        \"\"\"
-        if a:
-
-            ar_atpt_python_list_roh = ([
-                'python-expression',
-
-            # def ar_thingatpt_write_lists (&optional datei):
-            'python-partial-expression',
-            'python-statement',
-            ])
-        elif b:
-            pass
-        else b:
-            pass
-
-''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-'''
-"
-    (search-backward "pass")
+    'python-mode
+    py-debug-p
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
@@ -659,7 +621,7 @@ my_list = [
     (should (looking-at " +def"))))
 
 (ert-deftest py-ert-down-class-bol-ubMUm6 ()
-  (py-test-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -679,7 +641,8 @@ my_list = [
             ar_atpt_python_list_roh = ([
                 'python-expression',
 "
-    (should (not (py-down-class-bol)))))
+    (py-down-class-bol)
+    (should (eobp))))
 
 (ert-deftest py-ert-moves-down-def-or-class-bol-1 ()
   (py-test-with-temp-buffer
@@ -857,6 +820,7 @@ my_list = [
     (py-down-minor-block-bol)
     (should (bolp))
     (should (looking-at " +if"))))
+
 
 (ert-deftest py-ert-moves-down-def-1 ()
   (py-test-with-temp-buffer-point-min
@@ -1115,7 +1079,8 @@ my_list = [
         else b:
             pass
 "
-    (should (eq 1 (py-backward-class-bol)))))
+    (py-backward-class-bol)
+    (should (bobp))))
 
 (ert-deftest py-ert-moves-backward-def-or-class-bol-xTvIPv ()
   (py-test-with-temp-buffer
@@ -2118,7 +2083,9 @@ else:
     main()
     "
       (py-match-paren)
-      (should (bolp))))
+      (should (empty-line-p))
+      (py-match-paren)
+      (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-match-paren-test-7 ()
   (py-test-with-temp-buffer
@@ -2222,66 +2189,25 @@ if __name__ == \"__main__\":
       (should (eq (char-after) ?\"))
       ))
 
-(ert-deftest py-ert-match-paren-nonempty-test-1 ()
+(ert-deftest py-ert-match-paren-test-faMqA3 ()
   (py-test-with-temp-buffer
       "def main():
     if len(sys.argv) == 1:
         usage()
         sys.exit()
-    #"
+              "
     (search-backward "if")
     (py-match-paren)
-    (should (eq 4 (current-column)))
+    (should (empty-line-p))
     (py-match-paren)
     (should (eq (char-after) ?i))))
 
-(ert-deftest py-ert-match-paren-nonempty-test-2 ()
-  (py-test-with-temp-buffer
-      "def main():
-    if len(sys.argv) == 1:
-        usage()
-        sys.exit()
-     #"
-    (search-backward "if")
-    (py-match-paren)
-    (should (and
-	     (eq (char-after) 32)
-	     (eq (current-column) 4)))))
-
-(ert-deftest py-ert-match-paren-nonempty-test-3 ()
-  (py-test-with-temp-buffer-point-min
-      "def main():
-    if len(sys.argv) == 1:
-        usage()
-        sys.exit()
-    #"
-    (py-match-paren)
-    (should (and
-	     (eq (char-after) 32)
-	     (eq (current-column) 0)))))
-
-(ert-deftest py-ert-match-paren-nonempty-test-4 ()
-  (py-test-with-temp-buffer
-      "def main():
-    if len(sys.argv) == 1:
-        usage()
-        sys.exit()
-
-    class asdf(object):
-        zeit = time.strftime('%Y%m%d--%H-%M-%S')
-"
-    (search-backward "if")
-    (py-match-paren)
-    (should (eq (current-column) 4))
-    (should (eq (char-before) 32))))
-
-(ert-deftest py-ert-match-paren-nonempty-test-5 ()
+(ert-deftest py-ert-match-paren-test-AOADGb ()
   (py-test-with-temp-buffer-point-min
       "import re
 import sys
 import os
 "
-
     (py-match-paren)
     (should (looking-at "import sys"))
     (setq last-command 'py-match-paren)

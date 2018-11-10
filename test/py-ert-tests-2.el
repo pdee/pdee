@@ -219,7 +219,7 @@ by the
     (should (looking-at "try"))))
 
 (ert-deftest py-ert-up-level-test-2 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       "def foo():
     if True:
         def bar():
@@ -246,13 +246,7 @@ by the
                     else True:
                         pass
                     finally:
-                        pass
-        else True:
-            pass
-        finally:
-            pass
-"
-    (goto-char 632)
+                        pass"
     (py-up-block)
     (should (looking-at "else:"))))
 
@@ -437,8 +431,7 @@ class bar:
 
 (ert-deftest py-ert-backward-except-block-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -504,8 +497,7 @@ asdf = {
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-7 ()
   (py-test-with-temp-buffer
-      "
-# hanging, py-closing-list-dedents-bos nil
+      "# hanging, py-closing-list-dedents-bos nil
 asdf = {
     'a':{
          'b':3,
@@ -517,8 +509,7 @@ asdf = {
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-8 ()
   (py-test-with-temp-buffer
-      "
-# hanging, py-closing-list-dedents-bos nil
+      "# hanging, py-closing-list-dedents-bos nil
 asdf = {
     'a':{
          'b':3,
@@ -530,8 +521,7 @@ asdf = {
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-9 ()
   (py-test-with-temp-buffer
-      "
-# hanging, py-closing-list-dedents-bos nil
+      "# hanging, py-closing-list-dedents-bos nil
 asdf = {
     'a':{
          'b':3,
@@ -542,8 +532,7 @@ asdf = {
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-10 ()
   (py-test-with-temp-buffer
-      "
-# closing, py-closing-list-dedents-bos t
+      "# closing, py-closing-list-dedents-bos t
 asdf = {
     'a':{
          'b':3,
@@ -556,8 +545,7 @@ asdf = {
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-11 ()
   (py-test-with-temp-buffer
-      "
-# closing, py-closing-list-dedents-bos t
+      "# closing, py-closing-list-dedents-bos t
 asdf = {
     'a':{
          'b':3,
@@ -571,8 +559,7 @@ asdf = {
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-12 ()
   (py-test-with-temp-buffer
-      "
-# closing, py-closing-list-dedents-bos t
+      "# closing, py-closing-list-dedents-bos t
 asdf = {
     'a':{
          'b':3,
@@ -602,8 +589,9 @@ asdf = {
       "\(long, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
     (let ((py-indent-list-style 'line-up-with-first-element))
+      (goto-char (point-max)) 
       (indent-line-to (py-compute-indentation))
-      (should (eq 5 (current-indentation))))))
+      (should (eq 1 (current-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-4 ()
   (py-test-with-temp-buffer

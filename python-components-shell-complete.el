@@ -19,13 +19,13 @@
 (defalias 'py-python2-shell-complete 'py-shell-complete)
 (defalias 'py-python3-shell-complete 'py-shell-complete)
 
-(defun py--shell-completion-get-completions (input process completion-code delete)
+(defun py--shell-completion-get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (let ((erg
 	 (py--send-string-return-output
-	  (format completion-code input) process delete)))
+	  (format completion-code input) process)))
     ;; (sit-for 0.2 t)
     (if (and erg (> (length erg) 2))
       (setq erg (split-string erg "^'\\|^\"\\|;\\|'$\\|\"$" t))
@@ -109,7 +109,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   (sit-for 0.1 t)
   (let* ((completion
 	  (py--shell-completion-get-completions
-	   input process code t)))
+	   input process code)))
     (set-buffer exception-buffer)
     ;; (py--delay-process-dependent process)
     ;; (sit-for 1 t)

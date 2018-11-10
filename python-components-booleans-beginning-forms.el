@@ -135,7 +135,7 @@
   "Return position, if cursor is at the beginning of a ‘elif-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-elif-block-re)
+         (looking-at py-elif-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (eq (current-column)(current-indentation))
          (point))))
@@ -144,7 +144,7 @@
   "Return position, if cursor is at the beginning of a ‘else-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-else-block-re)
+         (looking-at py-else-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (eq (current-column)(current-indentation))
          (point))))
@@ -153,7 +153,7 @@
   "Return position, if cursor is at the beginning of a ‘except-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-except-block-re)
+         (looking-at py-except-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (eq (current-column)(current-indentation))
          (point))))
@@ -162,7 +162,7 @@
   "Return position, if cursor is at the beginning of a ‘for-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-for-block-re)
+         (looking-at py-for-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (eq (current-column)(current-indentation))
          (point))))
@@ -171,7 +171,7 @@
   "Return position, if cursor is at the beginning of a ‘if-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-if-block-re)
+         (looking-at py-if-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (eq (current-column)(current-indentation))
          (point))))
@@ -207,7 +207,7 @@
   "Return position, if cursor is at the beginning of a ‘try-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-try-block-re)
+         (looking-at py-try-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (eq (current-column)(current-indentation))
          (point))))
@@ -271,7 +271,7 @@
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
          (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-elif-block-re)
+         (looking-at py-elif-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (point))))
 
@@ -280,7 +280,7 @@
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
          (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-else-block-re)
+         (looking-at py-else-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (point))))
 
@@ -289,7 +289,7 @@
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
          (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-except-block-re)
+         (looking-at py-except-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (point))))
 
@@ -298,7 +298,7 @@
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
          (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-for-block-re)
+         (looking-at py-for-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (point))))
 
@@ -307,7 +307,7 @@
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
          (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-if-block-re)
+         (looking-at py-if-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (point))))
 
@@ -343,7 +343,7 @@
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
          (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-try-block-re)
+         (looking-at py-try-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (point))))
 

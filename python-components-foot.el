@@ -425,7 +425,6 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   (set (make-local-variable 'inhibit-point-motion-hooks) t)
   (set (make-local-variable 'comint-input-sender) 'py--shell-simple-send)
-  (py--python-send-ffap-setup-code buffer)
   (py--python-send-eldoc-setup-code buffer)
   (force-mode-line-update))
 
@@ -458,6 +457,21 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
     )
 
 (autoload 'python-mode "python-mode" "Python Mode." t)
+
+
+(defalias 'IPython 'ipython)
+(defalias 'Ipython 'ipython)
+(defalias 'Python 'python)
+(defalias 'Python2 'python2)
+(defalias 'Python3 'python3)
+(defalias 'ipy 'ipython)
+(defalias 'iyp 'ipython)
+(defalias 'py-execute-region-default 'py-execute-region)
+(defalias 'py-execute-region-default-dedicated 'py-execute-region-dedicated)
+(defalias 'py-kill-minor-expression 'py-kill-partial-expression)
+(defalias 'pyhotn 'python)
+(defalias 'pyhton 'python)
+(defalias 'pyt 'python)
 
 (defalias 'py-backward-decorator-bol 'py-backward-decorator)
 (defalias 'py-beginning-of-block 'py-backward-block)

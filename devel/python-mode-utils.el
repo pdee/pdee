@@ -29,7 +29,6 @@
 
 (defvar ar-prefix "py-")
 
-
 (defvar arkopf)
 
 (setq py-shells
@@ -83,6 +82,30 @@
        "except-block"
        "try-block"
        "minor-block"
+       ))
+
+(setq py-block-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "elif-block"
+       "else-block"
+       "except-block"
+       "for-block"
+       "if-block"
+       "minor-block"
+       "try-block"
+       ))
+
+(setq py-def-or-class-forms
+      (list
+       "class"
+       "def-or-class"
+       "def"
        ))
 
 ;; like positions, but without statement and expression, avoid py--end-base
@@ -348,7 +371,6 @@
   (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
   "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine.")
 
-
 (setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
 
 (setq py-bounds-command-names
@@ -422,6 +444,23 @@
        "section"
        "statement"
        "top-level"))
+
+(setq py-navigation-forms
+      (list
+       "block"
+       "block-or-clause"
+       "class"
+       "clause"
+       "def"
+       "def-or-class"
+       "elif"
+       "else"
+       "expression"
+       "partial-expression"
+       "section"
+       "try"
+       "except"
+       ))
 
 ;; "top-level" doesn't make sence WRT bol
 (defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric")
@@ -799,7 +838,7 @@
     (py-execute-region beg end)))\n\n")))
   (insert "(provide 'python-components-exec-forms)
 ;;; python-components-exec-forms.el ends here\n ")
-  (when (called-interactively-p 'any)
+  (when (called-interactively-p 'interactive)
     (switch-to-buffer (current-buffer))
     (emacs-lisp-mode))
     (write-file (concat components-directory "/python-components-exec-forms.el")))
@@ -1012,14 +1051,13 @@ Include default forms "
   (erase-buffer)
   (insert ";; Extended executes --- more execute forms\n")
   (insert arkopf)
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write--unified-extended-execute-forms-intern)
   (insert "\n(provide 'python-components-extended-executes)
 ;;; python-components-extended-executes.el ends here")
   (write-file (concat components-directory "/python-components-extended-executes.el"))
   )
-
 
 (defun pmu-fix-ipython (ele)
   (when (string-match "^ipython.*" ele)
@@ -1040,7 +1078,7 @@ Include default forms "
   (goto-char (point-max))
   (when (interactive-p) (switch-to-buffer (current-buffer)))
   (goto-char (point-max))
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (dolist (ele py-shells)
     (unless (string= ele "")
@@ -1127,7 +1165,7 @@ Optional ARG \\\\[universal-argument] prompts for path to the"))
   (with-current-buffer
       (get-buffer-create "python-components-installed-shells-menu.el")
     (erase-buffer)
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (insert " 		  (\"Other\"
 		   :help \"Alternative Python Shells\"")
@@ -1159,7 +1197,7 @@ Optional ARG \\\\[universal-argument] prompts for path to the"))
       (newline))
     (insert ")")
     (insert ")")
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (write-file (concat components-directory "/devel/python-components-installed-shells-menu.el"))))
 
@@ -1185,10 +1223,10 @@ Optional ARG \\\\[universal-argument] prompts for path to the"))
   (with-current-buffer
       (get-buffer-create "python-components-installed-shells-test.el")
     (erase-buffer)
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (py-write-installed-shells-test-intern)
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+    (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	  (emacs-lisp-mode))
     (write-file (concat components-directory "/test/python-components-installed-shells-test.el"))))
 
@@ -1211,7 +1249,7 @@ Optional START: region beginning
 Optional END: region end\"
   (interactive \"p\")
   (let ((erg (py--shift-intern (- count) start end)))
-    (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
+    (when (and (called-interactively-p 'interactive) py-verbose-p) (message \"%s\" erg))
     erg))
 
 \(defun py-shift-right (&optional count beg end)
@@ -1224,7 +1262,7 @@ Optional BEG: region beginning
 Optional END: region end\"
   (interactive \"p\")
   (let ((erg (py--shift-intern count beg end)))
-    (when (and (called-interactively-p 'any) py-verbose-p) (message \"%s\" erg))
+    (when (and (called-interactively-p 'interactive) py-verbose-p) (message \"%s\" erg))
     erg))
 
 \(defun py--shift-intern (count &optional start end)
@@ -1285,7 +1323,7 @@ use \\[universal-argument] to specify a different value.
 Return outmost indentation reached.\"
   (interactive \"\*P\")
   (let ((erg (py--shift-forms-base \"" ele "\" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message \"%s\" erg))
+        (when (called-interactively-p 'interactive) (message \"%s\" erg))
     erg))
 
 \(defun py-shift-" ele "-left (&optional arg)
@@ -1297,7 +1335,7 @@ use \\[universal-argument] to specify a different value.
 Return outmost indentation reached.\"
   (interactive \"\*P\")
   (let ((erg (py--shift-forms-base \"" ele "\" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message \"%s\" erg))
+    (when (called-interactively-p 'interactive) (message \"%s\" erg))
     erg))
 ")))
       (insert "\n(provide 'python-components-shift-forms)
@@ -1334,7 +1372,7 @@ Return outmost indentation reached.\"
 ;;         (forward-line 1)
 ;;         (beginning-of-line)
 ;;         (setq erg (point))))
-;;   (when (called-interactively-p 'any) (message \"%s\" erg))
+;;   (when (called-interactively-p 'interactive) (message \"%s\" erg))
 ;;   erg))
 ;; "))
 ;;     (emacs-lisp-mode)
@@ -1423,7 +1461,7 @@ Return value of ‘" ele "’ switched to.\"
     (if (< 0 arg)
         (setq " ele " t)
       (setq " ele " nil))
-    (when (or py-verbose-p (called-interactively-p 'any)) (message \"" ele ": %s\" " ele "))
+    (when (or py-verbose-p (called-interactively-p 'interactive)) (message \"" ele ": %s\" " ele "))
     " ele "))
 
 \(defun " ele "-on (&optional arg)
@@ -1433,7 +1471,7 @@ Return value of ‘" ele "’.\"
   (interactive)
   (let ((arg (or arg 1)))
     (toggle-" ele " arg))
-  (when (or py-verbose-p (called-interactively-p 'any)) (message \"" ele ": %s\" " ele "))
+  (when (or py-verbose-p (called-interactively-p 'interactive)) (message \"" ele ": %s\" " ele "))
   " ele ")
 
 \(defun " ele "-off ()
@@ -1442,7 +1480,7 @@ Return value of ‘" ele "’.\"
 Return value of ‘" ele "’.\"
   (interactive)
   (toggle-" ele " -1)
-  (when (or py-verbose-p (called-interactively-p 'any)) (message \"" ele ": %s\" " ele "))
+  (when (or py-verbose-p (called-interactively-p 'interactive)) (message \"" ele ": %s\" " ele "))
   " ele ")"))
       (newline)
       (emacs-lisp-mode)
@@ -1533,7 +1571,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
       (search-forward "--funcall ")
       (setq erg (prin1-to-string (symbol-at-point)))
       (elisp-find-definition erg))
-    (when (called-interactively-p 'any) (message "%s" erg))
+    (when (called-interactively-p 'interactive) (message "%s" erg))
     erg))
 
 (defun py-write-up-down-forms ()
@@ -1553,40 +1591,8 @@ Return position if statement found, nil otherwise.\"
     (if (py--beginning-of-statement-p)
 	(setq erg (py-backward-statement))
       (setq erg (and (py-backward-statement) (py-backward-statement))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'interactive)) (message \"%s\" erg))
     erg))
-
-
-\(defun py-up-base (regexp &optional indent orig decorator bol repeat)
-  \"REGEXP is a quoted symbol
-
-Go to the beginning of next form upwards in buffer according to INDENT.
-
-Optional ORIG DECORATOR BOL REPEAT
-Return position if form found, nil otherwise.\"
-  (unless (bobp)
-    (let* ((orig (or orig (point)))
-	   (repeat (or (and repeat (1+ repeat)) 0))
-	   erg name command)
-      (if (< py-max-specpdl-size repeat)
-	  (error \"‘py-up-base’ reached loops max\")
-	(if indent
-	    (progn
-	      (while (and (re-search-backward (symbol-value regexp) nil 'move 1)
-			  (or (nth 8 (parse-partial-sexp (point-min) (point)))
-			      (<= indent (current-indentation))))))
-	  (unless (py--beginning-of-statement-p)
-	    (py-backward-statement))
-	  (if (looking-at (symbol-value regexp))
-	      (py-up-base regexp (current-indentation) orig decorator bol repeat)
-	    (setq name (symbol-name regexp))
-	    (setq command (intern-soft (concat \"py-backward-\" (substring name (string-match \"minor\\\\|block\\\\|def\\\\|class\" name) (string-match \"-re\" name)))))
-	    (funcall command)
-	    (py-up-base regexp (current-indentation) orig decorator bol repeat)))
-	(when bol (beginning-of-line))
-	(and (looking-at (symbol-value regexp)) (< (point) orig) (setq erg (point)))
-	(when py-verbose-p (message \"%s\" erg))
-	erg))))
 
 (defun py-down-statement ()
   \"Go to the beginning of next statement downwards in buffer.
@@ -1602,103 +1608,37 @@ Return position if statement found, nil otherwise.\"
 		  (py-backward-statement)
 		  (< orig (point))
 		  (point))))
-	  ((< orig (and (py-forward-statement) (py-backward-statement)))
+	  ((< orig (ignore-errors (and (py-forward-statement) (py-backward-statement))))
 	   (setq erg (point)))
 	  (t (setq erg (ignore-errors (< orig (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'interactive)) (message \"%s\" erg))
     erg))
-
-\(defun py-down-base (regexp \&optional orig indent decorator bol)
-  \"Go to the beginning of next form below in buffer.
-
-Return position if form found, nil otherwise.
-Expects a quoted symbol 'REGEXP
-Optional ORIG INDENT DECORATOR BOL\"
-  (unless (eobp)
-    (let\* ((name (substring (symbol-name regexp) 3 -3))
-	   (p-command (car (read-from-string (concat \"py--beginning-of-\" name \"-p\"))))
-	   (backward-command (car (read-from-string (concat \"py-backward-\" name))))
-	   (up-command (car (read-from-string (concat \"py-up-\" name))))
-	   \;\; (down-command (car (read-from-string (concat \"py-down-\" name))))
-           (forward-command (car (read-from-string (concat \"py-forward-\" name))))
-           erg done start)
-      (if (funcall p-command)
-	  (setq indent (current-indentation))
-	(save-excursion
-	  (cond
-	   ((and indent decorator bol)
-	    (when (funcall backward-command indent decorator bol)
-	      (setq indent (current-indentation))
-	      (setq start (point))))
-	   ((and indent decorator)
-	    (when (funcall backward-command indent decorator)
-	      (setq indent (current-indentation))
-	      (setq start (point))))
-	   (t (when
-		  (funcall backward-command indent)
-		(setq indent (current-indentation))
-		(setq start (point))))))
-	(unless (and indent start)
-	  (while (and (py-down-statement)
-		      (not (looking-at (symbol-value regexp))))))
-
-	(when
-	    (looking-at (symbol-value regexp))
-	  (setq done t)
-	  (setq erg (point)) 
-	  \;\; (setq indent (current-indentation))
-	  \;\; (setq start (point))
-	  ))
-      \;\; (setq done (funcall forward-command indent decorator bol))
-      (while (and (not done)
-		  (py-down-statement)
-		  (< indent (current-indentation))))
-      (when (looking-at (symbol-value regexp))
-	(setq done (point)))
-      (when done
-	(when bol (beginning-of-line))
-	(setq erg (point)))
-      (unless done
-	(goto-char orig)
-	(or
-	 (if
-	     (and
-	      (funcall up-command)
-	      \;\; up should not result to backward
-	      (not (eq (point) start))
-	      (funcall forward-command decorator bol)
-	      (< orig (point))
-	      (setq erg (point)))
-	     (when bol (setq erg (py--beginning-of-line-form erg)))
-	   (goto-char (point-max)))))
-      (when py-verbose-p (message \"%s\" erg))
-      erg)))
 ")
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
 \(defalias 'py-" ele "-up 'py-up-" ele ")
-\(defun py-up-" ele " (&optional indent decorator bol)
+\(defun py-up-" ele " (&optional indent)
   \"Go to the beginning of next " ele " upwards in buffer according to INDENT.
-Optional DECORATOR BOL
+Optional INDENT
 Return position if " ele " found, nil otherwise.\"
   (interactive)
   (py-up-base 'py-"))
       (cond ((string-match "def\\|class\\|section" ele)
-	     (insert (concat ele "-re indent (point) decorator bol))\n")))
-	    (t (insert "extended-block-or-clause-re indent (point) decorator bol))\n")))))
+	     (insert (concat ele "-re indent))\n")))
+	    (t (insert "extended-block-or-clause-re indent))\n")))))
   ;; down
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
 \(defalias 'py-" ele "-down 'py-down-" ele ")
-\(defun py-down-" ele " (&optional orig indent decorator bol)
+\(defun py-down-" ele " (&optional indent)
   \"Go to the beginning of next " ele " below in buffer according to INDENT.
 
-Optional INDENT DECORATOR BOL
+Optional INDENT: honor indentation
 Return position if " ele " found, nil otherwise.\"
   (interactive)
-  (py-down-base 'py-" ele "-re (or orig (point)) indent decorator bol))\n"))))
+  (py-down-base 'py-" ele "-re  indent))\n"))))
   ;; up bol
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)
@@ -1708,26 +1648,28 @@ Return position if " ele " found, nil otherwise.\"
   \"Go to the beginning of next " ele " upwards in buffer according to INDENT.
 
 Go to beginning of line.
-Optional DECORATOR.
+Optional DECORATOR: stop at decorator - not implemented 
 Return position if " ele " found, nil otherwise.\"
   (interactive)
-  (py-up-base 'py-" ele "-re indent (point) decorator t))\n"))))
+  (py-up-base 'py-" ele "-re indent decorator)
+  (progn (beginning-of-line)(point)))\n"))))
   ;; down bol
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)
         nil
       (insert (concat "
-\(defun py-down-" ele "-bol (&optional orig indent decorator bol)
+\(defun py-down-" ele "-bol (&optional indent)
   \"Go to the beginning of next " ele " below in buffer according to INDENT.
 
-Optional INDENT DECORATOR BOL.
 Go to beginning of line
+Optional INDENT: honor indentation
 Return position if " ele " found, nil otherwise \"
   (interactive)
-  (py-down-base 'py-" ele "-re (or orig (point)) indent decorator (or bol t)))\n"))))
+  (py-down-base 'py-" ele "-re indent t)
+  (progn (beginning-of-line)(point)))\n"))))
   (insert "\n;; python-components-up-down.el ends here
 \(provide 'python-components-up-down)")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-up-down.el")))
 
@@ -1814,7 +1756,7 @@ the default\"
       (comment-region beg end arg))))\n\n")))
   (insert "\n;; python-components-comment ends here
 \(provide 'python-components-comment)")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-comment.el")))
 
@@ -1845,7 +1787,7 @@ Return beginning and end positions of region, a cons.\"
   (let (erg)
     (setq erg (py--mark-base-bol \"" ele "\"))
     (exchange-point-and-mark)
-    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'interactive)) (message \"%s\" erg))
     erg))
 ")))
     (switch-to-buffer (current-buffer))
@@ -1856,26 +1798,26 @@ Return beginning and end positions of region, a cons.\"
     (when (or (string-match "def" ele) (string-match "class" ele))
       (insert "\n;;;###autoload"))
     (insert (concat "
-\(defun py-backward-" ele " (&optional indent"))
+\(defun py-backward-" ele " ("))
         (if (string-match "def\\|class" ele)
-	(insert " decorator bol)")
+	(insert "&optional decorator)")
       (insert ")"))
-	(insert (concat "\n  \"Go to beginning of ‘" ele "’ according to INDENT.
+	(insert (concat "\n  \"Go to beginning of ‘" ele "’.
 
 If already at beginning, go one ‘" ele "’ backward."))
 	(when (string-match "def\\|class" ele)
-	  (insert  "\nOptional DECORATOR BOL\n"))
+	  (insert  "\nOptional DECORATOR\n"))
 	(insert (concat "
 Return beginning of ‘" ele "’ if successful, nil otherwise\"\n"))
     (insert "  (interactive)")
-    (cond ((string-match "clause" ele)
-	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re (called-interactively-p 'any)))\n")))
+    (cond ;; ((string-match "clause" ele)
+  ;; 	   (insert (concat "
+  ;; (cdr-safe (py--go-to-keyword 'py-extended-block-or-clause-re)))\n")))
 	  ((string-match "def\\|class" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re (called-interactively-p 'any) decorator bol))\n")))
+  (cdr-safe (py--go-to-keyword 'py-" ele "-re decorator)))\n")))
 	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re (called-interactively-p 'any)))\n")))
+  (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re )))\n")))
 	  )))
 
 (defun py--insert-backward-bol-forms ()
@@ -1884,28 +1826,26 @@ Return beginning of ‘" ele "’ if successful, nil otherwise\"\n"))
     (when (or (string-match "def" ele) (string-match "class" ele))
       (insert "\n;;;###autoload"))
     (insert (concat "
-\(defun py-backward-" ele "-bol (&optional indent"))
+\(defun py-backward-" ele "-bol ("))
     (if (string-match "def\\|class" ele)
-	(insert " decorator)")
+	(insert "&optional decorator)")
       (insert ")"))
     (insert (concat "
-  \"Go to beginning of ‘" ele "’ according to INDENT, go to BOL."))
+  \"Go to beginning of ‘" ele "’, go to BOL."))
     (when (string-match "def\\|class" ele)
-      (insert  "\nOptional DECORATOR BOL\n"))
+      (insert  "\nOptional DECORATOR\n"))
 
 (insert (concat "
 If already at beginning, go one ‘" ele "’ backward.
 Return beginning of ‘" ele "’ if successful, nil otherwise"))
     (insert "\"\n")
     (insert "  (interactive)")
-    (cond ((string-match "def\\|class" ele)
 	   (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re (called-interactively-p 'any) decorator t))\n")))
-	  ((string-match "clause" ele)
-	   (insert (concat "
-  (py--backward-prepare indent 'py-extended-block-or-clause-re  (called-interactively-p 'any) nil t))\n")))
-	  (t (insert (concat "
-  (py--backward-prepare indent 'py-" ele "-re (called-interactively-p 'any) nil t))\n"))))))
+  (and (py-backward-" ele))
+	   (when (string-match "def\\|class" ele)
+	     (insert  " decorator"))
+	   (insert ")
+       (progn (beginning-of-line)(point))))\n")))
 
 (defun py-write-backward-forms ()
   "Uses py-backward-forms, not ‘py-navigate-forms’.
@@ -1929,7 +1869,7 @@ Use backward-statement for ‘top-level’, also bol-forms don't make sense here
   (py--insert-backward-bol-forms)
   (insert "\n(provide 'python-components-backward-forms)
 ;;; python-components-backward-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-backward-forms.el")))
 
@@ -1949,7 +1889,7 @@ Use backward-statement for ‘top-level’, also bol-forms don't make sense here
 Return code of ‘py-" ele "’ at point, a string.\"
   (interactive)
   (let ((erg (py--mark-base \"" ele "\")))
-    (py--forms-report-result erg (called-interactively-p 'any))))
+    (py--forms-report-result erg (called-interactively-p 'interactive))))
 ")))
   (insert "\n;; python-components-forms-code.el ends here
 \(provide 'python-components-forms-code)")
@@ -2256,7 +2196,7 @@ class bar:
   (insert "\n(provide 'python-components-beginning-position-forms)
 ;;; python-components-beginning-position-forms.el ends here")
 
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-beginning-position-forms.el")))
 
@@ -2273,30 +2213,18 @@ class bar:
     (insert (concat "
 \(defun py--end-of-" ele "-position ()
   \"Return end of " ele " position.\"
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at \"[ \\\\t\\\\r\\\\n\\\\f]\*\$\")
-                   (skip-chars-backward \" \\t\\r\\n\\f\")
-                   (forward-char -1))
-                 (py-forward-" ele "))))
-      erg)))\n")))
+  (save-excursion (py-forward-" ele ")))\n")))
 
   (dolist (ele py-shift-bol-forms)
     (insert (concat "
 \(defun py--end-of-" ele "-position-bol ()
   \"Return end of " ele " position at ‘beginning-of-line’.\"
-  (save-excursion
-    (let ((erg (progn
-                 (when (looking-at \"[ \\\\t\\\\r\\\\n\\\\f]\*\$\")
-                   (skip-chars-backward \" \\t\\r\\n\\f\")
-                   (forward-char -1))
-                 (py-forward-" ele "-bol))))
-      erg)))
-")))
+  (save-excursion (py-forward-" ele "-bol)))\n")))
+
  (insert "\n(provide 'python-components-end-position-forms)
 ;;; python-components-end-position-forms.el ends here")
 
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer)))
   (emacs-lisp-mode)
   (write-file (concat components-directory "/python-components-end-position-forms.el")))
 
@@ -2304,53 +2232,44 @@ class bar:
   (interactive)
   (set-buffer (get-buffer-create "python-components-forward-forms.el"))
   (erase-buffer)
+  (switch-to-buffer (current-buffer))
+
   (insert ";;; python-components-forward-forms.el -- Go to the end of forms -*- lexical-binding: t; -*-\n")
   (insert "\n;;This file is generated by function from python-mode-utils.el - see in
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
-
+  (goto-char (point-max))
   (insert "(defun py-forward-region ()
   \"Go to the end of current region.\"
   (interactive)
   (let ((end (region-end)))
     (when end (goto-char end))))
 ")
-  (dolist (ele py-beg-end-forms)
+  (dolist (ele py-block-forms)
     (when (or (string-match "def" ele) (string-match "class" ele))
       (insert "\n;;;###autoload"))
     ;; beg-end check forms
     (insert (concat "
-\(defun py-forward-" ele " (&optional arg decorator bol)
+\(defun py-forward-" ele " ()
   \"Go to end of " ele ".
 
-Return end of " ele " if successful, nil otherwise
-Optional arg DECORATOR is used if form supports one
-With optional BOL, go to beginning of line following match.\"
-  (interactive \"p\")
-  (let (erg)
-    (dotimes (i (or arg 1))
-      (let ((orig (point)))
-	(setq erg (py--end-base 'py-" ele "-re orig decorator bol))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
-    erg))
-
+Return end of ‘" ele "’ if successful, nil otherwise\"
+  (interactive)
+  (cdr-safe (py--end-base 'py-" (ar-block-regexp-name-richten ele)
+			       "-re)))
 
 \(defun py-forward-" ele "-bol ()
-  \"Goto beginning of line following end of " ele ".
+  \"Goto beginning of line following end of ‘" ele "’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-" ele "’: down from current definition to next beginning of " ele " below.\"
+See also ‘py-down-" ele "’: down from current definition to next beginning of ‘" ele "’ below.\"
   (interactive)
-  (let ((erg (py-forward-" ele ")))
-    (setq erg (py--beginning-of-line-form erg))
-    (when (called-interactively-p 'any) (message \"%s\" erg))
-    erg))
-")))
+  (py--beginning-of-line-form (py-forward-" ele ")))\n")))
 
   (insert "\n;; python-components-forward-forms.el ends here
 \(provide 'python-components-forward-forms)")
   (write-file (concat components-directory "/python-components-forward-forms.el"))
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode)))
 
 (defun py--beginning-of-block-bol-p (&optional pps)
@@ -2411,7 +2330,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   "Return position, if cursor is at the beginning of a ‘elif-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
-       (looking-at py-elif-block-re)
+       (looking-at py-elif-re)
        (looking-back "[^ \t]*" (line-beginning-position))
        (not (nth 8 (parse-partial-sexp (point-min) (point))))
        (point))))
@@ -2420,7 +2339,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   "Return position, if cursor is at the beginning of a ‘else-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
-       (looking-at py-else-block-re)
+       (looking-at py-else-re)
        (looking-back "[^ \t]*" (line-beginning-position))
        (not (nth 8 (parse-partial-sexp (point-min) (point))))
        (point))))
@@ -2429,7 +2348,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   "Return position, if cursor is at the beginning of a ‘except-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
-       (looking-at py-except-block-re)
+       (looking-at py-except-re)
        (looking-back "[^ \t]*" (line-beginning-position))
        (not (nth 8 (parse-partial-sexp (point-min) (point))))
        (point))))
@@ -2438,7 +2357,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   "Return position, if cursor is at the beginning of a ‘for-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
-       (looking-at py-for-block-re)
+       (looking-at py-for-re)
        (looking-back "[^ \t]*" (line-beginning-position))
        (not (nth 8 (parse-partial-sexp (point-min) (point))))
        (point))))
@@ -2447,7 +2366,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   "Return position, if cursor is at the beginning of a ‘if-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
-       (looking-at py-if-block-re)
+       (looking-at py-if-re)
        (looking-back "[^ \t]*" (line-beginning-position))
        (not (nth 8 (parse-partial-sexp (point-min) (point))))
        (point))))
@@ -2483,7 +2402,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   "Return position, if cursor is at the beginning of a ‘try-block’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
-       (looking-at py-try-block-re)
+       (looking-at py-try-re)
        (looking-back "[^ \t]*" (line-beginning-position))
        (not (nth 8 (parse-partial-sexp (point-min) (point))))
        (point))))
@@ -2506,7 +2425,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   \"Return position, if cursor is at the beginning of a ‘" ele "’, nil otherwise.\"\n"))
 	(insert (concat "  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-" ele "-re)
+         (looking-at py-" (ar-block-regexp-name-richten ele) "-re)
          (point))))\n\n")))
   (dolist (ele py-bol-forms)
     (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
@@ -2514,7 +2433,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
     (insert (concat "
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-" ele "-re)
+         (looking-at py-" (ar-block-regexp-name-richten ele) "-re)
          (looking-back \"[^ \\t]*\" (line-beginning-position))
          (eq (current-column)(current-indentation))
          (point))))\n\n")))
@@ -2525,12 +2444,12 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
          (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-" ele "-re)
+         (looking-at py-" (ar-block-regexp-name-richten ele) "-re)
          (looking-back \"[^ \\t]*\" (line-beginning-position))
          (point))))\n\n")))
   (insert "(provide 'python-components-booleans-beginning-forms)
 ;; python-components-booleans-beginning-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-booleans-beginning-forms.el")))
 
@@ -2582,7 +2501,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
       erg)))\n")))
   (insert "\n(provide 'python-components-booleans-end-forms)
 ;; python-components-booleans-end-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-booleans-end-forms.el")))
 
@@ -2618,7 +2537,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
 "))))
   (insert "\n(provide 'python-components-kill-forms)
 ;;; python-components-kill-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-kill-forms.el")))
 
@@ -2642,12 +2561,12 @@ Set indent level to that of beginning of function definition.
 If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline.\"
   (interactive \"*\")
   (let ((erg (py--close-intern 'py-" ele "-re)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'interactive)) (message \"%s\" erg))
     erg))
 "))))
   (insert "\n(provide 'python-components-close-forms)
 ;;; python-components-close-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-close-forms.el")))
 
@@ -2684,7 +2603,7 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
     (setq erg (py--mark-base \"" ele "\"))"))
       (insert "
     (exchange-point-and-mark)
-    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'interactive)) (message \"%s\" erg))
     erg))")
       (newline))
     (dolist (ele py-bol-forms)
@@ -2713,12 +2632,12 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
     (setq erg (py--mark-base-bol \"" ele "\"))"))
       (insert "
     (exchange-point-and-mark)
-    (when (and py-verbose-p (called-interactively-p 'any)) (message \"%s\" erg))
+    (when (and py-verbose-p (called-interactively-p 'interactive)) (message \"%s\" erg))
     erg))\n")))
 
   (insert "\n(provide 'python-components-mark-forms)
 ;;; python-components-mark-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-mark-forms.el")))
 
@@ -2755,7 +2674,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
 ")))))
   (insert "\n(provide 'python-components-copy-forms)
 ;; python-components-copy-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-copy-forms.el")))
 
@@ -2816,7 +2735,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
   (py--write-delete-forms py-non-bol-forms)
   (insert "\n(provide 'python-components-delete-forms)
 ;; python-components-delete-forms.el ends here\n")
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write-file (concat components-directory "/python-components-delete-forms.el")))
 
@@ -2841,7 +2760,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
   (erase-buffer)
   (insert ";;; python-components-section-forms.el --- section forms -*- lexical-binding: t; -*-\n")
   (insert arkopf)
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write--section-forms)
   (insert "\n(provide 'python-components-section-forms)
@@ -2870,7 +2789,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
   (erase-buffer)
   (insert ";;; python-components-narrow.el --- narrow forms -*- lexical-binding: t; -*-\n")
   (insert arkopf)
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write--narrow-forms)
   (insert "(provide 'python-components-narrow)
@@ -2909,7 +2828,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
   (erase-buffer)
   (insert ";;; python-components-execute-region.el --- execute-region forms -*- lexical-binding: t; -*-\n")
   (insert arkopf)
-  (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+  (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
 	(emacs-lisp-mode))
   (write--execute-region)
   (insert "(provide 'python-components-execute-region)
@@ -2937,6 +2856,23 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
 	((string= pyo "dedicated")
 	 ;; (insert (make-string 2 ?\ ))
 	 (insert "(py-dedicated-process-p t)"))))
+
+(defun ar-block-regexp-name-richten (ele)
+  (cond ((string-match "^if-" ele)
+	 "if")
+	((string-match "for-" ele)
+	 "for")
+	((string-match "clause-" ele)
+	 "clause")
+	((string-match "elif-" ele)
+	 "elif")
+	((string-match "try-" ele)
+	 "try")
+	((string-match "else-" ele)
+	 "else")
+	((string-match "except-" ele)
+	 "except")
+	(t ele)))
 
 (defun write-most-of-forms ()
   "Let's see if we can write/update forms at once."

@@ -291,7 +291,7 @@ If already at ‘end-of-line’ and not at EOB, go to end of next line."
       erg)))
 
 ;;  Statement
-(defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat)
+(defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat maxindent)
   "Go to the initial line of a simple statement.
 
 For beginning of compound statement use ‘py-backward-block’.
@@ -303,7 +303,8 @@ ORIG - consider orignial position or point.
 DONE - transaktional argument
 LIMIT - honor limit
 IGNORE-IN-STRING-P - also much inside a string
-REPEAT - count and consider repeats"
+REPEAT - count and consider repeats
+Optional MAXINDENT: don't stop if indentation is larger"
   (interactive)
   (save-restriction
     (unless (bobp)
@@ -319,64 +320,67 @@ REPEAT - count and consider repeats"
         (cond
 	 ((< py-max-specpdl-size repeat)
 	  (error "Py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
-         ((and (bolp)(eolp))
+         ((and (bolp) (eolp))
           (skip-chars-backward " \t\r\n\f")
-          (py-backward-statement orig done limit ignore-in-string-p repeat))
+          (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ;; inside string
-         ((and (nth 3 pps)(not ignore-in-string-p))
+         ((and (nth 3 pps) (not ignore-in-string-p))
 	  (setq done t)
 	  (goto-char (nth 8 pps))
-	  (py-backward-statement orig done limit ignore-in-string-p repeat))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ((nth 4 pps)
 	  (while (ignore-errors (goto-char (nth 8 pps)))
 	    (skip-chars-backward " \t\r\n\f")
-	    (setq pps (parse-partial-sexp (line-beginning-position) (point)))
-	    )
-	  (py-backward-statement orig done limit ignore-in-string-p repeat))
+	    (setq pps (parse-partial-sexp (line-beginning-position) (point))))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
          ((nth 1 pps)
           (goto-char (1- (nth 1 pps)))
-	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
+	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation) (point)))
 	    (setq done t))
-          (py-backward-statement orig done limit ignore-in-string-p repeat))
+          (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
          ((py-preceding-line-backslashed-p)
           (forward-line -1)
           (back-to-indentation)
           (setq done t)
-          (py-backward-statement orig done limit ignore-in-string-p repeat))
+          (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ;; at raw-string
 	 ;; (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
 	 ((and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
 	  (forward-char -1)
-	  (py-backward-statement orig done limit ignore-in-string-p repeat))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ;; BOL or at space before comment
-         ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*" (line-beginning-position)))
+         ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
           (forward-comment -1)
-          (while (and (not (bobp)) (looking-at "[ \t]*#")(looking-back "^[ \t]*" (line-beginning-position)))
+          (while (and (not (bobp)) (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
             (forward-comment -1))
           (unless (bobp)
-            (py-backward-statement orig done limit ignore-in-string-p repeat)))
+            (py-backward-statement orig done limit ignore-in-string-p repeat maxindent)))
 	 ;; at inline comment
          ((looking-at "[ \t]*#")
-	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation)(point)))
+	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation) (point)))
 	    (setq done t))
-	  (py-backward-statement orig done limit ignore-in-string-p repeat))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ;; at beginning of string
 	 ((looking-at py-string-delim-re)
 	  (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
 	    (setq done t))
 	  (back-to-indentation)
-	  (py-backward-statement orig done limit ignore-in-string-p repeat))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ;; after end of statement
 	 ((and (not done) (eq (char-before) ?\;))
 	  (skip-chars-backward ";")
-	  (py-backward-statement orig done limit ignore-in-string-p repeat))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ;; travel until indentation or semicolon
 	 ((and (not done) (py--skip-to-semicolon-backward))
-	  (setq done t)
-	  (py-backward-statement orig done limit ignore-in-string-p repeat))
+	  (unless (and maxindent (< maxindent (current-indentation)))
+	    (setq done t))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ;; at current indent
 	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
-	  (py-backward-statement orig done limit ignore-in-string-p repeat)))
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
+	 ((and maxindent (< maxindent (current-indentation)))
+	  (forward-line -1)
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent)))
 	;; return nil when before comment
 	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
 	  (when (< (point) orig)(setq erg (point))))
@@ -571,36 +575,6 @@ Start from POS if specified"
     (when last (goto-char last))
     last))
 
-;; (defun py-forward-comment (&optional pos char)
-;;   "Go to end of commented section.
-
-;; Optional args position and ‘comment-start’ character
-;; Travel empty lines
-;; Start from POS if specified
-;; Use CHAR as ‘comment-start’ if provided"
-;;   (interactive)
-;;   (let ((orig (or pos (point)))
-;; 	(char (or char (string-to-char comment-start)))
-;; 	py-forward-comment-last erg)
-;;     (while (and (not (eobp))
-;; 		(or
-;; 		 (forward-comment 99999)
-;; 		 (when (py--in-comment-p)
-;; 		   (progn
-;; 		     (end-of-line)
-;; 		     (skip-chars-backward " \t\r\n\f")
-;; 		     (setq py-forward-comment-last (point))))
-;; 		 (prog1 (forward-line 1)
-;; 		   (end-of-line)))))
-;;     (when py-forward-comment-last (goto-char py-forward-comment-last))
-;;     ;; forward-comment fails sometimes
-;;     (and (eq orig (point)) (prog1 (forward-line 1) (back-to-indentation))
-;; 	 (while (member (char-after) (list char 10))(forward-line 1)(back-to-indentation)))
-;;     (when (< orig (point)) (setq erg (point)))
-;;     (when (called-interactively-p 'any) (message "%s" erg))
-;;     erg))
-
-;;  Helper functions
 (defun py-go-to-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.
 
@@ -632,40 +606,72 @@ From a programm use macro `py-backward-comment' instead"
        (setq done (point))))
     (when (< (point) orig) (point))))
 
-(defun py--go-to-keyword (regexp &optional maxindent decorator)
-  "Return a list, whose car is indentation, cdr position.
+(defun py--handle-decorators (&optional decorator)
+  (when (and (or decorator py-mark-decorators) (looking-at py-def-or-class-re))
+    (py--up-decorators-maybe (current-indentation))))
+
+(defun py--go-to-keyword (regexp &optional maxindent decorator condition)
+  "Expects being called from beginning of a statement.
+
+Argument REGEXP: a symbol.
+
+Return a list, whose car is indentation, cdr position.
 
 Keyword detected from REGEXP
 Honor MAXINDENT if provided"
-  (let ((maxindent
-	 (or maxindent
-	     (if (empty-line-p)
-		 (progn
-		   (py-backward-statement)
-		   (current-indentation))
-	       (or maxindent (and (< 0 (current-indentation))(current-indentation))
-		   ;; make maxindent large enough if not set
-		   (* 99 py-indent-offset)))))
-        done erg)
-    (if (eq 0 maxindent)
-	;; faster jump to top-level forms
-	(setq erg (py--go-to-keyword-bol regexp))
-      (while (and (not done) (not (bobp)))
-	(py-backward-statement)
-	(cond ((eq 0 (current-indentation))
-	       (when (looking-at regexp)
-		 (setq erg (point))
-		 (setq done t)))
-	      ((and (<= (current-indentation) maxindent)
-		    (setq maxindent (current-indentation))
-		    (looking-at regexp))
-	       (setq erg (point))
-	       (setq done t)))))
-    (when (and (or decorator py-mark-decorators) (looking-at py-def-or-class-re))
-      (setq done (py--up-decorators-maybe (current-indentation)))
-      (when done (setq erg done)))
-    (when erg (setq erg (cons (current-indentation) erg)))
-    erg))
+  (unless (bobp)
+    (when (empty-line-p) (skip-chars-backward " \t\r\n\f"))
+    (let* ((orig (point))
+	   (regexpvalue (if (eq regexp 'py-clause-re) (symbol-value 'py-extended-block-or-clause-re) (symbol-value regexp)))
+	   (maxindent
+	    (or maxindent
+		(current-indentation)))
+	   (condition
+	    (or condition
+	     (cond 
+	      ((and
+		(member
+		 regexp
+		 (list
+		  'py-block-or-clause-re
+		  'py-extended-block-or-clause-re
+		  'py-try-block-re
+		  'py-if-block-re
+		  ))
+		(looking-at regexpvalue))
+	       '<=)
+	      ((member
+		regexp
+		(list
+		 'py-def-or-class-re
+		 'py-def-re
+		 'py-class-re
+		 ))
+	       '<=)
+	      ((member 
+		regexp
+		(list 
+		 'py-block-re
+		 'py-clause-re
+		 ))
+	       '<)
+	      (t (if (< 0 maxindent)
+		     '<
+		   '<=)))))
+	   ;; py-clause-re would not match block
+	   (regexp (if (eq regexp 'py-clause-re) 'py-extended-block-or-clause-re regexp))
+	   erg deco)
+      (unless (py-beginning-of-statement-p)
+	(py-backward-statement))
+      (if (and (< (point) orig) (looking-at regexpvalue) (<= (current-indentation) maxindent))
+	  (setq erg (point))
+	(and (eq 0 (current-indentation))(setq maxindent nil))
+	(setq erg (py--backward-regexp regexpvalue maxindent condition)))
+      (when (and erg (setq deco (py--handle-decorators decorator)))
+	;; avoid repeated call
+	(setq erg deco))
+      (when erg (setq erg (cons (current-indentation) erg)))
+      erg)))
 
 (defun py--clause-lookup-keyword (regexp arg &optional indent origline)
   "Return a list, whose car is indentation, cdr position.
@@ -675,7 +681,7 @@ ARG specifies the direction of search:
 \(< 0 arg)'(eobp)'(bobp))
 Consider INDENT and ORIGLINE if provided"
   (let* ((origline (or origline (py-count-lines)))
-         (stop (if (< 0 arg)'(eobp)'(bobp)))
+         (stop (if (< 0 arg) '(eobp) '(bobp)))
          (function (if (< 0 arg) 'py-forward-statement 'py-backward-statement))
          (count 1)
          (maxindent (cond (indent indent)
@@ -706,7 +712,7 @@ Consider INDENT and ORIGLINE if provided"
           (setq maxindent (current-indentation)))
         ;; nesting
         (cond
-         ((and (looking-at "\\_<finally\\>[: \n\t]")(save-match-data (string-match regexp "finally")))
+         ((and (looking-at "\\_<finally\\>[: \n\t]") (save-match-data (string-match regexp "finally")))
           (setq indent (current-indentation))
           (while
               (and
@@ -714,7 +720,7 @@ Consider INDENT and ORIGLINE if provided"
                (funcall function)
                (setq done t)
                (not (and (eq indent (current-indentation)) (looking-at "try"))))))
-         ((and (looking-at "\\<else\\>[: \n\t]")(save-match-data (string-match "else" regexp)))
+         ((and (looking-at "\\<else\\>[: \n\t]") (save-match-data (string-match "else" regexp)))
           (setq indent (current-indentation))
           (setq count (1+ count))
           (while
@@ -723,7 +729,7 @@ Consider INDENT and ORIGLINE if provided"
                (funcall function)
                (setq done t)
                (not (and (eq indent (current-indentation)) (looking-at "try\\|if"))))))
-         ((and (looking-at "\\_<else\\>[: \n\t]")(save-match-data (string-match "else" regexp)))
+         ((and (looking-at "\\_<else\\>[: \n\t]") (save-match-data (string-match "else" regexp)))
           (setq indent (current-indentation))
           (setq count (1+ count))
           (while
@@ -732,7 +738,7 @@ Consider INDENT and ORIGLINE if provided"
                (funcall function)
                (setq done t)
                (not (and (eq indent (current-indentation)) (looking-at "try\\|if"))))))
-         ((and (looking-at "\\_<elif\\>[ \n\t]")(save-match-data (string-match "elif" regexp)))
+         ((and (looking-at "\\_<elif\\>[ \n\t]") (save-match-data (string-match "elif" regexp)))
           (setq indent (current-indentation))
           (while
               (and
@@ -742,15 +748,14 @@ Consider INDENT and ORIGLINE if provided"
                ;; doesn't mean nesting yet
                (setq count (1- count))
                (not (and (eq indent (current-indentation)) (looking-at "if"))))))
-         ((and complement-re (looking-at complement-re)(<= (current-indentation) maxindent))
+         ((and complement-re (looking-at complement-re) (<= (current-indentation) maxindent))
           (setq count (1- count)))
-         (t (cond ((and (string-match "except" regexp)(looking-at py-block-re))
+         (t (cond ((and (string-match "except" regexp) (looking-at py-block-re))
                    (setq count (1- count)))
-                  ((and (string-match "else" regexp)(looking-at "except"))
+                  ((and (string-match "else" regexp) (looking-at "except"))
                    (current-indentation))
                   (t
-                   (setq strict t)
-                   ))))))
+                   (setq strict t)))))))
     (when erg
       (if (looking-at py-def-or-class-re)
           (setq erg (cons (+ (current-indentation) py-indent-offset) erg))

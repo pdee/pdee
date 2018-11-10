@@ -67,8 +67,7 @@ Optional END: region end"
                        (save-excursion
                          (goto-char
                           (region-end))))
-                      (t (line-end-position))))
-           (orig end))
+                      (t (line-end-position)))))
       (setq beg (copy-marker beg))
       (setq end (copy-marker end))
       (if (< 0 count)

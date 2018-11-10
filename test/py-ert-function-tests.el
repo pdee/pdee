@@ -1998,12 +1998,6 @@
 (ert-deftest py-ert-which-def-or-class-functionp-test ()
   (should (functionp 'py-which-def-or-class)))
 
-(ert-deftest py-ert--beginning-of-form-intern-functionp-test ()
-  (should (functionp 'py--beginning-of-form-intern)))
-
-(ert-deftest py-ert--backward-prepare-functionp-test ()
-  (should (functionp 'py--backward-prepare)))
-
 (ert-deftest py-ert--fetch-first-python-buffer-functionp-test ()
   (should (functionp 'py--fetch-first-python-buffer)))
 
@@ -2039,18 +2033,6 @@
 
 (ert-deftest py-ert-mark-base-functionp-test ()
   (should (functionp 'py-mark-base)))
-
-(ert-deftest py-ert-beginning-functionp-test ()
-  (should (functionp 'py-beginning)))
-
-(ert-deftest py-ert-end-functionp-test ()
-  (should (functionp 'py-end)))
-
-(ert-deftest py-ert-beginning-of-buffer-functionp-test ()
-  (should (functionp 'py-beginning-of-buffer)))
-
-(ert-deftest py-ert-end-of-buffer-functionp-test ()
-  (should (functionp 'py-end-of-buffer)))
 
 (ert-deftest py-ert-backward-same-level-functionp-test ()
   (should (functionp 'py-backward-same-level)))
@@ -2148,9 +2130,6 @@
 (ert-deftest py-ert-nesting-level-functionp-test ()
   (should (functionp 'py-nesting-level)))
 
-(ert-deftest py-ert-ffap-module-path-functionp-test ()
-  (should (functionp 'py-ffap-module-path)))
-
 (ert-deftest py-ert-toggle-flymake-intern-functionp-test ()
   (should (functionp 'py-toggle-flymake-intern)))
 
@@ -2172,9 +2151,6 @@
 (ert-deftest py-display-state-of-variables-functionp-test ()
   (should (functionp 'py-display-state-of-variables)))
 
-(ert-deftest py-ert--set-ffap-form-functionp-test ()
-  (should (functionp 'py--set-ffap-form)))
-
 (ert-deftest py-ert--quote-syntax-functionp-test ()
   (should (functionp 'py--quote-syntax)))
 
@@ -2183,9 +2159,6 @@
 
 (ert-deftest py-ert--python-send-completion-setup-code-functionp-test ()
   (should (functionp 'py--python-send-completion-setup-code)))
-
-(ert-deftest py-ert--python-send-ffap-setup-code-functionp-test ()
-  (should (functionp 'py--python-send-ffap-setup-code)))
 
 (ert-deftest py-ert--python-send-eldoc-setup-code-functionp-test ()
   (should (functionp 'py--python-send-eldoc-setup-code)))

@@ -385,24 +385,9 @@ More docstring here.
     datetime.datetime.now() > release_time + CLOCK_SLOP):"
 	(should (eq 4 (py-compute-indentation)))))
 
-(ert-deftest py-ert-dont-stop-embedded-def-or-class-test-1 ()
+(ert-deftest py-ert-embedded-def-or-class-test-RrkIDD ()
   (py-test-with-temp-buffer
-      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
-class Foo:
-    def bar(self):
-        print(\"\"\"
-This is
-a nested
-string.
-\"\"\")
-"
-    (py-backward-def-or-class)
-    (should (eq (char-after) ?c))))
-
-(ert-deftest py-ert-dont-stop-embedded-def-or-class-test-2 ()
-  (py-test-with-temp-buffer
-      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
-class Foo:
+      " class Foo:
     def bar(self):
         print(\"\"\"
 This is
@@ -411,53 +396,6 @@ string.
 \"\"\")
         return True"
     (py-backward-def-or-class)
-    (should (eq (char-after) ?d))))
-
-(ert-deftest py-ert-dont-stop-embedded-class-test ()
-  (py-test-with-temp-buffer
-      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
-class Foo:
-    def bar(self):
-        class baz
-            print(\"\"\"
-This is
-a nested
-string.
-\"\"\")
-"
-    (py-backward-class)
-    (should (eq 0 (current-column)))))
-
-(ert-deftest py-ert-dont-stop-embedded-def-test ()
-  (py-test-with-temp-buffer
-      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
-def Foo:
-    class bar(self):
-        def baz
-            print(\"\"\"
-This is
-a nested
-string.
-\"\"\")
-"
-    (py-backward-def)
-    (should (eq 0 (current-column)))))
-
-(ert-deftest py-ert-dont-stop-embedded-def-from-string-test ()
-  (py-test-with-temp-buffer
-      "# lp:1545649, C-M-a and C-M-e stop at embedded defs.
-def Foo:
-    class bar(self):
-        def baz
-            print(\"\"\"
-This is
-a nested
-string.
-\"\"\")
-"
-    (search-backward "string")
-    (skip-chars-backward " \t\r\n\f")
-    (py-backward-def)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test ()
@@ -589,13 +527,44 @@ Bar
     return wwrap"
     (search-backward "args)'")
     (py-forward-clause)
-    (should (eq (char-before) ?'))
-    (py-forward-clause)
-    (should (eq (char-before) ?f))))
+    (should (eq (char-before) ?'))))
+
 
 (ert-deftest py-up-block-test-1 ()
   (py-test-with-temp-buffer
-      py-up-text
+      "
+def foo():
+    if True:
+        def bar():
+            pass
+    elif False:
+        def baz():
+            pass
+    else:
+        try:
+            1 == 1
+        except True:
+            def foo1():
+                if True:
+                    def bar1():
+                        pass
+                elif False:
+                    def baz1():
+                        pass
+                else:
+                    try:
+                        1 == 1
+                    except True:
+                        pass
+                    else True:
+                        pass
+                    finally:
+                        pass
+        else True:
+            pass
+        finally:
+            pass
+"
     (search-backward "except True:")
     (py-up-block)
     (should (looking-at "else"))))
@@ -684,14 +653,27 @@ import os"
     (end-of-line)
     (should (eq (char-before) 92))))
 
-(ert-deftest syntax-highlighting-for-builtin-functions-55-test ()
+(ert-deftest py-syntax-highlighting-for-builtin-functions-55-test ()
   (py-test-with-temp-buffer
       "range(len(list((1, 2, 3))))"
       ;; (goto-char (point-max))
       (font-lock-fontify-region (point-min) (point-max))
-      (sit-for 0.1) 
+      (sit-for 0.1)
     (search-backward "le")
     (should (face-equal (face-at-point) 'py-builtins-face))))
 
+(ert-deftest py-backward-clause-test-p52Dcj ()
+  (py-test-with-temp-buffer
+      "def foo():
+    if True:
+        def bar():
+            pass
+    elif False:
+        def baz():
+            pass"
+    (search-backward "elif")
+    (py-backward-clause)
+    (should (looking-at "if True"))))
+    
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

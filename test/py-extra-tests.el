@@ -1,5 +1,5 @@
 (ert-deftest py-ert-execute-block-fast-2 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "try:
     a
 except NameError:
@@ -7,34 +7,15 @@ except NameError:
 finally:
     a+=1
     print(a)"
+    'python-mode
+    'py-debug-p 
     (let ((py-fast-process-p t)
 	  (py-return-result-p t)
 	  (py-debug-p t)
 	  py-result)
       (py-execute-block)
       (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
-      (should (numberp (string-to-number (car (split-string py-result))))))))
-
-
-
-(ert-deftest py-ert-kill-statements-test ()
-  (py-test-with-temp-buffer
-      "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
-    for i in range(anzahl):
-        klauf.pylauf()
-        datei.write(str(spiel[i]) + \"\\n\")
-    datei.write(\"treffer; schwarz; gruen; rot; pair; impair; passe; manque; spiel\\n\")
-    print(''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
-''')"
-    ;; (when py-debug-p (switch-to-buffer (current-buffer))
-    ;; (font-lock-fontify-buffer))
-    (forward-line -2)
-    (back-to-indentation)
-    (py-kill-statements)
-    (sit-for 0.1)
-    (should (eobp))))
-
-
+      (should (and py-result (numberp (string-to-number (car (split-string py-result)))))))))
 
 (ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test ()
   (py-test-with-temp-buffer-point-min
@@ -43,7 +24,7 @@ finally:
 	  py-store-result-p
 	  erg)
       (call-interactively 'py-execute-statement-python3-dedicated)
-      (sit-for 0.1 t)
+      ;; (sit-for 0.1 t)
       (set-buffer py-buffer-name)
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
@@ -66,6 +47,7 @@ finally:
   (py-test-with-temp-buffer
       "ArithmeticError"
     (forward-char -1)
+    (font-lock-fontify-region (point-min) (point-max))
     (should (eq 'py-exception-name-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-execute-block-jython-test ()
@@ -83,23 +65,16 @@ finally:
        (should (search-forward "two"))))))
 
 (ert-deftest py-shell-complete-in-dedicated-shell ()
-  (let (erg
-	;; py-split-window-on-execute
-	py-switch-buffers-on-execute-p)
-    (py-test-with-temp-buffer
-      (setq erg (python-dedicated))
-      (with-current-buffer erg
-	(goto-char (point-max))
-	;; (when py-debug-p (switch-to-buffer (current-buffer)))
-	;; (switch-to-buffer (current-buffer))
-	(insert "pri")
-	(sit-for 1 t)
-	(call-interactively 'py-indent-or-complete)
-	(sit-for 0.1 t)
-	(should (or (eq 40 (char-before))
-		    ;; python may just offer print(
-		    (buffer-live-p (get-buffer  "*Python Completions*"))))
-      (py-kill-buffer-unconditional erg)))))
+  ;; (py-test-with-temp-buffer
+  (with-current-buffer (python-dedicated)
+    (goto-char (point-max))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (switch-to-buffer (current-buffer))
+    (insert "pri")
+    (sit-for 1 t)
+    (call-interactively 'py-indent-or-complete)
+    (sit-for 0.1 t)
+    (should (or (looking-back "print.?" (line-beginning-position))))))
 
 (ert-deftest py-ert-execute-statement-fast-1 ()
   (py-test-with-temp-buffer-point-min
@@ -118,4 +93,3 @@ finally:
 	  py-result py-store-result-p)
       (py-execute-statement-fast)
       (should (string= "2" py-result)))))
-

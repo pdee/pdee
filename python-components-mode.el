@@ -1,17 +1,13 @@
 ;;; python-components-mode.el --- Edit, debug, develop, run Python programs. -*- lexical-binding: t; -*-
 
-;; Includes a minor mode for handling a Python/IPython shell,
-;; and can take advantage of Pymacs when installed.
-
-;; This file not shipped as part of GNU Emacs.
+;; Version: 6.2.3
 
 ;; Keywords: languages, processes, python, oop
 
-;; Version: "6.2.3"
-
 ;; URL: https://gitlab.com/groups/python-mode-devs
 
-;; Package-Requires: (emacs "24")
+;; Package-Requires: ((emacs "24"))
+
 ;; Copyright (C) 1992,1993,1994  Tim Peters
 
 ;; Author: 2015-2018 https://gitlab.com/groups/python-mode-devs
@@ -36,6 +32,9 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+
+;; Includes a minor mode for handling a Python/IPython shell, and can
+;; take advantage of Pymacs when installed.
 
 ;; See documentation in README.org, README.DEVEL.org
 
@@ -1997,10 +1996,6 @@ See also `py-execute-directory'"
 (defvar py-this-abbrevs-changed nil
   "Internally used by ‘python-mode-hook’.")
 
-(defvar py-ffap-p nil)
-(defvar py-ffap nil)
-(defvar ffap-alist nil)
-
 (defvar py-buffer-name nil
   "Internal use.
 
@@ -2008,34 +2003,6 @@ The buffer last output was sent to.")
 
 (defvar py-orig-buffer-or-file nil
   "Internal use.")
-
-(defun py--set-ffap-form ()
-  (cond ((and py-ffap-p py-ffap)
-         (eval-after-load "ffap"
-           '(push '(python-mode . py-module-path) ffap-alist))
-         (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
-         (setq ffap-alist (remove '(py-shell-mode . py-ffap-module-path)
-                                  ffap-alist)))
-        (t (setq ffap-alist (remove '(python-mode . py-ffap-module-path) ffap-alist))
-           (setq ffap-alist (remove '(py-shell-mode . py-ffap-module-path)
-                                    ffap-alist))
-           (setq ffap-alist (remove '(python-mode . py-module-path) ffap-alist)))))
-
-(defcustom py-ffap-p nil
-
-  "Select python-modes way to find file at point.
-
-Default is nil"
-
-  :type '(choice
-
-          (const :tag "default" nil)
-          (const :tag "use py-ffap" py-ffap))
-  :tag "py-ffap-p"
-  :set (lambda (symbol value)
-         (set-default symbol value)
-         (py--set-ffap-form))
-    :group 'python-mode)
 
 (defcustom py-keep-windows-configuration nil
   "Takes precedence over:
@@ -2071,29 +2038,12 @@ Bug #31 - wrong fontification caused by string-delimiters in output"
   :tag "py-force-default-output-buffer-p"
   :group 'python-mode)
 
-(defvar py-ffap-string-code
-  "__FFAP_get_module_path('''%s''')\n"
-  "Python code used to get a string with the path of a module.")
-
 (defcustom py-shell-prompt-regexp ">>> "
   "Regular Expression matching top\-level input prompt of python shell.
 It should not contain a caret (^) at the beginning."
   :type 'string
   :tag "py-shell-prompt-regexp"
   :group 'python-mode)
-
-(defvar py-ffap-setup-code
-  "def __FFAP_get_module_path(module):
-    try:
-        import os
-        path = __import__(module).__file__
-        if path[-4:] == '.pyc' and os.path.exists(path[0:-1]):
-            path = path[:-1]
-        return path
-    except:
-        return ''
-"
-  "Python code to get a module path.")
 
 (defvar py-eldoc-window-configuration nil
   "Keeps window-configuration when function ‘eldoc-mode’ is called.")
@@ -2510,9 +2460,12 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
   "[ \t]*\\_<finally\\_>[: \n\t]"
   "Regular expression matching keyword which closes a try-block.")
 
-(defconst py-except-re
-  "[ \t]*\\_<except\\_>[:( \n\t]*"
-  "Regular expression matching keyword which composes a try-block.")
+(defconst py-except-re "[ \t]*\\_<except\\_> *a*s* *[[:print:]]*[: \n\t]"
+  "Matches the beginning of a `except' block.")
+
+;; (defconst py-except-re
+;;   "[ \t]*\\_<except\\_>[:( \n\t]*"
+;;   "Regular expression matching keyword which composes a try-block.")
 
 (defconst py-return-re
   ".*:?[ \t]*\\_<\\(return\\)\\_>[ \n\t]*"
@@ -2580,29 +2533,61 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 ;; 'name':
 (defconst py-dict-re "'\\_<\\w+\\_>':")
 
-(defconst py-block-re "[ \t]*\\_<\\(class\\|def\\|async def\\|async for\\|for\\|if\\|try\\|while\\|with\\|async with\\)\\_>[:( \n\t]*"
+(setq py-block-re-raw (list 
+		       "async def"
+		       "async for"
+		       "async with"
+		       "class"
+		       "def"
+		       "for"
+		       "if"
+		       "try"
+		       "while"
+		       "with"
+		       ))
+
+(defconst py-block-re (concat
+		       "[ \t]*"
+		       (regexp-opt py-block-re-raw 'symbols)
+		       "[:( \n\t]*"
+		       )
   "Matches the beginning of a compound statement.")
 
-(defconst py-minor-block-re "[ \t]*\\_<\\(for\\|async for\\|if\\|try\\|with\\|async with\\|except\\)\\_>[:( \n\t]*"
+(defconst py-minor-block-re-raw (list 
+				      "async for"
+				      "async with"
+				      "except"
+				      "for"
+				      "if"
+				      "try"
+				      "with"
+				      )
   "Matches the beginning of an `for', `if', `try', `except' or `with' block.")
 
-(defconst py-try-block-re "[ \t]*\\_<try\\_>[: \n\t]"
+(defconst py-minor-block-re
+  (concat
+   "[ \t]*"
+   (regexp-opt py-minor-block-re-raw 'symbols)
+   "[:( \n\t]")
+
+  "Regular expression matching lines not to augment indent after.
+
+See ‘py-minor-block-re-raw’ for better readable content")
+
+(defconst py-try-re "[ \t]*\\_<try\\_>[: \n\t]"
   "Matches the beginning of a `try' block.")
 
-(defconst py-except-block-re "[ \t]*\\_<except\\_> *a?s? *[[:print:]]*[: \n\t]"
-  "Matches the beginning of a `except' block.")
-
-(defconst py-for-block-re "[ \t]*\\_<\\(for\\|async for\\)\\_> +[[:alpha:]_][[:alnum:]_]* +in +[[:alpha:]_][[:alnum:]_()]* *[: \n\t]"
+(defconst py-for-re "[ \t]*\\_<\\(async for\\|for\\)\\_> +[[:alpha:]_][[:alnum:]_]* +in +[[:alpha:]_][[:alnum:]_()]* *[: \n\t]"
   "Matches the beginning of a `try' block.")
 
-(defconst py-if-block-re "[ \t]*\\_<if\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
+(defconst py-if-re "[ \t]*\\_<if\\_> +[^\n\r\f]+ *[: \n\t]"
   "Matches the beginning of an `if' block.")
 
-(defconst py-else-block-re "[ \t]*\\_<else:?[ \n\t]*"
+(defconst py-else-re "[ \t]*\\_<else:?[ \n\t]*"
   "Matches the beginning of an `else' block.")
 
-(defconst py-elif-block-re "[ \t]*\\_<elif\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
-  "Matches the beginning of an `elif' block.")
+;; (defconst py-elif-block-re "[ \t]*\\_<elif\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
+;;   "Matches the beginning of an `elif' block.")
 
 (defconst py-class-re "[ \t]*\\_<\\(class\\)\\_>[ \n\t]"
   "Matches the beginning of a class definition.")
@@ -2650,12 +2635,14 @@ Second group grabs the name")
 
 (defcustom py-block-re-raw
   (list
+   "async with"
    "except"
    "for"
    "if"
    "try"
    "while"
-   "with")
+   "with"
+   )
   "Matches the beginning of a compound statement but not it's clause."
   :type '(repeat string)
   :tag "py-block-re-raw"
@@ -2762,12 +2749,6 @@ Customizing `py-block-or-clause-re-raw'  will change values here")
               "\\|")
    "\\)\\_>[( \t]*.*:")
   "Matches the beginning of a compound try-statement's clause.")
-
-(defconst py-if-re "[ \t]*\\_<if\\_>[( \n\t]*"
-  "Matches the beginning of a compound statement saying `if'.")
-
-(defconst py-try-re "[ \t]*\\_<try\\_>[:( \n\t]*"
-  "Matches the beginning of a compound statement saying `try'." )
 
 (defcustom py-compilation-regexp-alist
   `((,(rx line-start (1+ (any " \t")) "File \""
@@ -3025,10 +3006,6 @@ See also `py-object-reference-face'"
 (defun py--python-send-completion-setup-code (buffer)
   "For Python see py--python-send-setup-code."
   (py--python-send-setup-code-intern "shell-completion" buffer))
-
-(defun py--python-send-ffap-setup-code (buffer)
-  "For Python see py--python-send-setup-code."
-  (py--python-send-setup-code-intern "ffap" buffer))
 
 (defun py--python-send-eldoc-setup-code (buffer)
   "For Python see py--python-send-setup-code."

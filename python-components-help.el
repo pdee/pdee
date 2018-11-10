@@ -1068,26 +1068,6 @@ i.e. spaces, tabs, carriage returns, newlines and newpages."
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
-;;  ffap
-(defun py-ffap-module-path (module)
-  "Function for ‘ffap-alist’ to return path for MODULE."
-  (let ((process (or
-                  (and (eq major-mode 'py-shell-mode)
-                       (get-buffer-process (current-buffer)))
-                  (py-shell-get-process))))
-    (if (not process)
-        nil
-      (let ((module-file
-             (py--send-string-no-output
-              (format py-ffap-string-code module) process)))
-        (when module-file
-          (substring-no-properties module-file 1 -1))))))
-
-(eval-after-load "ffap"
-  '(progn
-     (push '(python-mode . py-ffap-module-path) ffap-alist)
-     (push '(py-shell-mode . py-ffap-module-path) ffap-alist)))
-
 ;;  Flymake
 (defun py-toggle-flymake-intern (name command)
   "Clear flymake allowed file-name masks.
@@ -1169,17 +1149,6 @@ Keegan Carruthers-Smith"
       (flymake-mode)
     (py-toggle-flymake-intern "pyflakespep8" "pyflakespep8")
     (flymake-mode)))
-
-;; ;
-;; (defun variables-prepare (kind buffer directory-out &optional directory-in)
-;;   "Used by variable-finds, variable-states. "
-;;   (let* ((oldbuf (buffer-name (or buffer (current-buffer))))
-;;          ;; (file (buffer-file-name))
-;;          (orgname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".org"))
-;;          (reSTname (concat (substring oldbuf 0 (string-match "\\." oldbuf)) ".rst"))
-;;          (directory-in (or directory-in default-directory))
-;; 	 (command (concat "variables-base-" kind)))
-;;     (funcall (intern-soft command) oldbuf orgname reSTname directory-in directory-out)))
 
 (defun py-display-state-of-variables ()
   "Read the state of ‘python-mode’ variables.

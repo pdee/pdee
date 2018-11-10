@@ -1,4 +1,4 @@
-;;; py-ert-beginning-tests.el --- Just some more tests 
+;;; py-ert-beginning-tests.el --- Just some more tests
 
 ;; Copyright (C) 2011-2014  Andreas Röhler
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
@@ -24,11 +24,9 @@
 
 ;;; Code:
 
-
 (ert-deftest py-ert-beginning-of-block-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -38,14 +36,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-block)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-clause-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -55,14 +52,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-clause)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-block-or-clause-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -72,14 +68,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-block-or-clause)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-def-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -89,14 +84,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-def)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-beginning-of-class-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -106,14 +100,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-class)
     (should (eq (char-after) ?c))))
 
 (ert-deftest py-ert-beginning-of-def-or-class-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -123,14 +116,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-def-or-class)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-beginning-of-if-block-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -140,14 +132,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-if-block)
     (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-beginning-of-try-block-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -157,14 +148,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-try-block)
     (should (eq (char-after) ?t))))
 
 (ert-deftest py-ert-beginning-of-minor-block-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -174,14 +164,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-minor-block)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-for-block-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -191,14 +180,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-for-block)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-top-level-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -208,14 +196,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-top-level)
     (should (eq (char-after) ?c))))
 
 (ert-deftest py-ert-beginning-of-statement-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -225,14 +212,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-statement)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-expression-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -242,14 +228,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-expression)
     (should (eq (char-after) ?r))))
 
 (ert-deftest py-ert-beginning-of-partial-expression-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -259,14 +244,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-partial-expression)
     (should (eq (char-after) ?r))))
 
 (ert-deftest py-ert-beginning-of-block-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -276,15 +260,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-block-bol)
     (should (eq (char-after) ?\ ))))
 
-
 (ert-deftest py-ert-beginning-of-clause-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -294,15 +276,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-clause-bol)
     (should (eq (char-after) ?\ ))))
 
-
 (ert-deftest py-ert-beginning-of-block-or-clause-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -312,15 +292,12 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
     (py-backward-block-or-clause-bol)
-    (should (eq (char-after) ?\ ))))
-
+    (should (looking-at " +except"))))
 
 (ert-deftest py-ert-beginning-of-def-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -330,15 +307,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-def-bol)
     (should (eq (char-after) ?\ ))))
 
-
 (ert-deftest py-ert-beginning-of-class-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -348,15 +323,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-class-bol)
     (should (eq (char-after) ?c))))
 
-
 (ert-deftest py-ert-beginning-of-def-or-class-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -366,15 +339,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-def-or-class-bol)
-    (should (eq (char-after) ?\ ))))
-
+    (should (looking-at " +def"))))
 
 (ert-deftest py-ert-beginning-of-if-block-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -384,15 +355,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-if-block-bol)
-    (should (eq (char-after) ?\ ))))
-
+    (should (looking-at " +if"))))
 
 (ert-deftest py-ert-beginning-of-try-block-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -402,33 +371,29 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-try-block-bol)
-    (should (eq (char-after) ?\ ))))
-
+    (should (looking-at " +try"))))
 
 (ert-deftest py-ert-beginning-of-minor-block-bol-test ()
-  (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+  (py-test
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
             if True:
                 for a in range(anzahl):
-                    pass
-        except:
-            block2
-"
-    (forward-line -3)
+                    pass"
+    ;; (search-backward "pass")
+    'python-mode
+    'py-debug-p
+    (goto-char (point-max)) 
     (py-backward-minor-block-bol)
-    (should (eq (char-after) ?\ ))))
-
+    (should (looking-at " +for"))))
 
 (ert-deftest py-ert-beginning-of-for-block-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -438,15 +403,13 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-for-block-bol)
     (should (eq (char-after) ?\ ))))
 
-
 (ert-deftest py-ert-beginning-of-statement-bol-test ()
   (py-test-with-temp-buffer
-      "
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
         try:
@@ -456,9 +419,9 @@ class bar:
         except:
             block2
 "
-    (forward-line -3)
+    (search-backward "pass")
     (py-backward-statement-bol)
-    (should (eq (char-after) ?\ ))))
+    (should (bolp))))
 
 (provide 'py-ert-beginning-tests)
 ;;; py-ert-beginning-tests.el ends here

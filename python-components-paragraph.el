@@ -427,13 +427,13 @@ Fill according to `py-docstring-style' "
 			(py--in-or-behind-or-before-a-docstring)
 		      docstring))
 	 (beg (and (nth 3 pps) (nth 8 pps)))
-	 end tqs)
+	 end)
     (if docstring
 	(py--fill-docstring justify style docstring orig indent)
       (save-excursion
 	(setq end
 	      (progn (goto-char beg)
-		     (setq tqs (looking-at "\"\"\"\|'''"))
+		     ;; (setq tqs (looking-at "\"\"\"\|'''"))
 		     (forward-sexp) (point))))
       (save-restriction
 	(narrow-to-region beg end)

@@ -637,7 +637,8 @@ Indented same level, which don't open blocks."
                   (setq beg
                         (when (py-backward-statement)
                           (line-beginning-position)))
-                  (not (py-in-string-p))
+		  ;; backward-statement shouldn't stop in string
+                  ;; (not (py-in-string-p))
                   (not (py--beginning-of-block-p))
                   (eq (current-indentation) orig-indent)))
       (setq beg last)
@@ -648,7 +649,7 @@ Indented same level, which don't open blocks."
                   (not (py--beginning-of-block-p))
                   ;; (not (looking-at py-keywords))
                   ;; (not (looking-at "pdb\."))
-                  (not (py-in-string-p))
+                  ;; (not (py-in-string-p))
                   (eq (py-indentation-of-statement) orig-indent)))
       (setq end last)
       (goto-char orig)

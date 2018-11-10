@@ -56,11 +56,10 @@ TEST9=$TESTDIR/py-shell-arg-ert-tests.el
 TEST10=$TESTDIR/py-ert-execute-block-test.el
 TEST11=$TESTDIR/py-ert-execute-region-test.el
 TEST12=$TESTDIR/py-execute-region-commandp-test.el
-TEST13=$TESTDIR/py-ert-tests-2.el
-TEST14=$TESTDIR/py-ert-tests-3.el
-TEST15=$TESTDIR/py-ert-forward-tests.el
-TEST16=$TESTDIR/py-ert-tests-4.el
-TEST17=$TESTDIR/py-extra-tests.el
+TEST13=$TESTDIR/py-ert-tests-3.el
+TEST14=$TESTDIR/py-ert-forward-tests.el
+TEST15=$TESTDIR/py-ert-tests-4.el
+TEST16=$TESTDIR/py-extra-tests.el
 
 if [ -s emacs27 ]; then
     EMACS=emacs27
@@ -73,7 +72,7 @@ echo "\$EMACS: $EMACS"
 PYCO="$PDIR/completion/pycomplete.el"
 
 hier() {
-    $EMACS -Q --batch \
+    time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(setq py-verbose-p nil)" \
@@ -128,3 +127,5 @@ else
     echo "Lade testumgebung \"ENTFERNT\""
     entfernt
 fi
+
+

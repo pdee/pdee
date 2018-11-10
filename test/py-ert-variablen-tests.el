@@ -187,9 +187,6 @@
 (ert-deftest py-ert-fast-process-p-test ()
   (should (boundp 'py-fast-process-p)))
 
-(ert-deftest py-ert-ffap-p-test ()
-  (should (boundp 'py-ffap-p)))
-
 (ert-deftest py-ert-fileless-buffer-use-default-directory-p-test ()
   (should (boundp 'py-fileless-buffer-use-default-directory-p)))
 
@@ -616,17 +613,6 @@
 (ert-deftest py-ert-fast-filter-re-test ()
   (should (boundp 'py-fast-filter-re)))
 
-(ert-deftest py-ert-ffap-test ()
-  (should (boundp 'py-ffap)))
-
-(ert-deftest py-ert-ffap-p-test ()
-  (should (boundp 'py-ffap-p)))
-
-(ert-deftest py-ert-ffap-setup-code-test ()
-  (should (boundp 'py-ffap-setup-code)))
-
-(ert-deftest py-ert-ffap-string-code-test ()
-  (should (boundp 'py-ffap-string-code)))
 
 (ert-deftest py-ert-file-queue-test ()
   (should (boundp 'py-file-queue)))
