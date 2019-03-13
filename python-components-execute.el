@@ -723,7 +723,7 @@ Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
       (if (comint-check-proc buffer)
       	  (py--reuse-existing-shell exception-buffer)
       	;; buffer might exist but not being empty
-      	(when (or (buffer-live-p buffer)(bufferp (get-buffer buffer))) 
+      	(when (or (buffer-live-p buffer)(bufferp (get-buffer buffer)))
 	  ;; kill-buffer-unconditional buffer
 	  (with-current-buffer buffer
           (set-buffer-modified-p 'nil)
@@ -826,9 +826,10 @@ Optional STRG PROC OUTPUT-BUFFER RETURN"
     (with-current-buffer output-buffer
       (erase-buffer)
       (py-fast-send-string strg
-				   proc
-				   output-buffer return)
-      (sit-for 0.1))))
+			   proc
+			   output-buffer return)
+      ;; (sit-for 0.1)
+      )))
 
 (defun py--delete-temp-file (tempfile &optional tempbuf)
   "After ‘py--execute-buffer-finally’ returned delete TEMPFILE &optional TEMPBUF."

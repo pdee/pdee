@@ -1,6 +1,6 @@
 ;;; python-mode-utils.el - generating parts of python-mode.el -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2018 Andreas Röhler
+;; Copyright (C) 2015-2019 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -25,7 +25,9 @@
 
 ;;; Code:
 
-(defvar components-directory "~/arbeit/emacs/python-modes/components-python-mode")
+
+(defvar components-directory "~/arbeit/emacs-lisp/python-modes/components-python-mode")
+;; (setq  components-directory "~/arbeit/emacs-lisp/python-modes/components-python-mode")
 
 (defvar ar-prefix "py-")
 
@@ -258,14 +260,18 @@
        "try-block"
        ))
 
-(setq py-backward-forms
+(setq py-backward-def-or-class-forms
       (list
        "block"
-       "block-or-clause"
        "class"
-       "clause"
        "def"
        "def-or-class"
+       ))
+
+(setq py-backward-minor-block-forms
+      (list
+       "block-or-clause"
+       "clause"
        "elif-block"
        "else-block"
        "except-block"
@@ -317,6 +323,8 @@
       (list
        "block"
        "class"
+       "clause"
+       "block-or-clause"
        "def"
        "def-or-class"
        "minor-block"
@@ -781,7 +789,7 @@
 		       ))
 
 (setq arkopf
-      "\n;; Copyright (C) 2015-2016 Andreas Röhler
+      "\n;; Copyright (C) 2015-2019 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -1597,6 +1605,7 @@ Return position if statement found, nil otherwise.\"
 (defun py-down-statement ()
   \"Go to the beginning of next statement downwards in buffer.
 
+Corresponds to backward-up-list in Elisp
 Return position if statement found, nil otherwise.\"
   (interactive)
   (let\* ((orig (point))
@@ -1626,7 +1635,10 @@ Return position if " ele " found, nil otherwise.\"
   (py-up-base 'py-"))
       (cond ((string-match "def\\|class\\|section" ele)
 	     (insert (concat ele "-re indent))\n")))
-	    (t (insert "extended-block-or-clause-re indent))\n")))))
+	    ;; (t (insert "extended-block-or-clause-re indent))\n"))
+            (t (insert (concat ele "-re indent))\n")))
+	       ;; (t (insert "extended-block-or-clause-re indent))\n"))
+	    )))
   ;; down
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
@@ -1644,14 +1656,13 @@ Return position if " ele " found, nil otherwise.\"
     (if (string= "statement" ele)
 	nil
       (insert (concat "
-\(defun py-up-" ele "-bol (&optional indent decorator)
+\(defun py-up-" ele "-bol (&optional indent)
   \"Go to the beginning of next " ele " upwards in buffer according to INDENT.
 
 Go to beginning of line.
-Optional DECORATOR: stop at decorator - not implemented 
 Return position if " ele " found, nil otherwise.\"
   (interactive)
-  (py-up-base 'py-" ele "-re indent decorator)
+  (py-up-base 'py-" ele "-re indent)
   (progn (beginning-of-line)(point)))\n"))))
   ;; down bol
   (dolist (ele py-down-forms)
@@ -1793,47 +1804,53 @@ Return beginning and end positions of region, a cons.\"
     (switch-to-buffer (current-buffer))
     (emacs-lisp-mode))
 
-(defun py--insert-backward-forms ()
-  (dolist (ele py-backward-forms)
+(defun py--insert-backward-def-or-class-forms ()
+  (dolist (ele py-backward-def-or-class-forms)
     (when (or (string-match "def" ele) (string-match "class" ele))
       (insert "\n;;;###autoload"))
     (insert (concat "
-\(defun py-backward-" ele " ("))
-        (if (string-match "def\\|class" ele)
-	(insert "&optional decorator)")
-      (insert ")"))
-	(insert (concat "\n  \"Go to beginning of ‘" ele "’.
+\(defun py-backward-" ele " ()"))
+    ;; (if (string-match "def\\|class" ele)
+    ;; 	(insert "&optional decorator)")
+    ;; (insert ")"))
+    (insert (concat "\n \"Go to beginning of ‘" ele "’.
 
 If already at beginning, go one ‘" ele "’ backward."))
-	(when (string-match "def\\|class" ele)
-	  (insert  "\nOptional DECORATOR\n"))
-	(insert (concat "
-Return beginning of ‘" ele "’ if successful, nil otherwise\"\n"))
-    (insert "  (interactive)")
-    (cond ;; ((string-match "clause" ele)
-  ;; 	   (insert (concat "
-  ;; (cdr-safe (py--go-to-keyword 'py-extended-block-or-clause-re)))\n")))
-	  ((string-match "def\\|class" ele)
-	   (insert (concat "
-  (cdr-safe (py--go-to-keyword 'py-" ele "-re decorator)))\n")))
-	  (t (insert (concat "
-  (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re )))\n")))
-	  )))
+    ;; (when (string-match "def\\|class" ele)
+    ;;   (insert "\nOptional DECORATOR\n"))
+    (insert (concat "
+Return beginning of form if successful, nil otherwise\"\n"))
+    (insert "  (interactive)
+  (let (erg)")
+    ;; (cond
+    ;; 	  ((string-match "def\\|class" ele)
+    ;; 	   (insert (concat "
+    ;; (cdr-safe (py--go-to-keyword 'py-" ele "-re decorator)))\n")))
+    ;; 	  (t (insert (concat "
+    ;; (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re)))\n")))
+    ;;)
+    (insert (concat "
+    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re))))"))
+    ;; (setq erg (py--backward-regexp 'py-" (ar-block-regexp-name-richten ele) "-re (current-indentation)))"))
+    (when (string-match  "def\\|class$\\|block$" ele)
+    (insert "\n    (when py-mark-decorators (and (py-backward-decorator)
+                                                 (setq erg (point))))"))
+    (insert "\n    erg))\n")))
 
-(defun py--insert-backward-bol-forms ()
+(defun py--insert-backward-def-or-class-bol-forms ()
   ;; bol forms
-  (dolist (ele py-backward-forms)
+  (dolist (ele py-backward-def-or-class-forms)
     (when (or (string-match "def" ele) (string-match "class" ele))
       (insert "\n;;;###autoload"))
     (insert (concat "
-\(defun py-backward-" ele "-bol ("))
-    (if (string-match "def\\|class" ele)
-	(insert "&optional decorator)")
-      (insert ")"))
+\(defun py-backward-" ele "-bol ()"))
+    ;; (if (string-match "def\\|class" ele)
+    ;; 	(insert "&optional decorator)")
+    ;;   (insert ")"))
     (insert (concat "
   \"Go to beginning of ‘" ele "’, go to BOL."))
-    (when (string-match "def\\|class" ele)
-      (insert  "\nOptional DECORATOR\n"))
+    ;; (when (string-match "def\\|class" ele)
+    ;;   (insert  "\nOptional DECORATOR\n"))
 
 (insert (concat "
 If already at beginning, go one ‘" ele "’ backward.
@@ -1841,11 +1858,58 @@ Return beginning of ‘" ele "’ if successful, nil otherwise"))
     (insert "\"\n")
     (insert "  (interactive)")
 	   (insert (concat "
-  (and (py-backward-" ele))
-	   (when (string-match "def\\|class" ele)
-	     (insert  " decorator"))
-	   (insert ")
-       (progn (beginning-of-line)(point))))\n")))
+  (and (py-backward-" ele ")
+       (progn (beginning-of-line)(point))))\n"))))
+
+(defun py--insert-backward-minor-block-forms ()
+  (dolist (ele py-backward-minor-block-forms)
+    (insert (concat "
+\(defun py-backward-" ele " ()"))
+    ;; (if (string-match "def\\|class" ele)
+    ;; 	(insert "&optional decorator)")
+    ;; (insert ")"))
+    (insert (concat "\n \"Go to beginning of ‘" ele "’.
+
+If already at beginning, go one ‘" ele "’ backward."))
+    ;; (when (string-match "def\\|class" ele)
+    ;;   (insert "\nOptional DECORATOR\n"))
+    (insert (concat "
+Return beginning of form if successful, nil otherwise\"\n"))
+    (insert "  (interactive)
+  (let (erg)")
+    ;; (cond
+    ;; 	  ((string-match "def\\|class" ele)
+    ;; 	   (insert (concat "
+    ;; (cdr-safe (py--go-to-keyword 'py-" ele "-re decorator)))\n")))
+    ;; 	  (t (insert (concat "
+    ;; (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re)))\n")))
+    ;;)
+    (insert (concat "
+    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re))))"))
+    ;; (setq erg (py--backward-regexp 'py-" (ar-block-regexp-name-richten ele) "-re (current-indentation)))"))
+    (insert "\n    erg))\n")))
+
+(defun py--insert-backward-minor-block-bol-forms ()
+  ;; bol forms
+  (dolist (ele py-backward-minor-block-forms)
+    (insert (concat "
+\(defun py-backward-" ele "-bol ()"))
+    ;; (if (string-match "def\\|class" ele)
+    ;; 	(insert "&optional decorator)")
+    ;;   (insert ")"))
+    (insert (concat "
+  \"Go to beginning of ‘" ele "’, go to BOL."))
+    ;; (when (string-match "def\\|class" ele)
+    ;;   (insert  "\nOptional DECORATOR\n"))
+
+(insert (concat "
+If already at beginning, go one ‘" ele "’ backward.
+Return beginning of ‘" ele "’ if successful, nil otherwise"))
+    (insert "\"\n")
+    (insert "  (interactive)")
+	   (insert (concat "
+  (and (py-backward-" ele ")
+       (progn (beginning-of-line)(point))))\n"))))
 
 (defun py-write-backward-forms ()
   "Uses py-backward-forms, not ‘py-navigate-forms’.
@@ -1865,8 +1929,10 @@ Use backward-statement for ‘top-level’, also bol-forms don't make sense here
 ")
 
   ;; don't handle (partial)-expression forms here
-  (py--insert-backward-forms)
-  (py--insert-backward-bol-forms)
+  (py--insert-backward-def-or-class-forms)
+  (py--insert-backward-def-or-class-bol-forms)
+  (py--insert-backward-minor-block-forms)
+  (py--insert-backward-minor-block-bol-forms)
   (insert "\n(provide 'python-components-backward-forms)
 ;;; python-components-backward-forms.el ends here\n")
   (when (called-interactively-p 'interactive) (switch-to-buffer (current-buffer))
@@ -2250,13 +2316,15 @@ class bar:
       (insert "\n;;;###autoload"))
     ;; beg-end check forms
     (insert (concat "
-\(defun py-forward-" ele " ()
+\(defun py-forward-" ele " (&optional orig bol)
   \"Go to end of " ele ".
 
-Return end of ‘" ele "’ if successful, nil otherwise\"
+Return end of ‘" ele "’ if successful, nil otherwise
+Optional ORIG: start position
+Optional BOL: go to beginning of line following end-position\"
   (interactive)
   (cdr-safe (py--end-base 'py-" (ar-block-regexp-name-richten ele)
-			       "-re)))
+			       "-re orig bol)))
 
 \(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of ‘" ele "’.
@@ -2264,7 +2332,7 @@ Return end of ‘" ele "’ if successful, nil otherwise\"
 Return position reached, if successful, nil otherwise.
 See also ‘py-down-" ele "’: down from current definition to next beginning of ‘" ele "’ below.\"
   (interactive)
-  (py--beginning-of-line-form (py-forward-" ele ")))\n")))
+  (py-forward-" ele " nil t))\n")))
 
   (insert "\n;; python-components-forward-forms.el ends here
 \(provide 'python-components-forward-forms)")

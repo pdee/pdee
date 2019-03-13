@@ -195,17 +195,18 @@ See available customizations listed in files variables-python-mode at directory 
                           "\\|")))
   (when (>= emacs-major-version 25)
     (global-eldoc-mode -1))
-  (if py-use-font-lock-doc-face-p
+  (when py-font-lock-defaults-p
+    (if py-use-font-lock-doc-face-p
+	(set (make-local-variable 'font-lock-defaults)
+             '(python-font-lock-keywords nil nil nil nil
+					 (font-lock-syntactic-keywords
+					  . py-font-lock-syntactic-keywords)
+					 (font-lock-syntactic-face-function
+					  . py--font-lock-syntactic-face-function)))
       (set (make-local-variable 'font-lock-defaults)
            '(python-font-lock-keywords nil nil nil nil
 				       (font-lock-syntactic-keywords
-					. py-font-lock-syntactic-keywords)
-				       (font-lock-syntactic-face-function
-					. py--font-lock-syntactic-face-function)))
-    (set (make-local-variable 'font-lock-defaults)
-         '(python-font-lock-keywords nil nil nil nil
-				     (font-lock-syntactic-keywords
-				      . py-font-lock-syntactic-keywords))))
+					. py-font-lock-syntactic-keywords)))))
   ;; avoid to run py-choose-shell again from `py--fix-start'
   (cond ((string-match "ython3" py-python-edit-version)
 	 (font-lock-add-keywords 'python-mode
@@ -222,13 +223,13 @@ See available customizations listed in files variables-python-mode at directory 
 
   (if py-empty-comment-line-separates-paragraph-p
       (progn
-        (set (make-local-variable 'paragraph-separate) (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
+        (set (make-local-variable 'paragraph-separate) (concat "\f\\|^[\t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[\t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
         (set (make-local-variable 'paragraph-start)
 	     (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
 	(set (make-local-variable 'paragraph-separate)
 	     (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")))
-    (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
-    (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[ \t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
+    (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
+    (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
   (set (make-local-variable 'comment-column) 40)
   (set (make-local-variable 'comment-indent-function) #'py--comment-indent-function)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
@@ -474,7 +475,6 @@ Sets basic comint variables, see also versions-related stuff in `py-shell'.
 (defalias 'pyhton 'python)
 (defalias 'pyt 'python)
 
-(defalias 'py-backward-decorator-bol 'py-backward-decorator)
 (defalias 'py-beginning-of-block 'py-backward-block)
 (defalias 'py-beginning-of-block-bol 'py-backward-block-bol)
 (defalias 'py-beginning-of-block-or-clause 'py-backward-block-or-clause)

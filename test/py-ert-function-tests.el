@@ -285,9 +285,6 @@
 (ert-deftest py-ert--go-to-keyword-functionp-test ()
   (should (functionp 'py--go-to-keyword)))
 
-(ert-deftest py-ert--clause-lookup-keyword-functionp-test ()
-  (should (functionp 'py--clause-lookup-keyword)))
-
 (ert-deftest py-ert-leave-comment-or-string-backward-functionp-test ()
   (should (functionp 'py-leave-comment-or-string-backward)))
 

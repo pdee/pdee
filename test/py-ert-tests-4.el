@@ -125,7 +125,7 @@ impo")))
     (should-not (search-backward "FileNotFoundError" nil t 1))))
 
 (ert-deftest py-end-of-def-or-class-test-1 ()
-  (py-test-with-temp-buffer
+  (py-test
       "class foo:
     \"\"\"asdf\"\"\"
     def bar():
@@ -136,6 +136,9 @@ impo")))
     def baz():
         \"\"\"\"\"\"
         pass"
+    'python-mode
+    py-debug-p
+    (goto-char (point-max)) 
     (search-backward "@asdf")
     (end-of-line)
     (py-end-of-def-or-class)

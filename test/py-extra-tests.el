@@ -77,8 +77,10 @@ finally:
     (should (or (looking-back "print.?" (line-beginning-position))))))
 
 (ert-deftest py-ert-execute-statement-fast-1 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "print(1)"
+    'python-mode
+    'py-debug-p 
     (let ((py-fast-process-p t)
 	  (py-return-result-p t)
 	  py-result py-store-result-p)
@@ -86,8 +88,10 @@ finally:
       (should (string= "1" py-result)))))
 
 (ert-deftest py-ert-execute-statement-fast-2 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "print(2)"
+    'python-mode
+    'py-debug-p 
     (let ((py-fast-process-p t)
 	  (py-return-result-p t)
 	  py-result py-store-result-p)

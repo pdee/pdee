@@ -72,7 +72,7 @@ echo "\$EMACS: $EMACS"
 PYCO="$PDIR/completion/pycomplete.el"
 
 hier() {
-    time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(setq py-verbose-p nil)" \

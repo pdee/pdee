@@ -64,6 +64,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (py-fast-send-string-intern strg proc)
       (accept-process-output proc 1)
       (when return
+	(sit-for 0.1)
 	(setq py-result (py--filter-result (py--fetch-result orig))))
       py-result)))
 

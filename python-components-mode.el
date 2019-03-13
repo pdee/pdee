@@ -100,6 +100,14 @@ Needed for completion and other environment stuff only."
   :tag "py-install-directory"
   :group 'python-mode)
 
+(defcustom py-font-lock-defaults-p t
+ "If fontification is not required, 
+
+avoiding it might speed up things." 
+
+:type 'boolean
+:group 'python-mode)
+
 (defcustom py-pythonpath ""
   "Define $PYTHONPATH here, if needed.
 
@@ -1064,6 +1072,7 @@ No semantic indent,  which diff to `py-indent-offset' indicates"
       (quote c:/python27/python\ -i\ c:/python27/Lib/pdb.py)
     '/usr/lib/python2.7/pdb.py)
   "Where to find pdb.py.  Edit this according to your system.
+  For example \"/usr/lib/python3.4\" might be an option too.
 
 If you ignore the location `M-x py-guess-pdb-path' might display it."
   :type 'variable
@@ -2457,10 +2466,10 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
   "[ \t]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ \n\t]")
 
 (defconst py-finally-re
-  "[ \t]*\\_<finally\\_>[: \n\t]"
+  "[ \t]*\\_<finally:"
   "Regular expression matching keyword which closes a try-block.")
 
-(defconst py-except-re "[ \t]*\\_<except\\_> *a*s* *[[:print:]]*[: \n\t]"
+(defconst py-except-re "[ \t]*\\_<except\\_>"
   "Matches the beginning of a `except' block.")
 
 ;; (defconst py-except-re
@@ -2477,19 +2486,11 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
 
 (defcustom py-outdent-re-raw
   (list
-   "async def"
-   "async for"
-   "async with"
-   "class"
-   "def"
    "elif"
    "else"
    "except"
-   "for"
-   "if"
-   "try"
-   "while"
-   "with")
+   "finally"
+   )
   "Used by ‘py-outdent-re’."
   :type '(repeat string)
   :tag "py-outdent-re-raw"
@@ -2501,9 +2502,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
    "[ \t]*"
    (regexp-opt py-outdent-re-raw 'symbols)
    "[)\t]*")
-  "Regular expression matching lines not to augment indent after.
-
-See ‘py-no-outdent-re-raw’ for better readable content")
+  "Regular expression matching statements to be dedented one level.")
 
 (defcustom py-no-outdent-re-raw
   (list
@@ -2547,9 +2546,9 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 		       ))
 
 (defconst py-block-re (concat
-		       "[ \t]*"
+		       ;; "[ \t]*"
 		       (regexp-opt py-block-re-raw 'symbols)
-		       "[:( \n\t]*"
+		       "[:( \n\t]"
 		       )
   "Matches the beginning of a compound statement.")
 
@@ -2583,8 +2582,11 @@ See ‘py-minor-block-re-raw’ for better readable content")
 (defconst py-if-re "[ \t]*\\_<if\\_> +[^\n\r\f]+ *[: \n\t]"
   "Matches the beginning of an `if' block.")
 
-(defconst py-else-re "[ \t]*\\_<else:?[ \n\t]*"
+(defconst py-else-re "[ \t]*\\_<else:[ \n\t]"
   "Matches the beginning of an `else' block.")
+
+(defconst py-elif-re "[ \t]*\\_<\\elif\\_>[( \n\t]"
+  "Matches the beginning of a compound if-statement's clause exclusively.")
 
 ;; (defconst py-elif-block-re "[ \t]*\\_<elif\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
 ;;   "Matches the beginning of an `elif' block.")
@@ -2655,19 +2657,6 @@ Second group grabs the name")
    "[( \t]*.*:?")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
 
-(defconst py-clause-re
-  (concat
-   "[ \t]*\\_<\\("
-   (mapconcat 'identity
-              (list
-               "elif"
-               "else"
-               "except"
-               "finally")
-              "\\|")
-   "\\)\\_>[( \t]*.*:?")
-  "Regular expression matching lines not to augment indent after.")
-
 (defcustom py-extended-block-or-clause-re-raw
   (list
    "async def"
@@ -2696,6 +2685,27 @@ Second group grabs the name")
    "[( \t]*.*:?")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
 
+(defconst py-clause-re py-extended-block-or-clause-re)
+
+(defcustom py-minor-clause-re-raw
+  (list
+   "elif"
+   "else"
+   "except"
+   "finally"
+   )
+  "Matches the beginning of a clause."
+    :type '(repeat string)
+    :tag "py-minor-clause-re-raw"
+    :group 'python-mode)
+
+(defconst py-minor-clause-re 
+  (concat
+   "[ \t]*"
+   (regexp-opt  py-minor-clause-re-raw 'symbols)
+   "[( \t]*.*:?")
+  "See ‘py-minor-clause-re-raw’, which it reads.")
+
 (defcustom py-top-level-re
   (concat
    "^[a-zA-Z_]"
@@ -2715,28 +2725,6 @@ Second group grabs the name")
   "Matches known keywords opening a block.
 
 Customizing `py-block-or-clause-re-raw'  will change values here")
-
-(defcustom py-clause-re-raw
-  (list
-   "elif"
-   "else"
-   "except"
-   "finally"
-   )
-  "Matches the beginning of a clause."
-    :type '(repeat string)
-    :tag "py-clause-re-raw"
-    :group 'python-mode)
-
-(defconst py-clause-re
-  (concat
-   "[ \t]*"
-   (regexp-opt  py-clause-re-raw 'symbols)
-   "[( \t]*.*:?")
-  "See ‘py-clause-re-raw’, which it reads.")
-
-(defconst py-elif-re "[ \t]*\\_<\\elif\\_>[:( \n\t]*"
-  "Matches the beginning of a compound if-statement's clause exclusively.")
 
 (defconst py-try-clause-re
   (concat
@@ -2852,6 +2840,20 @@ Default is nil"
   :type 'boolean
   :tag "py-shell-unfontify-p"
   :group 'python-mode)
+
+;; #62, pdb-track in a shell buffer
+(defcustom pdb-track-stack-from-shell-p t
+  "If t, track source from shell-buffer.
+
+Default is t.
+Add hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file"
+
+  :type 'boolean
+  :group 'python-mode)
+
+(if pdb-track-stack-from-shell-p
+    (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
+  (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t))
 
 (defun py--unfontify-banner-intern (buffer)
   "Internal use, unfontify BUFFER."
@@ -2992,6 +2994,12 @@ See also `py-object-reference-face'"
   "."
   :tag "py-exception-name-face"
   :group 'python-mode)
+
+(defun py-toggle-imenu-create-index ()
+  "Toggle value of ‘py--imenu-create-index-p’"
+  (interactive) 
+  (setq py--imenu-create-index-p (not py--imenu-create-index-p))
+  (when (interactive-p) (message "py--imenu-create-index-p: %s" py--imenu-create-index-p)))
 
 (defun py--python-send-setup-code-intern (name buffer)
   (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))

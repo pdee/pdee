@@ -29,8 +29,9 @@
 ;; directory devel. Edits here might not be persistent.
 
 (ert-deftest py-ert-forward-block-test ()
-  (py-test-point-min
-    "if foo:
+  (let (py-font-lock-defaults-p)
+    (py-test-point-min
+	"if foo:
     for a in b:
         print('%(language)s has %(number)03d quote types.' %
    {'language': \"Python\", \"number\": 2})
@@ -42,11 +43,11 @@ else:
     for a in b:
         pass
 "
-   'python-mode
-   'py-debug-p
-   (goto-char (point-min))
-    (py-forward-block)
-    (should (eq (char-before) ?s))))
+      'python-mode
+      'py-debug-p
+      (goto-char (point-min))
+      (py-forward-block)
+      (should (eq (char-before) ?s)))))
 
 (ert-deftest py-ert-forward-block-or-clause-test ()
   (py-test-with-temp-buffer-point-min
@@ -323,7 +324,35 @@ class bar:
     (py-forward-if-block)
     (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-forward-minor-block-test ()
+(ert-deftest py-ert-forward-minor-block-test-0nXANF ()
+  (py-test
+      "# {{
+class bar:
+    def foo ():
+        try:
+            if foo:
+                for a in b:
+                    print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+
+            elif bar:
+                for a in b:
+                    pass
+            else:
+                for a in b:
+                    pass
+# }}
+        except:
+            block2
+"
+    'python-mode
+    'py-debug-p 
+    (goto-char (point-min))
+    (search-forward "if")
+    (py-forward-minor-block)
+    (should (eq (char-before) ?s))))
+
+(ert-deftest py-ert-forward-minor-block-test-JNJyc4 ()
   (py-test-with-temp-buffer-point-min
       "# {{
 class bar:
@@ -344,9 +373,10 @@ class bar:
         except:
             block2
 "
-    (search-forward "if")
+    (goto-char (point-min)) 
+    (search-forward "try:")
     (py-forward-minor-block)
-    (should (eq (char-before) ?\)))))
+    (should (eq (char-before) ?2))))
 
 (ert-deftest py-ert-forward-partial-expression-test ()
   (py-test-with-temp-buffer-point-min

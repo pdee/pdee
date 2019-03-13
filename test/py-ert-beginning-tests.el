@@ -25,7 +25,7 @@
 ;;; Code:
 
 (ert-deftest py-ert-beginning-of-block-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -36,12 +36,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max)) 
     (search-backward "pass")
     (py-backward-block)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-clause-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -52,12 +55,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-clause)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-block-or-clause-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -68,12 +74,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-block-or-clause)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-def-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -84,12 +93,16 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
+    (goto-char (point-max)) 
     (search-backward "pass")
     (py-backward-def)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-beginning-of-class-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -100,12 +113,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-class)
     (should (eq (char-after) ?c))))
 
 (ert-deftest py-ert-beginning-of-def-or-class-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -116,12 +132,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def-or-class)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-beginning-of-if-block-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -132,12 +151,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-if-block)
     (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-beginning-of-try-block-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -148,12 +170,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-try-block)
     (should (eq (char-after) ?t))))
 
 (ert-deftest py-ert-beginning-of-minor-block-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -164,12 +189,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-minor-block)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-for-block-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -180,12 +208,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-for-block)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-top-level-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -196,12 +227,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-top-level)
     (should (eq (char-after) ?c))))
 
 (ert-deftest py-ert-beginning-of-statement-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -212,12 +246,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-statement)
     (should (eq (char-after) ?f))))
 
 (ert-deftest py-ert-beginning-of-expression-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -228,12 +265,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-expression)
     (should (eq (char-after) ?r))))
 
 (ert-deftest py-ert-beginning-of-partial-expression-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -244,12 +284,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-partial-expression)
     (should (eq (char-after) ?r))))
 
 (ert-deftest py-ert-beginning-of-block-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -260,12 +303,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-block-bol)
     (should (eq (char-after) ?\ ))))
 
 (ert-deftest py-ert-beginning-of-clause-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -276,12 +322,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-clause-bol)
     (should (eq (char-after) ?\ ))))
 
-(ert-deftest py-ert-beginning-of-block-or-clause-bol-test ()
-  (py-test-with-temp-buffer
+(ert-deftest py-ert-beginning-of-block-or-clause-bol-test-6ruqeq ()
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -292,11 +341,34 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
+    ;; (skip-chars-backward " \t\r\n\f") 
+    (py-backward-block-or-clause-bol)
+    (should (looking-at "class"))))
+
+(ert-deftest py-ert-beginning-of-block-or-clause-bol-test-s19jSv ()
+  (py-test
+      "# -*- coding: utf-8 -*-
+class bar:
+    def foo ():
+        try:
+            if True:
+                for a in range(anzahl):
+                    pass
+        except:
+            block2
+"
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
+    (skip-chars-backward " \t\r\n\f") 
     (py-backward-block-or-clause-bol)
     (should (looking-at " +except"))))
 
 (ert-deftest py-ert-beginning-of-def-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -307,12 +379,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def-bol)
     (should (eq (char-after) ?\ ))))
 
 (ert-deftest py-ert-beginning-of-class-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -323,12 +398,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-class-bol)
     (should (eq (char-after) ?c))))
 
 (ert-deftest py-ert-beginning-of-def-or-class-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -339,12 +417,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def-or-class-bol)
     (should (looking-at " +def"))))
 
 (ert-deftest py-ert-beginning-of-if-block-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -355,12 +436,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-if-block-bol)
     (should (looking-at " +if"))))
 
 (ert-deftest py-ert-beginning-of-try-block-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -371,6 +455,9 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-try-block-bol)
     (should (looking-at " +try"))))
@@ -384,7 +471,6 @@ class bar:
             if True:
                 for a in range(anzahl):
                     pass"
-    ;; (search-backward "pass")
     'python-mode
     'py-debug-p
     (goto-char (point-max)) 
@@ -392,7 +478,7 @@ class bar:
     (should (looking-at " +for"))))
 
 (ert-deftest py-ert-beginning-of-for-block-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -403,12 +489,15 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-for-block-bol)
     (should (eq (char-after) ?\ ))))
 
 (ert-deftest py-ert-beginning-of-statement-bol-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -419,6 +508,9 @@ class bar:
         except:
             block2
 "
+    'python-mode
+    py-debug-p
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-statement-bol)
     (should (bolp))))

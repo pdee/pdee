@@ -35,9 +35,10 @@
 BODY is code to be executed within the temp buffer "
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-     (let (hs-minor-mode)
+     (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (funcall ,mode)
+       (goto-char (point-max)) 
        (when ,verbose
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min)(point-max)))
@@ -54,8 +55,8 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode)
        (insert ,contents)
        (funcall ,mode)
-       (goto-char (point-min))
-       (when ,verbose
+       (goto-char (point-min)) 
+       (and ,verbose
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min)(point-max)))
        ,@body)))
