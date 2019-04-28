@@ -458,12 +458,15 @@ Use `defcustom' to keep value across sessions "
     (+ (current-indentation) (or indent-offset py-indent-offset))))
 
 (defun py-symbol-at-point ()
-  "Return the current Python symbol."
+  "Return the current Python symbol.
+
+When interactively called, copy and message it"
   (interactive)
   (let ((erg (with-syntax-table
                  py-dotted-expression-syntax-table
                (current-word))))
-    ;; (when (called-interactively-p 'any) (message "%s" erg))
+    (when (interactive-p) (kill-new erg)
+	  (message "%s" erg))
     erg))
 
 (defun py-kill-buffer-unconditional (buffer)

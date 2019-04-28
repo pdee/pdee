@@ -768,7 +768,7 @@ import os"
     'py-debug-p
     (goto-char (point-max))
     (font-lock-fontify-region (point-min)(point-max))
-    (goto-char (point-min)) 
+    (goto-char (point-min))
     (search-forward "'''")
     (py-fill-string nil 'pep-257-nn)
     (search-forward "'''")
@@ -813,7 +813,7 @@ import os"
     'py-debug-p
     (goto-char (point-max))
     (search-backward "elif")
-    (skip-chars-backward " \t\r\n\f") 
+    (skip-chars-backward " \t\r\n\f")
     (py-backward-clause)
     (py-backward-clause)
     (should (looking-at "if True"))))
@@ -847,7 +847,7 @@ def main():
     'py-debug-p
     (goto-char (point-max))
     (search-backward "elif")
-    (skip-chars-backward " \t\r\n\f") 
+    (skip-chars-backward " \t\r\n\f")
     (py-backward-clause)
     (py-backward-clause)
     (should (looking-at "if True"))))
@@ -867,6 +867,19 @@ def main():
     (search-backward "elif")
     (py-backward-clause)
     (should (looking-at "if True"))))
+
+;; (ert-deftest py-help-at-point-test-Feo2B6 ()
+;;   (py-test "import django
+
+;; print(django)
+;; "
+;;     'python-mode
+;;     'py-debug-p
+;;     (goto-char (point-max))
+;;     (search-backward "djan")
+;;     (py-help-at-point)
+;;     (should (eq (char-before) 32))))
+
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

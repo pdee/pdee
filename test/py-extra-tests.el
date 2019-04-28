@@ -8,13 +8,13 @@ finally:
     a+=1
     print(a)"
     'python-mode
-    'py-debug-p 
+    'py-debug-p
     (let ((py-fast-process-p t)
 	  (py-return-result-p t)
 	  (py-debug-p t)
 	  py-result)
       (py-execute-block)
-      (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
+      (when py-debug-p (message "py-ert-execute-block-fast-2, py-result: %s" py-result))
       (should (and py-result (numberp (string-to-number (car (split-string py-result)))))))))
 
 (ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test ()
@@ -29,19 +29,19 @@ finally:
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
-(ert-deftest py-ert-execute-block-fast-3 ()
-  (py-test-with-temp-buffer-point-min
-      "if True:
-    a = 1
-    print(a)"
-    (let ((py-fast-process-p t)
-	  (py-return-result-p t)
-	  (py-debug-p t)
-	  py-result)
-      (py-execute-block)
-      (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
-      (sit-for 0.1 t)
-      (should (string= "1" py-result)))))
+;; (ert-deftest py-ert-execute-block-fast-3 ()
+;;   (py-test-with-temp-buffer-point-min
+;;       "if True:
+;;     a = 1
+;;     print(a)"
+;;     (let ((py-fast-process-p t)
+;; 	  (py-return-result-p nil)
+;; 	  (py-debug-p t)
+;; 	  py-result)
+;;       (py-execute-block)
+;;       (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
+;;       (sit-for 0.1 t)
+;;       (should (string= "1" py-result)))))
 
 (ert-deftest py-ert-exception-name-face-lp-1294742 ()
   (py-test-with-temp-buffer
@@ -58,11 +58,9 @@ finally:
     print(\"two\")"
       (py-execute-block-jython)
       (sit-for 0.1)
-      (set-buffer buffer)
-      (goto-char (point-max))
-      (or
-       (should (search-backward "two"))
-       (should (search-forward "two"))))))
+      (with-current-buffer "*Jython*"
+	(goto-char (point-max))
+	(should (search-backward "two"))))))
 
 (ert-deftest py-shell-complete-in-dedicated-shell ()
   ;; (py-test-with-temp-buffer
@@ -80,7 +78,7 @@ finally:
   (py-test-point-min
       "print(1)"
     'python-mode
-    'py-debug-p 
+    'py-debug-p
     (let ((py-fast-process-p t)
 	  (py-return-result-p t)
 	  py-result py-store-result-p)
@@ -91,9 +89,19 @@ finally:
   (py-test-point-min
       "print(2)"
     'python-mode
-    'py-debug-p 
+    'py-debug-p
     (let ((py-fast-process-p t)
 	  (py-return-result-p t)
 	  py-result py-store-result-p)
       (py-execute-statement-fast)
       (should (string= "2" py-result)))))
+
+;; adapted from python.el
+(ert-deftest py-syntax-after-backspace-TwyMwn ()
+  (py-test
+      "\"\""
+    'python-mode
+    'py-debug-p
+    (goto-char (point-max))
+    (should (string= (buffer-string) "\"\""))
+    (should (null (nth 3 (parse-partial-sexp (point-min) (point)))))))
