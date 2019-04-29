@@ -140,18 +140,6 @@ def foo():
     (forward-line 3)
     (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest py-ert-execute-statement-fast-test ()
-  (py-test-point-min
-      "print(123234)"
-    'python-mode
-    'py-debug-p
-    (goto-char (point-min))
-    (let (py-split-window-on-execute py-switch-buffers-on-execute-p)
-      (py-execute-statement-fast)
-      (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
-      (switch-to-buffer (current-buffer))
-      (should (search-backward "123234")))))
-
 (ert-deftest py-ert-fill-comment-test ()
   (py-test-point-min
       "class Foo(Bar):
@@ -879,7 +867,6 @@ def main():
 ;;     (search-backward "djan")
 ;;     (py-help-at-point)
 ;;     (should (eq (char-before) 32))))
-
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
