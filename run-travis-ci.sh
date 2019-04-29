@@ -119,7 +119,7 @@ $EMACS -Q --batch \
 
 if [ $WERKSTATT -eq 0 ]; then
     hier
-    echo "Lade \$DIR6 und \$DIR7"
+    echo "Lade testumgebung \"HIER\""
 else
     echo "entfernt"
     echo "\$WERKSTATT: $WERKSTATT"

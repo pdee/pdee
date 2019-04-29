@@ -39,16 +39,6 @@ impo")))
   ;; (sit-for 0.1)
   (assert (looking-back "import") nil "py-shell-complete-test failed"))
 
-(ert-deftest py-ert-fast-complete-1 ()
-  (py-test-with-temp-buffer
-      "obj"
-    (let ((py-return-result-p t)
-	  py-result py-store-result-p)
-      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-      (py-fast-complete)
-      (sit-for 0.1) 
-      (should (search-backward "ect")))))
-
 (ert-deftest py-ert-shift-right-test-1 ()
   (py-test-with-temp-buffer
       "def foo():

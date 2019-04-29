@@ -128,3 +128,14 @@ finally:
       (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
       (switch-to-buffer (current-buffer))
       (should (search-backward "123234")))))
+
+(ert-deftest py-ert-fast-complete-1 ()
+  (py-test-with-temp-buffer
+      "obj"
+    (let ((py-return-result-p t)
+	  py-result py-store-result-p)
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+      (py-fast-complete)
+      (sit-for 0.1) 
+      (should (search-backward "ect")))))
+
