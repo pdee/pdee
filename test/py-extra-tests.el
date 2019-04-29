@@ -51,14 +51,15 @@ finally:
     (should (eq 'py-exception-name-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-execute-block-jython-test ()
-  (let ((buffer (py--choose-buffer-name "jython")))
+  (let ((buffer (py--choose-buffer-name "jython"))
+	py-split-window-on-execute py-switch-buffers-on-execute-p)
     (py-test-with-temp-buffer
         "if True:
     print(\"one\")
     print(\"two\")"
       (py-execute-block-jython)
       (sit-for 0.1)
-      (with-current-buffer "*Jython*"
+      (with-current-buffer buffer
 	(goto-char (point-max))
 	(should (search-backward "two"))))))
 
@@ -105,3 +106,14 @@ finally:
     (goto-char (point-max))
     (should (string= (buffer-string) "\"\""))
     (should (null (nth 3 (parse-partial-sexp (point-min) (point)))))))
+
+(ert-deftest py-complete-in-python-shell-test ()
+  (py-kill-buffer-unconditional "*Python*")
+  (py-kill-buffer-unconditional "*Python3*")
+  (set-buffer (python))
+  (goto-char (point-max))
+  (insert "pri")
+  (py-indent-or-complete)
+  (sit-for 0.1)
+  (should (or (eq ?t (char-before))(eq ?\( (char-before)))))
+

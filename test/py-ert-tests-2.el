@@ -775,16 +775,6 @@ that, needs, to_be, wrapped)"
       (indent-line-to (py-compute-indentation))
       (should (eq 13 (current-indentation))))))
 
-(ert-deftest py-complete-in-python-shell-test ()
-  (py-kill-buffer-unconditional "*Python*")
-  (py-kill-buffer-unconditional "*Python3*")
-  (set-buffer (python))
-  (goto-char (point-max))
-  (insert "pri")
-  (py-indent-or-complete)
-  (sit-for 0.1)
-  (should (or (eq ?t (char-before))(eq ?\( (char-before)))))
-
 (ert-deftest py-complete-in-python3-shell-test ()
   (py-kill-buffer-unconditional "*Python3*")
   (set-buffer (python3))
