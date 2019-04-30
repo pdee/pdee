@@ -192,10 +192,9 @@ not inside a defun."
 
 (defalias 'py-describe-symbol 'py-help-at-point)
 (defalias 'py-eldoc-function 'py-help-at-point)
-(defun py--help-at-point-intern (orig)
+(defun py--help-at-point-intern (sym orig)
   (let* ((beg (point))
 	 (end (progn (skip-chars-forward "a-zA-Z0-9_." (line-end-position))(point)))
-	 (sym (buffer-substring-no-properties beg end))
 	 (origfile (py--buffer-filename-remote-maybe))
 	 (temp (md5 (buffer-name)))
 	 (file (concat (py--normalize-directory py-temp-directory) temp "-py-help-at-point.py"))
@@ -207,14 +206,9 @@ not inside a defun."
 		       (forward-char -2)
 		       (point)))))
     (if erg
-	(progn (push-mark orig)(push-mark (point))
+	(progn (push-mark orig) (push-mark (point))
 	       (when (and (called-interactively-p 'any) py-verbose-p) (message "Jump to previous position with %s" "C-u C-<SPC> C-u C-<SPC>")))
       (goto-char orig))
-    ;; (when cmd
-    ;;   (setq cmd (mapconcat
-    ;; 		 (lambda (arg) (concat "try: " arg "\nexcept: pass\n"))
-    ;; 		 (split-string cmd ";" t)
-    ;; 		 "")))
     (setq cmd (concat cmd "\nimport pydoc\n"
 		      ))
     (when (not py-remove-cwd-from-path)
@@ -234,7 +228,8 @@ not inside a defun."
 
 If symbol is defined in current buffer, jump to it's definition"
   (interactive)
-  (let ((orig (point)))
+  (let ((orig (point))
+	(symbol (thing-at-point 'symbol t)))
     ;; avoid repeated call at identic pos
     (unless (eq orig (ignore-errors py-last-position))
       (setq py-last-position orig))
@@ -245,8 +240,10 @@ If symbol is defined in current buffer, jump to it's definition"
 	(progn
 	  (py-restore-window-configuration)
 	  (goto-char orig))
-      (if (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
-	  (py--help-at-point-intern orig)
+      (if 
+	  ;; (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
+	  (not (string= "" symbol))
+	  (py--help-at-point-intern symbol orig)
 	(py-restore-window-configuration)))))
 
 ;;  Documentation functions

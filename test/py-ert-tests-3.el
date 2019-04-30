@@ -723,7 +723,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-os.chmod"
+os.continue"
     'python-mode
     'py-debug-p
     (goto-char (point-max))
@@ -732,8 +732,8 @@ os.chmod"
     (sit-for 0.1)
     (set-buffer "*Python-Help*")
     (goto-char (point-min))
-    ;; (switch-to-buffer (current-buffer))
-    (should (looking-at "Help on built-in function chmod in os:"))))
+    (switch-to-buffer (current-buffer))
+    (should (string-match "continue" (buffer-substring-no-properties (point-min) (line-end-position))))))
 
 (ert-deftest py-execute-import-or-reload-test ()
   (py-test
