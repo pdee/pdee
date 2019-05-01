@@ -2241,9 +2241,6 @@
 (ert-deftest py-ert--complete-base-functionp-test ()
   (should (functionp 'py--complete-base)))
 
-(ert-deftest py-ert--complete-prepare-functionp-test ()
-  (should (functionp 'py--complete-prepare)))
-
 (ert-deftest py-ert-shell-complete-functionp-test ()
   (should (functionp 'py-shell-complete)))
 

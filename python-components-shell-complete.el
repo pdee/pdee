@@ -113,27 +113,29 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
     (set-buffer exception-buffer)
     ;; (py--delay-process-dependent process)
     ;; (sit-for 1 t)
-    (when completion
+    (when (and completion 
+	       ;; (not (or (string= "''" completion) (string= "" completion)))
+)
       (py--shell-insert-completion-maybe completion input))))
 
-(defun py--complete-base (shell word imports exception-buffer)
+(defun py--complete-base (shell word imports buffer)
   (let* ((shell (or shell (py-choose-shell)))
          (proc (or
 		;; completing inside a shell
-		(get-buffer-process exception-buffer)
+		(get-buffer-process buffer)
 		(and (comint-check-proc shell)
 		     (get-process shell))
 		(prog1
 		    (get-buffer-process (py-shell nil nil shell))
 		  (sit-for py-new-shell-delay))))
-	 (buffer (process-buffer proc))
+	 ;; (buffer (process-buffer proc))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 py-shell-module-completion-code)))
     (py--python-send-completion-setup-code buffer)
-    (py--shell-do-completion-at-point proc imports word exception-buffer code)))
+    (py--shell-do-completion-at-point proc imports word buffer code)))
 
-(defun py--complete-prepare (&optional shell beg end word fast-complete)
+(defun py-shell-complete (&optional shell beg end word fast-complete)
   (let* ((exception-buffer (current-buffer))
          ;; (pos (copy-marker (point)))
 	 (pps (parse-partial-sexp
@@ -175,16 +177,16 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 	  (t (py--complete-base shell word imports exception-buffer)))
     nil))
 
-(defun py-shell-complete (&optional shell beg end word)
-  "Complete word before point, if any.
+;; (defun py-shell-complete (&optional shell beg end word)
+;;   "Complete word before point, if any.
 
-Optional SHELL BEG END WORD"
-  (interactive)
-  ;; (save-excursion
-  ;;   (and (buffer-live-p (get-buffer "*Python Completions*"))
-  ;; 	 (py-kill-buffer-unconditional "*Python Completions*")))
-  ;; fast-complete is called
-  (py--complete-prepare shell beg end word))
+;; Optional SHELL BEG END WORD"
+;;   (interactive)
+;;   ;; (save-excursion
+;;   ;;   (and (buffer-live-p (get-buffer "*Python Completions*"))
+;;   ;; 	 (py-kill-buffer-unconditional "*Python Completions*")))
+;;   ;; fast-complete is called
+;;   (py-shell-complete shell beg end word))
 
 (defun py-indent-or-complete ()
   "Complete or indent depending on the context.

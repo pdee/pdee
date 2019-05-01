@@ -66,7 +66,6 @@ finally:
 (ert-deftest py-shell-complete-in-dedicated-shell ()
   ;; (py-test-with-temp-buffer
   (with-current-buffer (python-dedicated)
-    (goto-char (point-max))
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     ;; (switch-to-buffer (current-buffer))
     (insert "pri")
@@ -136,6 +135,5 @@ finally:
 	  py-result py-store-result-p)
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (py-fast-complete)
-      (sit-for 0.1) 
+      (sit-for 0.1)
       (should (search-backward "ect")))))
-

@@ -1541,6 +1541,7 @@ the output."
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
   (let ((process (or process (get-buffer-process (py-shell))))
+	(inhibit-read-only t)
         erg)
     (with-current-buffer (process-buffer process)
       (let ((orig (ignore-errors (or comint-last-input-end (and comint-last-prompt (cdr comint-last-prompt)) (point))))
@@ -1549,8 +1550,9 @@ the output."
         ;; (accept-process-output process)
         (setq end (ignore-errors (and comint-last-prompt (1- (car comint-last-prompt)))))
         (when end
-          (setq erg (buffer-substring-no-properties orig end)))
-        (if (and erg (not (or (string= "" erg) (string= "''" erg))))
+          (setq erg (buffer-substring-no-properties orig end))
+		(delete-region orig end))
+        (if (and erg (stringp erg) (not (or (string= "" erg) (string= "''" erg))))
             (setq erg
                   (replace-regexp-in-string
                    (format "[ \n]*%s[ \n]*" py-fast-filter-re)

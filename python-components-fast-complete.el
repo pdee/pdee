@@ -75,7 +75,7 @@ Use `py-fast-process' "
   (interactive)
   (setq py-last-window-configuration
 	(current-window-configuration))
-  (py--complete-prepare shell beg end word t))
+ (py-shell-complete shell beg end word t))
 
 (provide 'python-components-fast-complete)
 ;;; python-components-fast-complete.el here
