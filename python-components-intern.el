@@ -117,28 +117,51 @@ Returns position reached if successful"
   (unless (bobp)
     (goto-char (point-min))))
 
-(defun py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf split buffer)
+;; (defun py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf split buffer)
+;;   "Used by python-components-extended-executes ."
+;;   (save-excursion
+;;     (let* ((form (prin1-to-string form))
+;;            (origline (py-count-lines))
+;;            (beg (unless file
+;;                   (prog1
+;;                       (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
+
+;;                           (funcall (intern-soft (concat "py-backward-" form)))
+;;                           (push-mark)))))
+;;            (end (unless file
+;;                   (or end (save-excursion (funcall (intern-soft (concat "py-forward-" form)))))))
+;;            filename)
+;;       ;; (setq py-buffer-name nil)
+;;       (if file
+;;           (progn
+;;             (setq filename (expand-file-name form))
+;;             (if (file-readable-p filename)
+;;                 (py--execute-file-base nil filename nil nil origline)
+;;               (message "%s not readable. %s" file "Do you have write permissions?")))
+;;         (py--execute-base beg end shell filename proc file wholebuf fast dedicated split switch buffer)))))
+
+(defmacro py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf split buffer)
   "Used by python-components-extended-executes ."
   (save-excursion
-    (let* ((form (prin1-to-string form))
+    `(let* ((form ,(prin1-to-string form))
            (origline (py-count-lines))
-           (beg (unless file
+           (beg (unless ,file
                   (prog1
-                      (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
+                      (or ,beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
 
                           (funcall (intern-soft (concat "py-backward-" form)))
                           (push-mark)))))
-           (end (unless file
-                  (or end (save-excursion (funcall (intern-soft (concat "py-forward-" form)))))))
+           (end (unless ,file
+                  (or ,end (save-excursion (funcall (intern-soft (concat "py-forward-" form)))))))
            filename)
       ;; (setq py-buffer-name nil)
-      (if file
+      (if ,file
           (progn
             (setq filename (expand-file-name form))
             (if (file-readable-p filename)
                 (py--execute-file-base nil filename nil nil origline)
-              (message "%s not readable. %s" file "Do you have write permissions?")))
-        (py--execute-base beg end shell filename proc file wholebuf fast dedicated split switch buffer)))))
+              (message "%s not readable. %s" ,file "Do you have write permissions?")))
+        (py--execute-base beg end ,shell filename ,proc ,file ,wholebuf ,fast ,dedicated ,split ,switch ,buffer)))))
 
 (defun py-load-skeletons ()
   "Load skeletons from extensions. "

@@ -948,12 +948,12 @@
          (insert " 'no-switch"))
         (t (insert " switch")))
   (cond ((string= "region" ele)
-         (insert " (or beg (region-beginning)) (or end (region-end))"))
+         (insert " (or beg (region-beginning)) (or end (region-end))")
+	 (insert " nil fast proc wholebuf split)))\n"))
         ((string= "buffer" ele)
-         (insert " (point-min) (point-max)"))
-	;; (t (insert " beg end"))
-	)
-  (insert " nil fast proc wholebuf split)))\n"))
+         (insert " (point-min) (point-max)")
+	 (insert " nil fast proc wholebuf split)))\n"))
+	(t  (insert " nil nil nil fast proc wholebuf split)))\n"))))
 
 (defun write--unified-extended-execute-forms-docu (ele elt pyo)
   (insert (concat "
@@ -1046,7 +1046,7 @@
 	  (write--unified-extended-execute-buffer-form)
 	  (write--unified-extended-execute-let-form)
 	  )
-	(insert (concat "    (py--execute-prepare '"ele))
+	(insert (concat "    (py--execute-prepare "ele))
 	(write--unified-extended-execute-shells elt)
 	(write--extended-execute-switches ele pyo)))))
 
