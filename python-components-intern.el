@@ -1535,6 +1535,11 @@ the output."
             (py--string-strip
              (format "[ \n]*%s[ \n]*" py-fast-filter-re)))))
 
+(defmacro py--return-and-cleanup-maybe (end orig)
+  `(unless (eq ,end ,orig)
+    (prog1 (buffer-substring-no-properties ,orig ,end)
+      (delete-region ,orig ,end))))
+
 (defun py--send-string-return-output (strg &optional process)
   "Send STRING to PROCESS and return output.
 
@@ -1549,9 +1554,7 @@ the output."
         (py-send-string strg process)
         ;; (accept-process-output process)
         (setq end (ignore-errors (and comint-last-prompt (1- (car comint-last-prompt)))))
-        (when end
-          (setq erg (buffer-substring-no-properties orig end))
-		(delete-region orig end))
+        (setq erg (py--return-and-cleanup-maybe end orig))
         (if (and erg (stringp erg) (not (or (string= "" erg) (string= "''" erg))))
             (setq erg
                   (replace-regexp-in-string
@@ -1561,7 +1564,7 @@ the output."
         ;; don't insert empty completion string
         ;; (when end
         ;; (when delete (delete-region orig end)))
-))
+	))
     erg))
 
 (defun py-which-def-or-class (&optional orig)
