@@ -1554,7 +1554,7 @@ the output."
         (py-send-string strg process)
         ;; (accept-process-output process)
         (setq end (ignore-errors (and comint-last-prompt (1- (car comint-last-prompt)))))
-        (setq erg (py--return-and-cleanup-maybe end orig))
+        (and end orig (setq erg (py--return-and-cleanup-maybe end orig)))
         (if (and erg (stringp erg) (not (or (string= "" erg) (string= "''" erg))))
             (setq erg
                   (replace-regexp-in-string
