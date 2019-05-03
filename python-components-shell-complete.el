@@ -145,24 +145,34 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 		(line-beginning-position))
 	       (point)))
 	 (in-string (when (nth 3 pps) (nth 8 pps)))
-         ;; (beg
-	 ;;  (save-excursion
-	 ;;    (or beg
-	 ;; 	(and in-string
-	 ;; 	     ;; possible completion of filenames
-	 ;; 	     (progn
-	 ;; 	       (goto-char in-string)
-	 ;; 	       (and
-	 ;; 		(save-excursion
-	 ;; 		  (skip-chars-backward "^ \t\r\n\f")(looking-at "open")))
+         (beg
+	  (save-excursion
+	    (or beg
+	 	(and in-string
+	 	     ;; possible completion of filenames
+	 	     (progn
+	 	       (goto-char in-string)
+	 	       (and
+	 		(save-excursion
+	 		  (skip-chars-backward "^ \t\r\n\f")(looking-at "open")))
 
-	 ;; 	       (skip-chars-forward "\"'")(point)))
-	 ;; 	(progn (and (eq (char-before) ?\()(forward-char -1))
-	 ;; 	       (skip-chars-backward "a-zA-Z0-9_.'") (point)))))
-         ;; (end (or end (point)))
-	 ;; ;;
-         ;; (word (or word (buffer-substring-no-properties beg end)))
-	 (word (save-excursion (skip-chars-backward " \t\r\n\f") (unless (bolp) (forward-char -1) (thing-at-point 'word t))))  
+	 	       (skip-chars-forward "\"'")(point)))
+	 	(progn (and (eq (char-before) ?\()(forward-char -1))
+	 	       (skip-chars-backward "a-zA-Z0-9_.'") (point)))))
+         (end (or end (point)))
+	 ;; (thing-at-point 'word t) fails with Emacs 24.3
+	 ;; https://travis-ci.org/pdee/pdee/builds/527856403
+	 ;; Test py-complete-empty-string-result-test condition:
+	 ;;  (wrong-number-of-arguments
+	 ;;   #[(thing)
+	 ;;     \302N\203\302N \207\30!\211\205	@	A{)\207"
+	 ;;     [thing bounds thing-at-point bounds-of-thing-at-point]
+	 ;;     3
+	 ;;     ("/usr/share/emacs/24.3/lisp/thingatpt.elc" . 2305)]
+	 ;;   2)
+	 ;; FAILED    19/1343  py-complete-empty-string-result-test
+         (word (or word (buffer-substring-no-properties beg end)))
+	 ;; (word (save-excursion (skip-chars-backward " \t\r\n\f") (unless (bolp) (forward-char -1) (thing-at-point 'word t))))  
 	 (ausdruck (and (string-match "^/" word)(setq word (substring-no-properties word 1))(concat "\"" word "*\"")))
 	 ;; when in string, assume looking for filename
 	 (filenames (and in-string ausdruck
