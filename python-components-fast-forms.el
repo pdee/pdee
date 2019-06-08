@@ -53,6 +53,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       proc)))
 
 (defun py-fast-send-string-intern (strg proc)
+  ;; (message "%s" strg)
   (process-send-string proc strg)
   (or (string-match "\n$" strg)
       (process-send-string proc "\n")))

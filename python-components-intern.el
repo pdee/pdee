@@ -1516,29 +1516,36 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
          (proc (or process (get-buffer-process buffer))))
     (py-fast-send-string strg proc buffer)))
 
-(defun py--send-string-no-output (strg &optional process)
+;; (defmacro py--cleanup-shell (orig)
+;;   (declare (debug t))
+;;   (goto-char (point-max))
+;;   `(unless (eq (point) ,orig)
+;;      (delete-region ,orig (point))))
+
+(defvar py-known-first-prompts-re (concat py-shell-input-prompt-1-regexp"\\|"py-shell-input-prompt-2-regexp"\\|"py-ipython-input-prompt-re"\\|"py-ipython-output-prompt-re)
+  "Match all known Python shell prompts of first level.")
+
+(defun py--remove-extra-prompt ()
+  (let ((inhibit-field-text-motion t))
+    (and (looking-back (concat "^\\(" py-known-first-prompts-re "\\)\\(" py-known-first-prompts-re "\\)\\(.*\\)") (line-beginning-position)) (delete-region (match-beginning 2) (match-end 2)))))
+
+(defun py--send-string-no-output (strg &optional process orig)
   "Send STRING to PROCESS and inhibit output display.
 When MSG is non-nil messages the first line of STRING.  Return
 the output."
-  (let* (output
-         (process (or process (get-buffer-process (py-shell))))
-         (comint-preoutput-filter-functions
-          (append comint-preoutput-filter-functions
-                  '(ansi-color-filter-apply
-                    (lambda (strg)
-                      (setq output strg)
-                      "")))))
+  (let*       ((inhibit-read-only t)
+	       output
+	       (orig (or orig (ignore-errors (or comint-last-input-end (and comint-last-prompt (cdr comint-last-prompt)) (point)))))
+	       (process (or process (get-buffer-process (py-shell)))))
+    (switch-to-buffer (process-buffer process))
     (py-send-string strg process)
     (sit-for 0.1 t)
-    ;; (py--delay-process-dependent process)
-    (when (and output (not (string= "" output)))
-            (py--string-strip
-             (format "[ \n]*%s[ \n]*" py-fast-filter-re)))))
+    (py--remove-extra-prompt)))
 
 (defmacro py--return-and-cleanup-maybe (end orig)
   `(unless (eq ,end ,orig)
-    (prog1 (buffer-substring-no-properties ,orig ,end)
-      (delete-region ,orig ,end))))
+     (prog1 (buffer-substring-no-properties ,orig ,end)
+       (delete-region ,orig ,end))))
 
 (defun py--send-string-return-output (strg &optional process)
   "Send STRING to PROCESS and return output.

@@ -24,7 +24,7 @@
 
 ;;; Code:
 
-(ert-deftest py-ert-execute-block-fast-2 ()
+(ert-deftest py-ert-execute-block-fast-9Ui5ja ()
   (py-test-point-min
       "try:
     a
@@ -40,8 +40,8 @@ finally:
 	  (py-debug-p t)
 	  py-result)
       (py-execute-block)
-      (when py-debug-p (message "py-ert-execute-block-fast-2, py-result: %s" py-result))
-      (should (and py-result (numberp (string-to-number (car (split-string py-result)))))))))
+      (when py-debug-p (message "py-ert-execute-block-fast-9Ui5ja, py-result: %s" py-result))
+      (should (string= "2" py-result)))))
 
 (ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test ()
   (py-test-with-temp-buffer-point-min

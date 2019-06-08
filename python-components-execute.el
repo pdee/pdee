@@ -1034,36 +1034,37 @@ May we get rid of the temporary file?"
   "Fix offline amount, make error point at the correct LINE."
   (insert (make-string (- line (py-count-lines (point-min) (point))) 10)))
 
-(defun py--execute-file-base (&optional proc filename cmd procbuf origline)
+(defun py--execute-file-base (&optional proc filename cmd procbuf origline no-output)
   "Send to Python interpreter process PROC.
 
 In Python version 2.. \"execfile('FILENAME')\".
 
-Takes also CMD PROCBUF ORIGLINE.
+Takes also CMD PROCBUF ORIGLINE NO-OUTPUT.
 
 Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 ‘kill-output-from-shell’ does The Right Thing.
 Returns position where output starts."
-  (let* ((origline (or (ignore-errors origline) 1))
+  (let* (
+	 ;; (origline (or (ignore-errors origline) 1))
 	 (buffer (or procbuf (py-shell nil nil nil procbuf)))
 	 (proc (or proc (get-buffer-process buffer)))
 	 (cmd (or cmd (py-which-execute-file-command filename)))
-
 	 ;; (windows-config (window-configuration-to-register py-windows-config-register))
 	 erg orig)
     (with-current-buffer buffer
       ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       ;; (goto-char (point-max))
       (setq orig (copy-marker (point-max)))
-      (py-send-string cmd proc)
-      (py-send-string cmd proc)
-      (when (or py-return-result-p py-store-result-p)
-	(setq erg (py--postprocess-comint buffer origline orig))
-	(if py-error
-	    (setq py-error (prin1-to-string py-error))
-	  erg)))
-))
+      ;; (py-send-string cmd proc)
+      (if no-output
+	  (py--send-string-no-output cmd proc orig)
+	(py-send-string cmd proc)
+	(when (or py-return-result-p py-store-result-p)
+	  (setq erg (py--postprocess-comint buffer origline orig))
+	  (if py-error
+	      (setq py-error (prin1-to-string py-error))
+	    erg))))))
 
 (defun py-execute-file (filename)
   "When called interactively, user is prompted for FILENAME."

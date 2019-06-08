@@ -101,9 +101,9 @@ Needed for completion and other environment stuff only."
   :group 'python-mode)
 
 (defcustom py-font-lock-defaults-p t
- "If fontification is not required, 
+ "If fontification is not required,
 
-avoiding it might speed up things." 
+avoiding it might speed up things."
 
 :type 'boolean
 :group 'python-mode)
@@ -2532,7 +2532,7 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 ;; 'name':
 (defconst py-dict-re "'\\_<\\w+\\_>':")
 
-(setq py-block-re-raw (list 
+(setq py-block-re-raw (list
 		       "async def"
 		       "async for"
 		       "async with"
@@ -2552,7 +2552,7 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 		       )
   "Matches the beginning of a compound statement.")
 
-(defconst py-minor-block-re-raw (list 
+(defconst py-minor-block-re-raw (list
 				      "async for"
 				      "async with"
 				      "except"
@@ -2699,7 +2699,7 @@ Second group grabs the name")
     :tag "py-minor-clause-re-raw"
     :group 'python-mode)
 
-(defconst py-minor-clause-re 
+(defconst py-minor-clause-re
   (concat
    "[ \t]*"
    (regexp-opt  py-minor-clause-re-raw 'symbols)
@@ -2997,7 +2997,7 @@ See also `py-object-reference-face'"
 
 (defun py-toggle-imenu-create-index ()
   "Toggle value of ‘py--imenu-create-index-p’"
-  (interactive) 
+  (interactive)
   (setq py--imenu-create-index-p (not py--imenu-create-index-p))
   (when (interactive-p) (message "py--imenu-create-index-p: %s" py--imenu-create-index-p)))
 
@@ -3008,7 +3008,7 @@ See also `py-object-reference-face'"
       (with-temp-buffer
 	(insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
 	(write-file setup-file)))
-    (py--execute-file-base nil setup-file nil buffer)
+    (py--execute-file-base (get-buffer-process buffer) setup-file nil buffer nil t)
     (when py-verbose-p (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buffer)))))))
 
 (defun py--python-send-completion-setup-code (buffer)

@@ -137,6 +137,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
     (py--shell-do-completion-at-point proc imports word buffer code)))
 
 (defun py-shell-complete (&optional shell beg end word fast-complete)
+  (interactive) 
   (let* ((exception-buffer (current-buffer))
          ;; (pos (copy-marker (point)))
 	 (pps (parse-partial-sexp
