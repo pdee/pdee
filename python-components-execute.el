@@ -911,8 +911,6 @@ Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source b
 
 (defun py--fetch-result (orig)
   "Return ‘buffer-substring’ from ORIG to ‘point-max’."
-  ;; (switch-to-buffer (current-buffer))
-  ;; otherwise py-ert-fast-complete-1 fails
   (goto-char orig)
   (if (derived-mode-p 'comint-mode)
       (replace-regexp-in-string

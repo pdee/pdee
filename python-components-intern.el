@@ -1990,16 +1990,11 @@ Use current region unless optional args BEG END are delivered."
       (goto-char (cdr-safe erg)))
     res))
 
-(defun py-rotate-shell-fontify-style (msg)
-  "Rotates between possible values 'all, 'input and nil. "
+(defun py-toggle-shell-fontification (msg)
+  "Toggles value of ‘py-shell-fontify-p’. "
   (interactive "p")
-  (cond ((eq py-shell-fontify-style 'all)
-         (setq py-shell-fontify-style nil))
-        ((eq py-shell-fontify-style 'input)
-         (setq py-shell-fontify-style 'all))
-        (t (setq py-shell-fontify-style 'input)))
-  (py--shell-setup-fontification py-shell-fontify-style)
-  (when msg (message "py-shell-fontify-style set to: %s" py-shell-fontify-style)))
+  (py--shell-setup-fontification py-shell-fontify-p)
+  (when msg (message "py-shell-fontify-p set to: %s" py-shell-fontify-p)))
 
 (defun py-toggle-execute-use-temp-file ()
   (interactive)

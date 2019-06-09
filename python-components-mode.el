@@ -1437,18 +1437,18 @@ Don't split when max number of displayed windows is reached."
   :tag "py-split-windows-on-execute-function"
   :group 'python-mode)
 
-(defcustom py-shell-fontify-style nil
-  "Fontify current input resp. output in Python shell. Default is nil.
+(defcustom py-shell-fontify-p nil
+  "Fontify current input in Python shell. Default is nil.
 
+A boolean. 
 INPUT will leave output unfontified.
-ALL keeps output fontified.
 
 At any case only current input gets fontified."
   :type '(choice (const :tag "Default" all)
                  (const :tag "Input" input)
 		 (const :tag "Nil" nil)
                  )
-  :tag "py-shell-fontify-style"
+  :tag "py-shell-fontify-p"
   :group 'python-mode)
 
 (defcustom py-hide-show-keywords
