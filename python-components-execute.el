@@ -472,9 +472,10 @@ according to ‘py-split-windows-on-execute-function’."
     (with-current-buffer (get-buffer exception-buffer)
       (when (< number-of-windows py-split-window-on-execute-threshold)
 	(unless
-	    (member (get-buffer-window output-buffer)(window-list))
+	    (member (get-buffer-window output-buffer) (window-list))
 	  (py--manage-windows-split exception-buffer)))
-      (display-buffer output-buffer t))))
+      (display-buffer output-buffer t)
+      (switch-to-buffer exception-buffer))))
 
 (defun py--shell-manage-windows (output-buffer &optional exception-buffer split switch)
   "Adapt or restore window configuration from OUTPUT-BUFFER.
