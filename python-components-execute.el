@@ -629,11 +629,16 @@ Receives a ‘buffer-name’ as argument"
 (defun py--start-fast-process (shell buffer)
   (start-process shell buffer shell))
 
-(defun py--shell-fast-proceeding (proc buffer shell setup-code)
+;; (defun py--shell-fast-proceeding (proc buffer shell setup-code)
+;;   (unless (get-buffer-process (get-buffer buffer))
+;;     (setq proc (py--start-fast-process shell buffer))
+;;     (setq py-output-buffer buffer)
+;;     (py-fast-send-string-intern setup-code proc)))
+
+(defun py--shell-fast-proceeding (buffer shell)
   (unless (get-buffer-process (get-buffer buffer))
-    (setq proc (py--start-fast-process shell buffer))
-    (setq py-output-buffer buffer)
-    (py-fast-send-string-intern setup-code proc)))
+    (py--start-fast-process shell buffer)
+    (setq py-output-buffer buffer)))
 
 (defun py--reuse-existing-shell (exception-buffer)
   (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) py-buffer-name)))
@@ -720,7 +725,7 @@ Interactively, \\[universal-argument] prompts for a new ‘buffer-name’.
     (set (make-local-variable 'py-last-exeption-buffer) exception-buffer)
     (if fast
 	;; user rather wants an interactive shell
-	(py--shell-fast-proceeding nil buffer shell py-shell-completion-setup-code)
+	(py--shell-fast-proceeding buffer shell)
       (if (comint-check-proc buffer)
       	  (py--reuse-existing-shell exception-buffer)
       	;; buffer might exist but not being empty
