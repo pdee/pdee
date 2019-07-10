@@ -993,5 +993,18 @@ class EmacsFrameThemeManager(datatypes.Singleton, metaclass=cldef.metaClass):
     (py-end-of-def-or-class)
     (should (eq 26242 (point)))))
 
+(ert-deftest py-execute-region-ipython-test-1 ()
+  (py-test
+      "#! /usr/bin/env python3
+print(u'\\xA9')"
+    'python-mode
+    'py-debug-p
+    (goto-char (point-max))
+    (push-mark)
+    (beginning-of-line)
+    (py-execute-region-ipython (region-beginning) (region-end))
+    (set-buffer "*IPython*")
+    (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))
+
 (provide 'py-extra-tests)
 ;;; py-extra-tests.el ends here

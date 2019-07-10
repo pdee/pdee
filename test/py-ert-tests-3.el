@@ -679,19 +679,6 @@ print(u'\\xA9')"
     (set-buffer "*Python3*")
     (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))
 
-(ert-deftest py-execute-region-ipython-test-1 ()
-  (py-test
-      "#! /usr/bin/env python3
-print(u'\\xA9')"
-    'python-mode
-    'py-debug-p
-    (goto-char (point-max))
-    (push-mark)
-    (beginning-of-line)
-    (py-execute-region-ipython (region-beginning) (region-end))
-    (set-buffer "*IPython*")
-    (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))
-
 (ert-deftest py-execute-region-no-transmm-test-1 ()
   (py-test
       "print(u'\\xA9')"
