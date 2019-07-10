@@ -33,10 +33,13 @@
   "Set `py-result' according to `py-fast-filter-re'.
 
 Remove trailing newline"
-  ;; (replace-regexp-in-string (format "[ \n]*%s[ \n]*" py-fast-filter-re) ""
-  (ansi-color-filter-apply strg)
-  ;;)
-  )
+  (replace-regexp-in-string
+;;   (format "[ \n]*%s[ \n]*" py-fast-filter-re)
+      py-fast-filter-re
+ ""
+			    (ansi-color-filter-apply strg)
+			    ;;)
+			    ))
 
 (defun py-fast-process (&optional buffer)
   "Connect am (I)Python process suitable for large output.
@@ -53,7 +56,6 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       proc)))
 
 (defun py-fast-send-string-intern (strg proc)
-  ;; (message "%s" strg)
   (process-send-string proc strg)
   (or (string-match "\n$" strg)
       (process-send-string proc "\n")))
@@ -61,13 +63,19 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 (defun py-fast-send-string (strg proc output-buffer &optional return)
   ;; (process-send-string proc "\n")
   (with-current-buffer output-buffer
-    (let ((orig (point)))
-      (py-fast-send-string-intern strg proc)
-      (accept-process-output proc 1)
-      (when return
-	(sit-for 0.1)
-	(setq py-result (py--filter-result (py--fetch-result orig))))
-      py-result)))
+    ;; (erase-buffer)
+    ;; (switch-to-buffer (current-buffer))
+    ;; (let ((orig (point)))
+    (py-fast-send-string-intern strg
+				proc)
+    (py-fast-send-string-intern "\n"
+				proc)
+
+    ;; (accept-process-output proc 0.1)
+    (when return
+      (sit-for 0.1 t)
+      (setq py-result (py--filter-result (py--fetch-result))))
+    py-result))
 
 (defalias 'py-process-region-fast 'py-execute-region-fast)
 (defun py-execute-region-fast (beg end &optional shell dedicated split switch proc)

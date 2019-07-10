@@ -24,23 +24,25 @@
 
 ;;; Code:
 
- 
+
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-python-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-python-test\")"
     (delete-other-windows)
-    (let* ((py-split-window-on-execute 'just-two)
-	   (erg1 (progn (py-execute-statement-python-dedicated) py-buffer-name))
-	   (erg2 (progn (py-execute-statement-python-dedicated) py-buffer-name)))
-      (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
-      (should (eq 2 (count-windows)))
-      (py-kill-buffer-unconditional erg1)
-      (py-kill-buffer-unconditional erg2)
-      (py-restore-window-configuration))))
- 
+    (let ((py-split-window-on-execute)
+	  (erg1 (progn (py-execute-statement-python-dedicated) py-buffer-name)))
+      (sit-for 0.1) 
+      (let ((py-split-window-on-execute 'just-two)
+	    (erg2 (progn (py-execute-statement-python-dedicated) py-buffer-name)))
+	(sit-for 1 t)
+	(when py-debug-p (message "(count-windows) %s" (count-windows)))
+	(should (eq 2 (count-windows)))
+	(py-kill-buffer-unconditional erg1)
+	(py-kill-buffer-unconditional erg2)
+	(py-restore-window-configuration)))))
+
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-python2-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python2
@@ -56,7 +58,7 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python2-test\")"
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
- 
+
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-python3-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python3

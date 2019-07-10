@@ -19,15 +19,15 @@
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
-  (with-current-buffer buffer
-    (erase-buffer)
-    (let ((completions
-	   (py-fast-send-string
-	    (format completion-code input) process buffer t)))
-      (when (> (length completions) 2)
-	(split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
+  ;; (with-current-buffer buffer
+  ;; (erase-buffer)
+  (let ((completions
+	 (py-fast-send-string
+	  (format completion-code input) process buffer t)))
+    (when (> (length completions) 2)
+      (split-string completions "^'\\|^\"\\|;\\|'$\\|\"$" t))))
 
-(defun py--fast--do-completion-at-point (process imports input code output-buffer)
+(defun py--fast--do-completion-at-point (process imports input code buffer)
   "Do completion at point for PROCESS."
   ;; send setup-code
   (let (py-store-result-p)
@@ -35,7 +35,7 @@ completions on the current context."
       ;; (message "%s" imports)
       (py-fast-send-string-intern imports process)))
   (let* ((completion
-	  (py--fast-completion-get-completions input process code output-buffer)))
+	  (py--fast-completion-get-completions input process code buffer)))
     (sit-for 0.1)
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug.")))
@@ -48,23 +48,22 @@ completions on the current context."
 		    (and (stringp completion)
 			 (string= input completion))))
 	   (set-window-configuration py-last-window-configuration))
-	  ((and completion (stringp completion)(not (string= input completion)))
+	  ((and completion (stringp completion) (not (string= input completion)))
 	   (progn (delete-char (- (length input)))
 		  (insert completion)
 		  ;; (move-marker orig (point))
 		  ;; minibuffer.el expects a list
-))
+		  ))
 	  (t (py--try-completion input completion)))))
 
 (defun py--fast-complete-base (shell word imports)
-  (let* ((shell (or shell "python"))
-	 (buffer (get-buffer-create "*Python Fast*"))
-	 (proc (or (get-buffer-process buffer) (py--start-fast-process shell buffer)))
+  (let* (py-split-window-on-execute py-switch-buffers-on-execute-p
+	 (shell (or shell "python"))
+	 (buffer (py-shell nil nil nil shell nil t))
+	 (proc (get-buffer-process buffer))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 py-shell-module-completion-code)))
-    ;; (with-current-buffer buffer
-    ;;   (erase-buffer))
     (py--python-send-completion-setup-code buffer)
     (py--fast--do-completion-at-point proc imports word code buffer)))
 
@@ -72,10 +71,12 @@ completions on the current context."
   "Complete word before point, if any.
 
 Use `py-fast-process' "
-  (interactive)
+  (interactive "*")
+  (window-configuration-to-register py-windows-config-register)
   (setq py-last-window-configuration
-	(current-window-configuration))
- (py-shell-complete shell beg end word t))
+  	(current-window-configuration))
+  (py-shell-complete shell beg end word t)
+  )
 
 (provide 'python-components-fast-complete)
 ;;; python-components-fast-complete.el here

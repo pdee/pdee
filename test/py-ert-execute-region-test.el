@@ -25,73 +25,79 @@
 ;;; Code:
 
 (ert-deftest py-ert-execute-region-python-test ()
-  (let ((buffer (py--choose-buffer-name "python")))
-    (py-test-with-temp-buffer
-        "
-    print(\"one\")
-    print(\"two\")"
+  (py-test-with-temp-buffer
+      "print(\"one\")
+print(\"two\")"
+    (let ((buffer (py--choose-buffer-name "python")))
+
       (py-execute-region-python (point-min) (point-max))
       ;; (sit-for 0.5 t)
       (set-buffer buffer)
+      (goto-char (point-max))
       (should (search-backward "two")))))
 
 (ert-deftest py-ert-execute-region-python2-test ()
-  (let ((buffer (py--choose-buffer-name "python2")))
-    (py-test-with-temp-buffer
-        "
-    print(\"one\")
-    print(\"two\")"
+  (py-test-with-temp-buffer
+      "print(\"one\")
+print(\"two\")"
+    (let ((buffer (py--choose-buffer-name "python2")))
       (py-execute-region-python2 (point-min) (point-max))
       ;; (sit-for 0.5 t)
       (set-buffer buffer)
+      (goto-char (point-max))
+
       (should (search-backward "two")))))
 
 (ert-deftest py-ert-execute-region-python3-test ()
-  (let ((buffer (py--choose-buffer-name "python3")))
-    (py-test-with-temp-buffer
-        "
-    print(\"one\")
-    print(\"two\")"
+  (py-test-with-temp-buffer
+      "print(\"one\")
+print(\"two\")"
+    (let ((buffer (py--choose-buffer-name "python3")))
       (py-execute-region-python3 (point-min) (point-max))
       ;; (sit-for 0.5 t)
       (set-buffer buffer)
+      (goto-char (point-max))
       (should (search-backward "two")))))
 
 (ert-deftest py-ert-execute-region-ipython-test ()
-  (let ((buffer (py--choose-buffer-name "ipython")))
-    (py-test-with-temp-buffer
-        "
-    print(\"one\")
-    print(\"two\")"
+  (py-test-with-temp-buffer
+      "print(\"one\")
+print(\"two\")"
+    (let ((buffer (py--choose-buffer-name "ipython")))
       (py-execute-region-ipython (point-min) (point-max))
-      ;; (sit-for 0.5 t)
       (set-buffer buffer)
+      (accept-process-output (get-buffer-process buffer) 0.1)
+      (switch-to-buffer (current-buffer)) 
+      (goto-char (point-max))
+      (sit-for 0.5 t)
       (should (search-backward "two")))))
 
 (ert-deftest py-ert-execute-region-ipython3-test ()
-  (let ((buffer (py--choose-buffer-name "ipython3")))
-    (py-test-with-temp-buffer
-        "
-    print(\"one\")
-    print(\"two\")"
+  (py-test-with-temp-buffer
+      "print(\"one\")
+print(\"two\")"
+    (let ((buffer (py--choose-buffer-name "ipython3"))
+	  (inhibit-point-motion-hooks t))
       (py-execute-region-ipython3 (point-min) (point-max))
-      ;; (sit-for 0.5 t)
       (set-buffer buffer)
+      (accept-process-output (get-buffer-process buffer) 0.1) 
+      ;; (goto-char (point-max))
+      (switch-to-buffer (current-buffer))
+      (goto-char (point-max))
+      (sit-for 0.5 t)
       (should (search-backward "two")))))
 
 (ert-deftest py-ert-execute-region-jython-test ()
-  (let ((buffer (py--choose-buffer-name "jython")))
-    (py-test-with-temp-buffer
-        "
-    print(\"one\")
-    print(\"two\")"
+  (py-test-with-temp-buffer
+      "print(\"one\")
+print(\"two\")"
+    (let ((buffer (py--choose-buffer-name "jython")))
       (py-execute-region-jython (point-min) (point-max))
-      ;; (sit-for 0.5 t)
       (set-buffer buffer)
+      (switch-to-buffer (current-buffer))
+      (goto-char (point-max))
+      (sit-for 0.5 t)
       (should (search-backward "two")))))
-
-
 
 (provide 'py-ert-execute-region-test)
 ;;; py-ert-execute-region-test.el here
- 

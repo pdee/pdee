@@ -87,6 +87,7 @@ hier() {
 -l $TEST6 \
 -l $TEST7 \
 -l $TEST8 \
+-l $TEST11 \
 -l $TEST12 \
 -l $TEST13 \
 -l $TEST14 \

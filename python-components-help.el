@@ -581,8 +581,8 @@ local bindings to py-newline-and-indent."))
 (defalias 'py-find-function 'py-find-definition)
 (defun py--find-definition-question-type (symbol imports)
   (let (erg)
-    (cond ((setq erg (py--send-string-return-output (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
-	  (t (setq erg (py--send-string-return-output (concat imports "import inspect;inspect.getmodule(\"" symbol "\")")))))
+    (cond ((setq erg (py-send-string (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
+	  (t (setq erg (py-send-string (concat imports "import inspect;inspect.getmodule(\"" symbol "\")")))))
     erg))
 
 (defun py-find-definition (&optional symbol)
@@ -602,7 +602,7 @@ Interactively, prompt for SYMBOL."
          ;; (enable-recursive-minibuffers t)
          (symbol (if (interactive-p)
 		     (read-string (format "Find location of (default %s): " symbol-raw)
-		                  symbol-raw  nil symbol-raw)
+		                  symbol-raw nil symbol-raw)
 		   symbol-raw))
          (local (progn (goto-char (point-min)) (re-search-forward (concat "^[ \t]*" "\\(def\\|class\\)" "[ \t]" symbol) orig t))))
     ;; ismethod(), isclass(), isfunction() or isbuiltin()
@@ -619,25 +619,6 @@ Interactively, prompt for SYMBOL."
 	  (exchange-point-and-mark))
       (with-help-window (help-buffer)
 	(princ (py--find-definition-question-type symbol imports))))))
-
-;;   (if erg
-;; 	  (cond ((string-match "SyntaxError" erg)
-;; 		 (setq erg (substring-no-properties erg (match-beginning 0)))
-;; 		 (set-window-configuration last-window-configuration)
-;; 		 ;; (jump-to-register 98888888)
-;; 		 (message "Can't get source: %s" erg))
-;; 		((and erg (string-match "builtin" erg))
-;; 		 (progn
-;; 		   (set-window-configuration last-window-configuration)
-;; 		   ;; (jump-to-register 98888888)
-;; 		   (message "%s" erg)))
-;; 		((and erg (setq erg (replace-regexp-in-string "'" "" (py--send-string-return-output "import os;os.getcwd()")))
-;; 		      (setq sourcefile (replace-regexp-in-string "'" "" (py--send-string-return-output (concat "inspect.getsourcefile(" symbol ")")))))
-;; 		 (message "%s" sourcefile)
-;; 		 (py--find-definition-in-source sourcefile symbol)
-;; 		 (display-buffer exception-buffer)))
-;; 	(error "Couldn't find source, please consider a bug-report"))
-;; erg)))
 
 (defun py-find-imports ()
   "Find top-level imports.
@@ -1182,8 +1163,8 @@ Assumes vars are defined in current source buffer"
           (insert (concat "\n** "(car ele) "\n"))
           (insert (concat "   " (cdr ele) "\n\n")))
         ;; (richten)
-        (sit-for 0.01))
-      (sit-for 0.01)
+        (sit-for 0.01 t))
+      (sit-for 0.01 t)
       (org-mode))))
 
 ;; common typo

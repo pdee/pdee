@@ -387,9 +387,6 @@
 (ert-deftest py-ert-fast-complete-functionp-test ()
   (should (functionp 'py-fast-complete)))
 
-(ert-deftest py-ert--all-shell-mode-setting-functionp-test ()
-  (should (functionp 'py--all-shell-mode-setting)))
-
 (ert-deftest py-ert-fast-process-functionp-test ()
   (should (functionp 'py-fast-process)))
 
@@ -540,17 +537,11 @@
 (ert-deftest py-ert--report-executable-functionp-test ()
   (should (functionp 'py--report-executable)))
 
-(ert-deftest py-ert--shell-make-comint-functionp-test ()
-  (should (functionp 'py--shell-make-comint)))
-
 (ert-deftest py-ert--guess-buffer-name-functionp-test ()
   (should (functionp 'py--guess-buffer-name)))
 
 (ert-deftest py-ert--configured-shell-functionp-test ()
   (should (functionp 'py--configured-shell)))
-
-(ert-deftest py-ert--grab-prompt-ps1-functionp-test ()
-  (should (functionp 'py--grab-prompt-ps1)))
 
 (ert-deftest py-ert--start-fast-process-functionp-test ()
   (should (functionp 'py--start-fast-process)))
@@ -1823,15 +1814,6 @@
 
 (ert-deftest py-ert--until-found-functionp-test ()
   (should (functionp 'py--until-found)))
-
-(ert-deftest py-ert--delay-process-dependent-functionp-test ()
-  (should (functionp 'py--delay-process-dependent)))
-
-(ert-deftest py-ert--send-string-no-output-functionp-test ()
-  (should (functionp 'py--send-string-no-output)))
-
-(ert-deftest py-ert--send-string-return-output-functionp-test ()
-  (should (functionp 'py--send-string-return-output)))
 
 (ert-deftest py-ert-which-def-or-class-functionp-test ()
   (should (functionp 'py-which-def-or-class)))

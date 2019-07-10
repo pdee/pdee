@@ -414,6 +414,7 @@ ORIG - consider orignial position or point.
 DONE - transaktional argument
 REPEAT - count and consider repeats"
   (interactive)
+  (switch-to-buffer (current-buffer))
   (unless (eobp)
     (let ((repeat (or (and repeat (1+ repeat)) 0))
 	  (orig (or orig (point)))
@@ -426,7 +427,7 @@ REPEAT - count and consider repeats"
       (cond
        ;; which-function-mode, lp:1235375
        ((< py-max-specpdl-size repeat)
-	(error "Py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
+	(error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
        ;; list
        ((nth 1 pps)
 	(if (<= orig (point))
@@ -446,15 +447,15 @@ REPEAT - count and consider repeats"
 		(setq err (py--record-list-error pps))
 		(goto-char orig)))))
        ;; in comment
-       ((looking-at (concat " *" comment-start))
+       ((and comment-start (looking-at (concat " *" comment-start)))
 	(goto-char (match-end 0))
 	(py-forward-statement orig done repeat))
        ((nth 4 pps)
 	(py--end-of-comment-intern (point))
 	(py--skip-to-comment-or-semicolon done)
-	(while (and (eq (char-before (point)) ?\\ )
-		    (py-escaped)(setq last (point)))
-	  (forward-line 1)(end-of-line))
+	(while (and (eq (char-before (point)) ?\\)
+		    (py-escaped) (setq last (point)))
+	  (forward-line 1) (end-of-line))
 	(and last (goto-char last)
 	     (forward-line 1)
 	     (back-to-indentation))
@@ -472,7 +473,7 @@ REPEAT - count and consider repeats"
        ((py-current-line-backslashed-p)
 	(end-of-line)
 	(skip-chars-backward " \t\r\n\f" (line-beginning-position))
-	(while (and (eq (char-before (point)) ?\\ )
+	(while (and (eq (char-before (point)) ?\\)
 		    (py-escaped))
 	  (forward-line 1)
 	  (end-of-line)

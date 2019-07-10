@@ -334,7 +334,7 @@ x = {'abc':'def',
     (should (eq 46 (mark)))))
 
 (ert-deftest py-dedicated-shell-test ()
-   (let ((erg (py-shell nil t "python")))
+   (let ((erg (buffer-name (py-shell nil nil t "python"))))
     (should (< 8 (length erg)))
     (should (eq 0 (string-match "^*Python" erg)))))
 
@@ -399,7 +399,7 @@ pass
     'python-mode
     'py-debug-p
     (goto-char (point-max))
-     (forward-line -1)
+    (forward-line -1)
     (call-interactively 'py-indent-or-complete)
     (sit-for 0.1 t)
     (should (eq 8 (current-column)))
@@ -408,16 +408,7 @@ pass
     (indent-to 4)
     (call-interactively 'py-indent-or-complete)
     (sit-for 0.1 t)
-    (should (eq 8 (current-column)))
-    ;;
-    ;; (call-interactively 'py-indent-or-complete)
-    ;; (call-interactively 'py-indent-or-complete)
-    ;; (sit-for 0.1 t)
-    ;; (should (eq 4 (current-column)))
-    ;; (py-indent-or-complete)
-    ;; (sit-for 0.1 t)
-    ;; (should (eq 8 (current-column)))
-    ))
+    (should (eq 8 (current-column)))))
 
 (ert-deftest py-shell-python-lp-1398530-test ()
   (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
@@ -791,6 +782,7 @@ that, needs, to_be, wrapped)"
   (goto-char (point-max))
   (insert "foo")
   (py-indent-or-complete)
+  (sit-for 0.1)
   (should (looking-back "foo")))
 
 (ert-deftest py-ert-close-block-test ()
@@ -1029,7 +1021,7 @@ elif treffer in schwarz:
     'python-mode
     'py-debug-p
     (goto-char(point-max))
-    (skip-chars-backward " \t\r\n\f") 
+    (skip-chars-backward " \t\r\n\f")
     (py-narrow-to-block-or-clause)
     (should (eq 87 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
@@ -1370,7 +1362,9 @@ GeomSim."
     'python-mode
     'py-debug-p
     (goto-char(point-max))
-     (py-indent-or-complete)
+    ;; (switch-to-buffer (current-buffer)) 
+    (py-indent-or-complete)
+    (sit-for 0.1) 
     (should (eq (char-before) ?.))))
 
 (ert-deftest py-beginning-of-block-test ()

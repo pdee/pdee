@@ -217,7 +217,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-block-python-no-switch (&optional dedicated fast split  proc)
   "Send block at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -499,7 +499,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-block-or-clause-python-no-switch (&optional dedicated fast split  proc)
   "Send block-or-clause at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -970,7 +970,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-buffer-python-no-switch (&optional dedicated fast split  proc)
   "Send buffer at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -1343,7 +1343,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-class-python-no-switch (&optional dedicated fast split  proc)
   "Send class at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -1625,7 +1625,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-clause-python-no-switch (&optional dedicated fast split  proc)
   "Send clause at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -1907,7 +1907,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-def-python-no-switch (&optional dedicated fast split  proc)
   "Send def at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -2189,7 +2189,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-def-or-class-python-no-switch (&optional dedicated fast split  proc)
   "Send def-or-class at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -2471,7 +2471,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-expression-python-no-switch (&optional dedicated fast split  proc)
   "Send expression at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -2753,7 +2753,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-indent-python-no-switch (&optional dedicated fast split  proc)
   "Send indent at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -3035,7 +3035,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-line-python-no-switch (&optional dedicated fast split  proc)
   "Send line at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -3317,7 +3317,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-minor-block-python-no-switch (&optional dedicated fast split  proc)
   "Send minor-block at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -3599,7 +3599,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-paragraph-python-no-switch (&optional dedicated fast split  proc)
   "Send paragraph at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -3881,7 +3881,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-partial-expression-python-no-switch (&optional dedicated fast split  proc)
   "Send partial-expression at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -4163,7 +4163,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-region-python-no-switch (beg end &optional dedicated fast split  proc)
   "Send region at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive "r")
@@ -4255,7 +4255,7 @@ Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ "
     (py--execute-prepare region 'python3 t 'switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-statement (&optional shell dedicated fast split switch proc)
-  "Send statement at point to  interpreter."
+  "Send statement at point to interpreter."
   (interactive)
   (let (wholebuf)
     (py--execute-prepare statement shell dedicated switch nil nil nil fast proc wholebuf split)))
@@ -4445,7 +4445,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-statement-python-no-switch (&optional dedicated fast split  proc)
   "Send statement at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
@@ -4727,7 +4727,7 @@ For ‘default’ see value of ‘py-shell-name’"
 (defun py-execute-top-level-python-no-switch (&optional dedicated fast split  proc)
   "Send top-level at point to default interpreter.
 
-Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ 
+Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’
 
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)

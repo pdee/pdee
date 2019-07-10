@@ -24,11 +24,9 @@
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
   (let ((erg
-	 (py--send-string-return-output
-	  (format completion-code input) process)))
-    ;; (sit-for 0.2 t)
+	 (py-send-string-no-output (format completion-code input) process)))
     (if (and erg (> (length erg) 2))
-      (setq erg (split-string erg "^'\\|^\"\\|;\\|'$\\|\"$" t))
+	(setq erg (split-string erg "^'\\|^\"\\|;\\|'$\\|\"$" t))
       (and py-verbose-p (message "py--shell-completion-get-completions: %s" "Don't see a completion")))
     erg))
 
@@ -50,38 +48,42 @@ Takes END"
                   (eq last-command 'choose-completion)
                   (eq last-command 'py-shell-complete))
                  (eq this-command 'self-insert-command))))
-    (set-window-configuration
-     py-last-window-configuration))
+    ;; (set-window-configuration
+    ;;  py-last-window-configuration)
+    ;; (jump-to-register py-windows-config-register)
+    (py-restore-window-configuration)
+    )
+
   (goto-char end))
 
 (defalias 'ipython-complete 'py-shell-complete)
 
-(defun py--try-completion-intern (input completion)
-  (let (erg)
-    (when (and (setq erg (try-completion input completion))
-	       (looking-back input (line-beginning-position))
-	       (not (string= input erg)))
-      (delete-region (match-beginning 0) (match-end 0))
-      (insert erg))
-    erg))
+(defun py--try-completion-intern (input completion buffer)
+  (with-current-buffer buffer
+    (let (erg)
+      (and (setq erg (try-completion input completion))
+	   (sit-for 0.1)
+	   (looking-back input (line-beginning-position))
+	   (not (string= input erg))
+	   (setq erg (completion-in-region (match-beginning 0) (match-end 0) completion)))
+      ;; (delete-region (match-beginning 0) (match-end 0))
+      ;; (insert erg)
+      erg))
+  (set-window-configuration py-last-window-configuration))
 
 (defun py--try-completion (input completion)
   "Repeat `try-completion' as long as match are found.
 
 Interal used. Takes INPUT COMPLETION"
   (let (erg newlist)
-    (setq erg (py--try-completion-intern input completion))
-    (when erg
+    (unless (py--try-completion-intern input completion (current-buffer))
       (dolist (elt completion)
 	(unless (string= erg elt)
 	  (push elt newlist)))
       (if (< 1 (length newlist))
 	  (with-output-to-temp-buffer py-python-completions
 	    (display-completion-list
-	     (all-completions input (or newlist completion))))
-	(set-window-configuration py-last-window-configuration))
-      ;; (skip-chars-forward "^ \t\r\n\f")
-)))
+	     (all-completions input (or newlist completion))))))))
 
 (defun py--shell-insert-completion-maybe (completion input)
   (cond ((eq completion t)
@@ -105,41 +107,33 @@ Interal used. Takes INPUT COMPLETION"
 
 Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   (when imports
-    (py--send-string-no-output imports process))
-  ;; (py--delay-process-dependent process)
+    (py-send-string imports process nil t))
   (sit-for 0.1 t)
   (let* ((completion
 	  (py--shell-completion-get-completions
 	   input process code)))
     (set-buffer exception-buffer)
-    ;; (py--delay-process-dependent process)
-    ;; (sit-for 1 t)
-    (when (and completion 
-	       ;; (not (or (string= "''" completion) (string= "" completion)))
-)
+    (when completion
       (py--shell-insert-completion-maybe completion input))))
 
 (defun py--complete-base (shell word imports buffer)
-  (let* ((shell (or shell (py-choose-shell)))
-         (proc (or
+  (let* ((proc (or
 		;; completing inside a shell
 		(get-buffer-process buffer)
 		(and (comint-check-proc shell)
 		     (get-process shell))
 		(prog1
-		    (get-buffer-process (py-shell nil nil shell))
-		  (sit-for py-new-shell-delay))))
+		    (get-buffer-process (py-shell nil nil nil shell))
+		  (sit-for py-new-shell-delay t))))
 	 ;; (buffer (process-buffer proc))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 py-shell-module-completion-code)))
-    (py--python-send-completion-setup-code buffer)
     (py--shell-do-completion-at-point proc imports word buffer code)))
 
-(defun py-shell-complete (&optional shell beg end word fast-complete)
-  (interactive) 
+(defun py-shell-complete (&optional shell beg end word fast)
+  (interactive)
   (let* ((exception-buffer (current-buffer))
-         ;; (pos (copy-marker (point)))
 	 (pps (parse-partial-sexp
 	       (or
 		(ignore-errors (cdr-safe comint-last-prompt))
@@ -156,49 +150,26 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 	 	       (goto-char in-string)
 	 	       (and
 	 		(save-excursion
-	 		  (skip-chars-backward "^ \t\r\n\f")(looking-at "open")))
+	 		  (skip-chars-backward "^ \t\r\n\f") (looking-at "open")))
 
-	 	       (skip-chars-forward "\"'")(point)))
+	 	       (skip-chars-forward "\"'") (point)))
 	 	(progn (and (eq (char-before) ?\()(forward-char -1))
 	 	       (skip-chars-backward "a-zA-Z0-9_.'") (point)))))
          (end (or end (point)))
-	 ;; (thing-at-point 'word t) fails with Emacs 24.3
-	 ;; https://travis-ci.org/pdee/pdee/builds/527856403
-	 ;; Test py-complete-empty-string-result-test condition:
-	 ;;  (wrong-number-of-arguments
-	 ;;   #[(thing)
-	 ;;     \302N\203\302N \207\30!\211\205	@	A{)\207"
-	 ;;     [thing bounds thing-at-point bounds-of-thing-at-point]
-	 ;;     3
-	 ;;     ("/usr/share/emacs/24.3/lisp/thingatpt.elc" . 2305)]
-	 ;;   2)
-	 ;; FAILED    19/1343  py-complete-empty-string-result-test
-         (word (or word (buffer-substring-no-properties beg end)))
-	 ;; (word (save-excursion (skip-chars-backward " \t\r\n\f") (unless (bolp) (forward-char -1) (thing-at-point 'word t))))  
-	 (ausdruck (and (string-match "^/" word)(setq word (substring-no-properties word 1))(concat "\"" word "*\"")))
+	 (word (or word (buffer-substring-no-properties beg end)))
+	 (ausdruck (and (string-match "^/" word) (setq word (substring-no-properties word 1))(concat "\"" word "*\"")))
 	 ;; when in string, assume looking for filename
 	 (filenames (and in-string ausdruck
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p erg)
-    (cond (fast-complete (py--fast-complete-base shell word imports))
+    (cond (fast (py--fast-complete-base shell word imports))
 	  ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))
 	  (t (py--complete-base shell word imports exception-buffer)))
     nil))
-
-;; (defun py-shell-complete (&optional shell beg end word)
-;;   "Complete word before point, if any.
-
-;; Optional SHELL BEG END WORD"
-;;   (interactive)
-;;   ;; (save-excursion
-;;   ;;   (and (buffer-live-p (get-buffer "*Python Completions*"))
-;;   ;; 	 (py-kill-buffer-unconditional "*Python Completions*")))
-;;   ;; fast-complete is called
-;;   (py-shell-complete shell beg end word))
 
 (defun py-indent-or-complete ()
   "Complete or indent depending on the context.
@@ -212,21 +183,23 @@ Use `C-q TAB' to insert a literally TAB-character
 In ‘python-mode’ `py-complete-function' is called,
 in (I)Python shell-modes `py-shell-complete'"
   (interactive "*")
-  (setq py-last-window-configuration
-        (current-window-configuration))
+  (window-configuration-to-register py-windows-config-register)
+  ;; (setq py-last-window-configuration
+  ;;       (current-window-configuration))
   (cond ((use-region-p)
 	 (py-indent-region (region-beginning) (region-end)))
 	((or (bolp)
-	     (member (char-before)(list 9 10 12 13 32 ?: ?\) ?\] ?\}))
+	     (member (char-before) (list 9 10 12 13 32 ?: ?\) ?\] ?\}))
 	     (not (looking-at "[ \t]*$")))
 	 (py-indent-line))
-	;; ((or (eq major-mode 'python-mode)(derived-mode-p 'python-mode))	(if (string-match "ipython" (py-choose-shell))
-	;;      (py-shell-complete)
-	;;    (funcall py-complete-function)))
 	((comint-check-proc (current-buffer))
-	 (py-shell-complete (substring (process-name (get-buffer-process (current-buffer))) 0 (string-match "<" (process-name (get-buffer-process (current-buffer)))))))
+	 ;; (let* ((shell (process-name (get-buffer-process (current-buffer)))))
+	 (ignore-errors (completion-at-point)))
 	(t
-	 (py-fast-complete))))
+	 ;; (py-fast-complete)
+	 (ignore-errors (completion-at-point))
+)))
 
+	    ;; (substring (process-name (get-buffer-process (current-buffer))) 0 (string-match "<" (process-name (get-buffer-process (current-buffer)))))
 (provide 'python-components-shell-complete)
 ;;; python-components-shell-complete.el ends here
