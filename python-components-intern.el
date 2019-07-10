@@ -1583,9 +1583,11 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
 (defun py--report-end-marker (process)
   ;; (message "py--report-end-marker in %s" (current-buffer))
   (if (derived-mode-p 'comint-mode)
-      (if (markerp (car-safe comint-last-prompt))
+      (if (bound-and-true-p comint-last-prompt)
 	  (car-safe comint-last-prompt)
-	(dotimes (_ 3) (when (not (markerp (car-safe comint-last-prompt)))(sit-for 1 t))))
+	(dotimes (_ 3) (when (not (bound-and-true-p comint-last-prompt)))(sit-for 1 t))
+	(and (bound-and-true-p comint-last-prompt)
+	     (car-safe comint-last-prompt)))
     (if (markerp (process-mark process))
 	(process-mark process)
       (progn
