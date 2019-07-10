@@ -69,7 +69,7 @@
 ;;; Code:
 
 (require 'ansi-color)
-(require 'subr-x)
+(ignore-errors (require 'subr-x))
 (require 'cc-cmds)
 (require 'cl)
 (require 'comint)
@@ -3482,6 +3482,24 @@ See also `py-object-reference-face'"
   "."
   :tag "py-exception-name-face"
   :group 'python-mode)
+
+;; subr-x.el might not exist yet
+(unless (functionp 'string-trim)
+  (defsubst string-trim (string &optional trim-left trim-right)
+    "Trim STRING of leading and trailing strings matching TRIM-LEFT and TRIM-RIGHT.
+
+TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
+    (string-trim-left (string-trim-right string trim-right) trim-left))
+
+(defsubst string-blank-p (string)
+  "Check whether STRING is either empty or only whitespace."
+  (string-match-p "\\`[ \t\n\r]*\\'" string))
+
+(defsubst string-remove-prefix (prefix string)
+  "Remove PREFIX from STRING if present."
+  (if (string-prefix-p prefix string)
+      (substring string (length prefix))
+    string)))
 
 (defun py-toggle-imenu-create-index ()
   "Toggle value of ‘py--imenu-create-index-p’"
