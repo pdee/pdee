@@ -43,6 +43,7 @@
        'python
        'python2
        'python3
+       'pypy
        ))
 
 (setq py-position-forms

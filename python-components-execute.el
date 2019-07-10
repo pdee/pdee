@@ -710,20 +710,20 @@ Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 ‘kill-output-from-shell’ does The Right Thing.
 Returns position where output starts."
-  ;; (message "(current-buffer) %s" (current-buffer) )
+  ;; (message "(current-buffer) %s" (current-buffer))
   (let* ((buffer (or procbuf (and proc (process-buffer proc)) (py-shell)))
 	 (proc (or proc (get-buffer-process buffer)))
 	 (cmd (or cmd (py-which-execute-file-command filename)))
 	 erg)
-        (if no-output
+    (if no-output
 	(py-send-string cmd proc nil t)
       (py-send-string cmd proc)
-      (switch-to-buffer buffer)
-      (when (or py-return-result-p py-store-result-p)
-	(setq erg (py--postprocess-comint buffer origline))
-	(if py-error
-	    (setq py-error (prin1-to-string py-error))
-	  erg)))))
+      (with-current-buffer buffer
+	(when (or py-return-result-p py-store-result-p)
+	  (setq erg (py--postprocess-comint buffer origline))
+	  (if py-error
+	      (setq py-error (prin1-to-string py-error))
+	    erg))))))
 
 (defun py--execute-buffer-finally (strg which-shell proc procbuf origline)
   (let* ((temp (make-temp-name
@@ -897,22 +897,22 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
   ;; py--fast-send-string doesn't set origline
   (when (or py-return-result-p py-store-result-p)
     (with-current-buffer output-buffer
-      (switch-to-buffer (current-buffer))
+      ;; (switch-to-buffer (current-buffer))
       (sit-for 0.1 t)
-      (setq py-result (py--fetch-result orig)))
-    (and (string-match "\n$" py-result)
-	 (setq py-result (replace-regexp-in-string py-fast-filter-re "" (substring py-result 0 (match-beginning 0)))))
-    (if (and py-result (not (string= "" py-result)))
-	(if (string-match "^Traceback" py-result)
-	    (progn
-	      (with-temp-buffer
-		(insert py-result)
-		(sit-for 0.1 t)
-		(setq py-error (py--fetch-error origline))))
-	  (when py-store-result-p
-	    (kill-new py-result))
-	  py-result)
-      (message "py--postprocess-comint: %s" "Don't see any result"))))
+      (setq py-result (py--fetch-result orig))
+      (and (string-match "\n$" py-result)
+	   (setq py-result (replace-regexp-in-string py-fast-filter-re "" (substring py-result 0 (match-beginning 0)))))
+      (if (and py-result (not (string= "" py-result)))
+	  (if (string-match "^Traceback" py-result)
+	      (progn
+		(with-temp-buffer
+		  (insert py-result)
+		  (sit-for 0.1 t)
+		  (setq py-error (py--fetch-error origline))))
+	    (when py-store-result-p
+	      (kill-new py-result))
+	    py-result)
+	(message "py--postprocess-comint: %s" "Don't see any result")))))
 
 (defun py--execute-ge24.3 (start end execute-directory which-shell &optional exception-buffer proc file origline)
   "An alternative way to do it.
@@ -948,8 +948,7 @@ May we get rid of the temporary file?"
       ;; (not (string= execute-directory default-directory)))
       ;; (message "Warning: options ‘execute-directory’ and ‘py-use-current-dir-when-execute-p’ may conflict"))
       (and execute-directory
-           (process-send-string proc (concat "import os; os.chdir(\"" execute-directory "\")\n"))
-	   ))
+           (process-send-string proc (concat "import os; os.chdir(\"" execute-directory "\")\n"))))
     (set-buffer filebuf)
     (process-send-string proc
                          (buffer-substring-no-properties
