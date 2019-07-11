@@ -82,6 +82,14 @@ Optional ARG \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt args nil "python3" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
 
+;;;###autoload
+(defun pypy (&optional argprompt args buffer fast exception-buffer split)
+  "Start an Pypy interpreter.
+
+Optional ARG \\[universal-argument] prompts for path to the interpreter."
+  (interactive "p")
+  (py-shell argprompt args nil "pypy" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
+
 ;; dedicated
 (defun ipython-dedicated (&optional argprompt args buffer fast exception-buffer split)
   "Start an unique IPython interpreter in another window.
@@ -131,6 +139,13 @@ Optional ARG \\[universal-argument] prompts for path to the interpreter."
 Optional ARG \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt args  t "python3" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
+
+(defun pypy-dedicated (&optional argprompt args buffer fast exception-buffer split)
+  "Start an unique Pypy interpreter in another window.
+
+Optional ARG \\[universal-argument] prompts for path to the interpreter."
+  (interactive "p")
+  (py-shell argprompt args  t "pypy" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
 
 ;; switch
 (defun ipython-switch (&optional argprompt args buffer fast exception-buffer split)
@@ -182,6 +197,13 @@ Optional ARG \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt args nil "python3" buffer fast exception-buffer split t))
 
+(defun pypy-switch (&optional argprompt args buffer fast exception-buffer split)
+  "Switch to Pypy interpreter in another window.
+
+Optional ARG \\[universal-argument] prompts for path to the interpreter."
+  (interactive "p")
+  (py-shell argprompt args nil "pypy" buffer fast exception-buffer split t))
+
 ;; no-switch
 (defun ipython-no-switch (&optional argprompt args  buffer fast exception-buffer split)
   "Open an IPython interpreter in another window, but do not switch to it.
@@ -231,6 +253,13 @@ Optional ARG \\[universal-argument] prompts for path to the interpreter."
 Optional ARG \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt args nil "python3" buffer fast exception-buffer split))
+
+(defun pypy-no-switch (&optional argprompt args  buffer fast exception-buffer split)
+  "Open an Pypy interpreter in another window, but do not switch to it.
+
+Optional ARG \\[universal-argument] prompts for path to the interpreter."
+  (interactive "p")
+  (py-shell argprompt args nil "pypy" buffer fast exception-buffer split))
 
 ;; dedicated switch
 (defalias 'ipython-dedicated-switch 'ipython-switch-dedicated)
@@ -288,6 +317,14 @@ Optional ARG \\[universal-argument] prompts for path to the interpreter."
 Optional ARG \\[universal-argument] prompts for path to the interpreter."
   (interactive "p")
   (py-shell argprompt args t "python3" buffer fast exception-buffer split t))
+
+(defalias 'pypy-dedicated-switch 'pypy-switch-dedicated)
+(defun pypy-switch-dedicated (&optional argprompt args buffer fast exception-buffer split)
+  "Switch to an unique Pypy interpreter in another window.
+
+Optional ARG \\[universal-argument] prompts for path to the interpreter."
+  (interactive "p")
+  (py-shell argprompt args t "pypy" buffer fast exception-buffer split t))
 
 (provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here

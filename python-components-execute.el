@@ -876,11 +876,12 @@ Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source b
   ;; (switch-to-buffer (current-buffer))
   (let ((orig (or orig (point-min))))
     (cond ((derived-mode-p 'comint-mode)
-	   (string-trim (replace-regexp-in-string
+	   (ignore-errors
+	     (string-trim (replace-regexp-in-string
 			 (format "[ \\n]*%s[ \\n]*" py-fast-filter-re)
 			 ""
 			 ;; (buffer-substring-no-properties (car-safe comint-last-prompt) (cdr-safe comint-last-prompt)))))
-	  		 (buffer-substring-no-properties (car-safe comint-last-prompt) (progn (ignore-errors (goto-char (car-safe comint-last-prompt)))(re-search-backward py-fast-filter-re nil t 1))))))
+	  		 (buffer-substring-no-properties (car-safe comint-last-prompt) (progn (ignore-errors (goto-char (car-safe comint-last-prompt)))(re-search-backward py-fast-filter-re nil t 1)))))))
 	  (fast (replace-regexp-in-string
 		 (format "[ \n]*%s[ \n]*" py-fast-filter-re)
 		 ""
@@ -899,8 +900,8 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
     (with-current-buffer output-buffer
       ;; (switch-to-buffer (current-buffer))
       (sit-for 0.1 t)
-      (setq py-result (py--fetch-result orig))
-      (and (string-match "\n$" py-result)
+      (and (setq py-result (py--fetch-result orig))
+	   (string-match "\n$" py-result)
 	   (setq py-result (replace-regexp-in-string py-fast-filter-re "" (substring py-result 0 (match-beginning 0)))))
       (if (and py-result (not (string= "" py-result)))
 	  (if (string-match "^Traceback" py-result)
