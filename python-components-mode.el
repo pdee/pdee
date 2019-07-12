@@ -83,8 +83,6 @@
 (require 'tramp)
 (require 'tramp-sh)
 
-(require 'python-components-menu)
-
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
   :group 'languages
@@ -224,9 +222,6 @@ Default is t"
   :type 'boolean
   :group 'python-mode
   :safe 'booleanp)
-
-(defvar py-shell-after-banner nil
-  "Position where banner-text in head of shell end.")
 
 (defvar py-fast-output-buffer "*Py-Fast-Output-Buffer*"
   "Default ‘buffer-name’ for fast-processes.")
@@ -1214,6 +1209,64 @@ file heading imports to see if they look Java-like."
 "
   :group 'python-mode)
 
+;; (setq py-shells
+;; (list
+;; ""
+;; 'ipython
+;; 'ipython2.7
+;; 'ipython3
+;; 'jython
+;; 'python
+;; 'python2
+;; 'python3
+;; 'pypy
+;; ))
+
+(defcustom py-known-shells
+  (list "ipython"
+	"ipython2.7"
+	"ipython3"
+	"jython"
+	"python"
+	"python2"
+	"python3"
+	"pypy"
+	)
+  "A list of available shells instrumented for commands.
+ Expects its executables installed
+
+Edit for your needs."
+  :type '(repeat string)
+  :tag "py-shells"
+  :group 'python-mode)
+
+(defun py-install-named-shells-fix-doc (ele)
+  (cond ((string-match "^i" ele)
+	 (concat "I" (capitalize (substring ele 1))))
+	((string-match "^pypy" ele)
+	 "PyPy")
+	(t (capitalize ele))))
+
+(defun py-load-named-shells ()
+  (interactive)
+  (dolist (ele py-known-shells)
+    (unless (string= "" ele)
+      (let* ((erg (py-install-named-shells-fix-doc ele)))
+	(eval (fset (car (read-from-string ele)) (car
+						  (read-from-string (concat "(lambda (&optional argprompt args) \"Start a " erg " interpreter
+Optional ARGPROMPT: with \\\\[universal-argument] start in a new
+dedicated shell.
+\"
+  (interactive) (py-shell (eq 4  (prefix-numeric-value argprompt)) args nil \""ele"\"))")))))
+	(eval (fset (car (read-from-string (concat ele "-dedicated"))) (car
+						  (read-from-string (concat "(lambda (&optional argprompt args) \"Start a dedicated " erg " interpreter\"
+  (interactive) (py-shell argprompt args t \""ele"\"))")))))
+	)))
+  (when (functionp (car (read-from-string (car-safe py-known-shells))))
+    (when py-verbose-p (message "py-load-named-shells: %s" "installed named-shells"))))
+
+(py-load-named-shells)
+
 (defcustom py-jython-packages
   '("java" "javax")
   "Imported packages that imply `jython-mode'."
@@ -1549,8 +1602,6 @@ Else python"
 
 (defvar py-tempfile nil
   "Internally used.")
-
-(defvar py-named-shells (list 'ipython 'ipython-dedicated 'ipython-no-switch 'ipython-switch 'ipython-switch-dedicated 'ipython2.7 'ipython2.7-dedicated 'ipython2.7-no-switch 'ipython2.7-switch 'ipython2.7-switch-dedicated 'ipython3 'ipython3-dedicated 'ipython3-no-switch 'ipython3-switch 'ipython3-switch-dedicated 'jython 'jython-dedicated 'jython-no-switch 'jython-switch 'jython-switch-dedicated 'python 'python-dedicated 'python-no-switch 'python-switch 'python-switch-dedicated 'python2 'python2-dedicated 'python2-no-switch 'python2-switch 'python2-switch-dedicated 'python3 'python3-dedicated 'python3-no-switch 'python3-switch 'python3-switch-dedicated))
 
 (defcustom py-python-command
   (if (eq system-type 'windows-nt)
@@ -3936,6 +3987,7 @@ With optional ARG message state switched to"
   (setq py-fast-session-p (not py-fast-session-p))
   (when arg (message "py-fast-session-p: %s" py-fast-session-p)))
 
+(require 'python-components-menu)
 (require 'python-components-extra)
 (require 'python-components-map)
 (require 'python-components-switches)
@@ -3954,7 +4006,8 @@ With optional ARG message state switched to"
 (require 'python-components-help)
 (require 'python-components-extensions)
 (require 'python-components-imenu)
-(require 'python-components-named-shells)
+;; now installed by py-load-named-shells
+;; (require 'python-components-named-shells)
 (require 'python-components-electric)
 (require 'python-components-virtualenv)
 (require 'python-components-booleans-beginning-forms)

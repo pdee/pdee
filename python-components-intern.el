@@ -28,7 +28,6 @@
 
 ;;  Keymap
 
-
 (defun py-separator-char ()
   "Return the file-path separator char from current machine.
 
@@ -1578,8 +1577,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
       (delete-trailing-whitespace))
     temp-file-name))
 
-
-
 (defun py--report-end-marker (process)
   ;; (message "py--report-end-marker in %s" (current-buffer))
   (if (derived-mode-p 'comint-mode)
@@ -2309,7 +2306,6 @@ Does not delete the prompt."
 	(delete-region pmark (point))))
     ;; Output message and put back prompt
     (comint-output-filter proc replacement)))
-
 
 (provide 'python-components-intern)
  ;;;  python-components-intern.el ends here

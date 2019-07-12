@@ -25,26 +25,24 @@
 
 ;;; Code:
 
-
 (defvar components-directory "~/arbeit/emacs-lisp/python-modes/components-python-mode")
 ;; (setq  components-directory "~/arbeit/emacs-lisp/python-modes/components-python-mode")
+
+(setq py-shells
+  (list
+   'ipython
+   'ipython2.7
+   'ipython3
+   'jython
+   'python
+   'python2
+   'python3
+   'pypy
+	))
 
 (defvar ar-prefix "py-")
 
 (defvar arkopf)
-
-(setq py-shells
-      (list
-       ""
-       'ipython
-       'ipython2.7
-       'ipython3
-       'jython
-       'python
-       'python2
-       'python3
-       'pypy
-       ))
 
 (setq py-position-forms
       (list
@@ -1075,7 +1073,6 @@
 	;; (write--unified-extended-execute-shells elt)
 	;; (write--extended-execute-switches ele pyo)))))
 
-
 (defun write-unified-extended-execute-forms ()
   "Write ‘py-execute-statement, ...’ etc.
 
@@ -1099,24 +1096,6 @@ Include default forms "
 	(delete-char 1)
 	(insert "P")
 	(end-of-line)))
-
-(defun py-install-named-shells ()
-  (interactive)
-  (set-buffer (get-buffer-create "py-install-named-shells"))
-  (erase-buffer)
-  (switch-to-buffer (current-buffer))
-  (dolist (ele py-shells)
-    (unless (string= "" ele)
-      (setq ele (format "%s" ele))
-      (insert (concat "
-      (fset (quote "ele") (lambda ()\n"
-      (capitalize (pmu-fix-ipython ele))
-      (concat " interpreter.
-
-Optional ARG \\\\[universal-argument] prompts for path to the"))
-	      nil))))
-
-
 
 (defun py-install-installed-shells-commands ()
   "Reads py-shells, provides commands opening these shell."

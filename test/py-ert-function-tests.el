@@ -759,51 +759,6 @@
 (ert-deftest py-ert-python3-dedicated-functionp-test ()
   (should (functionp 'python3-dedicated)))
 
-(ert-deftest py-ert-python-switch-functionp-test ()
-  (should (functionp 'python-switch)))
-
-(ert-deftest py-ert-ipython-switch-functionp-test ()
-  (should (functionp 'ipython-switch)))
-
-(ert-deftest py-ert-python2-switch-functionp-test ()
-  (should (functionp 'python2-switch)))
-
-(ert-deftest py-ert-jython-switch-functionp-test ()
-  (should (functionp 'jython-switch)))
-
-(ert-deftest py-ert-python3-switch-functionp-test ()
-  (should (functionp 'python3-switch)))
-
-(ert-deftest py-ert-python-no-switch-functionp-test ()
-  (should (functionp 'python-no-switch)))
-
-(ert-deftest py-ert-ipython-no-switch-functionp-test ()
-  (should (functionp 'ipython-no-switch)))
-
-(ert-deftest py-ert-python2-no-switch-functionp-test ()
-  (should (functionp 'python2-no-switch)))
-
-(ert-deftest py-ert-jython-no-switch-functionp-test ()
-  (should (functionp 'jython-no-switch)))
-
-(ert-deftest py-ert-python3-no-switch-functionp-test ()
-  (should (functionp 'python3-no-switch)))
-
-(ert-deftest py-ert-python-switch-dedicated-functionp-test ()
-  (should (functionp 'python-switch-dedicated)))
-
-(ert-deftest py-ert-ipython-switch-dedicated-functionp-test ()
-  (should (functionp 'ipython-switch-dedicated)))
-
-(ert-deftest py-ert-python2-switch-dedicated-functionp-test ()
-  (should (functionp 'python2-switch-dedicated)))
-
-(ert-deftest py-ert-jython-switch-dedicated-functionp-test ()
-  (should (functionp 'jython-switch-dedicated)))
-
-(ert-deftest py-ert-python3-switch-dedicated-functionp-test ()
-  (should (functionp 'python3-switch-dedicated)))
-
 (ert-deftest py-ert-hide-base-functionp-test ()
   (should (functionp 'py-hide-base)))
 
