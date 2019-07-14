@@ -13,60 +13,47 @@
   `py-shell-name' might be an installed default executable as shell
   command `type' would display, but also a PATH/TO/EXECUTABLE
 
-  If different flavours of Python are installed, customize
-  py-python-command - python2
-  py-python3-command
-  py-ipython-command
+  If different flavours of Python are installed, in order to adress
+  them customize var ‘py-known-shells’ and reload. python-mode will
+  create the required commands according to contents of this list.
+
+  If needed, customize respective arguments
+  py-SHELL-command-args,  i.e.
 
   py-python-command-args
   py-python3-command-args
   py-ipython-command-args
 
-  You might run code by another installed (I)Python-version than
-  default.
+  etc.
 
-  Normally this would happen if a shebang in buffer specifies it.
-  Shebang precedes default py-shell-name.
-
-  In case you will run code by default-shell, ignoring shebang, set
-  `py-force-py-shell-name-p' to. This might be done also via menu
-  Python/.../Switches
-
-  Another way to enforce a different shell is specifiyng a path
-  --interactively C-u prompts for that-- or using commands which end in
-  version like `py-execute-statement-python3' See menu
-  Python/Interpreter/Other/Ignoring Defaults
-
-* Invoking an (I)Python interactive shell
   Commands related to a specific shell start with
-  it's name as `ipython-complete'.
-  Open an installed shell by
 
   M-x SHELL RET
 
   This calls py-shell with its default arguments
+  With C-u, shell will get an unique name.
 
-  (py-shell &optional ARGPROMPT DEDICATED SHELL BUFFER-NAME FAST-PROCESS
-EXCEPTION-BUFFER)
+  According to contents of ‘py-known-shells’ commands might be
+  available like this:
+
+  M-x py-shell RET ==> "*Python*"
+  M-x python RET ==> "*Python*"
+  M-x ipython RET ==> "*IPython*"
+  M-x python3 RET ==> "*Python3*"
+
+  etc.
+
+  A shebang precedes default py-shell-name.
+  In case you will run code by default-shell, ignoring shebang, set
+  `py-force-py-shell-name-p' to. This might be done also via menu
+  Python/.../Switches
 
 
-  if DEDICATED is set to `t', shell will get an unique name.
-
-  Install a local shell by evaluating
+  Run a local shell by evaluating
 
   (defun MY-LOCAL-SHELL ()
   (interactive)
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
-
-**  Invoking versioned Python shells in interactive mode:
-
-    M-x py-shell RET ==> "*Python*"
-    M-x python RET ==> "*Python*"
-    M-x ipython RET ==> "*IPython*"
-    M-x python3 RET ==> "*Python3*" 
-
-    When Path/To/Executable is given
-    C-u python RET ==> "*PTE Python*"
 
 * Prefix conventions
 

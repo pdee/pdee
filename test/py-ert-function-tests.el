@@ -486,9 +486,6 @@
 (ert-deftest py-ert-dirstack-hook-functionp-test ()
   (should (functionp 'py-dirstack-hook)))
 
-(ert-deftest py-ert-shell-dedicated-functionp-test ()
-  (should (functionp 'py-shell-dedicated)))
-
 (ert-deftest py-ert-set-ipython-completion-command-string-functionp-test ()
   (should (functionp 'py-set-ipython-completion-command-string)))
 
@@ -743,21 +740,6 @@
 
 (ert-deftest py-ert-python3-functionp-test ()
   (should (functionp 'python3)))
-
-(ert-deftest py-ert-python-dedicated-functionp-test ()
-  (should (functionp 'python-dedicated)))
-
-(ert-deftest py-ert-ipython-dedicated-functionp-test ()
-  (should (functionp 'ipython-dedicated)))
-
-(ert-deftest py-ert-python2-dedicated-functionp-test ()
-  (should (functionp 'python2-dedicated)))
-
-(ert-deftest py-ert-jython-dedicated-functionp-test ()
-  (should (functionp 'jython-dedicated)))
-
-(ert-deftest py-ert-python3-dedicated-functionp-test ()
-  (should (functionp 'python3-dedicated)))
 
 (ert-deftest py-ert-hide-base-functionp-test ()
   (should (functionp 'py-hide-base)))

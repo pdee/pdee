@@ -249,16 +249,21 @@ process buffer for a list of commands.)"
 		      shell nil args))))))
     (unless done
       (with-current-buffer buffer
-	(setq py-modeline-display (py--update-lighter buffer-name))
 	(setq delay (py--which-delay-process-dependent buffer-name))
 	(unless fast
+	  (when interactivep
+	    (cond ((string-match "^.I" buffer-name)
+		   (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
+		  ((string-match "^.+3" buffer-name)
+		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
+	  (setq py-modeline-display (py--update-lighter buffer-name))
+	  (sit-for delay t)
 	  (py-shell-mode)
 	  (when interactivep
 	    (cond ((string-match "^.I" buffer-name)
 		   (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
 		  ((string-match "^.+3" buffer-name)
 		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
-	  (sit-for delay t)
 	  (py-send-string-no-output "print(\"py-shell-mode loaded\")" (get-buffer-process buffer) buffer-name)
 	  ;; (py--update-lighter shell)
 	  )))
@@ -275,17 +280,14 @@ process buffer for a list of commands.)"
   (dolist (ele py-known-shells)
     (let ((erg (py-install-named-shells-fix-doc ele)))
       (eval (fset (car (read-from-string ele)) (car
-						(read-from-string (concat "(lambda (&optional argprompt args) \"Start a ‘" erg "’ interpreter.
-Optional ARGPROMPT: with \\\\[universal-argument] start in a new
+						(read-from-string (concat "(lambda (&optional dedicated args) \"Start a ‘" erg "’ interpreter.
+Optional DEDICATED: with \\\\[universal-argument] start in a new
 dedicated shell.
 Optional ARGS overriding ‘py-" ele "-command-args’.
-\"
-  (interactive) (py-shell (eq 4 (prefix-numeric-value argprompt)) args nil \""ele"\"))")))))
 
-      (eval (fset (car (read-from-string (concat ele "-dedicated"))) (car
-								      (read-from-string (concat "(lambda (&optional argprompt args) \"Start a dedicated ‘" erg "’ interpreter.
-Optional ARGS overriding ‘py-" ele "-command-args’.\"
-  (interactive) (py-shell argprompt args t \""ele"\"))")))))))
+Calls ‘py-shell’
+\"
+  (interactive \"p\") (py-shell dedicated args nil \""ele"\"))")))))))
   (when (functionp (car (read-from-string (car-safe py-known-shells))))
     (when py-verbose-p (message "py-load-named-shells: %s" "installed named-shells"))))
 

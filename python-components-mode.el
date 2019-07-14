@@ -1223,15 +1223,16 @@ file heading imports to see if they look Java-like."
 ;; ))
 
 (defcustom py-known-shells
-  (list "ipython"
-	"ipython2.7"
-	"ipython3"
-	"jython"
-	"python"
-	"python2"
-	"python3"
-	"pypy"
-	)
+  (list
+   "ipython"
+   ;; "ipython2.7"
+   ;; "ipython3"
+   ;; "jython"
+   "python"
+   ;; "python2"
+   "python3"
+   "pypy"
+   )
   "A list of available shells instrumented for commands.
  Expects its executables installed
 

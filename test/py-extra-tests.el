@@ -94,7 +94,7 @@ finally:
 
 (ert-deftest py-shell-complete-in-dedicated-shell ()
   ;; (py-test-with-temp-buffer
-  (with-current-buffer (python-dedicated)
+  (with-current-buffer (python '(4))
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     ;; (switch-to-buffer (current-buffer))
     (insert "pri")
