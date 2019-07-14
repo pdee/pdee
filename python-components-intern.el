@@ -267,21 +267,25 @@ process buffer for a list of commands.)"
       (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
     buffer))
 
+(defun py-determine-argsdoc (ele)
+  (py--provide-command-args erg py-fast-process-p))
+
 (defun py-load-named-shells ()
   (interactive)
   (dolist (ele py-known-shells)
-    (unless (string= "" ele)
-      (let* ((erg (py-install-named-shells-fix-doc ele)))
-	(eval (fset (car (read-from-string ele)) (car
-						  (read-from-string (concat "(lambda (&optional argprompt args) \"Start a " erg " interpreter
+    (let ((erg (py-install-named-shells-fix-doc ele)))
+      (eval (fset (car (read-from-string ele)) (car
+						(read-from-string (concat "(lambda (&optional argprompt args) \"Start a ‘" erg "’ interpreter.
 Optional ARGPROMPT: with \\\\[universal-argument] start in a new
 dedicated shell.
+Optional ARGS overriding ‘py-" ele "-command-args’.
 \"
-  (interactive) (py-shell (eq 4  (prefix-numeric-value argprompt)) args nil \""ele"\"))")))))
-	(eval (fset (car (read-from-string (concat ele "-dedicated"))) (car
-						  (read-from-string (concat "(lambda (&optional argprompt args) \"Start a dedicated " erg " interpreter\"
-  (interactive) (py-shell argprompt args t \""ele"\"))")))))
-	)))
+  (interactive) (py-shell (eq 4 (prefix-numeric-value argprompt)) args nil \""ele"\"))")))))
+
+      (eval (fset (car (read-from-string (concat ele "-dedicated"))) (car
+								      (read-from-string (concat "(lambda (&optional argprompt args) \"Start a dedicated ‘" erg "’ interpreter.
+Optional ARGS overriding ‘py-" ele "-command-args’.\"
+  (interactive) (py-shell argprompt args t \""ele"\"))")))))))
   (when (functionp (car (read-from-string (car-safe py-known-shells))))
     (when py-verbose-p (message "py-load-named-shells: %s" "installed named-shells"))))
 
