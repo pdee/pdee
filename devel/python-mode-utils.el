@@ -1062,18 +1062,7 @@
 	(unless (string= "" elt)
 	  (concat "-" elt))
 	(unless (string= pyo "")(concat "-" pyo))))))))
-	;; (write--unified-extended-execute-forms-arglist ele pyo elt)
-	;; (write--unified-extended-execute-forms-docu ele elt pyo)
-	;; (write--unified-extended-execute-forms-interactive-spec ele)
-	;; (if (string= "buffer" ele)
-	;; (write--unified-extended-execute-buffer-form)
-	;; (write--unified-extended-execute-let-form)
-	;; )
-	;; (insert (concat "    (py--execute-prepare "ele))
-	;; (write--unified-extended-execute-shells elt)
-	;; (write--extended-execute-switches ele pyo)))))
-
-(defun write-unified-extended-execute-forms ()
+	(defun write-unified-extended-execute-forms ()
   "Write ‘py-execute-statement, ...’ etc.
 
 Include default forms "
