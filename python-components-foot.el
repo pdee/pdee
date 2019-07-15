@@ -185,6 +185,7 @@ See available customizations listed in files variables-python-mode at directory 
   ;; load known shell listed in 
   ;; Local vars
   (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
+  (set (make-local-variable 'auto-fill-function) 'py-fill-string) 
   (set (make-local-variable 'electric-indent-inhibit) nil)
   (set (make-local-variable 'outline-regexp)
        (concat (mapconcat 'identity

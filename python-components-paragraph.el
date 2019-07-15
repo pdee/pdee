@@ -38,7 +38,7 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
 						 (forward-list))))
 		   (paragraph-start "\f\\|[ \t]*$")
 		   (paragraph-separate ","))
-	      (when end (narrow-to-region beg end)
+	      (when (and beg end (narrow-to-region beg end))
 		    (fill-region beg end justify)
 		    (while (not (eobp))
 		      (forward-line 1)
@@ -428,16 +428,17 @@ Fill according to `py-docstring-style' "
 		      docstring))
 	 (beg (and (nth 3 pps) (nth 8 pps)))
 	 end)
-    (if docstring
-	(py--fill-docstring justify style docstring orig indent)
-      (save-excursion
-	(setq end
-	      (progn (goto-char beg)
-		     ;; (setq tqs (looking-at "\"\"\"\|'''"))
-		     (forward-sexp) (point))))
-      (save-restriction
-	(narrow-to-region beg end)
-	(py-fill-paragraph justify pps beg end)))))
+    (when beg
+      (if docstring
+	  (py--fill-docstring justify style docstring orig indent)
+	(save-excursion
+	  (setq end
+		(progn (goto-char beg)
+		       ;; (setq tqs (looking-at "\"\"\"\|'''"))
+		       (forward-sexp) (point))))
+	(save-restriction
+	  (narrow-to-region beg end)
+	  (py-fill-paragraph justify pps beg end))))))
 
 (defun py--continue-lines-region (beg end)
   (save-excursion
