@@ -1225,11 +1225,11 @@ file heading imports to see if they look Java-like."
 (defcustom py-known-shells
   (list
    "ipython"
-   ;; "ipython2.7"
-   ;; "ipython3"
-   ;; "jython"
+   "ipython2.7"
+   "ipython3"
+   "jython"
    "python"
-   ;; "python2"
+   "python2"
    "python3"
    "pypy"
    )

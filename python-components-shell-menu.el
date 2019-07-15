@@ -2024,14 +2024,14 @@ expansion.
 
 Don't use this function in a Lisp program; use `define-abbrev' instead."]
           ("Completion"
-	   ["Py indent or complete" py-py-indent-or-complete
-	    :help " `py-py-indent-or-complete'"]
+	   ["Py indent or complete" py-indent-or-complete
+	    :help " `py-indent-or-complete'"]
 
-	   ["Py shell complete" py-py-shell-complete
-	    :help " `py-py-shell-complete'"]
+	   ["Py shell complete" py-shell-complete
+	    :help " `py-shell-complete'"]
 
-	   ["Py complete" py-py-complete
-	    :help " `py-py-complete'"]
+	   ["Py complete" py-complete
+	    :help " `py-complete'"]
             )))))
 
 (provide 'python-components-shell-menu)

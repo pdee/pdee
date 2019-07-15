@@ -107,7 +107,7 @@ Returns value of `py-autopair-mode'."
     py-switch-buffers-on-execute-p))
 
 (defun py-switch-buffers-on-execute-p-on (&optional arg)
-  "Toggle `py-py-switch-buffers-on-execute-p' according to ARG.
+  "Toggle `py-switch-buffers-on-execute-p' according to ARG.
 
 Returns value of `py-switch-buffers-on-execute-p'."
   (interactive)
@@ -139,7 +139,7 @@ Returns value of `py-switch-buffers-on-execute-p'."
     py-split-window-on-execute))
 
 (defun py-split-window-on-execute-on (&optional arg)
-  "Toggle `py-py-split-window-on-execute' according to ARG.
+  "Toggle `py-split-window-on-execute' according to ARG.
 
 Returns value of `py-split-window-on-execute'."
   (interactive)
@@ -179,7 +179,7 @@ Returns value of `py-split-window-on-execute'."
     py-fontify-shell-buffer-p))
 
 (defun py-fontify-shell-buffer-p-on (&optional arg)
-  "Toggle `py-py-fontify-shell-buffer-p' according to ARG.
+  "Toggle `py-fontify-shell-buffer-p' according to ARG.
 
 Returns value of `py-fontify-shell-buffer-p'."
   (interactive)
