@@ -1038,7 +1038,7 @@ terminated line."
   :group 'python-mode)
 
 (defcustom py-indent-tabs-mode nil
-  "Python-mode starts `indent-tabs-mode' with the value specified here, default is nil."
+  "Python-mode runs in `indent-tabs-mode' if set to ‘t’, default is nil."
   :type 'boolean
   :tag "py-indent-tabs-mode"
   :group 'python-mode)

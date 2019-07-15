@@ -149,6 +149,26 @@
 
 (autoload 'python-mode "python-mode" "Python Mode." t)
 
+(defun py-all-mode-setting()
+  (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
+  (set (make-local-variable 'auto-fill-function) 'py-fill-string)
+  (set (make-local-variable 'electric-indent-inhibit) t)
+  (when py-font-lock-defaults-p
+    (if py-use-font-lock-doc-face-p
+	(set (make-local-variable 'font-lock-defaults)
+             '(python-font-lock-keywords nil nil nil nil
+					 (font-lock-syntactic-keywords
+					  . py-font-lock-syntactic-keywords)
+					 (font-lock-syntactic-face-function
+					  . py--font-lock-syntactic-face-function)))
+      (set (make-local-variable 'font-lock-defaults)
+           '(python-font-lock-keywords nil nil nil nil
+				       (font-lock-syntactic-keywords
+					. py-font-lock-syntactic-keywords)))))
+  (when py-eldoc-mode-p (py--python-send-eldoc-setup-code buffer)
+	(set (make-local-variable 'eldoc-documentation-function)
+	     #'py-eldoc-function)))
+
 ;;;###autoload
 (define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
@@ -182,30 +202,15 @@ See available customizations listed in files variables-python-mode at directory 
 
 \\{python-mode-map}"
   :group 'python-mode
-  ;; load known shell listed in 
+  ;; load known shell listed in
   ;; Local vars
-  (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
-  (set (make-local-variable 'auto-fill-function) 'py-fill-string) 
-  (set (make-local-variable 'electric-indent-inhibit) nil)
+  (py-all-mode-setting)
   (set (make-local-variable 'outline-regexp)
        (concat (mapconcat 'identity
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                   py-outline-mode-keywords)
                           "\\|")))
-  (when (>= emacs-major-version 25)
-    (global-eldoc-mode -1))
-  (when py-font-lock-defaults-p
-    (if py-use-font-lock-doc-face-p
-	(set (make-local-variable 'font-lock-defaults)
-             '(python-font-lock-keywords nil nil nil nil
-					 (font-lock-syntactic-keywords
-					  . py-font-lock-syntactic-keywords)
-					 (font-lock-syntactic-face-function
-					  . py--font-lock-syntactic-face-function)))
-      (set (make-local-variable 'font-lock-defaults)
-           '(python-font-lock-keywords nil nil nil nil
-				       (font-lock-syntactic-keywords
-					. py-font-lock-syntactic-keywords)))))
+
   ;; avoid to run py-choose-shell again from `py--fix-start'
   (cond ((string-match "ython3" py-python-edit-version)
 	 (font-lock-add-keywords 'python-mode
@@ -240,8 +245,6 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (set (make-local-variable 'tab-width) py-indent-offset)
-  (set (make-local-variable 'eldoc-documentation-function)
-       #'py-eldoc-function)
   (and py-load-skeletons-p
        (py-load-skeletons)
        (set (make-local-variable 'skeleton-further-elements)
@@ -337,8 +340,8 @@ may want to re-add custom functions to it using the
 `py-shell-mode-hook'.
 
 \(Type \\[describe-mode] in the process buffer for a list of commands.)"
+  (py-all-mode-setting)
   (setq mode-line-process '(":%s"))
-  (set (make-local-variable 'indent-tabs-mode) nil)
   (set (make-local-variable 'py-shell--prompt-calculated-input-regexp) nil)
   (set (make-local-variable 'py-shell--block-prompt) nil)
   (set (make-local-variable 'py-shell--prompt-calculated-output-regexp) nil)
