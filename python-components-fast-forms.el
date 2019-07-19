@@ -60,7 +60,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
   (or (string-match "\n$" strg)
       (process-send-string proc "\n")))
 
-(defun py-fast-send-string (strg proc output-buffer &optional return)
+(defun py-fast-send-string (strg proc output-buffer &optional result)
   ;; (process-send-string proc "\n")
   (with-current-buffer output-buffer
     ;; (erase-buffer)
@@ -72,7 +72,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 				proc)
 
     ;; (accept-process-output proc 0.1)
-    (when return
+    (when result
       (sit-for 0.1 t)
       (setq py-result (py--filter-result (py--fetch-result))))
     py-result))
