@@ -237,6 +237,7 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
+  (set (make-local-variable 'auto-fill-function) 'py-fill-string)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (set (make-local-variable 'tab-width) py-indent-offset)
   (set (make-local-variable 'eldoc-documentation-function)

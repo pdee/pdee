@@ -293,7 +293,7 @@ When indent is set back manually, this is honoured in following lines."
 	  (when (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*" (line-beginning-position)))
 	    (current-column)))
 	 erg)
-    (newline)
+    (newline 1)
     (py--delete-trailing-whitespace orig)
     (setq erg
 	  (cond (this-dedent
@@ -313,7 +313,7 @@ Returns column."
   (interactive "*")
   (let ((cui (current-indentation))
         erg)
-    (newline)
+    (newline 1)
     (when (< 0 cui)
       (setq erg (- (py-compute-indentation) py-indent-offset))
       (indent-to-column erg))

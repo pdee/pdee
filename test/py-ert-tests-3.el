@@ -181,7 +181,7 @@ def foo():
       (search-forward "b")
       (should (eq 12 (py-compute-indentation))))))
 
-(ert-deftest py-raw-docstring-test-2 ()
+(ert-deftest py-raw-docstring-test-pep-257-nn ()
   (py-test-point-min
       "def f():
     r\"\"\" This is the docstring for my function.It's a raw docstring because I want to type \\t here, and maybe \\n,for example in LaTeX code like \\tau or \\nu.

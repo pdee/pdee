@@ -607,7 +607,7 @@ goes wrong and syntax highlighting in the shell gets messed up."
     ;; Otherwise just add a newline.
     (py-shell-font-lock-with-font-lock-buffer
       (goto-char (point-max))
-      (newline)))
+      (newline 1)))
   output)
 
 (defun py-font-lock-post-command-hook ()
@@ -732,9 +732,6 @@ identifies FILE locally on the remote system.
 The returned file name can be used directly as argument of
 `process-file', `start-file-process', or `shell-command'."
     (or (file-remote-p file 'localname) file)))
-
-
-
 
 (provide 'python-components-extra)
 ;;; python-components-extra.el ends here

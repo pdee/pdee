@@ -2140,7 +2140,7 @@ Use current region unless optional args BEG END are delivered."
       (beginning-of-line)
       (insert py-section-start)
       (goto-char end)
-      (unless (empty-line-p) (newline))
+      (unless (empty-line-p) (newline 1))
       (insert py-section-end))))
 
 (defun py-execute-section-prepare (&optional shell)

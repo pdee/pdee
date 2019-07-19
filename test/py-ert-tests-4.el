@@ -128,7 +128,7 @@ impo")))
         pass"
     'python-mode
     py-debug-p
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     (search-backward "@asdf")
     (end-of-line)
     (py-end-of-def-or-class)
@@ -208,55 +208,37 @@ def foo(x):
         breakpoint()"
   (should (eq 8 (py-compute-indentation)))))
 
-;; (ert-deftest py-return-value-annotations-break-imenu-46-test ()
-;;   (py-test-with-temp-buffer
-;;       "def main():
-;;     if len(sys.argv) == 1:
-;;         usage()
-;;         # sys.exit()
+(ert-deftest py-fill-singlequoted-string-test()
+  (py-test
+      "asd = 'asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf '"
+    'python-mode
+    py-verbose-p
+    (goto-char (point-max))
+    (backward-char 2)
+    (py-fill-string)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?'))
+    (forward-line -1)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?\\))))
 
-;;     class asdf(object):
-;;         zeit = time.strftime('%Y%m%d--%H-%M-%S')
-
-;;         def Utf8_Exists(filename) -> a[1:2]:
-;;             return os.path.exists(filename.encode('utf-8'))"
-;;     (switch-to-buffer (current-buffer)) 
-;;     (member "Utf8_Exists" index-alist)))
-
-
-;; (ert-deftest py-pdbtrack-input-prompt-45-test ()
-;;   (py-test-with-temp-buffer
-;;       "def exercise():
-;;   import pdb\; pdb.set_trace()
-;;   x = \"hello\"
-;;   y = \"darkness\"
-;;   print(x)
-
-;; exercise()"
-;;     (py-execute-buffer)
-;;     (set-buffer py-buffer-name)
-;;     (switch-to-buffer (current-buffer))
-;;     (message "prompt-45: %s" (buffer-name (current-buffer)))
-;;     (message "Nach Prompt: %s" (buffer-substring-no-properties (line-beginning-position) (point)))
-;;     (sit-for 1) 
-;;     (should (looking-back py-pdbtrack-input-prompt))))
-
-;; (ert-deftest py-pdbtrack-is-tracking-45-test ()
-;;   (py-test-with-temp-buffer
-;;       "def exercise():
-;;   import pdb\; pdb.set_trace()
-;;   x = \"hello\"
-;;   y = \"darkness\"
-;;   print(x)
-
-;; exercise()"
-;;     (py-execute-buffer)
-;;     (switch-to-buffer py-buffer-name)
-;;     (should py-pdbtrack-is-tracking-p)
-;;     ))
-
-
-;; py-pdbtrack-is-tracking-p
+(ert-deftest py-fill-doublequoted-string-test()
+  (py-test
+      "asd = \"asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf \""
+    'python-mode
+    py-verbose-p
+    (goto-char (point-max))
+    (backward-char 2)
+    (py-fill-string)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?\"))
+    (forward-line -1)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?\\))))
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

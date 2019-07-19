@@ -1066,7 +1066,7 @@ See also ‘py-execute-region’."
            (py--insert-execute-directory directory orig done))
           (t (forward-line 1)
              (unless  ;; (empty-line-p)
-                 (eq 9 (char-after)) (newline))
+                 (eq 9 (char-after)) (newline 1))
              (insert (concat "import os; os.chdir(\"" directory "\")\n"))))))
 
 (defun py--fix-if-name-main-permission (strg)
@@ -1124,7 +1124,7 @@ Avoid empty lines at the beginning."
 	(py-shift-left py-indent-offset))
       (goto-char (point-max))
       (unless (empty-line-p)
-	(newline))
+	(newline 1))
       (buffer-substring-no-properties 1 (point-max)))))
 
 (defun py-fetch-py-master-file ()

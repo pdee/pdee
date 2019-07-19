@@ -2376,11 +2376,27 @@ or ‘py-shell--prompt-calculated-output-regexp’ are set
                             symbol-end))
 	(decorator . ,(rx line-start (* space) ?@ (any letter ?_)
                           (* (any word ?_))))
+	;; probably useless here
 	(defun . ,(rx symbol-start
                       (or "def" "class"
                           ;; Python 3.5+ PEP492
                           (and "async" (+ space) "def"))
                       symbol-end))
+	(def . ,(rx symbol-start
+		    (or "def"
+		    ;; Python 3.5+ PEP492
+		    (and "async" (+ space) "def"))
+		    symbol-end))
+	(class . ,(rx symbol-start
+                      (or "class"
+		      ;; Python 3.5+ PEP492
+		      (and "async" (+ space) "class"))
+                      symbol-end))
+	(def-or-class . ,(rx symbol-start
+			     (or "def" "class"
+				 ;; Python 3.5+ PEP492
+				 (and "async" (+ space) (or "def" "class")))
+			     symbol-end))
 	(if-name-main . ,(rx line-start "if" (+ space) "__name__"
                              (+ space) "==" (+ space)
                              (any ?' ?\") "__main__" (any ?' ?\")

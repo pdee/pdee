@@ -53,7 +53,7 @@ With \\[universal argument] just indent.
   (interactive "*p")
   (py-dedent arg)
   (if (eobp)
-      (newline)
+      (newline 1)
     (forward-line 1))
   (end-of-line))
 
