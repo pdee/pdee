@@ -596,7 +596,7 @@ From a programm use macro `py-backward-comment' instead"
 		  t)))
     (goto-char last)))
 
-(defun py--go-to-keyword (regexp &optional maxindent condition)
+(defun py--go-to-keyword (regexp &optional maxindent condition ignoreindent)
   "Expects being called from beginning of a statement.
 
 Argument REGEXP: a symbol.
@@ -604,7 +604,8 @@ Argument REGEXP: a symbol.
 Return a list, whose car is indentation, cdr position.
 
 Keyword detected from REGEXP
-Honor MAXINDENT if provided"
+Honor MAXINDENT if provided
+Optional IGNOREINDENT: find next keyword at any indentation"
   (unless (bobp)
     ;;    (when (empty-line-p) (skip-chars-backward " \t\r\n\f"))
     (let* ((orig (point))
@@ -614,12 +615,15 @@ Honor MAXINDENT if provided"
 	   (regexp (if (eq regexp 'py-clause-re) 'py-extended-block-or-clause-re regexp))
 	   (regexpvalue (symbol-value regexp))
 	   (maxindent
-	    (or maxindent
-		(if
-		    (or (looking-at regexpvalue) (eq 0 (current-indentation)))
-		    (current-indentation)
-		  (abs
-		   (- (current-indentation) py-indent-offset)))))
+	    (if ignoreindent
+		;; just a big value
+		9999
+	      (or maxindent
+		  (if
+		      (or (looking-at regexpvalue) (eq 0 (current-indentation)))
+		      (current-indentation)
+		    (abs
+		     (- (current-indentation) py-indent-offset))))))
 	   erg)
       (unless (py-beginning-of-statement-p)
 	(py-backward-statement))
