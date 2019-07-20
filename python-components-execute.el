@@ -660,6 +660,47 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "If no error occurred and ‘py-store-result-p’ store ERG for yank."
   (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 
+
+(defcustom py-default-working-directory ""
+  "If not empty used by ‘py-set-current-working-directory’"
+  :type 'string
+  :tag "py-default-working-directory"
+  :group 'python-mode)
+
+(defun py-current-working-directory (&optional shell)
+  "Return the directory of current python SHELL."
+  (interactive)
+  (let* ((proc (get-buffer-process (current-buffer)))
+	 erg)
+    (if proc
+	(setq erg (py-send-string (concat "import os\;os.getcwd()") proc nil t))
+      (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.getcwd())\"")))))
+    (when (interactive-p) (message "CWD: %s" erg))
+    erg))
+
+(defun py-set-working-directory (&optional directory)
+  "Set working directory according to optional DIRECTORY
+
+when given, to value of ‘py-default-working-directory’ otherwise"
+  (interactive)
+  (let* ((proc (get-buffer-process (current-buffer)))
+	 (dir (or directory py-default-working-directory))
+	 erg)
+    (py-send-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
+    (setq erg (py-send-string "os.getcwd()" proc nil t))
+    (when (interactive-p) (message "CWD changed to: %s" erg))
+    erg))
+
+(defun py--update-execute-directory-intern (dir proc)
+  (py-send-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t))
+;; (comint-send-string proc (concat "import os;os.chdir(\"" dir "\")\n")))
+
+(defun py--update-execute-directory (proc procbuf execute-directory)
+    (with-current-buffer procbuf
+      (let ((cwd (py-current-working-directory)))
+	(unless (string= execute-directory (concat cwd "/"))
+	  (py--update-execute-directory-intern (or py-execute-directory execute-directory) proc)))))
+
 (defun py--close-execution (tempbuf tempfile)
   "Delete TEMPBUF and TEMPFILE."
   (unless py-debug-p
@@ -1017,19 +1058,6 @@ May we get rid of the temporary file?"
       (message "%s not readable. %s" filename "Do you have write permissions?"))
     erg))
 
-(defun py--current-working-directory (&optional shell)
-  "Return the directory of current SHELL."
-  (replace-regexp-in-string "\n" "" (shell-command-to-string (concat (or shell py-shell-name) " -c \"import os; print(os.getcwd())\""))))
-
-(defun py--update-execute-directory-intern (dir proc)
-  (comint-send-string proc (concat "import os;os.chdir(\"" dir "\")\n")))
-
-(defun py--update-execute-directory (proc procbuf execute-directory)
-  (let (cwd)
-    (with-current-buffer procbuf
-      (setq cwd (py--current-working-directory))
-      (unless (string= execute-directory (concat cwd "/"))
-	(py--update-execute-directory-intern (or py-execute-directory execute-directory) proc)))))
 
 (defun py-execute-string (&optional strg shell dedicated switch fast)
   "Send the optional argument STRG to Python default interpreter.

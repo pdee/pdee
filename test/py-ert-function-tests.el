@@ -600,8 +600,8 @@
 (ert-deftest py-ert-execute-file-functionp-test ()
   (should (functionp 'py-execute-file)))
 
-(ert-deftest py-ert--current-working-directory-functionp-test ()
-  (should (functionp 'py--current-working-directory)))
+(ert-deftest py-ert-current-working-directory-functionp-test ()
+  (should (functionp 'py-current-working-directory)))
 
 (ert-deftest py-ert--update-execute-directory-intern-functionp-test ()
   (should (functionp 'py--update-execute-directory-intern)))
