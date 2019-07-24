@@ -214,12 +214,16 @@ not inside a defun."
 			"sys.path.insert(0, '"
 			(file-name-directory origfile) "')\n")))
     (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
-    (with-temp-buffer
-      (insert cmd)
-      (write-file file))
-    (py-process-file file "*Python-Help*")
-    (when (file-readable-p file)
-      (unless py-debug-p (delete-file file)))))
+    (with-help-window
+	(py-send-string cmd nil t)
+	;; (insert cmd)
+      ;; (with-temp-buffer
+      ;; (insert cmd)
+      )))
+      ;; (write-file file))
+    ;; (py-process-file file "*Python-Help*")
+    ;; (when (file-readable-p file)
+    ;;   (unless py-debug-p (delete-file file)))))
 
 (defun py-help-at-point ()
   "Print help on symbol at point.

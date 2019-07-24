@@ -353,7 +353,7 @@ SEPCHAR is the file-path separator of your system."
            (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
           (prefix
            (setq erg (concat "*" prefix " " erg "*")))
-          (t (unless (string-match "^\*" erg)(setq erg (concat "*" erg "*")))))
+          (t (unless (string-match "^\*" erg) (setq erg (concat "*" erg "*")))))
     erg))
 
 (defun py--jump-to-exception-intern (act exception-buffer origline)

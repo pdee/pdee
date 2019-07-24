@@ -33,13 +33,13 @@
   "Set `py-result' according to `py-fast-filter-re'.
 
 Remove trailing newline"
-  (replace-regexp-in-string
-;;   (format "[ \n]*%s[ \n]*" py-fast-filter-re)
-      py-fast-filter-re
- ""
-			    (ansi-color-filter-apply strg)
-			    ;;)
-			    ))
+  (string-trim (replace-regexp-in-string
+		;;   (format "[ \n]*%s[ \n]*" py-fast-filter-re)
+		py-fast-filter-re
+		""
+		(ansi-color-filter-apply strg)
+		;;)
+		)))
 
 (defun py-fast-process (&optional buffer)
   "Connect am (I)Python process suitable for large output.

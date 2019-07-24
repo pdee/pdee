@@ -149,6 +149,12 @@
 
 (autoload 'python-mode "python-mode" "Python Mode." t)
 
+(defun all-mode-setting ()
+  (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
+  (set (make-local-variable 'eldoc-message-function) 'py-help-at-point)
+  
+  )
+
 ;;;###autoload
 (define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
@@ -184,7 +190,7 @@ See available customizations listed in files variables-python-mode at directory 
   :group 'python-mode
   ;; load known shell listed in 
   ;; Local vars
-  (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
+  (all-mode-setting)
   (set (make-local-variable 'electric-indent-inhibit) nil)
   (set (make-local-variable 'outline-regexp)
        (concat (mapconcat 'identity
@@ -338,7 +344,8 @@ may want to re-add custom functions to it using the
 
 \(Type \\[describe-mode] in the process buffer for a list of commands.)"
   (setq mode-line-process '(":%s"))
-  (set (make-local-variable 'indent-tabs-mode) nil)
+  (all-mode-setting)
+  ;; (set (make-local-variable 'indent-tabs-mode) nil)
   (set (make-local-variable 'py-shell--prompt-calculated-input-regexp) nil)
   (set (make-local-variable 'py-shell--block-prompt) nil)
   (set (make-local-variable 'py-shell--prompt-calculated-output-regexp) nil)

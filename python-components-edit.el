@@ -329,7 +329,7 @@ Returns value of `indent-tabs-mode' switched to."
       (setq indent-tabs-mode (not indent-tabs-mode))
     (setq tab-width py-indent-offset))
   (when (and py-verbose-p (called-interactively-p 'any)) (message "indent-tabs-mode %s  py-indent-offset %s" indent-tabs-mode py-indent-offset))
-  indent-tabs-mode)
+  indentnnnnnnn-tabs-mode)
 
 (defun py-indent-tabs-mode (arg &optional iact)
   "With positive ARG switch `indent-tabs-mode' on.

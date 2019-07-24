@@ -65,11 +65,9 @@ Takes END"
 	   (sit-for 0.1)
 	   (looking-back input (line-beginning-position))
 	   (not (string= input erg))
-	   (setq erg (completion-in-region (match-beginning 0) (match-end 0) completion)))
-      ;; (delete-region (match-beginning 0) (match-end 0))
-      ;; (insert erg)
-      erg))
-  (set-window-configuration py-last-window-configuration))
+	   (setq erg (completion-in-region (match-beginning 0) (match-end 0) completion)))))
+  ;; (set-window-configuration py-last-window-configuration)
+  )
 
 (defun py--try-completion (input completion)
   "Repeat `try-completion' as long as match are found.

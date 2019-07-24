@@ -264,6 +264,15 @@ else: "
     py-verbose-p
     (goto-char (point-max))
     (should (eq 4  (py-compute-indentation)))))
-    
+
+(ert-deftest py-send-string-text-dtOWbA ()
+  ""
+  'python-mode
+  py-verbose-p
+  (let (erg)
+    (setq erg (py-send-string "print(\"foo\")" nil t))
+    (should (string= erg "foo"))
+    (should (string= py-result "foo"))))
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

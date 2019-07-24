@@ -109,7 +109,7 @@ Returns position reached if successful"
   (save-excursion
     `(let* ((form ,(prin1-to-string form))
            (origline (py-count-lines))
-	   (py-exception-buffer (current-buffer)) 
+	   (py-exception-buffer (current-buffer))
            (beg (unless ,file
                   (prog1
                       (or ,beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
@@ -230,7 +230,7 @@ process buffer for a list of commands.)"
 	 (py-use-local-default (py--determine-local-default))
 	 (buffer-name
 	  (or buffer
-	      (py--choose-buffer-name shell dedicated)))
+	      (py--choose-buffer-name shell dedicated fast)))
 	 ;; (executable (cond
 	 ;; 	      (shell)
 	 ;; 	      (py-shell-name)
@@ -1727,8 +1727,9 @@ Return the output."
 With optional Arg RESULT return output"
   (interactive "sPython command: ")
   (save-excursion
-    (let* ((proc (or process (py-shell)))
-	   (buffer (or buffer (process-buffer proc)))
+    (let* (
+	   (buffer (or buffer (or (and process (buffer-name  (process-buffer process))) (buffer-name (py-shell)))))
+	   (proc (or process (get-buffer-process buffer)))
 	   (orig (or orig (point))))
       (cond (no-output
 	     (py-send-string-no-output strg proc))
@@ -1742,11 +1743,11 @@ With optional Arg RESULT return output"
 		 (when (or (not (string-match "\n\\'" strg))
 			   (string-match "\n[ \t].*\n?\\'" strg))
 		   (comint-send-string proc "\n"))
-		 (accept-process-output proc 0.1)
 		 (cond (result
 			(sit-for 0.1 t)
-			(py--filter-result
-			 (py--cleanup-shell orig buffer result)))
+			(setq py-result
+			      (py--filter-result
+			       (py--cleanup-shell orig buffer result))))
 		       (no-output
 			(sit-for 0.1)
 			(and orig (py--cleanup-shell orig buffer))))))))))
