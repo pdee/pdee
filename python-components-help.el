@@ -195,6 +195,7 @@ not inside a defun."
 (defun py--help-at-point-intern (sym orig)
   (let* ((origfile (py--buffer-filename-remote-maybe))
 	 (temp (md5 (buffer-name)))
+	 (buffer-name "*Python-Help*")
 	 (file (concat (py--normalize-directory py-temp-directory) temp "-py-help-at-point.py"))
 	 (cmd (py-find-imports))
 	 ;; if symbol is defined in current buffer, go to
@@ -214,16 +215,18 @@ not inside a defun."
 			"sys.path.insert(0, '"
 			(file-name-directory origfile) "')\n")))
     (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
-    (with-help-window
-	(py-send-string cmd nil t)
-	;; (insert cmd)
-      ;; (with-temp-buffer
-      ;; (insert cmd)
-      )))
-      ;; (write-file file))
-    ;; (py-process-file file "*Python-Help*")
-    ;; (when (file-readable-p file)
-    ;;   (unless py-debug-p (delete-file file)))))
+    ;; (with-temp-buffer-window "*Python-Help*"
+    ;; 			     (switch-to-buffer "*Python-Help*") 'help-window-setup (insert (py-send-string cmd nil t)))
+    (py-kill-buffer-unconditional buffer-name)
+    (with-temp-buffer-window
+     (set-buffer (get-buffer-create buffer-name))
+     (setq buffer-modified-p nil)
+     (setq inhibit-point-motion-hooks t)
+       (erase-buffer)
+       (when py-debug-p (message "%s" (current-buffer)))
+       (let ((erg (py-send-string cmd nil t nil nil nil t)))
+	 (when erg
+	   (insert erg))))))
 
 (defun py-help-at-point ()
   "Print help on symbol at point.

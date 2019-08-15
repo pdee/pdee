@@ -106,9 +106,11 @@ Returns position reached if successful"
 
 (defmacro py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf split result)
   "Used by python-components-extended-executes ."
+  (declare  (debug t))
   (save-excursion
     `(let* ((form ,(prin1-to-string form))
            (origline (py-count-lines))
+	   (fast (or ,fast py-fast-process-p))
 	   (py-exception-buffer (current-buffer))
            (beg (unless ,file
                   (prog1
@@ -196,6 +198,13 @@ Don't save anything for STR matching `py-history-filter-regexp'."
 	 (t
 	  python-mode-modeline-display))))
 
+(defun py--start-fast-process (shell buffer args)
+  (apply 'start-process shell buffer shell
+	 args))
+
+  ;; (switch-to-buffer buffer)
+  ;; (setq py-output-buffer buffer))
+
 (defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch)
   "Connect process to BUFFER.
 
@@ -223,7 +232,8 @@ Runs the hook `py-shell-mode-hook' after
 process buffer for a list of commands.)"
   (interactive "p")
   (let* ((interactivep (and argprompt (eq 1 (prefix-numeric-value argprompt))))
-	 (fast (or fast py-fast-process-p))
+	 (fast (unless (eq major-mode 'org-mode)
+		 (or fast py-fast-process-p)))
 	 (dedicated (or (eq 4 (prefix-numeric-value argprompt)) dedicated py-dedicated-process-p))
 	 (shell (or shell (py-choose-shell)))
 	 (args (or args (py--provide-command-args shell fast)))
@@ -243,11 +253,19 @@ process buffer for a list of commands.)"
 	 (py-modeline-display nil)
 	 (buffer
 	  (or
-	   (and (ignore-errors (process-buffer proc))(setq done t) (process-buffer proc))
+	   (and (ignore-errors (process-buffer proc))
+		(save-excursion (with-current-buffer (process-buffer proc)
+				  ;; point might not be left there
+				  (goto-char (point-max))
+				  (push-mark)
+				  (setq done t)
+				  (process-buffer proc))))
 	   (save-excursion
 	     (py-shell-with-environment
-	       (apply #'make-comint-in-buffer shell buffer-name
-		      shell nil args))))))
+	       (if fast
+		   (process-buffer (apply 'start-process shell buffer-name shell args))
+		 (apply #'make-comint-in-buffer shell buffer-name
+			shell nil args)))))))
     (unless done
       (with-current-buffer buffer
 	(setq delay (py--which-delay-process-dependent buffer-name))
@@ -265,11 +283,11 @@ process buffer for a list of commands.)"
 		   (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
 		  ((string-match "^.+3" buffer-name)
 		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
-	  (py-send-string-no-output "print(\"py-shell-mode loaded\")" (get-buffer-process buffer) buffer-name)
+	  ;; (py-send-string-no-output "print(\"py-shell-mode loaded\")" (get-buffer-process buffer) buffer-name)
 	  ;; (py--update-lighter shell)
 	  )))
     (when (or interactivep
-    	      (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
+	      (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
       (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
     buffer))
 
@@ -576,16 +594,12 @@ When interactively called, copy and message it"
   "Kill buffer unconditional, kill buffer-process if existing. "
   (interactive
    (list (current-buffer)))
-  (let ((buffer (or (and (bufferp buffer) buffer)
-                    (get-buffer buffer)))
-        proc kill-buffer-query-functions)
-
-    (ignore-errors
-      (setq proc (get-buffer-process buffer))
-      (and proc (kill-process proc))
-      (set-buffer buffer)
-      (set-buffer-modified-p 'nil)
-      (kill-buffer (current-buffer)))))
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (let (kill-buffer-query-functions set-buffer-modified-p)
+	(ignore-errors (kill-process (get-buffer-process buffer)))
+	(set-buffer-modified-p 'nil)
+	(ignore-errors (kill-buffer buffer))))))
 
 (defun py--line-backward-maybe ()
   "Return result of (< 0 (abs (skip-chars-backward \" \\t\\r\\n\\f\"))) "
@@ -1587,8 +1601,8 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
       element)))
 
 (defun py--which-delay-process-dependent (buffer)
-  "Call a `py-ipython-sendx-delay' or `py-python-send-delay' according to process"
-  (if (string-match "^.I" buffer)
+  "Call a `py-ipython-send-delay' or `py-python-send-delay' according to process"
+  (if (string-match "^.[IJ]" buffer)
       py-ipython-send-delay
     py-python-send-delay))
 
@@ -1618,20 +1632,22 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
 	(dotimes (_ 3) (when (not (markerp (process-mark process)))(sit-for 1 t)))
 	(process-mark process)))))
 
-(defun py--cleanup-shell (orig buffer &optional result)
+(defun py--filter-result (strg)
+  "Set ‘py-result’ according to ‘py-fast-filter-re’.
+
+Remove trailing newline"
+  (string-trim
+   (replace-regexp-in-string
+    py-fast-filter-re
+    ""
+    (ansi-color-filter-apply strg))))
+
+(defun py--cleanup-shell (orig buffer)
   (with-current-buffer buffer
-    (sit-for 0.1)
-    ;; (switch-to-buffer (current-buffer))
-    (let ((inhibit-read-only t)
-	  (end (py--report-end-marker (get-buffer-process buffer))))
-      (if end
-	  (if result
-	      (prog1 (replace-regexp-in-string
-		      (format "[ \n]*%s[ \n]*" py-fast-filter-re)
-		      "" (buffer-substring-no-properties orig end))
-		(delete-region orig end))
-	    (delete-region orig end))
-	(error "py--cleanup-shell: end-marker not found")))))
+    (with-silent-modifications
+      (sit-for py-python3-send-delay)
+      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (delete-region orig (point-max)))))
 
 (defun py-shell--save-temp-file (strg)
   (let* ((temporary-file-directory
@@ -1721,14 +1737,13 @@ Return the output."
      (with-current-buffer (process-buffer proc)
        (comint-interrupt-subjob)))))
 
-(defun py-send-string (strg &optional process result no-output orig buffer)
+(defun py-send-string (strg &optional process result no-output orig buffer delete)
   "Evaluate STRG in Python PROCESS.
 
 With optional Arg RESULT return output"
   (interactive "sPython command: ")
   (save-excursion
-    (let* (
-	   (buffer (or buffer (or (and process (buffer-name  (process-buffer process))) (buffer-name (py-shell)))))
+    (let* ((buffer (or buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell)))))
 	   (proc (or process (get-buffer-process buffer)))
 	   (orig (or orig (point))))
       (cond (no-output
@@ -1739,17 +1754,19 @@ With optional Arg RESULT return output"
 	       (py-send-file file-name proc)))
 	    (t (with-current-buffer buffer
 		 (setq orig (py--report-end-marker proc))
+		 ;; remove stuff after last prompt
+		 (with-silent-modifications
+		   (unless (ignore-errors (eq (field-beginning (point)) (field-end (point))))
+		     (delete-region (field-beginning (point)) (field-end (point)))))
 		 (comint-send-string proc strg)
 		 (when (or (not (string-match "\n\\'" strg))
 			   (string-match "\n[ \t].*\n?\\'" strg))
 		   (comint-send-string proc "\n"))
+		 (sit-for py-python-send-delay)
 		 (cond (result
-			(sit-for 0.1 t)
 			(setq py-result
-			      (py--filter-result
-			       (py--cleanup-shell orig buffer result))))
+			      (py--fetch-result buffer strg)))
 		       (no-output
-			(sit-for 0.1)
 			(and orig (py--cleanup-shell orig buffer))))))))))
 
 (defun py-send-file (file-name process)

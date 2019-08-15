@@ -27,20 +27,6 @@
 
 ;; Process forms fast
 
-
-
-(defun py--filter-result (strg)
-  "Set `py-result' according to `py-fast-filter-re'.
-
-Remove trailing newline"
-  (string-trim (replace-regexp-in-string
-		;;   (format "[ \n]*%s[ \n]*" py-fast-filter-re)
-		py-fast-filter-re
-		""
-		(ansi-color-filter-apply strg)
-		;;)
-		)))
-
 (defun py-fast-process (&optional buffer)
   "Connect am (I)Python process suitable for large output.
 
@@ -55,27 +41,39 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
         (erase-buffer))
       proc)))
 
-(defun py-fast-send-string-intern (strg proc)
-  (process-send-string proc strg)
-  (or (string-match "\n$" strg)
-      (process-send-string proc "\n")))
+(defun py-fast-send-string (strg proc output-buffer &optional result no-output)
+  (let ((inhibit-read-only t)
+	erg)
+    (with-current-buffer output-buffer
+      (switch-to-buffer (current-buffer))
+      ;; (erase-buffer)
+      (process-send-string proc strg)
+      (or (string-match "\n$" strg)
+	  (process-send-string proc "\n"))
+      (cond (no-output
+	     (erase-buffer))
+	    (result
+	     (if
+		 (setq erg (py--fetch-result output-buffer strg))
+		 (setq py-result (py--filter-result erg))
+	       (dotimes (_ 3) (unless (setq erg (py--fetch-result output-buffer proc))(sit-for 1 t)))
+	       (unless (setq erg (py--fetch-result output-buffer proc))
+		 (setq py-result nil)
+		 (error "py-fast-send-string: py--fetch-result output-buffer proc: no result")))))
+      py-result)))
 
-(defun py-fast-send-string (strg proc output-buffer &optional result)
-  ;; (process-send-string proc "\n")
-  (with-current-buffer output-buffer
-    ;; (erase-buffer)
+(defun py--send-to-fast-process (strg proc output-buffer result)
+  "Called inside of ‘py--execute-base-intern’.
+
+Optional STRG PROC OUTPUT-BUFFER RETURN"
+  (let ((output-buffer (or output-buffer (process-buffer proc)))
+	(inhibit-read-only t))
     ;; (switch-to-buffer (current-buffer))
-    ;; (let ((orig (point)))
-    (py-fast-send-string-intern strg
-				proc)
-    (py-fast-send-string-intern "\n"
-				proc)
-
-    ;; (accept-process-output proc 0.1)
-    (when result
-      (sit-for 0.1 t)
-      (setq py-result (py--filter-result (py--fetch-result))))
-    py-result))
+    (with-current-buffer output-buffer
+      ;; (erase-buffer)
+      (py-fast-send-string strg
+			   proc
+			   output-buffer result))))
 
 (defalias 'py-process-region-fast 'py-execute-region-fast)
 (defun py-execute-region-fast (beg end &optional shell dedicated split switch proc)
@@ -86,7 +84,6 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 (defun py-execute-block-fast (&optional shell dedicated switch beg end file)
   "Process block at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare block shell dedicated switch beg end file t))
@@ -94,7 +91,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-block-or-clause-fast (&optional shell dedicated switch beg end file)
   "Process block-or-clause at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare block-or-clause shell dedicated switch beg end file t))
@@ -102,7 +98,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-class-fast (&optional shell dedicated switch beg end file)
   "Process class at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare class shell dedicated switch beg end file t))
@@ -110,7 +105,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-clause-fast (&optional shell dedicated switch beg end file)
   "Process clause at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare clause shell dedicated switch beg end file t))
@@ -118,7 +112,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-def-fast (&optional shell dedicated switch beg end file)
   "Process def at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare def shell dedicated switch beg end file t))
@@ -126,7 +119,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-def-or-class-fast (&optional shell dedicated switch beg end file)
   "Process def-or-class at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare def-or-class shell dedicated switch beg end file t))
@@ -134,7 +126,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-expression-fast (&optional shell dedicated switch beg end file)
   "Process expression at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare expression shell dedicated switch beg end file t))
@@ -142,7 +133,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-partial-expression-fast (&optional shell dedicated switch beg end file)
   "Process partial-expression at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare partial-expression shell dedicated switch beg end file t))
@@ -150,7 +140,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-section-fast (&optional shell dedicated switch beg end file)
   "Process section at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare section shell dedicated switch beg end file t))
@@ -158,7 +147,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-statement-fast (&optional shell dedicated switch beg end file)
   "Process statement at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare statement shell dedicated switch beg end file t))
@@ -166,7 +154,6 @@ Output buffer not in comint-mode, displays \"Fast\"  by default"
 (defun py-execute-top-level-fast (&optional shell dedicated switch beg end file)
   "Process top-level at point by a Python interpreter.
 
-Suitable for large output, doesn't mess up interactive shell.
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare top-level shell dedicated switch beg end file t))

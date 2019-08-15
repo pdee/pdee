@@ -27,7 +27,7 @@
 ;; py-if-name-main-permission-p
 (ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
   (py-test-point-min
-      "#! /usr/bin/env python2
+   "#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 def py_if_name_main_permission_test():
     if __name__ == \"__main__\" :
@@ -40,18 +40,14 @@ def py_if_name_main_permission_test():
 
 py_if_name_main_permission_test()
 "
-    'python-mode
-    'py-debug-p
-    (goto-char (point-min) )
-    (let ((py-if-name-main-permission-p t))
-      (py-execute-buffer-python2)
-      (set-buffer "*Python2*")
-      (goto-char (point-max))
-      (skip-chars-backward " >\t\r\n\f")
-      ;; (forward-line -1)
-      (end-of-line)
-      (sit-for 0.2 t)
-      (assert (looking-back "run" (line-beginning-position)) nil "py-if-name-main-permission-lp-326620-test #1 failed"))))
+   'python-mode
+   'py-debug-p
+   (goto-char (point-min))
+   (let ((py-if-name-main-permission-p t))
+     (py-execute-buffer-python2)
+     (set-buffer "*Python2*")
+     (goto-char (point-max))
+     (should (search-backward "run" nil t)))))
 
 (ert-deftest py-ert-indent-try-test ()
   (py-test-point-min
@@ -674,10 +670,13 @@ def foo():
 print(u'\\xA9')"
     'python-mode
     'py-debug-p
+    (let ((py-return-result-p t)
+	  (py-store-result-p t))
     (goto-char (point-max))
     (py-execute-buffer)
-    (set-buffer "*Python3*")
-    (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))
+    ;; (sit-for 1) 
+    ;; (set-buffer "*Python3*")
+    (should (eq '© (car (read-from-string py-result)))))))
 
 (ert-deftest py-execute-region-no-transmm-test-1 ()
   (py-test
@@ -710,7 +709,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-os.continue"
+os.write"
     'python-mode
     'py-debug-p
     (goto-char (point-max))
@@ -720,7 +719,7 @@ os.continue"
     (set-buffer "*Python-Help*")
     (goto-char (point-min))
     (switch-to-buffer (current-buffer))
-    (should (string-match "continue" (buffer-substring-no-properties (point-min) (line-end-position))))))
+    (should (string-match "write" (buffer-substring-no-properties (point-min) (line-end-position))))))
 
 (ert-deftest py-execute-import-or-reload-test ()
   (py-test
@@ -839,7 +838,7 @@ def main():
     'python-mode
     'py-debug-p
     (goto-char (point-max))
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (search-backward "elif")
     (py-backward-clause)
     (should (looking-at "if True"))))

@@ -393,9 +393,6 @@
 (ert-deftest py-ert--filter-result-functionp-test ()
   (should (functionp 'py--filter-result)))
 
-(ert-deftest py-ert--fast-send-string-intern-functionp-test ()
-  (should (functionp 'py-fast-send-string-intern)))
-
 (ert-deftest py-ert-fast-send-string-functionp-test ()
   (should (functionp 'py-fast-send-string)))
 
@@ -578,9 +575,6 @@
 
 (ert-deftest py-ert--fetch-result-functionp-test ()
   (should (functionp 'py--fetch-result)))
-
-(ert-deftest py-ert--postprocess-comint-functionp-test ()
-  (should (functionp 'py--postprocess-comint)))
 
 (ert-deftest py-ert--execute-ge24.3-functionp-test ()
   (should (functionp 'py--execute-ge24.3)))

@@ -129,3 +129,16 @@ else
 fi
 
 
+# -l $TEST1 \
+# -l $TEST2 \
+# -l $TEST4 \
+# -l $TEST5 \
+# -l $TEST6 \
+# -l $TEST7 \
+# -l $TEST8 \
+# -l $TEST11 \
+# -l $TEST12 \
+# -l $TEST13 \
+# -l $TEST14 \
+# -l $TEST15 \
+# -l $TEST16 \

@@ -223,8 +223,8 @@ Default is t"
   :group 'python-mode
   :safe 'booleanp)
 
-(defvar py-fast-output-buffer "*Py-Fast-Output-Buffer*"
-  "Default ‘buffer-name’ for fast-processes.")
+(defvar py-fast-output-buffer "*Python Fast*"
+  "Internally used. ‘buffer-name’ for fast-processes.")
 
 (defvar py-this-result nil
   "Internally used, store return-value.")
@@ -2808,7 +2808,7 @@ for options to pass to the DOCNAME interpreter. \"
   "Recognize the pydb-prompt.")
 ;; (setq py-pdbtrack-input-prompt "^[(< \t]*[Ii]?[Pp]y?db[>)]*.*")
 
-(defvar py-fast-filter-re (concat "\\("
+(defvar py-fast-filter-re (concat "^\\("
 			       (mapconcat 'identity
 					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{3,\\}:? *"))
 					  "\\|")
@@ -3548,21 +3548,21 @@ See also `py-object-reference-face'"
 
 ;; subr-x.el might not exist yet
 (unless (functionp 'string-trim)
-  (defsubst string-trim (string &optional trim-left trim-right)
+  (defsubst string-trim (strg &optional trim-left trim-right)
     "Trim STRING of leading and trailing strings matching TRIM-LEFT and TRIM-RIGHT.
 
 TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
     (string-trim-left (string-trim-right string trim-right) trim-left))
 
-(defsubst string-blank-p (string)
+(defsubst string-blank-p (strg)
   "Check whether STRING is either empty or only whitespace."
-  (string-match-p "\\`[ \t\n\r]*\\'" string))
+  (string-match-p "\\`[ \t\n\r]*\\'" strg))
 
-(defsubst string-remove-prefix (prefix string)
+(defsubst string-remove-prefix (prefix strg)
   "Remove PREFIX from STRING if present."
-  (if (string-prefix-p prefix string)
-      (substring string (length prefix))
-    string)))
+  (if (string-prefix-p prefix strg)
+      (substring strg (length prefix))
+    strg)))
 
 (defun py-toggle-imenu-create-index ()
   "Toggle value of ‘py--imenu-create-index-p’"
@@ -3733,7 +3733,7 @@ Returns RES or substring of RES"
     res))
 
 (defalias 'py-which-shell 'py-choose-shell)
-(defun py-choose-shell ()
+(defun py-choose-shell (&optional shell)
   "Return an appropriate executable as a string.
 
 Does the following:
@@ -3744,38 +3744,40 @@ Does the following:
 
 When interactivly called, messages the shell name
 Return nil, if no executable found."
-  (interactive "P")
-  (let* (res
-	 done
-	 (erg
-	  (cond (py-force-py-shell-name-p
-		 (default-value 'py-shell-name))
-		(py-use-local-default
-		 (if (not (string= "" py-shell-local-path))
-		     (expand-file-name py-shell-local-path)
-		   (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
-		((and (not py-fast-process-p)
-		      (comint-check-proc (current-buffer))
-		      (setq done t)
-		      (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
-		 (setq res (process-name (get-buffer-process (current-buffer))))
-		 (py--cleanup-process-name res))
-		((py-choose-shell-by-shebang))
-		((py--choose-shell-by-import))
-		((py-choose-shell-by-path))
-		(t (or
-		    (default-value 'py-shell-name)
-		    "python"))))
-	 (cmd (if (or
-		   ;; comint-check-proc was succesful
-		   done
-		   py-edit-only-p) erg
-		(executable-find erg))))
-    (if cmd
-	(when (called-interactively-p 'any)
-	  (message "%s" cmd))
-      (when (called-interactively-p 'any) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
-    erg))
+  (interactive)
+  ;; org-babel uses ‘py-toggle-shells’ with arg, just return it 
+  (or shell
+      (let* (res
+	     done
+	     (erg
+	      (cond (py-force-py-shell-name-p
+		     (default-value 'py-shell-name))
+		    (py-use-local-default
+		     (if (not (string= "" py-shell-local-path))
+			 (expand-file-name py-shell-local-path)
+		       (message "Abort: `py-use-local-default' is set to `t' but `py-shell-local-path' is empty. Maybe call `py-toggle-local-default-use'")))
+		    ((and (not py-fast-process-p)
+			  (comint-check-proc (current-buffer))
+			  (setq done t)
+			  (string-match "ython" (process-name (get-buffer-process (current-buffer)))))
+		     (setq res (process-name (get-buffer-process (current-buffer))))
+		     (py--cleanup-process-name res))
+		    ((py-choose-shell-by-shebang))
+		    ((py--choose-shell-by-import))
+		    ((py-choose-shell-by-path))
+		    (t (or
+			(default-value 'py-shell-name)
+			"python"))))
+	     (cmd (if (or
+		       ;; comint-check-proc was succesful
+		       done
+		       py-edit-only-p) erg
+		    (executable-find erg))))
+	(if cmd
+	    (when (called-interactively-p 'any)
+	      (message "%s" cmd))
+	  (when (called-interactively-p 'any) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
+	erg)))
 
 
 (defun py--normalize-directory (directory)

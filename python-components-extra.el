@@ -60,64 +60,6 @@ banner and the initial prompt are received separately."
                regexp (car (py-util-comint-last-prompt)))
           (throw 'found t))))))
 
-(defun py-shell-completion-native-get-completions (process import input)
-  "Get completions using native readline for PROCESS.
-When IMPORT is non-nil takes precedence over INPUT for
-completion."
-  (with-current-buffer (process-buffer process)
-    (let* ((input (or import input))
-           (original-filter-fn (process-filter process))
-           (redirect-buffer (get-buffer-create
-                             py-shell-completion-native-redirect-buffer))
-           (trigger "\t")
-           (new-input (concat input trigger))
-           (input-length
-            (save-excursion
-              (+ (- (point-max) (comint-bol)) (length new-input))))
-           (delete-line-command (make-string input-length ?\b))
-           (input-to-send (concat new-input delete-line-command)))
-      ;; Ensure restoring the process filter, even if the user quits
-      ;; or there's some other error.
-      (unwind-protect
-          (with-current-buffer redirect-buffer
-            ;; Cleanup the redirect buffer
-            (erase-buffer)
-            ;; Mimic `comint-redirect-send-command', unfortunately it
-            ;; can't be used here because it expects a newline in the
-            ;; command and that's exactly what we are trying to avoid.
-            (let ((comint-redirect-echo-input nil)
-                  (comint-redirect-completed nil)
-                  (comint-redirect-perform-sanity-check nil)
-                  (comint-redirect-insert-matching-regexp t)
-                  (comint-redirect-finished-regexp
-                   "1__dummy_completion__[[:space:]]*\n")
-                  (comint-redirect-output-buffer redirect-buffer))
-              ;; Compatibility with Emacs 24.x.  Comint changed and
-              ;; now `comint-redirect-filter' gets 3 args.  This
-              ;; checks which version of `comint-redirect-filter' is
-              ;; in use based on its args and uses `apply-partially'
-              ;; to make it up for the 3 args case.
-              (if (= (length
-                      (help-function-arglist 'comint-redirect-filter)) 3)
-                  (set-process-filter
-                   process (apply-partially
-                            #'comint-redirect-filter original-filter-fn))
-                (set-process-filter process #'comint-redirect-filter))
-              (process-send-string process input-to-send)
-              ;; Grab output until our dummy completion used as
-              ;; output end marker is found.
-              (when (py-shell-accept-process-output
-                     process py-shell-completion-native-output-timeout
-                     comint-redirect-finished-regexp)
-                (re-search-backward "0__dummy_completion__" nil t)
-                (cl-remove-duplicates
-                 (split-string
-                  (buffer-substring-no-properties
-                   (line-beginning-position) (point-min))
-                  "[ \f\t\n\r\v()]+" t)
-                 :test #'string=))))
-        (set-process-filter process original-filter-fn)))))
-
 (defmacro py-shell--add-to-path-with-priority (pathvar paths)
   "Modify PATHVAR and ensure PATHS are added only once at beginning."
   `(dolist (path (reverse ,paths))

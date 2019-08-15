@@ -31,7 +31,7 @@
 
 (ert-deftest py-ert-electric-kill-backward-bracket-test ()
   (let ((py-electric-kill-backward-p t))
-    (py-test
+    (py-test-with-temp-buffer
       "mystring[0:1]"
       'python-mode
       py-debug-p
@@ -40,10 +40,8 @@
       (should (eq ?\] (char-after))))))
 
 (ert-deftest py-ert-electric-kill-backward-region-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "mystring[0:1]     "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (let ((py-electric-kill-backward-p t)
 	  (delete-active-region t)
@@ -55,10 +53,8 @@
       (should (eq ?\] (char-before))))))
 
 (ert-deftest py-ert-electric-delete-eob-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "mystring[0:1]     "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (let ((py-electric-kill-backward-p t)
 	  (delete-active-region t)
@@ -73,7 +69,7 @@
   (let ((py-electric-kill-backward-p t)
 	(delete-active-region t)
 	(transient-mark-mode t))
-    (py-test
+    (py-test-with-temp-buffer
 	"mystring[0:1]     "
       'python-mode
       py-debug-p
@@ -85,7 +81,7 @@
 
 (ert-deftest py-ert-electric-kill-backward-paren-test ()
   (let ((py-electric-kill-backward-p t))
-    (py-test
+    (py-test-with-temp-buffer
       "mystring(\"asdf\")"
       'python-mode
       py-debug-p
@@ -96,7 +92,7 @@
 
 (ert-deftest py-ert-electric-kill-backward-brace-test ()
   (let ((py-electric-kill-backward-p t))
-    (py-test
+    (py-test-with-temp-buffer
       "mystring{0 . 1}"
       'python-mode
       py-debug-p
@@ -107,58 +103,50 @@
 (ert-deftest py-ert-indent-dedenters-WoWM6j ()
   "Check all dedenters."
 
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(a, b, c):
     if a:"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-dedenters-4qujpk ()
   "Check all dedenters."
 
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(a, b, c):
     if a:
         print(a)
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-dedenters-OmirYx ()
   "Check all dedenters."
 
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(a, b, c):
     if a:
         print(a)
     elif b:"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-dedenters-P9MB72 ()
   "Check all dedenters."
 
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(a, b, c):
     if a:
         print(a)
     elif b:
         print(b)"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-dedenters-SFnpJ4 ()
   "Check all dedenters."
 
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(a, b, c):
     if a:
         print(a)
@@ -166,15 +154,13 @@
         print(b)
     else:
         try:"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-dedenters-m0FUAw ()
   "Check all dedenters."
 
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(a, b, c):
     if a:
         print(a)
@@ -183,15 +169,13 @@
     else:
         try:
             print(c.pop())"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 12 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-dedenters-nK9iWx ()
   "Check all dedenters."
 
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(a, b, c):
     if a:
         print(a)
@@ -201,15 +185,13 @@
         try:
             print(c.pop())
         except (IndexError, AttributeError):"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-dedenters-WRXYEM ()
   "Check all dedenters."
 
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(a, b, c):
     if a:
         print(a)
@@ -222,48 +204,38 @@
             print(c)
         finally:
             print('nor a, nor b are true')"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 12 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-after-backslash-lp-852052-ztz4Yn ()
-  (py-test
+  (py-test-with-temp-buffer
       "from foo.bar.baz import something, something_1 \\"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-after-backslash-lp-852052-LlOrDK ()
-  (py-test
+  (py-test-with-temp-buffer
       "from foo.bar.baz import something, something_1 \\
      something_2 something_3, \\"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 5 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-after-backslash-lp-852052-nvVJgu ()
-  (py-test
+  (py-test-with-temp-buffer
       "from foo.bar.baz import something, something_1 \\
      something_2 something_3, \\
      something_4, something_5"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 5 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-after-backslash-lp-852052-1 ()
   "The most common case."
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "
 from foo.bar.baz import something, something_1 \\
      something_2 something_3, \\
      something_4, something_5
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (search-forward "something_2 something_3,")
     (should (= (py-compute-indentation) 5))
@@ -272,14 +244,12 @@ from foo.bar.baz import something, something_1 \\
 
 (ert-deftest py-ert-bracket-closing-1 ()
   ""
-  (py-test
+  (py-test-with-temp-buffer
       "
 my_list = [
     1, 2, 3,
     4, 5, 6,
     ]"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (beginning-of-line)
     (let ((py-closing-list-dedents-bos t))
@@ -287,14 +257,12 @@ my_list = [
 
 (ert-deftest py-ert-bracket-closing-2 ()
   ""
-  (py-test
+  (py-test-with-temp-buffer
       "
 my_list = [
     1, 2, 3,
     4, 5, 6,
     ]"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (forward-char -1)
     (let ((py-closing-list-dedents-bos t))
@@ -302,28 +270,24 @@ my_list = [
 
 (ert-deftest py-ert-bracket-closing-3 ()
   ""
-  (py-test
+  (py-test-with-temp-buffer
       "
 my_list = [
     1, 2, 3,
     4, 5, 6,
     ]"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (let ((py-closing-list-dedents-bos t))
       (should (eq 0 (py-compute-indentation))))))
 
 (ert-deftest py-ert-bracket-closing-4 ()
   ""
-  (py-test
+  (py-test-with-temp-buffer
       "
 my_list = [
     1, 2, 3,
     4, 5, 6,
     ]"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (beginning-of-line)
     (let ((py-closing-list-dedents-bos nil))
@@ -331,14 +295,12 @@ my_list = [
 
 (ert-deftest py-ert-bracket-closing-5 ()
   ""
-  (py-test
+  (py-test-with-temp-buffer
       "
 my_list = [
     1, 2, 3,
     4, 5, 6,
     ]"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (forward-char -1)
     (let ((py-closing-list-dedents-bos nil))
@@ -346,62 +308,52 @@ my_list = [
 
 (ert-deftest py-ert-bracket-closing-6 ()
   ""
-  (py-test
+  (py-test-with-temp-buffer
       "
 my_list = [
     1, 2, 3,
     4, 5, 6,
     ]"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (let ((py-closing-list-dedents-bos nil))
       (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-indent-closing-tx8E5Q ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 my_list = [
     1, 2, 3,
     4, 5, 6,
     ]"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-closing-GOD79x ()
-  (py-test
+  (py-test-with-temp-buffer
       "result = some_function_that_takes_arguments(
     'a', 'b', 'c',
     'd', 'e', 'f')"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-closing-06uwom ()
-  (py-test
+  (py-test-with-temp-buffer
       "result = some_function_that_takes_arguments(
     'a', 'b', 'c',
     'd', 'e', 'f')"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-closing-GOD79x ()
-  (py-test
+  (py-test-with-temp-buffer
       "result = some_function_that_takes_arguments(
     'a', 'b', 'c',
     'd', 'e', 'f')"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-moves-up-class-bol-uzF3su ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -420,14 +372,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-class-bol)
     (should (bobp))))
 
 (ert-deftest py-ert-moves-up-def-or-class-bol-iPn4ge ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -446,14 +396,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
 (ert-deftest py-ert-moves-up-minor-block-bol-sqyjbT ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -476,14 +424,12 @@ my_list = [
             if b:
                 ar_atpt_python_list_roh = ([
                     'python-expression'])"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-minor-block-bol)
     (should (looking-at " +if a:"))))
 
 (ert-deftest py-ert-moves-up-block-bol-u0LDDH ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -502,14 +448,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-block-bol)
     (should (looking-at " +def f():"))))
 
 (ert-deftest py-ert-moves-up-block-w7eExs ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -537,14 +481,12 @@ my_list = [
             pass
         else b:
             pass"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-block)
     (should  (eq (char-after) ?d))))
 
 (ert-deftest py-ert-moves-backward-block-w7eExs ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -572,14 +514,12 @@ my_list = [
             pass
         else b:
             pass"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-backward-block)
     (should (looking-at "if a:"))))
 
 (ert-deftest py-ert-moves-up-minor-block-bol-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -598,14 +538,12 @@ my_list = [
         # if c
             if b:
                 pass"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-minor-block)
     (should (looking-at "if a:"))))
 
 (ert-deftest py-ert-moves-up-def-bol-wTMxJq ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -620,14 +558,12 @@ my_list = [
 	    \"\"\"
 	    class for in 'for in while with blah'
 	    \"\"\""
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-def-bol)
     (should (looking-at " +def __init__"))))
 
 (ert-deftest py-ert-moves-up-class-bol-hObRZJ ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -647,14 +583,12 @@ my_list = [
             ar_atpt_python_list_roh = ([
                 'python-expression',
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-class)
     (should (bolp))))
 
 (ert-deftest py-ert-moves-up-def-or-class-bol-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -682,14 +616,12 @@ my_list = [
             pass
         else b:
             pass"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
 (ert-deftest py-ert-moves-down-block-bol-1 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -721,15 +653,13 @@ my_list = [
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (goto-char 264)
     (py-down-block-bol)
     (should (bolp))))
 
 (ert-deftest py-ert-moves-down-def-bol-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -761,8 +691,6 @@ my_list = [
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "__init__")
     (py-down-def-bol)
@@ -770,7 +698,7 @@ my_list = [
     (should (looking-at " +def"))))
 
 (ert-deftest py-ert-down-class-bol-ubMUm6 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -790,14 +718,12 @@ my_list = [
             ar_atpt_python_list_roh = ([
                 'python-expression',
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (py-down-class-bol)
     (should (eobp))))
 
 (ert-deftest py-ert-moves-down-def-or-class-bol-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -829,8 +755,6 @@ my_list = [
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "__init__")
     (py-down-def-or-class-bol)
@@ -838,7 +762,7 @@ my_list = [
     (should (looking-at " +def"))))
 
 (ert-deftest py-ert-moves-down-block-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -870,15 +794,13 @@ my_list = [
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "__init__")
     (py-down-block)
     (should (looking-at "def"))))
 
 (ert-deftest py-ert-moves-down-block-bol-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -910,8 +832,6 @@ my_list = [
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "__init__")
     (py-down-block-bol)
@@ -919,7 +839,7 @@ my_list = [
     (should (looking-at " +def"))))
 
 (ert-deftest py-ert-moves-down-minor-block-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -945,8 +865,6 @@ my_list = [
             ])
         if b:
             pass"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (switch-to-buffer (current-buffer))
     (search-backward "a:")
@@ -954,7 +872,7 @@ my_list = [
     (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-moves-down-minor-block-bol-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -980,8 +898,6 @@ my_list = [
             ])
         if b:
             pass"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "__init__")
     (py-down-minor-block-bol)
@@ -989,7 +905,7 @@ my_list = [
     (should (looking-at " +if"))))
 
 (ert-deftest py-ert-moves-down-def-1 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1021,15 +937,13 @@ my_list = [
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (search-forward "def __init__")
     (py-down-def)
     (should (looking-at "def f()"))))
 
 (ert-deftest py-ert-moves-down-def-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1061,15 +975,13 @@ my_list = [
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "__init__")
     (py-down-def)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-moves-down-class-5kkTKq ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1089,13 +1001,11 @@ my_list = [
             ar_atpt_python_list_roh = ([
                 'python-expression',
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (not (py-down-class)))))
 
 (ert-deftest py-ert-moves-down-def-or-class-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1127,15 +1037,13 @@ my_list = [
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "__init__")
     (py-down-def-or-class)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-moves-backward-statement-bol-Njn9my ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1155,13 +1063,11 @@ my_list = [
             ar_atpt_python_list_roh = ([
                 'python-expression',
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 332 (py-backward-statement-bol)))))
 
 (ert-deftest py-ert-moves-backward-block-bol-x9If7W ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1181,14 +1087,12 @@ my_list = [
             ar_atpt_python_list_roh = ([
                 'python-expression',
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (indent-to 12)
     (should (eq 317 (py-backward-block-bol)))))
 
 (ert-deftest py-ert-moves-backward-clause-bol-RpODhD ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1208,13 +1112,11 @@ my_list = [
             ar_atpt_python_list_roh = ([
                 'python-expression',
                 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 317 (py-backward-clause-bol)))))
 
 (ert-deftest py-ert-moves-backward-block-or-clause-bol-ZDM7aD ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1234,13 +1136,11 @@ my_list = [
             ar_atpt_python_list_roh = ([
                 'python-expression',
                                   "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (eq 317 (py-backward-block-or-clause-bol)))))
 
 (ert-deftest py-ert-moves-backward-class-bol-PFB3qC ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1269,14 +1169,12 @@ my_list = [
         else b:
             pass
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-backward-class-bol)
     (should (bobp))))
 
 (ert-deftest py-ert-moves-backward-def-or-class-bol-xTvIPv ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1295,14 +1193,12 @@ my_list = [
 
             ar_atpt_python_list_roh = ([
                 'python-expression',"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-backward-def-or-class-bol)
     (should (looking-at "^ +def"))))
 
 (ert-deftest py-ert-moves-forward-clause-bol ()
-  (py-test
+  (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1329,14 +1225,12 @@ my_list = [
         elif b:
             pass
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (goto-char 576)
     (should (eq 594 (py-forward-clause-bol)))))
 
 (ert-deftest py-ert-moves-forward-block-or-clause-bol ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -1365,14 +1259,12 @@ my_list = [
         else b:
             pass
 "
-    'python-mode
-    py-debug-p
     (search-forward "elif b:")
     (py-forward-block-or-clause-bol)
     (should (looking-at " +else b:"))))
 
 (ert-deftest py-ert-moves-up-position-tests-12 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     def pylauf(self):
@@ -1387,8 +1279,6 @@ my_list = [
             # print \"%i, manque\" % (treffer)
             ausgabe[7] = treffer
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "self")
     (end-of-line)
@@ -1396,7 +1286,7 @@ my_list = [
     (should (eq (char-before) ?\]))))
 
 (ert-deftest py-ert-moves-up-copy-statement-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
    "from foo.bar.baz import something
 "
    'python-mode
@@ -1406,13 +1296,11 @@ my_list = [
    (should (string-match "from foo.bar.baz import something" (car kill-ring)))))
 
 (ert-deftest py-ert-moves-up-honor-dedent-lp-1280982 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo():
     def bar():
         asdf
     "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-newline-and-indent)
     (py-electric-backspace)
@@ -1420,7 +1308,7 @@ my_list = [
     (should (eq 42 (point)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-lp-1286318 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# r1416
 
 def baz():
@@ -1460,8 +1348,6 @@ def baz():
     \"\"\"
     return 7
 "
-    'python-mode
-    py-debug-p
     (goto-char 49)
     ;; (sit-for 0.1 t)
     (fill-paragraph)
@@ -1484,7 +1370,7 @@ def baz():
 
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-1 ()
   (let ((py-docstring-style 'pep-257-nn))
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -1520,7 +1406,7 @@ def baz():
 
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257 ()
   (let ((py-docstring-style 'pep-257))
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -1554,7 +1440,7 @@ def baz():
 
 (ert-deftest py-ert-moves-up-fill-paragraph-onetwo ()
   (let ((py-docstring-style 'onetwo))
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -1582,7 +1468,7 @@ def baz():
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-2 ()
   (let ((py-docstring-style 'django))
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -1602,7 +1488,7 @@ def baz():
 
 (ert-deftest py-ert-moves-up-fill-paragraph-symmetric ()
   (let ((py-docstring-style 'symmetric))
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
 	"# r1416
 
 def baz():
@@ -1629,29 +1515,23 @@ def baz():
       (should (not (empty-line-p))))))
 
 (ert-deftest py-partial-expression-test-1 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "foo=1"
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (and (should (string= "foo" (py-partial-expression)))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-partial-expression-test-2 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "print(root.getchildren()[0])"
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (search-forward "getchildren")
     (and (should (string= "getchildren()[0]" (py-partial-expression)))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
 (ert-deftest py-ert-moves-up-execute-statement-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (let ((py-shell-name "python2"))
       (py-execute-statement)
@@ -1662,7 +1542,7 @@ def baz():
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-1 ()
   "Indent line-by-line as first line is okay "
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1684,7 +1564,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-2 ()
   "Indent line-by-line as first line is okay "
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1707,7 +1587,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-3 ()
   "Indent line-by-line as first line is okay "
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1730,7 +1610,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-4 ()
   "Indent line-by-line as first line is okay "
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1753,7 +1633,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-5 ()
   "Indent line-by-line as first line is okay "
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1776,7 +1656,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest indent-region-lp-997958-lp-1426903-arg-2-test ()
   "Indent line-by-line as first line is okay "
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 with file(\"foo\" + zeit + \".ending\", 'w') as datei:
@@ -1786,8 +1666,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         # wrong indent should to be fixed
             datei.write(str(baz[i]) + \"\\n\")
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (search-forward "with file")
     (save-excursion
@@ -1802,7 +1680,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest py--pdb-versioned-test-Ft0557 ()
   (let ((py-shell-name "python3"))
-    (py-test
+    (py-test-with-temp-buffer
 	""
       'python-mode
       py-debug-p
@@ -1811,7 +1689,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest py--pdb-versioned-test-QoHSpJ ()
   (let ((py-shell-name "python"))
-    (py-test
+    (py-test-with-temp-buffer
 	""
       'python-mode
       py-debug-p
@@ -1819,7 +1697,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       (should (string= "pdb" (py--pdb-versioned))))))
 
 (ert-deftest py-ert-moves-up-forward-expression-test ()
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
 	"class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1888,7 +1766,7 @@ if __name__ == \"__main__\":
       ))
 
 (ert-deftest py-ert-moves-up-backward-expression-test ()
-    (py-test
+    (py-test-with-temp-buffer
 	"class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1943,7 +1821,7 @@ if __name__ == \"__main__\":
       (should (eq (char-after) ?\[))))
 
 (ert-deftest py-ert-which-def-or-class-test-1 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1970,8 +1848,6 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (search-forward "kugel")
     (should (string-match "kugel" (py-which-def-or-class)))
@@ -1979,7 +1855,7 @@ if __name__ == \"__main__\":
     (should (string-match "kugel.pylauf" (py-which-def-or-class)))))
 
 (ert-deftest py-ert-which-def-or-class-test-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "except AttributeError:
 
     # To fix reloading, force it to create a new foo
@@ -2007,15 +1883,13 @@ if __name__ == \"__main__\":
 
 else:
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (should (string= "???" (py-which-def-or-class)))
     (forward-line -3)
     (should (string= "getfoo" (py-which-def-or-class)))))
 
 (ert-deftest py-ert-which-def-or-class-test-3 ()
-  (py-test
+  (py-test-with-temp-buffer
 
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -2034,25 +1908,21 @@ else:
 
     def pylauf(self):
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (forward-line -2)
     (should (string= "kugel.foo" (py-which-def-or-class)))))
 
 (ert-deftest py-ert-match-paren-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "if __name__ == \"__main__\":
     main()"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (forward-char -1)
     (py-match-paren)
     (should (eq (char-after) ?\())))
 
 (ert-deftest py-ert-match-paren-test-2 ()
-    (py-test
+    (py-test-with-temp-buffer
 	"if __name__ == \"__main__\":
     main()"
       'python-mode
@@ -2063,7 +1933,7 @@ else:
       (should (eq (char-after) ?\)))))
 
 (ert-deftest py-ert-match-paren-test-4 ()
-    (py-test
+    (py-test-with-temp-buffer
 	"if __name__ == \"__main__\":
     main()
     "
@@ -2074,7 +1944,7 @@ else:
       (should (eq (char-after) ?m))))
 
 (ert-deftest py-ert-match-paren-test-5 ()
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
 	"if __name__ == \"__main__\":
     main()
     "
@@ -2087,7 +1957,7 @@ else:
       (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-match-paren-test-7 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -2114,8 +1984,6 @@ else:
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (skip-chars-backward "^\]")
     (forward-char -1)
@@ -2125,7 +1993,7 @@ if __name__ == \"__main__\":
     (should (eq (char-after) ?\]))))
 
 (ert-deftest py-ert-match-paren-test-8 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -2152,15 +2020,13 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
       (skip-chars-backward "^:")
       (py-match-paren)
       (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-match-paren-test-9 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -2187,8 +2053,6 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
       (search-backward "pylauf")
       (py-match-paren)
@@ -2198,14 +2062,12 @@ if __name__ == \"__main__\":
       ))
 
 (ert-deftest py-ert-match-paren-test-faMqA3 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def main():
     if len(sys.argv) == 1:
         usage()
         sys.exit()
               "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "if")
     (py-match-paren)
@@ -2214,13 +2076,11 @@ if __name__ == \"__main__\":
     (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-match-paren-test-AOADGb ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "import re
 import sys
 import os
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-min))
     (py-match-paren)
     (should (looking-at "import sys"))
@@ -2229,7 +2089,7 @@ import os
     (should (looking-at "import re"))))
 
 (ert-deftest py-ert-match-paren-nonempty-test-6 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def main():
     if len(sys.argv) == 1:
         usage()
@@ -2241,8 +2101,6 @@ import os
         def Utf8_Exists(filename):
             return os.path.exists(filename.encode('utf-8'))
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "class")
     (py-match-paren)
@@ -2251,28 +2109,24 @@ import os
     ))
 
 (ert-deftest py-ert-match-paren-nonempty-test-7 ()
-  (py-test
+  (py-test-with-temp-buffer
       "try:
     anzahl = int(args[1])
 except:
     print \"Setze anzahl auf 1\"
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "arg")
     (py-match-paren)
     (should (eq (char-after) ?\())))
 
 (ert-deftest py-ert-match-paren-nonempty-test-8 ()
-  (py-test
+  (py-test-with-temp-buffer
       "try:
     anzahl = int(args[1])
 except:
     print \"Setze anzahl auf 1\"
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward " int")
     (py-match-paren)
@@ -2283,18 +2137,16 @@ except:
     (should (eq 4 (current-column)))))
 
 (ert-deftest py-ert-match-paren-test-9 ()
-  (py-test
+  (py-test-with-temp-buffer
       "if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (py-match-paren)
     (should (eq (char-after) ?i))))
 
 (ert-deftest py-ert-moves-up-match-paren-test-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -2321,8 +2173,6 @@ except:
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (forward-line -3)
     (indent-to 12)
@@ -2330,7 +2180,7 @@ if __name__ == \"__main__\":
     (should (eq (char-after) ?a))))
 
 (ert-deftest py-ert-moves-up-match-paren-test-10 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -2357,8 +2207,6 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (forward-line -3)
     (indent-to 8)
@@ -2368,15 +2216,13 @@ if __name__ == \"__main__\":
     (should (eolp))))
 
 (ert-deftest py-ert-backward-def-or-class-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class _Simple(object):
     # emulate something
     def foo(self, element, tag, namespaces=None):
         pass
     def bar(self, element, tag, namespaces=None):
         return list(self.iterfind(element, tag, namespaces))"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (forward-line -1)
     (end-of-line)
@@ -2384,30 +2230,26 @@ if __name__ == \"__main__\":
     (should (char-equal ?d (char-after)))))
 
 (ert-deftest py-ert-backward-def-or-class-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class _Simple(object):
     # emulate something
     def foo(self, element, tag, namespaces=None):
         pass
     def bar(self, element, tag, namespaces=None):
         return list(self.iterfind(element, tag, namespaces))"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def-or-class)
     (should (char-equal ?d (char-after)))))
 
 (ert-deftest py-ert-backward-def-or-class-3 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class _Simple(object):
     # emulate something
     def foo(self, element, tag, namespaces=None):
         pass
     def bar(self, element, tag, namespaces=None):
         return list(self.iterfind(element, tag, namespaces))"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "def" nil t 2)
     (py-backward-def-or-class)
