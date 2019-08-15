@@ -734,7 +734,7 @@ optional argument."
       (or temp-file-name file-name) encoding encoding file-name)
      proc)))
 
-(defun py--fetch-result (buffer cmd)
+(defun py--fetch-result (buffer cmd &optional no-output)
   "CMD: the command echoed maybe in output-buffer"
   (with-current-buffer buffer
     (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -757,7 +757,9 @@ optional argument."
 				     (buffer-substring-no-properties (point) end)
 				     "\n")
 			       ;; cleanup
-			       (and (derived-mode-p 'comint-mode) (delete-region (point) end)))))
+			       (and no-output 
+				    ;; (derived-mode-p 'comint-mode)
+				    (delete-region (point) end)))))
 		      (throw 'py--fetch-result-beg (message "py--fetch-result: %s" "-beg re-search-backward py-fast-filter-re failed"))))))
 	  (goto-char orig))))))
 

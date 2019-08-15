@@ -1765,7 +1765,7 @@ With optional Arg RESULT return output"
 		 (sit-for py-python-send-delay)
 		 (cond (result
 			(setq py-result
-			      (py--fetch-result buffer strg)))
+			      (py--fetch-result buffer strg no-output)))
 		       (no-output
 			(and orig (py--cleanup-shell orig buffer))))))))))
 
