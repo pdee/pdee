@@ -197,7 +197,8 @@ impo")))
 (ert-deftest py-wrong-on-quotes-31-test ()
   (py-test-with-temp-buffer
       "print(\"don't\")"
-    (py-execute-statement)))
+    (py-execute-statement)
+    (should (not (nth 3 (parse-partial-sexp (point-min) (point)))))))
 
 (ert-deftest py-support-PEP-553-built-in-breakpoint-42-test ()
   (py-test-with-temp-buffer
@@ -265,14 +266,7 @@ else: "
     (goto-char (point-max))
     (should (eq 4  (py-compute-indentation)))))
 
-(ert-deftest py-send-string-text-dtOWbA ()
-  ""
-  'python-mode
-  py-verbose-p
-  (let (erg)
-    (setq erg (py-send-string "print(\"foo\")" nil t))
-    (should (string= erg "foo"))
-    (should (string= py-result "foo"))))
+
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

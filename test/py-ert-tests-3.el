@@ -26,7 +26,7 @@
 
 ;; py-if-name-main-permission-p
 (ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 def py_if_name_main_permission_test():
@@ -40,8 +40,6 @@ def py_if_name_main_permission_test():
 
 py_if_name_main_permission_test()
 "
-   'python-mode
-   'py-debug-p
    (goto-char (point-min))
    (let ((py-if-name-main-permission-p t))
      (py-execute-buffer-python2)
@@ -50,77 +48,67 @@ py_if_name_main_permission_test()
      (should (search-backward "run" nil t)))))
 
 (ert-deftest py-ert-indent-try-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "#! /usr/bin/env python
 
 import sys
 import os
 
         try:"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "try")
     (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-ert-multiple-decorators-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "@blah
 @blub
 def foo():
     pass
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (let ((py-mark-decorators t))
       (py-beginning-of-def-or-class)
       (should (bobp)))))
 
 (ert-deftest py-ert-multiple-decorators-test-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "@blah
 @blub
 def foo():
     pass
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (let* (py-mark-decorators
            (erg (py-beginning-of-def-or-class)))
       (should (eq 13 erg)))))
 
 (ert-deftest py-ert-async-backward-block-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "async def coro(name, lock):
     print('coro {}: waiting for lock'.format(name))
     async with lock:
         print('coro {}: holding the lock'.format(name))
         await asyncio.sleep(1)
         print('coro {}: releasing the lock'.format(name))"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (py-backward-block)
     (should (looking-at "async with"))))
 
 (ert-deftest py-ert-async-backward-def-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "async def coro(name, lock):
     print('coro {}: waiting for lock'.format(name))
     async with lock:
         print('coro {}: holding the lock'.format(name))
         await asyncio.sleep(1)
         print('coro {}: releasing the lock'.format(name))"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (py-backward-def)
     (should (looking-at "async def"))))
 
 (ert-deftest py-ert-async-indent-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "async def coro(name, lock):
 
     print('coro {}: waiting for lock'.format(name))
@@ -128,8 +116,6 @@ def foo():
         print('coro {}: holding the lock'.format(name))
         await asyncio.sleep(1)
         print('coro {}: releasing the lock'.format(name))"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (forward-line 1)
     (should (eq 4 (py-compute-indentation)))
@@ -137,14 +123,12 @@ def foo():
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-fill-comment-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class Foo(Bar):
     def baz(self):
         # Given a winning upgrade path, we can ceiling the maximum image number from that path to be applied.  This is useful for image testing purposes.  XXX
         self.assertEqual([str(image.version) for image in state.winner],
                              [])"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (search-forward "XXX")
     (fill-paragraph)
@@ -154,7 +138,7 @@ def foo():
     (should (eq 6 (count-lines (point-min) (point))))))
 
 (ert-deftest py-ert-parens-span-multiple-lines-lp-1191225-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# -*- coding: utf-8 -*-
 def foo():
     if (foo &&
@@ -170,23 +154,19 @@ def foo():
             baz):
         bar()
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (let ((py-indent-list-style 'one-level-from-first-element))
       (search-forward "b")
       (should (eq 12 (py-compute-indentation))))))
 
 (ert-deftest py-raw-docstring-test-pep-257-nn ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "def f():
     r\"\"\" This is the docstring for my function.It's a raw docstring because I want to type \\t here, and maybe \\n,for example in LaTeX code like \\tau or \\nu.
 
 More docstring here.
 \"\"\"
  pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (let ((py-docstring-style 'pep-257-nn))
       (search-forward "docstring")
@@ -196,7 +176,7 @@ More docstring here.
       (should (eq 4 (current-indentation))))))
 
 (ert-deftest py-ert-backward-indent-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "class A(object):
     def a(self):
         sdfasde
@@ -205,8 +185,6 @@ More docstring here.
         asdef
         asdf
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (py-backward-indent)
     (should (eq (char-after) ?a))
@@ -216,7 +194,7 @@ More docstring here.
     (should (eq (char-after) ?s))))
 
 (ert-deftest py-ert-forward-indent-test-1 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         sdfasde
@@ -225,21 +203,17 @@ More docstring here.
         asdef
         asdf
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdf")
     (py-forward-indent)
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-beginning-of-indent-p-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (should (not (py--beginning-of-indent-p)))
@@ -247,13 +221,11 @@ More docstring here.
     (should (py--beginning-of-indent-p))))
 
 (ert-deftest py-ert-beginning-of-indent-bol-p-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (should (not (py--beginning-of-indent-bol-p)))
@@ -261,13 +233,11 @@ More docstring here.
     (should (py--beginning-of-indent-bol-p))))
 
 (ert-deftest py-ert-copy-indent-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-copy-indent)
@@ -277,13 +247,11 @@ More docstring here.
     (should (py--beginning-of-indent-p))))
 
 (ert-deftest py-ert-delete-indent-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-delete-indent)
@@ -291,13 +259,11 @@ More docstring here.
     (should (bolp))))
 
 (ert-deftest py-ert-kill-indent-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-kill-indent)
@@ -306,13 +272,11 @@ More docstring here.
     (should (bolp))))
 
 (ert-deftest py-ert-mark-indent-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-mark-indent)
@@ -320,35 +284,31 @@ More docstring here.
     (should (eq 28 (length (buffer-substring-no-properties (region-beginning) (region-end)))))))
 
 (ert-deftest py-ert-backward-comment-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         # sdfasde
         # sdfasde
         # sdfasde
         print(123)"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdfasde" nil t 3)
     (py-backward-comment)
     (should (eq 43 (point)))))
 
 (ert-deftest py-ert-forward-comment-test-ibueq9 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         # sdfasde
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdf")
     (py-forward-comment)
     (should (eq (char-before) ?e))))
 
 (ert-deftest py-ert-else-clause-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo()
     if aaa:
         if bbb:
@@ -356,21 +316,17 @@ More docstring here.
         y = 1
     else
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-shift-indent-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
         sdfasde
         sdfasde
         sdfasde
         print(123)"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-shift-indent-right)
@@ -379,25 +335,21 @@ More docstring here.
     (should (eq 8 (current-indentation)))))
 
 (ert-deftest py-ert-list-indent-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "print('test'
           'string'
           'here')"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (beginning-of-line)
     (should (eq 6 (py-compute-indentation)))))
 
 (ert-deftest py-ert-list-indent-test-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "if (release_time != -1 and
     datetime.datetime.now() > release_time + CLOCK_SLOP):
     # Yes, so break the lock.
     self._break()
     log.error('lifetime has expired, breaking')"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (let ((py-indent-list-style 'line-up-with-first-element))
       (search-backward "datetime.datetime.now")
@@ -405,14 +357,12 @@ More docstring here.
       (should (eq 4 (current-indentation))))))
 
 (ert-deftest py-ert-list-indent-test-3 ()
-  (py-test
+  (py-test-with-temp-buffer
       "if (release_time != -1 and
     datetime.datetime.now() > release_time + CLOCK_SLOP):
     # Yes, so break the lock.
     self._break()
     log.error('lifetime has expired, breaking')"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
       (search-backward "datetime.datetime.now")
@@ -420,16 +370,14 @@ More docstring here.
       (should (eq 8 (current-indentation))))))
 
 (ert-deftest py-ert-list-indent-test-4 ()
-  (py-test
+  (py-test-with-temp-buffer
       "if (release_time != -1 and
     datetime.datetime.now() > release_time + CLOCK_SLOP):"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-embedded-def-or-class-test-RrkIDD ()
-  (py-test
+  (py-test-with-temp-buffer
       " class Foo:
     def bar(self):
         print(\"\"\"
@@ -438,35 +386,29 @@ a nested
 string.
 \"\"\")
         return True"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (py-backward-def-or-class)
     (should (eq (char-after) ?d))))
 
 (ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo():
     print(\"\"\"
 
 Bar
 \"\"\")
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (forward-line -3)
     (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-ert-edit-docstring-write-content-back-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "def foo():
     \"\"\"def bar():
     pass\"\"\"
     pass
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (let ((py-edit-docstring-buffer "Py-Ert-Edit-Docstring-Test"))
       (search-forward "pass" nil t 1)
@@ -487,7 +429,7 @@ Bar
       )))
 
 (ert-deftest py-ert-nested-def-lp-1594263-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "def decoratorFunctionWithArguments(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
 
@@ -507,8 +449,6 @@ Bar
             print 'After f(\*args)'
         return wrapped_f
     return wwrap"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (forward-line -1)
     (back-to-indentation)
@@ -516,26 +456,22 @@ Bar
     (should (looking-at "def wwrap"))))
 
 (ert-deftest py--indent-line-by-line-lp-1621672 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def asdf()
      pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (py-indent-region (point-min) (point-max))
     (should (eq 4 (current-indentation)))))
 
 (ert-deftest py--indent-line-by-line-lp-1621672-b ()
-  (py-test
+  (py-test-with-temp-buffer
       "    print(\"asdf\")"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (py-indent-region (point-min) (point-max))
     (should (eq 0 (current-indentation)))))
 
 (ert-deftest py-forward-def-or-class-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
     '''
@@ -548,8 +484,6 @@ Bar
             print 'After f(*args)'
         return wrapped_f
     return wwrap"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "args)'")
     (py-forward-def-or-class)
@@ -558,7 +492,7 @@ Bar
     (should (eq (char-before) ?f))))
 
 (ert-deftest py-forward-def-or-class-9oeKIr ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
     '''
@@ -571,11 +505,7 @@ Bar
             print 'After f(*args)'
         return wrapped_f
     return wwrap"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "'")
     (forward-char 1)
@@ -583,7 +513,7 @@ Bar
     (should (eq (char-before) ?f))))
 
 (ert-deftest py-forward-block-1 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "if True:
     def bar():
         pass
@@ -614,14 +544,12 @@ else:
         pass
     finally:
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (py-forward-block)
     (should (eobp))))
 
 (ert-deftest py-forward-clause-lp-1630952-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
     '''
@@ -634,15 +562,13 @@ else:
             print 'After f(*args)'
         return wrapped_f
     return wwrap"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (search-backward "args)'")
     (py-forward-clause)
     (should (eq (char-before) ?'))))
 
 (ert-deftest py-up-block-test-Ek86Xk ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 def foo():
     if True:
@@ -656,33 +582,13 @@ def foo():
             1 == 1
         except True:
         "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
-    'python-mode
-    py-debug-p
     (py-up-block)
     (should (looking-at "if True:"))))
 
-(ert-deftest UnicodeEncodeError-lp-550661-test-1 ()
-  (py-test
-      "#! /usr/bin/env python3
-print(u'\\xA9')"
-    'python-mode
-    'py-debug-p
-    (let ((py-return-result-p t)
-	  (py-store-result-p t))
-    (goto-char (point-max))
-    (py-execute-buffer)
-    ;; (sit-for 1) 
-    ;; (set-buffer "*Python3*")
-    (should (eq '© (car (read-from-string py-result)))))))
-
 (ert-deftest py-execute-region-no-transmm-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "print(u'\\xA9')"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (let (transient-mark-mode)
       (push-mark)
@@ -691,55 +597,32 @@ print(u'\\xA9')"
       (should (eq 4 (current-indentation))))))
 
 (ert-deftest py-forward-statement-test-3 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})
 
 print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min) )
     (py-forward-statement)
     (py-forward-statement)
     (should (eobp))))
 
-(ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test ()
-  (py-test
-      "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-import os
-os.write"
-    'python-mode
-    'py-debug-p
-    (goto-char (point-max))
-    (forward-char -1)
-    (py-help-at-point)
-    (sit-for 0.1)
-    (set-buffer "*Python-Help*")
-    (goto-char (point-min))
-    (switch-to-buffer (current-buffer))
-    (should (string-match "write" (buffer-substring-no-properties (point-min) (line-end-position))))))
-
 (ert-deftest py-execute-import-or-reload-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import os"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (py-execute-import-or-reload)
     (should t)))
 
 (ert-deftest py-fill-docstring-pep-257-nn-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "def usage():
     \'\'\' asdf\' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 \'\'\'
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (font-lock-fontify-region (point-min)(point-max))
     (goto-char (point-min))
@@ -750,11 +633,9 @@ import os"
 
 ;; https://bugs.launchpad.net/python-mode/+bug/1321266
 (ert-deftest py-fill-string-lp-1321266-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "print(\"%(language)s has %(number)03d quote types. asdf asdf asdf asdfa sasdf asdfasdfasdfasdfasdfasda asd asdfa a asdf asdfa asdf \" %
        {'language': \"Python\", \"number\": 2})"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (search-backward "asdf")
     (py-fill-string)
@@ -763,10 +644,8 @@ import os"
     (should (eq (char-before) 92))))
 
 (ert-deftest py-syntax-highlighting-for-builtin-functions-55-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "range(len(list((1, 2, 3))))"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     ;; (goto-char (point-max))
     (font-lock-fontify-region (point-min) (point-max))
@@ -775,7 +654,7 @@ import os"
     (should (face-equal (face-at-point) 'py-builtins-face))))
 
 (ert-deftest py-backward-clause-test-p52Dcj ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo():
     if True:
         def bar():
@@ -783,8 +662,6 @@ import os"
     elif False:
         def baz():
             pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (search-backward "elif")
     (skip-chars-backward " \t\r\n\f")
@@ -793,7 +670,7 @@ import os"
     (should (looking-at "if True"))))
 
 (ert-deftest py-indentation-after-an-explicit-dedent-61-test-lpYaIp ()
-  (py-test
+  (py-test-with-temp-buffer
       "mport sys
 
 def main():
@@ -802,14 +679,12 @@ def main():
 
     x = 7
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (goto-char (point-max))
     (should (eq 4  (py-compute-indentation)))))
 
 (ert-deftest py-backward-clause-test-p52Dcj ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo():
     if True:
         def bar():
@@ -817,8 +692,6 @@ def main():
     elif False:
         def baz():
             pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (search-backward "elif")
     (skip-chars-backward " \t\r\n\f")
@@ -827,7 +700,7 @@ def main():
     (should (looking-at "if True"))))
 
 (ert-deftest py-backward-clause-test-hPywHz ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo():
     if True:
         def bar():
@@ -835,8 +708,6 @@ def main():
     elif False:
         def baz():
             pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (sit-for 0.1)
     (search-backward "elif")
@@ -855,20 +726,6 @@ def main():
       (insert "def")
       (backward-char)
       (should (eq (char-after) ?f)))))
-
-
-
-;; (ert-deftest py-help-at-point-test-Feo2B6 ()
-;;   (py-test "import django
-
-;; print(django)
-;; "
-;;     'python-mode
-;;     'py-debug-p
-;;     (goto-char (point-max))
-;;     (search-backward "djan")
-;;     (py-help-at-point)
-;;     (should (eq (char-before) 32))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

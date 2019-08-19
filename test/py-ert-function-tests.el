@@ -2061,77 +2061,29 @@
 (ert-deftest py-ert-execute-file-python-functionp-test ()
   (should (functionp 'py-execute-file-python)))
 
-(ert-deftest py-ert-execute-file-python-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python-switch)))
-
-(ert-deftest py-ert-execute-file-python-no-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python-no-switch)))
-
 (ert-deftest py-ert-execute-file-python-dedicated-functionp-test ()
   (should (functionp 'py-execute-file-python-dedicated)))
-
-(ert-deftest py-ert-execute-file-python-dedicated-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python-dedicated-switch)))
 
 (ert-deftest py-ert-execute-file-ipython-functionp-test ()
   (should (functionp 'py-execute-file-ipython)))
 
-(ert-deftest py-ert-execute-file-ipython-switch-functionp-test ()
-  (should (functionp 'py-execute-file-ipython-switch)))
-
-(ert-deftest py-ert-execute-file-ipython-no-switch-functionp-test ()
-  (should (functionp 'py-execute-file-ipython-no-switch)))
-
-(ert-deftest py-ert-execute-file-ipython-dedicated-functionp-test ()
-  (should (functionp 'py-execute-file-ipython-dedicated)))
-
-(ert-deftest py-ert-execute-file-ipython-dedicated-switch-functionp-test ()
-  (should (functionp 'py-execute-file-ipython-dedicated-switch)))
-
 (ert-deftest py-ert-execute-file-python3-functionp-test ()
   (should (functionp 'py-execute-file-python3)))
-
-(ert-deftest py-ert-execute-file-python3-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python3-switch)))
-
-(ert-deftest py-ert-execute-file-python3-no-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python3-no-switch)))
 
 (ert-deftest py-ert-execute-file-python3-dedicated-functionp-test ()
   (should (functionp 'py-execute-file-python3-dedicated)))
 
-(ert-deftest py-ert-execute-file-python3-dedicated-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python3-dedicated-switch)))
-
 (ert-deftest py-ert-execute-file-python2-functionp-test ()
   (should (functionp 'py-execute-file-python2)))
-
-(ert-deftest py-ert-execute-file-python2-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python2-switch)))
-
-(ert-deftest py-ert-execute-file-python2-no-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python2-no-switch)))
 
 (ert-deftest py-ert-execute-file-python2-dedicated-functionp-test ()
   (should (functionp 'py-execute-file-python2-dedicated)))
 
-(ert-deftest py-ert-execute-file-python2-dedicated-switch-functionp-test ()
-  (should (functionp 'py-execute-file-python2-dedicated-switch)))
-
 (ert-deftest py-ert-execute-file-jython-functionp-test ()
   (should (functionp 'py-execute-file-jython)))
 
-(ert-deftest py-ert-execute-file-jython-switch-functionp-test ()
-  (should (functionp 'py-execute-file-jython-switch)))
-
-(ert-deftest py-ert-execute-file-jython-no-switch-functionp-test ()
-  (should (functionp 'py-execute-file-jython-no-switch)))
-
 (ert-deftest py-ert-execute-file-jython-dedicated-functionp-test ()
   (should (functionp 'py-execute-file-jython-dedicated)))
-
-(ert-deftest py-ert-execute-file-jython-dedicated-switch-functionp-test ()
-  (should (functionp 'py-execute-file-jython-dedicated-switch)))
 
 (ert-deftest py-ert--shell-completion-get-completions-functionp-test ()
   (should (functionp 'py--shell-completion-get-completions)))

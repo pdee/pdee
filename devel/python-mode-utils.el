@@ -815,6 +815,37 @@
 
 ")
 
+(defun py-write-file-forms ()
+  "Write ‘py-execute-file-python...’ etc."
+  (interactive)
+  (set-buffer (get-buffer-create "python-components-execute-file.el"))
+  (erase-buffer)
+  (insert ";;; python-components-execute-file --- Runs files -*- lexical-binding: t; -*-\n")
+  (insert arkopf)
+  (insert ";; Execute file given\n\n")
+  (when (interactive-p) (switch-to-buffer (current-buffer)))
+  (goto-char (point-max)) 
+  (dolist (elt py-shells)
+    (setq ele (format "%s" elt))
+    (insert (concat "(defun py-execute-file-" ele " (filename)"))
+    (insert (concat "
+  \"Send file to " (py--prepare-shell-name ele) " interpreter\"
+  (interactive \"fFile: \")
+  (py--execute-prepare file \"" ele "\" nil nil nil nil filename))\n\n")))
+  (dolist (elt py-shells)
+    (setq ele (format "%s" elt))
+    (insert (concat "(defun py-execute-file-" ele "-dedicated (filename)"))
+    (insert (concat "
+  \"Send file to a dedicated" (py--prepare-shell-name ele) " interpreter\"
+  (interactive \"fFile: \")
+  (py--execute-prepare file \"" ele "\" t nil nil nil filename))\n\n")))
+  (insert "(provide 'python-components-execute-file)
+;;; python-components-execute-file.el ends here\n")
+  (when (called-interactively-p 'interactive)
+    (switch-to-buffer (current-buffer))
+    (emacs-lisp-mode))
+  (write-file (concat components-directory "/python-components-execute-file.el")))
+
 (defun py--exexutable-name (ele)
   "Return \"IPython\" for \"ipython\" etc."
   (let (erg)

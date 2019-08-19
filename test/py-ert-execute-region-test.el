@@ -66,7 +66,7 @@ print(\"two\")"
     (let ((buffer (py--choose-buffer-name "ipython")))
       (py-execute-region-ipython (point-min) (point-max))
       (set-buffer buffer)
-      (accept-process-output (get-buffer-process buffer) 0.1)
+      ;; (accept-process-output (get-buffer-process buffer) 0.1)
       (switch-to-buffer (current-buffer)) 
       (goto-char (point-max))
       (sit-for 0.5 t)

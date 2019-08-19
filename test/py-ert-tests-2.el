@@ -766,25 +766,6 @@ that, needs, to_be, wrapped)"
       (indent-line-to (py-compute-indentation))
       (should (eq 13 (current-indentation))))))
 
-(ert-deftest py-complete-in-python3-shell-test ()
-  (py-kill-buffer-unconditional "*Python3*")
-  (set-buffer (python3))
-  (should (eq (current-buffer) (get-buffer "*Python3*")))
-  (goto-char (point-max))
-  (insert "pri")
-  (py-indent-or-complete)
-  (forward-word -1)
-  (should (eq ?p (char-after))))
-
-(ert-deftest py-complete-empty-string-result-test ()
-  (py-kill-buffer-unconditional "*Python3*")
-  (set-buffer (python3))
-  (goto-char (point-max))
-  (insert "foo")
-  (py-indent-or-complete)
-  (sit-for 0.1)
-  (should (looking-back "foo")))
-
 (ert-deftest py-ert-close-block-test ()
   (py-test-point-min
       "# -*- coding: utf-8 -*-
