@@ -153,7 +153,7 @@ Useful for newly defined symbol, not known to python yet."
           (when erg
             (set-buffer (get-buffer-create "*Python-Help*"))
             (erase-buffer)
-            (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
+            ;; (when (interactive-p) (switch-to-buffer (current-buffer)))
             (insert erg)))))))
 
 (defun py-info-current-defun (&optional include-type)
@@ -194,9 +194,8 @@ not inside a defun."
 (defalias 'py-eldoc-function 'py-help-at-point)
 (defun py--help-at-point-intern (sym orig)
   (let* ((origfile (py--buffer-filename-remote-maybe))
-	 (temp (md5 (buffer-name)))
+	 ;; (temp (md5 (buffer-name)))
 	 (buffer-name "*Python-Help*")
-	 (file (concat (py--normalize-directory py-temp-directory) temp "-py-help-at-point.py"))
 	 (cmd (py-find-imports))
 	 ;; if symbol is defined in current buffer, go to
 	 (erg (progn (goto-char (point-min))
@@ -215,33 +214,38 @@ not inside a defun."
 			"sys.path.insert(0, '"
 			(file-name-directory origfile) "')\n")))
     (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
-    ;; (with-temp-buffer-window "*Python-Help*"
-    ;; 			     (switch-to-buffer "*Python-Help*") 'help-window-setup (insert (py-send-string cmd nil t)))
-    (py-kill-buffer-unconditional buffer-name)
+    (ignore-errors (py-kill-buffer-unconditional buffer-name))
     (with-temp-buffer-window
      (set-buffer (get-buffer-create buffer-name))
-     (setq buffer-modified-p nil)
+     (setq inhibit-read-only t)
      (setq inhibit-point-motion-hooks t)
        (erase-buffer)
        (when py-debug-p (message "%s" (current-buffer)))
-       (let ((erg (py-send-string cmd nil t nil nil nil t)))
-	 (when erg
-	   (insert erg))))))
+       (py-send-string cmd nil nil nil nil (current-buffer))
+       )))
+       ;; (let ((erg (py-send-string cmd nil t nil nil (current-buffer))))
+       ;; 	 (when erg
+       ;; 	   (insert erg))))))
 
 (defun py-help-at-point ()
   "Print help on symbol at point.
 
 If symbol is defined in current buffer, jump to it's definition"
   (interactive)
-  (let ((orig (point))
-	(symbol
-	 ;; (thing-at-point 'symbol t)
-	 (py-symbol-at-point)))
+  (let* ((py-cleanup-p t)
+	 (orig (point))
+	 (beg (and (use-region-p) (region-beginning)))
+	 (end (and (use-region-p) (region-end)))
+	 (symbol
+	  (or (and beg end
+		   (buffer-substring-no-properties beg end))
+	      ;; (thing-at-point 'symbol t)
+	      (py-symbol-at-point))))
     ;; avoid repeated call at identic pos
     (unless (eq orig (ignore-errors py-last-position))
       (setq py-last-position orig))
-    (unless (member (get-buffer-window "*Python-Help*") (window-list))
-      (window-configuration-to-register py-windows-config-register))
+    ;; (unless (member (get-buffer-window "*Python-Help*") (window-list))
+    ;;   (window-configuration-to-register py-windows-config-register))
     (and (looking-back "(" (line-beginning-position))(not (looking-at "\\sw")) (forward-char -1))
     (if (or (eq (face-at-point) 'font-lock-string-face)(eq (face-at-point) 'font-lock-comment-face))
 	(progn
@@ -251,7 +255,8 @@ If symbol is defined in current buffer, jump to it's definition"
 	  ;; (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
 	  (not (string= "" symbol))
 	  (py--help-at-point-intern symbol orig)
-	(py-restore-window-configuration)))))
+	;; (py-restore-window-configuration)
+	))))
 
 ;;  Documentation functions
 
@@ -680,9 +685,9 @@ Imports done are displayed in message buffer."
           (orig (point))
           (erg (py-find-imports)))
       (goto-char orig)
-      (when (called-interactively-p 'any)
-        (switch-to-buffer (current-buffer))
-        (message "%s" erg))
+      ;; (when (called-interactively-p 'any)
+      ;;   (switch-to-buffer (current-buffer))
+      ;;   (message "%s" erg))
       erg)))
 
 ;;  Code-Checker
@@ -1136,7 +1141,6 @@ Keegan Carruthers-Smith"
 (defun py-display-state-of-variables ()
   "Read the state of ‘python-mode’ variables.
 
-Display the result in an org-mode buffer.
 Assumes vars are defined in current source buffer"
   (interactive)
   (save-restriction
@@ -1171,8 +1175,7 @@ Assumes vars are defined in current source buffer"
           (insert (concat "   " (cdr ele) "\n\n")))
         ;; (richten)
         (sit-for 0.01 t))
-      (sit-for 0.01 t)
-      (org-mode))))
+      (sit-for 0.01 t))))
 
 ;; common typo
 (defalias 'iypthon 'ipython)

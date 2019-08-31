@@ -201,6 +201,11 @@ There is also
   regular Python, also getting completions from. However,
   with IPython, it feels a demi-second slower.
 
+* Session mode
+  Py-shell runs in session mode by default. Not to run in session
+  mode, customize ‘py-session-p’ to nil. Or for current session call
+  ‘py-toggle-session-p’. 
+
 * Troubleshooting
 
   Start with Emacs -Q from the directory where python-mode.el lives.

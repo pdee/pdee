@@ -2127,21 +2127,6 @@ Return code of ‘py-" ele "’ at point, a string.\"
             (set-buffer-modified-p modified))
         (error (concat \"No \" (format \"%s\" form) \" at point\"))))))
 
-\(defun py-show-base (form &optional beg end)
-  \"Remove invisibility of existing form at point.\"
-  (save-excursion
-    (let\* ((form (prin1-to-string form))
-           (beg (or beg (or (funcall (intern-soft (concat \"py--beginning-of-\" form \"-p\")))
-                            (funcall (intern-soft (concat \"py-backward-\" form))))))
-           (end (or end (funcall (intern-soft (concat \"py-forward-\" form)))))
-           (modified (buffer-modified-p))
-           (inhibit-read-only t))
-      (if (and beg end)
-          (progn
-            (hs-discard-overlays beg end)
-            (set-buffer-modified-p modified))
-        (error (concat \"No \" (format \"%s\" form) \" at point\"))))))
-
 \(defun py-hide-show (&optional form beg end)
   \"Toggle visibility of existing forms at point.\"
   (interactive)
@@ -2158,6 +2143,25 @@ Return code of ‘py-" ele "’ at point, a string.\"
             (hs-make-overlay beg end 'code))
         (error (concat \"No \" (format \"%s\" form) \" at point\")))
       (set-buffer-modified-p modified))))
+
+\(defun py-show ()
+  \"Remove invisibility of existing form at point\.\"
+  (interactive)
+  (with-silent-modifications
+    (save-excursion
+      (back-to-indentation)
+      (let ((end (next-overlay-change (point))))
+	(hs-discard-overlays (point) end)))))
+
+\(defun py-show-all ()
+  \"Remove invisibility of hidden forms in buffer\.\"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let (end)
+      (while (and (not (eobp))  (setq end (next-overlay-change (point))))
+	(hs-discard-overlays (point) end)
+	(goto-char end)))))
 
 \(defun py-hide-region (beg end)
   \"Hide active region.\"
@@ -2179,12 +2183,12 @@ Return code of ‘py-" ele "’ at point, a string.\"
   \"Hide " ele " at point.\"
   (interactive)
   (py-hide-base '" ele "))
-
-\(defun py-show-" ele " ()
-  \"Show " ele " at point.\"
-  (interactive)
-  (py-show-base '" ele "))
 ")))
+
+;; \(defun py-show-" ele " ()
+;;   \"Show " ele " at point.\"
+;;   (interactive)
+;;   (py-show-base '" ele "))
 
   (insert "\n;; python-components-hide-show.el ends here
 \(provide 'python-components-hide-show)")

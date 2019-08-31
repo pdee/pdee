@@ -104,32 +104,6 @@ Returns position reached if successful"
   (unless (bobp)
     (goto-char (point-min))))
 
-(defmacro py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf split result)
-  "Used by python-components-extended-executes ."
-  (declare  (debug t))
-  (save-excursion
-    `(let* ((form ,(prin1-to-string form))
-           (origline (py-count-lines))
-	   (fast (or ,fast py-fast-process-p))
-	   (py-exception-buffer (current-buffer))
-           (beg (unless ,file
-                  (prog1
-                      (or ,beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
-
-                          (funcall (intern-soft (concat "py-backward-" form)))
-                          (push-mark)))))
-           (end (unless ,file
-                  (or ,end (save-excursion (funcall (intern-soft (concat "py-forward-" form)))))))
-           filename)
-      ;; (setq py-buffer-name nil)
-      (if ,file
-          (progn
-            (setq filename (expand-file-name form))
-            (if (file-readable-p filename)
-                (py--execute-file-base nil filename nil nil origline)
-              (message "%s not readable. %s" ,file "Do you have write permissions?")))
-        (py--execute-base beg end ,shell filename ,proc ,file ,wholebuf ,fast ,dedicated ,split ,switch ,result)))))
-
 (defun py-load-skeletons ()
   "Load skeletons from extensions. "
   (interactive)
@@ -250,7 +224,6 @@ process buffer for a list of commands.)"
 	 (proc (get-buffer-process buffer-name))
 	 (done nil)
 	 (delay nil)
-	 (py-modeline-display nil)
 	 (buffer
 	  (or
 	   (and (ignore-errors (process-buffer proc))
@@ -594,12 +567,12 @@ When interactively called, copy and message it"
   "Kill buffer unconditional, kill buffer-process if existing. "
   (interactive
    (list (current-buffer)))
-  (when (buffer-live-p buffer)
-    (with-current-buffer buffer
-      (let (kill-buffer-query-functions set-buffer-modified-p)
-	(ignore-errors (kill-process (get-buffer-process buffer)))
-	(set-buffer-modified-p 'nil)
-	(ignore-errors (kill-buffer buffer))))))
+  ;; (when (bufferp buffer)
+  (with-current-buffer buffer
+    (let (kill-buffer-query-functions set-buffer-modified-p)
+      (ignore-errors (kill-process (get-buffer-process buffer)))
+      (set-buffer-modified-p 'nil)
+      (ignore-errors (kill-buffer buffer)))))
 
 (defun py--line-backward-maybe ()
   "Return result of (< 0 (abs (skip-chars-backward \" \\t\\r\\n\\f\"))) "
@@ -1744,16 +1717,16 @@ With optional Arg RESULT return output"
   (interactive "sPython command: ")
   (save-excursion
     (let* ((buffer (or buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell)))))
-	   (proc (or process (get-buffer-process buffer)))
+	   (proc (or process (get-buffer-process buffer) (py-shell nil nil nil nil (buffer-name buffer))))
 	   (orig (or orig (point))))
       (cond (no-output
 	     (py-send-string-no-output strg proc))
-	    ((and (string-match ".\n+." strg) (string-match "^[Ii]" buffer))  ;; multiline
+	    ((and (string-match ".\n+." strg) (string-match "^[Ii]" (buffer-name buffer)))  ;; multiline
 	     (let* ((temp-file-name (py-temp-file-name strg))
 		    (file-name (or (buffer-file-name) temp-file-name)))
 	       (py-send-file file-name proc)))
 	    (t (with-current-buffer buffer
-		 (setq orig (py--report-end-marker proc))
+		 ;; (setq orig (py--report-end-marker proc))
 		 ;; remove stuff after last prompt
 		 (with-silent-modifications
 		   (unless (ignore-errors (eq (field-beginning (point)) (field-end (point))))
@@ -1765,7 +1738,7 @@ With optional Arg RESULT return output"
 		 (sit-for py-python-send-delay)
 		 (cond (result
 			(setq py-result
-			      (py--fetch-result buffer strg no-output)))
+			      (py--fetch-result buffer strg)))
 		       (no-output
 			(and orig (py--cleanup-shell orig buffer))))))))))
 

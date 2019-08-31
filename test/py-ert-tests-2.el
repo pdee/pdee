@@ -30,10 +30,8 @@
 
 ;;;
 (ert-deftest py-ert-keyword-face-lp-1294742 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       " and as assert break continue del elif else except exec finally for global if in is lambda not or pass raise return while with yield"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (font-lock-fontify-region (point-min)(point-max))
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
@@ -41,20 +39,16 @@
       (skip-chars-forward "^ \n"))))
 
 (ert-deftest py-ert-builtins-face-lp-1294742 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "_ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (font-lock-fontify-region (point-min)(point-max))
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (should (eq 'py-builtins-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-pseudo-keyword-face-lp-1294742 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "  Ellipsis True False None  __debug__ NotImplemented"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (font-lock-fontify-region (point-min)(point-max))
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
@@ -62,16 +56,14 @@
       (skip-chars-forward "^ \n"))))
 
 (ert-deftest py-ert-object-reference-face-lp-1294742 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "self cls"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (font-lock-fontify-region (point-min) (point-max))
     (should (eq 'py-object-reference-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-borks-all-lp-1294820 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# M-q within some code (not in= a docstring) completely borks all previous
 # code in the file:
 #
@@ -90,8 +82,6 @@ def baz(self):
 # baz(self):
 #     some_actual_code()
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (font-lock-fontify-region (point-min)(point-max))
     (search-forward "def baz(self):")
@@ -100,7 +90,7 @@ def baz(self):
     (should (eq (char-after) ?\n))))
 
 (ert-deftest py-ert-respect-paragraph-1294829 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
 
@@ -194,7 +184,7 @@ by the
     (should (eq (char-after) ?\n))))
 
 (ert-deftest py-ert-backward-same-level-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "def foo():
     if True:
         def bar():
@@ -227,8 +217,6 @@ by the
         finally:
             pass
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (font-lock-fontify-region (point-min)(point-max))
     (goto-char 632)
@@ -238,7 +226,7 @@ by the
     (should (looking-at "try"))))
 
 (ert-deftest py-ert-up-level-test-2-a8UchN ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo():
     if True:
         def bar():
@@ -266,14 +254,12 @@ by the
                         pass
                     finally:
                         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
      (py-up-block)
     (should (looking-at "if"))))
 
 (ert-deftest py-ert-up-level-test-2-taTfXm ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo():
     if True:
         def bar():
@@ -301,30 +287,24 @@ by the
                         pass
                     finally:
                         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
      (py-up-clause)
     (should (looking-at "else:"))))
 
 (ert-deftest py-ert-deletes-too-much-lp:1300270 ()
-  (py-test "
+  (py-test-with-temp-buffer "
 x = {'abc':'def',
          'ghi':'jkl'}
 "
-    'python-mode
-    'py-debug-p
-     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char 24)
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
 
 (ert-deftest py-ert-mark-expression-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "assert pycompletions('TestClass.test' , name) == \
           ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']"
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
      (forward-char -1)
     (py-mark-expression)
@@ -357,10 +337,8 @@ x = {'abc':'def',
     (should (get-buffer-process erg))))
 
 (ert-deftest py-keep-windows-configuration-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "print('py-keep-windows-configuration-test-string')"
-    'python-mode
-    'py-debug-p
     (delete-other-windows)
     (let ((py-keep-windows-configuration t)
           (py-split-window-on-execute t)
@@ -369,35 +347,29 @@ x = {'abc':'def',
       (should (eq (window-height) full-height)))))
 
 (ert-deftest py-compute-indentation-after-import-test ()
-    (py-test
+    (py-test-with-temp-buffer
     "import pdb
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
      (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-compute-indentation-bob-test ()
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
     " def foo():
     if True:
         pass
     else:
         pass
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
      (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-indentation-lp-1375122-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo():
     if True:
 pass
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (forward-line -1)
     (call-interactively 'py-indent-or-complete)
@@ -412,10 +384,8 @@ pass
 
 (ert-deftest py-shell-python-lp-1398530-test ()
   (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
-  (py-test
+  (py-test-with-temp-buffer
       ""
-    'python-mode
-    'py-debug-p
      (when py-debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python"))
       (py-shell)
@@ -424,10 +394,8 @@ pass
 
 (ert-deftest py-shell-python3-lp-1398530-test ()
   (when (buffer-live-p (get-buffer "*Python3*"))(py-kill-buffer-unconditional "*Python3*"))
-  (py-test
+  (py-test-with-temp-buffer
       ""
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
      (let ((py-shell-name "python3"))
       (py-shell)
@@ -436,10 +404,8 @@ pass
 
 (ert-deftest py-shell-python2-lp-1398530-test ()
   (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "*Python2*"))
-  (py-test
+  (py-test-with-temp-buffer
       ""
-    'python-mode
-    'py-debug-p
      (when py-debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python2"))
       (py-shell)
@@ -447,7 +413,7 @@ pass
       (should (buffer-live-p (get-buffer "*Python2*"))))))
 
 (ert-deftest py-backward-statement-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "# -*- coding: utf-8 -*-
 print dir()
 c = Cat()
@@ -461,8 +427,6 @@ def foo(*args):2
     # ABD
     args = \"asdf\"
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
     (let ((py-return-result-p t)
           py-result py-store-result-p)
@@ -484,7 +448,7 @@ def foo(*args):2
       (should (bobp)))))
 
 (ert-deftest py-ert-backward-except-block-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 # -*- coding: utf-8 -*-
 class bar:
@@ -496,14 +460,12 @@ class bar:
         except:
             block2
              "
-    'python-mode
-    'py-debug-p
     (goto-char (point-max))
      (py-backward-except-block)
     (should (eq (char-after) ?e))))
 
 (ert-deftest py-ert-backward-except-block-bol-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "# -*- coding: utf-8 -*-
 class bar:
     def foo ():
@@ -514,128 +476,108 @@ class bar:
         except:
             block2
              "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
      (py-backward-except-block-bol)
      (sit-for 0.1)
     (should (eq (char-after) 32))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 asdf = {
     'a':{"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (beginning-of-line)
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 asdf = {
     'a':{"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (forward-char -2)
     (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-3 ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 asdf = {
     'a':{"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
      (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-4 ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 asdf = {
     'a':{
          'b':3,
          'c':4"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
      (beginning-of-line)
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-5 ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 asdf = {
     'a':{
          'b':3,
          'c':4"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
      (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-6 ()
-  (py-test
+  (py-test-with-temp-buffer
       "
 asdf = {
     'a':{
          'b':3,
          'c':4"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-7 ()
-  (py-test
+  (py-test-with-temp-buffer
       "# hanging, py-closing-list-dedents-bos nil
 asdf = {
     'a':{
          'b':3,
          'c':4
          }"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (beginning-of-line)
     (let ((py-closing-list-dedents-bos nil))
       (should (eq 9 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-8 ()
-  (py-test
+  (py-test-with-temp-buffer
       "# hanging, py-closing-list-dedents-bos nil
 asdf = {
     'a':{
          'b':3,
          'c':4
          }"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (forward-char -1)
     (let ((py-closing-list-dedents-bos nil))
       (should (eq 9 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-9 ()
-  (py-test
+  (py-test-with-temp-buffer
       "# hanging, py-closing-list-dedents-bos nil
 asdf = {
     'a':{
          'b':3,
          'c':4
          }"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-closing-list-dedents-bos nil))
       (should (eq 9 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-10 ()
-  (py-test
+  (py-test-with-temp-buffer
       "# closing, py-closing-list-dedents-bos t
 asdf = {
     'a':{
@@ -643,15 +585,13 @@ asdf = {
          'c':4
     }
     }"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (beginning-of-line)
     (let ((py-closing-list-dedents-bos t))
       (should (eq 0 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-11 ()
-  (py-test
+  (py-test-with-temp-buffer
       "# closing, py-closing-list-dedents-bos t
 asdf = {
     'a':{
@@ -659,8 +599,6 @@ asdf = {
          'c':4
     }
     }"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (forward-char -1)
     (let ((py-closing-list-dedents-bos t))
@@ -668,7 +606,7 @@ asdf = {
       (should (eq 0 (current-column))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-12 ()
-  (py-test
+  (py-test-with-temp-buffer
       "# closing, py-closing-list-dedents-bos t
 asdf = {
     'a':{
@@ -683,31 +621,25 @@ asdf = {
       (should (eq 0 (py-compute-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-1 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "\(along, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (forward-char 1)
     (should (eq nil (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "\(long, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
       (should (eq 5 (py-compute-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-3 ()
-  (py-test
+  (py-test-with-temp-buffer
       "\(long, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-indent-list-style 'line-up-with-first-element))
       (goto-char (point-max))
@@ -715,59 +647,49 @@ asdf = {
       (should (eq 1 (current-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-4 ()
-  (py-test
+  (py-test-with-temp-buffer
       "packed_entry = (long, sequence, of_items,
 that, needs, to_be, wrapped)"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
       (indent-line-to (py-compute-indentation))
       (should  (eq 20 (current-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-5 ()
-  (py-test
+  (py-test-with-temp-buffer
       "\( whitespaced, long, sequence, of_items,
     that, needs, to_be, wrapped) = input_list"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
       (indent-line-to (py-compute-indentation))
       (should (eq 5 (py-compute-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo (a,\n):"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-indent-list-style 'line-up-with-first-element))
       (indent-line-to  (py-compute-indentation))
       (should (eq 9 (current-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-2 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo (a,\n):"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
       (indent-line-to (py-compute-indentation))
       (should (eq 4 (current-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-3 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def foo (a,\n):"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
       (indent-line-to (py-compute-indentation))
       (should (eq 13 (current-indentation))))))
 
 (ert-deftest py-ert-close-block-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# -*- coding: utf-8 -*-
 
 def main():
@@ -777,14 +699,12 @@ def main():
 if __name__==\"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (search-forward "exit()")
     (should (eq 4 (py-close-block)))))
 
 (ert-deftest py-ert-close-def-or-class-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# -*- coding: utf-8 -*-
 
 def main():
@@ -794,14 +714,12 @@ def main():
 if __name__==\"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (search-forward "exit()")
     (should (eq 0 (py-close-def-or-class)))))
 
 (ert-deftest py-ert-close-def-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# -*- coding: utf-8 -*-
 
 def main():
@@ -811,14 +729,12 @@ def main():
 if __name__==\"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (search-forward "exit()")
     (should (eq 0 (py-close-def)))))
 
 (ert-deftest py-ert-close-class-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# -*- coding: utf-8 -*-
 class asdf:
     def main():
@@ -828,14 +744,12 @@ class asdf:
     if __name__==\"__main__\":
         main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (search-forward "exit()")
     (should (eq 0 (py-close-class)))))
 
 (ert-deftest py-ert-dedent-forward-test ()
-  (py-test
+  (py-test-with-temp-buffer
    "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     for i in range(anzahl):
         klauf.pylauf()
@@ -850,11 +764,9 @@ class asdf:
    (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-face-lp-1454858-python2-1-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "#! /usr/bin/env python2
 file.close()"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-python-edit-version ""))
       (font-lock-fontify-region (point-min) (point-max))
@@ -863,11 +775,9 @@ file.close()"
 
 ;; Setting of py-python-edit-version should precede
 (ert-deftest py-face-lp-1454858-python2-2-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "#! /usr/bin/env python3
 file.close()"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-python-edit-version "python2"))
       (font-lock-fontify-region (point-min) (point-max))
@@ -875,11 +785,9 @@ file.close()"
       (should (eq (face-at-point) 'py-builtins-face)))))
 
 (ert-deftest py-face-lp-1454858-python2-3-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "#! /usr/bin/env python2
 print()"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-python-edit-version ""))
       (font-lock-fontify-region (point-min) (point-max))
@@ -887,55 +795,43 @@ print()"
       (should (eq (face-at-point) 'font-lock-keyword-face)))))
 
 (ert-deftest py-ert-in-comment-p-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "# "
-    'python-mode
-    'py-debug-p
     (should (py--in-comment-p))))
 
 (ert-deftest py-ert-in-sq-string-p-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "' "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (should (py-in-string-p))))
 
 (ert-deftest py-ert-in-dq-string-p-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "\" "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (should (py-in-string-p))))
 
 (ert-deftest py-ert-in-sq-tqs-string-p-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "''' "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (should (py-in-string-p))))
 
 (ert-deftest py-ert-in-dq-tqs-string-p-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "\"\"\" "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (should (py-in-string-p))))
 
 (ert-deftest py-ert-electric-delete-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "  {}"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (py-electric-delete)
     (should (eq (char-after) ?{))))
 
 (ert-deftest py-ert-end-of-def-or-class-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class MyTest(unittest.TestCase):
     def test(self):
         self.assertEqual(fun(3), 4)
@@ -951,45 +847,39 @@ print()"
     (should (eobp))))
 
 (ert-deftest py-ert-end-of-def-or-class-test-2 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class MyTest(unittest.TestCase):
     def test(self):
         pass
     def test(self):
         pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
     (search-forward "pass")
     (py-end-of-def-or-class)
     (should (eobp))))
 
 (ert-deftest py-ert-narrow-to-block-test-uDQtR1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     for i in range(anzahl):
         klauf.pylauf()
                     "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
       (py-narrow-to-block)
       (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-block-test-xnEs46 ()
-  (py-test
+  (py-test-with-temp-buffer
       "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     for i in range(anzahl):
         klauf.pylauf()
         "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
       (py-narrow-to-block)
       (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-block-or-clause-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "if treffer in gruen:
     # print \"0, Gruen\"
     ausgabe[1] = treffer
@@ -999,15 +889,13 @@ elif treffer in schwarz:
     # print \"%i, Schwarz\" % (treffer)
     ausgabe[1] = treffer
 "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (skip-chars-backward " \t\r\n\f")
     (py-narrow-to-block-or-clause)
     (should (eq 87 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-clause-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "if treffer in gruen:
     # print \"0, Gruen\"
     ausgabe[1] = treffer
@@ -1017,14 +905,12 @@ elif treffer in schwarz:
     # print \"%i, Schwarz\" % (treffer)
     ausgabe[1] = treffer
 "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (py-narrow-to-clause)
     (should (eq 87 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-class-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1051,15 +937,13 @@ elif treffer in schwarz:
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (search-backward "treffer")
     (py-narrow-to-class)
     (should (eq 710 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-def-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1086,15 +970,13 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (search-backward "treffer")
     (py-narrow-to-def)
     (should (< 480 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-def-or-class-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1121,8 +1003,6 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (search-backward "treffer")
     (py-narrow-to-def-or-class)
@@ -1130,7 +1010,7 @@ if __name__ == \"__main__\":
     (should (> 490 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-statement-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1157,15 +1037,13 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (search-backward "treffer")
     (py-narrow-to-statement)
     (should (eq 32 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-section-backward-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "# {{
 print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})
@@ -1175,8 +1053,6 @@ print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})
 # }}
 "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (py-backward-section)
     (should (eq (char-after) ?#))
@@ -1184,7 +1060,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (should (eq (char-after) ?#))))
 
 (ert-deftest py-ert-section-forward-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "# {{
 print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})
@@ -1194,8 +1070,6 @@ print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})
 # }}
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
      (py-forward-section)
     (should (eq (char-before) ?}))
@@ -1203,12 +1077,10 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (should (eq (char-before) ?}))))
 
 (ert-deftest py-ert-sectionize-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
      (end-of-line)
     (py-sectionize-region (point-min) (point-max))
@@ -1218,7 +1090,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (should (eq (char-before) ?}))))
 
 (ert-deftest py-ert-jump-matching-indent-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1245,8 +1117,6 @@ print(\"%(language)s has %(number)03d quote types.\" %
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
      (search-backward "if ")
     (forward-line -1)
@@ -1255,11 +1125,9 @@ if __name__ == \"__main__\":
     (should (eq (current-column) 8))))
 
 (ert-deftest py-ert-fill-plain-string-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "'''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
        (forward-char 4)
       (fill-paragraph)
@@ -1267,11 +1135,9 @@ if __name__ == \"__main__\":
       (should (not (empty-line-p)))))
 
 (ert-deftest py-ert-nil-docstring-style-lp-1477422-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "def foo():
     '''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf'''"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
      (let (py-docstring-style)
       (search-forward "'''")
@@ -1281,7 +1147,7 @@ if __name__ == \"__main__\":
       (should (not (empty-line-p))))))
 
 (ert-deftest py-markup-region-as-section-test ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
@@ -1308,8 +1174,6 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
        (search-forward "fertig")
       (py-sectionize-region (match-beginning 0) (line-end-position))
@@ -1318,7 +1182,7 @@ if __name__ == \"__main__\":
       (should (eq 408 (region-end)))))
 
 (ert-deftest py-indent-in-docstring-gh6 ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "def f():
     \"\"\"
     Return nothing.
@@ -1328,20 +1192,16 @@ if __name__ == \"__main__\":
         First note line
     second note line\"\"\"
     pass"
-    'python-mode
-    'py-debug-p
     (goto-char (point-min))
      (search-forward "second")
     (back-to-indentation)
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-test-embedded-51-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "from PrintEngine import *
 
 GeomSim."
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     ;; (switch-to-buffer (current-buffer)) 
     (py-indent-or-complete)
@@ -1349,19 +1209,17 @@ GeomSim."
     (should (eq (char-before) ?.))))
 
 (ert-deftest py-beginning-of-block-test ()
-  (py-test
+  (py-test-with-temp-buffer
       "if False:
     print(\"Nein\")
 else:
     print(\"Ja\")"
-    'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (py-beginning-of-block)
     (should (eq (char-after) ?i))))
 
 (ert-deftest py-forward-def-or-class-test-mmTu2N ()
-  (py-test-point-min
+  (py-test-with-temp-buffer-point-min
       "def find_function(funcname, filename):
     cre = re.compile(r'def\\s+%s\\s*[(]' % re.escape(funcname))
     try:
@@ -2578,7 +2436,7 @@ def run(statement, globals=None, locals=None):
       (should (looking-back "self.run(statement)" (line-beginning-position))))))
 
 (ert-deftest py-forward-def-or-class-test-pB8W4q ()
-  (py-test
+  (py-test-with-temp-buffer
       "class Pdb(bdb.Bdb, cmd.Cmd):
 
     def __init__(self, completekey='tab', stdin=None, stdout=None, skip=None):

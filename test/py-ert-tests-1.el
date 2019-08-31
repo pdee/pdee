@@ -33,8 +33,6 @@
   (let ((py-electric-kill-backward-p t))
     (py-test-with-temp-buffer
       "mystring[0:1]"
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (py-electric-backspace 1)
       (should (eq ?\] (char-after))))))
@@ -71,8 +69,6 @@
 	(transient-mark-mode t))
     (py-test-with-temp-buffer
 	"mystring[0:1]     "
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (set-mark (point))
       (skip-chars-backward " \t\r\n\f")
@@ -83,8 +79,6 @@
   (let ((py-electric-kill-backward-p t))
     (py-test-with-temp-buffer
       "mystring(\"asdf\")"
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (py-electric-backspace 1)
       (should (eq ?\) (char-after)))
@@ -94,8 +88,6 @@
   (let ((py-electric-kill-backward-p t))
     (py-test-with-temp-buffer
       "mystring{0 . 1}"
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (py-electric-backspace 1)
       (should (eq ?\} (char-after))))))
@@ -1289,8 +1281,6 @@ my_list = [
   (py-test-with-temp-buffer-point-min
    "from foo.bar.baz import something
 "
-   'python-mode
-   py-debug-p
    (goto-char (point-min))
    (py-copy-statement)
    (should (string-match "from foo.bar.baz import something" (car kill-ring)))))
@@ -1380,8 +1370,6 @@ def baz():
     \"\"\"
     return 7
 "
-      'python-mode
-      py-debug-p
       (goto-char 49)
       (py-fill-string)
       (end-of-line)
@@ -1416,8 +1404,6 @@ def baz():
     \"\"\"
     return 7
 "
-      'python-mode
-      py-debug-p
       (goto-char (point-min))
       (font-lock-fontify-region (point-min)(point-max))
       (goto-char 49)
@@ -1450,8 +1436,6 @@ def baz():
     \"\"\"
     return 7
 "
-      'python-mode
-      py-debug-p
       (goto-char (point-min))
       (font-lock-fontify-region (point-min)(point-max))
       (goto-char 49)
@@ -1478,8 +1462,6 @@ def baz():
     \"\"\"
     return 7
 "
-      'python-mode
-      py-debug-p
       (goto-char 49)
       (fill-paragraph)
       (search-forward "\"\"\"")
@@ -1498,8 +1480,6 @@ def baz():
     \"\"\"
     return 7
 "
-      'python-mode
-      py-debug-p
       (goto-char (point-min))
       (font-lock-fontify-region (point-min)(point-max))
       (goto-char 49)
@@ -1535,7 +1515,7 @@ def baz():
     (goto-char (point-min))
     (let ((py-shell-name "python2"))
       (py-execute-statement)
-      (set-buffer "*Python2*")
+      (set-buffer py-output-buffer)
       (goto-char (point-max))
       (and (should (search-backward "py-execute-statement-test" nil t 1))
 	   (py-kill-buffer-unconditional (current-buffer))))))
@@ -1554,8 +1534,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   'python-mode
-   py-debug-p
    (goto-char (point-min))
    (search-forward "True")
    (save-excursion
@@ -1576,8 +1554,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   'python-mode
-   py-debug-p
    (goto-char (point-min))
    (search-forward "True")
    (save-excursion
@@ -1599,8 +1575,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   'python-mode
-   py-debug-p
    (goto-char (point-min))
    (search-forward "True")
    (save-excursion
@@ -1622,8 +1596,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   'python-mode
-   py-debug-p
    (goto-char (point-min))
    (search-forward "True")
    (save-excursion
@@ -1645,8 +1617,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   'python-mode
-   py-debug-p
    (goto-char (point-min))
    (search-forward "True")
    (save-excursion
@@ -1682,8 +1652,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
   (let ((py-shell-name "python3"))
     (py-test-with-temp-buffer
 	""
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (should (string= "pdb3" (py--pdb-versioned))))))
 
@@ -1691,8 +1659,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
   (let ((py-shell-name "python"))
     (py-test-with-temp-buffer
 	""
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (should (string= "pdb" (py--pdb-versioned))))))
 
@@ -1724,8 +1690,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 if __name__ == \"__main__\":
     main()
 "
-      'python-mode
-      py-debug-p
       (goto-char (point-min))
       (py-forward-expression)
       (should (eq (char-before) ?s))
@@ -1793,8 +1757,6 @@ if __name__ == \"__main__\":
 if __name__ == \"__main__\":
     main()
 "
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (py-backward-expression)
       (should (eq (char-after) ?m))
@@ -1925,8 +1887,6 @@ else:
     (py-test-with-temp-buffer
 	"if __name__ == \"__main__\":
     main()"
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (forward-char -2)
       (py-match-paren)
@@ -1937,8 +1897,6 @@ else:
 	"if __name__ == \"__main__\":
     main()
     "
-      'python-mode
-      py-debug-p
       (goto-char (point-max))
       (py-match-paren)
       (should (eq (char-after) ?m))))
@@ -1948,8 +1906,6 @@ else:
 	"if __name__ == \"__main__\":
     main()
     "
-      'python-mode
-      py-debug-p
       (goto-char (point-min))
       (py-match-paren)
       (should (empty-line-p))

@@ -30,7 +30,7 @@
 
 (ert-deftest py-ert-forward-block-test ()
   (let (py-font-lock-defaults-p)
-    (py-test-point-min
+    (py-test-with-temp-buffer-point-min
 	"if foo:
     for a in b:
         print('%(language)s has %(number)03d quote types.' %
@@ -325,7 +325,7 @@ class bar:
     (should (eq (char-before) ?s))))
 
 (ert-deftest py-ert-forward-minor-block-test-0nXANF ()
-  (py-test
+  (py-test-with-temp-buffer
       "# {{
 class bar:
     def foo ():

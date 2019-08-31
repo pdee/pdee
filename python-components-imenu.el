@@ -162,7 +162,7 @@ of the first definition found."
         cur-indent def-pos
         (class-paren (first py-imenu-generic-parens))
         (def-paren (second py-imenu-generic-parens)))
-    (switch-to-buffer (current-buffer))
+    ;; (switch-to-buffer (current-buffer))
     (setq looking-p
           (re-search-forward py-imenu-generic-regexp (point-max) t))
     (while looking-p
@@ -365,7 +365,6 @@ not be passed explicitly unless you know what you are doing."
 
 (defun py--imenu-index ()
   "Return tree Imenu alist for the current Python buffer. "
-  ;; (switch-to-buffer (current-buffer))
   (save-excursion
     (goto-char (point-max))
     (let ((index)

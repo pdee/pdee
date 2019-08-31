@@ -115,7 +115,7 @@ impo")))
     (should-not (search-backward "FileNotFoundError" nil t 1))))
 
 (ert-deftest py-end-of-def-or-class-test-1 ()
-  (py-test
+  (py-test-with-temp-buffer
       "class foo:
     \"\"\"asdf\"\"\"
     def bar():
@@ -126,8 +126,6 @@ impo")))
     def baz():
         \"\"\"\"\"\"
         pass"
-    'python-mode
-    py-debug-p
     (goto-char (point-max))
     (search-backward "@asdf")
     (end-of-line)
@@ -210,7 +208,7 @@ def foo(x):
   (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-fill-singlequoted-string-test()
-  (py-test
+  (py-test-with-temp-buffer
       "asd = 'asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf '"
     'python-mode
     py-verbose-p
@@ -226,7 +224,7 @@ def foo(x):
     (should (eq (char-before) ?\\))))
 
 (ert-deftest py-fill-doublequoted-string-test()
-  (py-test
+  (py-test-with-temp-buffer
       "asd = \"asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf \""
     'python-mode
     py-verbose-p
@@ -242,7 +240,7 @@ def foo(x):
     (should (eq (char-before) ?\\))))
 
 (ert-deftest py-clause-indent-test-UXZsX9 ()
-  (py-test
+  (py-test-with-temp-buffer
       "def ziffernraten ()
     ziffer = random\.randint(1,20)
 

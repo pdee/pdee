@@ -35,7 +35,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
   (interactive)
   (let ((this-buffer
          (set-buffer (or (and buffer (get-buffer-create buffer))
-                         (get-buffer-create py-buffer-name)))))
+                         (get-buffer-create py-shell-name)))))
     (let ((proc (start-process py-shell-name this-buffer py-shell-name)))
       (with-current-buffer this-buffer
         (erase-buffer))
@@ -45,7 +45,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
   (let ((inhibit-read-only t)
 	erg)
     (with-current-buffer output-buffer
-      (switch-to-buffer (current-buffer))
+      ;; (switch-to-buffer (current-buffer))
       ;; (erase-buffer)
       (process-send-string proc strg)
       (or (string-match "\n$" strg)

@@ -4,11 +4,18 @@ Python Mode News
 New in version 6.2.4
 ---------------------
 
+
 - column-marker.el removed, its provided by melpa
 
 - py-smart-indentation defaults to nil. Setting it to `t' considered
   useful if customizing `py-indent-offset' is no option - for example
   if indentation step is unknown.
+
+- New commands:
+  py-toggle-py-split-window-on-execute
+  py-toggle-session-mode
+
+
 
 New in version 6.2.3
 ---------------------

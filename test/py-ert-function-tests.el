@@ -738,77 +738,44 @@
 (ert-deftest py-ert-hide-base-functionp-test ()
   (should (functionp 'py-hide-base)))
 
-(ert-deftest py-ert-show-base-functionp-test ()
-  (should (functionp 'py-show-base)))
-
 (ert-deftest py-ert-hide-show-functionp-test ()
   (should (functionp 'py-hide-show)))
 
 (ert-deftest py-ert-hide-region-functionp-test ()
   (should (functionp 'py-hide-region)))
 
-(ert-deftest py-ert-show-region-functionp-test ()
-  (should (functionp 'py-show-region)))
-
 (ert-deftest py-ert-hide-statement-functionp-test ()
   (should (functionp 'py-hide-statement)))
-
-(ert-deftest py-ert-show-statement-functionp-test ()
-  (should (functionp 'py-show-statement)))
 
 (ert-deftest py-ert-hide-block-functionp-test ()
   (should (functionp 'py-hide-block)))
 
-(ert-deftest py-ert-show-block-functionp-test ()
-  (should (functionp 'py-show-block)))
-
-(ert-deftest py-ert-hide-clause-functionp-test ()
-  (should (functionp 'py-hide-clause)))
-
-(ert-deftest py-ert-show-clause-functionp-test ()
-  (should (functionp 'py-show-clause)))
-
 (ert-deftest py-ert-hide-block-or-clause-functionp-test ()
   (should (functionp 'py-hide-block-or-clause)))
-
-(ert-deftest py-ert-show-block-or-clause-functionp-test ()
-  (should (functionp 'py-show-block-or-clause)))
 
 (ert-deftest py-ert-hide-def-functionp-test ()
   (should (functionp 'py-hide-def)))
 
-(ert-deftest py-ert-show-def-functionp-test ()
-  (should (functionp 'py-show-def)))
+(ert-deftest py-ert-show-all-functionp-test ()
+  (should (functionp 'py-show-all)))
 
-(ert-deftest py-ert-hide-class-functionp-test ()
-  (should (functionp 'py-hide-class)))
+(ert-deftest py-ert-show-functionp-test ()
+  (should (functionp 'py-show)))
 
-(ert-deftest py-ert-show-class-functionp-test ()
-  (should (functionp 'py-show-class)))
+(ert-deftest py-ert-hide-functionp-test ()
+  (should (functionp 'py-hide)))
 
 (ert-deftest py-ert-hide-expression-functionp-test ()
   (should (functionp 'py-hide-expression)))
 
-(ert-deftest py-ert-show-expression-functionp-test ()
-  (should (functionp 'py-show-expression)))
-
 (ert-deftest py-ert-hide-partial-expression-functionp-test ()
   (should (functionp 'py-hide-partial-expression)))
-
-(ert-deftest py-ert-show-partial-expression-functionp-test ()
-  (should (functionp 'py-show-partial-expression)))
 
 (ert-deftest py-ert-hide-line-functionp-test ()
   (should (functionp 'py-hide-line)))
 
-(ert-deftest py-ert-show-line-functionp-test ()
-  (should (functionp 'py-show-line)))
-
 (ert-deftest py-ert-hide-top-level-functionp-test ()
   (should (functionp 'py-hide-top-level)))
-
-(ert-deftest py-ert-show-top-level-functionp-test ()
-  (should (functionp 'py-show-top-level)))
 
 (ert-deftest py-ert-copy-statement-functionp-test ()
   (should (functionp 'py-copy-statement)))

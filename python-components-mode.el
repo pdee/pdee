@@ -75,6 +75,7 @@
 (require 'comint)
 (require 'compile)
 (require 'custom)
+(require 'ert)
 (require 'flymake)
 (require 'hippie-exp)
 (require 'shell)
@@ -265,22 +266,20 @@ Default is t"
 (defcustom py-session-p t
   "If commands would use an existing process.
 
-See also `py-dedicated-process-p'"
+Default is t"
 
   :type 'boolean
   :tag "py-session-p"
   :group 'python-mode
   :safe 'booleanp)
 
-(defcustom py-fast-session-p nil
-  "If commands would use an existing fast process.
+(defun py-toggle-session-p (&optional arg)
+  "Switches boolean variable ‘py-session-p’.
 
-Default is nil"
-
-  :type 'boolean
-  :tag "py-fast-session-p"
-  :group 'python-mode
-  :safe 'booleanp)
+With optional ARG message state switched to"
+  (interactive "p")
+  (setq py-session-p (not py-session-p))
+  (when arg (message "py-session-p: %s" py-session-p)))
 
 (defcustom py-max-help-buffer-p nil
   "If \"\*Python-Help\*\"-buffer should appear as the only visible.
@@ -516,6 +515,9 @@ Might not be TRT when a lot of output arrives"
   :type 'boolean
   :tag "py-fontify-shell-buffer-p"
   :group 'python-mode)
+
+(defvar py-modeline-display ""
+  "Internally used")
 
 (defcustom py-modeline-display-full-path-p nil
   "If the full PATH/TO/PYTHON should be displayed in shell modeline.
@@ -1290,12 +1292,12 @@ Default is t."
   :tag "py-current-defun-delay"
   :group 'python-mode)
 
-(defcustom py--delete-temp-file-delay 1
-  "Used by `py--delete-temp-file'."
+;; (defcustom py--delete-temp-file-delay 1
+;;   "Used by `py--delete-temp-file'."
 
-  :type 'number
-  :tag "py--delete-temp-file-delay"
-  :group 'python-mode)
+;;   :type 'number
+;;   :tag "py--delete-temp-file-delay"
+;;   :group 'python-mode)
 
 (defcustom py-python-send-delay 1
   "Seconds to wait for output, used by `py--send-...' functions.
@@ -1504,6 +1506,14 @@ See also `py-keep-windows-configuration'"
           (const :tag "always" always))
   :tag "py-split-window-on-execute"
   :group 'python-mode)
+
+(defun py-toggle-py-split-window-on-execute ()
+  "Toggle between customized value and nil"
+  (interactive)
+  (setq py-split-window-on-execute (not py-split-window-on-execute))
+  (when (interactive-p)
+    (message "py-split-window-on-execute: %s" py-split-window-on-execute)
+    py-split-window-on-execute))
 
 (defcustom py-split-window-on-execute-threshold 3
   "Maximal number of displayed windows.
@@ -1766,6 +1776,11 @@ Default /usr/bin/jython"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters.")
 
+(defvar py-cleanup-p nil
+  "Internally used.
+
+Cleanup Python shell when output is used in other places.")
+
 (defcustom py-match-paren-mode nil
   "Non-nil means, cursor will jump to beginning or end of a block.
 This vice versa, to beginning first.
@@ -1834,6 +1849,12 @@ As v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncode
   :type 'boolean
   :tag "python-mode-v5-behavior-p"
   :group 'python-mode)
+
+(defun py-toggle-python-mode-v5-behavior ()
+  "Switch the values of ‘python-mode-v5-behavior-p’"
+  (interactive) 
+  (setq python-mode-v5-behavior-p (not python-mode-v5-behavior-p))
+  (when (interactive-p) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p)))
 
 (defcustom py-trailing-whitespace-smart-delete-p nil
   "Default is nil.
@@ -2116,10 +2137,10 @@ Default is nil"
   :group 'python-mode)
 
 (defvar py-output-buffer "*Python Output*"
-    "Currently unused.
+      "Used if ‘python-mode-v5-behavior-p’ is t.
 
-Output buffer is created dynamically according to Python version and kind of process-handling")
-(make-variable-buffer-local 'py-output-buffer)
+Otherwise output buffer is created dynamically according to Python version and kind of process-handling")
+;; (make-variable-buffer-local 'py-output-buffer)
 
 (defcustom py-force-default-output-buffer-p nil
   "Enforce sending output to the default output ‘buffer-name’.
@@ -3548,21 +3569,37 @@ See also `py-object-reference-face'"
 
 ;; subr-x.el might not exist yet
 (unless (functionp 'string-trim)
+  (defsubst string-trim-left (strg &optional regexp)
+    "Trim STRING of leading string matching REGEXP.
+
+REGEXP defaults to \"[ \\t\\n\\r]+\"."
+    (if (string-match (concat "\\`\\(?:" (or regexp "[ \t\n\r]+") "\\)") strg)
+	(replace-match "" t t strg)
+      strg))
+
+  (defsubst string-trim-right (strg &optional regexp)
+    "Trim STRING of trailing string matching REGEXP.
+
+REGEXP defaults to \"[ \\t\\n\\r]+\"."
+    (if (string-match (concat "\\(?:" (or regexp "[ \t\n\r]+") "\\)\\'") strg)
+	(replace-match "" t t strg)
+      strg))
+
   (defsubst string-trim (strg &optional trim-left trim-right)
     "Trim STRING of leading and trailing strings matching TRIM-LEFT and TRIM-RIGHT.
 
 TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
-    (string-trim-left (string-trim-right string trim-right) trim-left))
+    (string-trim-left (string-trim-right strg trim-right) trim-left))
 
-(defsubst string-blank-p (strg)
-  "Check whether STRING is either empty or only whitespace."
-  (string-match-p "\\`[ \t\n\r]*\\'" strg))
+  (defsubst string-blank-p (strg)
+    "Check whether STRING is either empty or only whitespace."
+    (string-match-p "\\`[ \t\n\r]*\\'" strg))
 
-(defsubst string-remove-prefix (prefix strg)
-  "Remove PREFIX from STRING if present."
-  (if (string-prefix-p prefix strg)
-      (substring strg (length prefix))
-    strg)))
+  (defsubst string-remove-prefix (prefix strg)
+    "Remove PREFIX from STRING if present."
+    (if (string-prefix-p prefix strg)
+	(substring strg (length prefix))
+      strg)))
 
 (defun py-toggle-imenu-create-index ()
   "Toggle value of ‘py--imenu-create-index-p’"
@@ -3745,7 +3782,7 @@ Does the following:
 When interactivly called, messages the shell name
 Return nil, if no executable found."
   (interactive)
-  ;; org-babel uses ‘py-toggle-shells’ with arg, just return it 
+  ;; org-babel uses ‘py-toggle-shells’ with arg, just return it
   (or shell
       (let* (res
 	     done
@@ -3993,13 +4030,44 @@ With optional ARG message state switched to"
   (setq py-closing-list-dedents-bos (not py-closing-list-dedents-bos))
   (when arg (message "py-closing-list-dedents-bos: %s" py-closing-list-dedents-bos)))
 
-(defun py-toggle-fast-session-p (&optional arg)
-  "Switches boolean variable ‘py-fast-session-p’.
 
-With optional ARG message state switched to"
-  (interactive "p")
-  (setq py-fast-session-p (not py-fast-session-p))
-  (when arg (message "py-fast-session-p: %s" py-fast-session-p)))
+(defmacro py-test-with-temp-buffer-point-min (contents &rest body)
+  "Create temp buffer in `python-mode' inserting CONTENTS.
+BODY is code to be executed within the temp buffer.  Point is
+ at the beginning of buffer."
+  (declare (indent 1) (debug t))
+  `(with-temp-buffer
+     (let (hs-minor-mode py--imenu-create-index-p)
+       (insert ,contents)
+       (python-mode)
+       (goto-char (point-min))
+       (when py-debug-p
+	 (switch-to-buffer (current-buffer))
+	 (font-lock-fontify-region (point-min) (point-max)))
+       ,@body)))
+
+(defmacro py-test-with-temp-buffer (contents &rest body)
+  "Create temp buffer in `python-mode' inserting CONTENTS.
+BODY is code to be executed within the temp buffer.  Point is
+ at the end of buffer."
+  (declare (indent 1) (debug t))
+  `(with-temp-buffer
+     (let (hs-minor-mode py--imenu-create-index-p)
+       (insert ,contents)
+       (python-mode)
+       (when py-debug-p
+	 (switch-to-buffer (current-buffer))
+	 (font-lock-fontify-region (point-min) (point-max)))
+       ,@body)))
+
+;; from jit-lock.el
+(defmacro with-buffer-prepared-for-jit-lock (&rest body)
+  "Execute BODY in current buffer, overriding several variables.
+Preserves the `buffer-modified-p' state of the current buffer."
+  (declare (debug t))
+  `(let ((inhibit-point-motion-hooks t))
+     (with-silent-modifications
+       ,@body)))
 
 (require 'python-components-menu)
 (require 'python-components-extra)

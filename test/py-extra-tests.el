@@ -32,26 +32,27 @@
        ))
 
 (ert-deftest py-complete-in-python3-shell-test ()
-  (py-kill-buffer-unconditional "*Python3*")
+  (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
   (set-buffer (python3))
+  (when py-debug-p (switch-to-buffer (current-buffer)))
+  (sit-for 0.1)
   (should (eq (current-buffer) (get-buffer "*Python3*")))
   (goto-char (point-max))
   (insert "pri")
   (py-indent-or-complete)
-  (should (looking-back "print("))) 
+  (should (looking-back "print(")))
 
 (ert-deftest UnicodeEncodeError-lp-550661-test-1 ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python3
 print(u'\\xA9')"
     (let ((py-return-result-p t)
-	  (py-store-result-p t)
-	  erg)
-    (goto-char (point-max))
-    (py-execute-buffer)
-    (setq erg (car (read-from-string py-result)))
-    (message "UnicodeEncodeError-lp-550661-test-1 erg: %s" erg)
-    (should erg))))
+	  (py-store-result-p t))
+      (goto-char (point-max))
+      (py-execute-buffer)
+      ;; (setq erg (car (read-from-string py-result)))
+      ;; (message "UnicodeEncodeError-lp-550661-test-1 erg: %s" erg)
+      (should (string= "©" py-result)))))
 
 (ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test ()
   (py-test-with-temp-buffer
@@ -65,8 +66,8 @@ os.write"
     (sit-for 0.1)
     (set-buffer "*Python-Help*")
     (goto-char (point-min))
-    ;; (switch-to-buffer (current-buffer))
-    (should (string-match "write" (buffer-substring-no-properties (point-min) (line-end-position))))))
+    (switch-to-buffer (current-buffer))
+    (should (string-match "write" (buffer-substring-no-properties (point-min) (point-max))))))
 
 (ert-deftest py-complete-empty-string-result-test ()
   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
@@ -157,7 +158,7 @@ finally:
     print(\"one\")
     print(\"two\")"
       (py-execute-block-jython)
-      (sit-for 1)
+      (sit-for 2)
       (should (string-match "two" py-result)))))
 
 (ert-deftest py-shell-complete-in-dedicated-shell ()
@@ -174,8 +175,6 @@ finally:
 (ert-deftest py-ert-execute-statement-python2-fast-1 ()
   (py-test-with-temp-buffer-point-min
    "print(1)"
-   'python-mode
-   'py-debug-p
    (let ((py-fast-process-p t)
 	 (py-return-result-p t)
 	 py-result
@@ -218,9 +217,9 @@ finally:
     (let (py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py-execute-statement-fast)
       (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
-      (goto-char (point-max))
       (sit-for 1)
-      (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer))
+      (goto-char (point-max))
+      (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))
       (should (search-backward "123234")))))
 
 (ert-deftest py-ert-fast-complete-1 ()
@@ -229,14 +228,13 @@ finally:
     (goto-char (point-max))
     (py-fast-complete)
     (sit-for 1)
-    (message "py-ert-fast-complete-1, current-buffer: %s" (current-buffer))
+    (goto-char (point-max))
+    (when py-debug-p (message "py-ert-fast-complete-1, current-buffer: %s" (current-buffer)))
     (should (search-backward "ect"))))
 
 (ert-deftest py-send-string-text-dtOWbA ()
-  (py-test
+  (py-test-with-temp-buffer
       ""
-    'python-mode
-    py-verbose-p
     (let (erg)
       (setq erg (py-send-string "print(\"foo\")" nil t))
       (should (string= erg "foo"))
@@ -1100,8 +1098,6 @@ print(u'\\xA9')"
 ;;     (search-backward "print")
 ;;     (org-babel-execute-src-block)
 ;;     (should (search-forward "@"))))
-
-
 
 (provide 'py-extra-tests)
 ;;; py-extra-tests.el ends here
