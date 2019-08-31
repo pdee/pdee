@@ -762,9 +762,6 @@
 (ert-deftest py-ert-show-functionp-test ()
   (should (functionp 'py-show)))
 
-(ert-deftest py-ert-hide-functionp-test ()
-  (should (functionp 'py-hide)))
-
 (ert-deftest py-ert-hide-expression-functionp-test ()
   (should (functionp 'py-hide-expression)))
 

@@ -1031,49 +1031,13 @@ Hide line at point."]
 Hide top-level at point."]
            )
           ("Show"
-	   ["Show region" py-show-region
-	    :help " `py-show-region'
-Un-hide active region."]
+	   ["Show" py-show
+	    :help " `py-show'
+Un-hide at point."]
 
-	   ["Show statement" py-show-statement
-	    :help " `py-show-statement'
-Show statement at point."]
-
-	   ["Show block" py-show-block
-	    :help " `py-show-block'
-Show block at point."]
-
-	   ["Show clause" py-show-clause
-	    :help " `py-show-clause'
-Show clause at point."]
-
-	   ["Show block or clause" py-show-block-or-clause
-	    :help " `py-show-block-or-clause'
-Show block-or-clause at point."]
-
-	   ["Show def" py-show-def
-	    :help " `py-show-def'
-Show def at point."]
-
-	   ["Show class" py-show-class
-	    :help " `py-show-class'
-Show class at point."]
-
-	   ["Show expression" py-show-expression
-	    :help " `py-show-expression'
-Show expression at point."]
-
-	   ["Show partial expression" py-show-partial-expression
-	    :help " `py-show-partial-expression'
-Show partial-expression at point."]
-
-	   ["Show line" py-show-line
-	    :help " `py-show-line'
-Show line at point."]
-
-	   ["Show top level" py-show-top-level
-	    :help " `py-show-top-level'
-Show top-level at point."]
+	   ["Show all" py-show-all
+	    :help " `py-show-all'
+Un-hide all in buffer."]
            ))
          ("Virtualenv"
           ["Virtualenv activate" virtualenv-activate

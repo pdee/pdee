@@ -238,7 +238,8 @@ process buffer for a list of commands.)"
 	       (if fast
 		   (process-buffer (apply 'start-process shell buffer-name shell args))
 		 (apply #'make-comint-in-buffer shell buffer-name
-			shell nil args)))))))
+			shell nil args))))))
+	 (py-output-buffer (if python-mode-v5-behavior-p py-output-buffer buffer)))
     (unless done
       (with-current-buffer buffer
 	(setq delay (py--which-delay-process-dependent buffer-name))

@@ -1515,7 +1515,7 @@ def baz():
     (goto-char (point-min))
     (let ((py-shell-name "python2"))
       (py-execute-statement)
-      (set-buffer py-output-buffer)
+      (set-buffer (get-buffer  "*Python2*"))
       (goto-char (point-max))
       (and (should (search-backward "py-execute-statement-test" nil t 1))
 	   (py-kill-buffer-unconditional (current-buffer))))))
