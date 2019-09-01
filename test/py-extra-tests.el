@@ -125,23 +125,9 @@ finally:
 	  erg)
       (call-interactively 'py-execute-statement-python3-dedicated)
       ;; (sit-for 0.1 t)
-      (set-buffer py-buffer-name)
+      (set-buffer py-output-buffer)
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
-
-;; (ert-deftest py-ert-execute-block-fast-3 ()
-;;   (py-test-with-temp-buffer-point-min
-;;       "if True:
-;;     a = 1
-;;     print(a)"
-;;     (let ((py-fast-process-p t)
-;; 	  (py-return-result-p nil)
-;; 	  (py-debug-p t)
-;; 	  py-result)
-;;       (py-execute-block)
-;;       (when py-debug-p (message "py-ert-execute-block-fast, py-result: %s" py-result))
-;;       (sit-for 0.1 t)
-;;       (should (string= "1" py-result)))))
 
 (ert-deftest py-ert-exception-name-face-lp-1294742 ()
   (py-test-with-temp-buffer

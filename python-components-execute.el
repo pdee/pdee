@@ -599,13 +599,6 @@ Receives a ‘buffer-name’ as argument"
 	   (or py-jython-command name))
 	  (t (or py-python-command name)))))
 
-;; (defun py--grab-prompt-ps1 (proc)
-;;   (py-send-string "import sys" proc nil t)
-;;   (py-send-string "sys.ps1" proc t t))
-
-;; (defun py--reuse-existing-shell (exception-buffer)
-;;   (setq py-exception-buffer (or exception-buffer (and py-exception-buffer (buffer-live-p py-exception-buffer) py-exception-buffer) py-buffer-name)))
-
 (defun py--determine-local-default ()
   (if (not (string= "" py-shell-local-path))
       (expand-file-name py-shell-local-path)
@@ -880,59 +873,59 @@ Optional FAST RETURN"
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated split switch)
   "Update optional variables START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
-  (let ((py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
-		    (py--choose-buffer-name shell dedicated fast))))
-    (setq py-error nil)
-    (when py-debug-p (message "py--execute-base: (current-buffer): %s" (current-buffer)))
-    (when (or fast py-fast-process-p) (ignore-errors (py-kill-buffer-unconditional py-output-buffer)))
-    (let* ((orig (point))
-	   (fast (or fast py-fast-process-p))
-	   (exception-buffer (current-buffer))
-	   (start (or start (and (use-region-p) (region-beginning)) (point-min)))
-	   (end (or end (and (use-region-p) (region-end)) (point-max)))
-	   (strg-raw (if py-if-name-main-permission-p
-			 (buffer-substring-no-properties start end)
-		       (py--fix-if-name-main-permission (buffer-substring-no-properties start end))))
-	   (strg (py--fix-start strg-raw))
-	   (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
-	   ;; (windows-config (window-configuration-to-register py-windows-config-register))
-	   (origline
-	    (format "%s" (save-restriction
-	      (widen)
-	      (py-count-lines (point-min) orig))))
-	   ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
-	   (shell (or
-		   (and shell
-			;; shell might be specified in different ways
-			(or (and (stringp shell) shell)
-			    (ignore-errors (eval shell))
-			    (and (symbolp shell) (format "%s" shell))))
-		   ;; (save-excursion
-		   (py-choose-shell)
-		   ;;)
-		   ))
-	   (execute-directory
-	    (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
-		  ((and py-use-current-dir-when-execute-p (buffer-file-name))
-		   (file-name-directory (buffer-file-name)))
-		  ((and py-use-current-dir-when-execute-p
-			py-fileless-buffer-use-default-directory-p)
-		   (expand-file-name default-directory))
-		  ((stringp py-execute-directory)
-		   py-execute-directory)
-		  ((getenv "VIRTUAL_ENV"))
-		  (t (getenv "HOME"))))
-	   (filename (or (and filename (expand-file-name filename))
-			 (py--buffer-filename-remote-maybe)))
-	   (py-orig-buffer-or-file (or filename (current-buffer)))
-	   (proc (or proc (get-buffer-process py-output-buffer)
-		     (prog1
-			 (get-buffer-process (py-shell nil nil dedicated shell py-output-buffer fast exception-buffer split switch))
-		       (sit-for 0.1))))
-	   (split (if python-mode-v5-behavior-p 'just-two split)))
-      (py--execute-base-intern strg filename proc file wholebuf py-output-buffer origline execute-directory start end fast)
-      (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
-	(py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch)))))
+  (setq py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
+			     (py--choose-buffer-name shell dedicated fast)))
+  (setq py-error nil)
+  (when py-debug-p (message "py--execute-base: (current-buffer): %s" (current-buffer)))
+  (when (or fast py-fast-process-p) (ignore-errors (py-kill-buffer-unconditional py-output-buffer)))
+  (let* ((orig (point))
+	 (fast (or fast py-fast-process-p))
+	 (exception-buffer (current-buffer))
+	 (start (or start (and (use-region-p) (region-beginning)) (point-min)))
+	 (end (or end (and (use-region-p) (region-end)) (point-max)))
+	 (strg-raw (if py-if-name-main-permission-p
+		       (buffer-substring-no-properties start end)
+		     (py--fix-if-name-main-permission (buffer-substring-no-properties start end))))
+	 (strg (py--fix-start strg-raw))
+	 (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
+	 ;; (windows-config (window-configuration-to-register py-windows-config-register))
+	 (origline
+	  (format "%s" (save-restriction
+			 (widen)
+			 (py-count-lines (point-min) orig))))
+	 ;; argument SHELL might be a string like "python", "IPython" "python3", a symbol holding PATH/TO/EXECUTABLE or just a symbol like 'python3
+	 (shell (or
+		 (and shell
+		      ;; shell might be specified in different ways
+		      (or (and (stringp shell) shell)
+			  (ignore-errors (eval shell))
+			  (and (symbolp shell) (format "%s" shell))))
+		 ;; (save-excursion
+		 (py-choose-shell)
+		 ;;)
+		 ))
+	 (execute-directory
+	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
+		((and py-use-current-dir-when-execute-p (buffer-file-name))
+		 (file-name-directory (buffer-file-name)))
+		((and py-use-current-dir-when-execute-p
+		      py-fileless-buffer-use-default-directory-p)
+		 (expand-file-name default-directory))
+		((stringp py-execute-directory)
+		 py-execute-directory)
+		((getenv "VIRTUAL_ENV"))
+		(t (getenv "HOME"))))
+	 (filename (or (and filename (expand-file-name filename))
+		       (py--buffer-filename-remote-maybe)))
+	 (py-orig-buffer-or-file (or filename (current-buffer)))
+	 (proc (or proc (get-buffer-process py-output-buffer)
+		   (prog1
+		       (get-buffer-process (py-shell nil nil dedicated shell py-output-buffer fast exception-buffer split switch))
+		     (sit-for 0.1))))
+	 (split (if python-mode-v5-behavior-p 'just-two split)))
+    (py--execute-base-intern strg filename proc file wholebuf py-output-buffer origline execute-directory start end fast)
+    (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
+      (py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch))))
 
 (defmacro py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf split)
   "Used by python-components-extended-executes ."
@@ -1025,7 +1018,7 @@ May we get rid of the temporary file?"
          (tempfile (or (py--buffer-filename-remote-maybe) (concat (expand-file-name py-temp-directory) py-separator-char (replace-regexp-in-string py-separator-char "-" "temp") ".py")))
 
          (proc (or proc (if py-dedicated-process-p
-                            (get-buffer-process (py-shell nil nil py-dedicated-process-p which-shell py-buffer-name))
+                            (get-buffer-process (py-shell nil nil t which-shell))
                           (or (get-buffer-process py-buffer-name)
                               (get-buffer-process (py-shell nil nil py-dedicated-process-p which-shell py-buffer-name))))))
          (procbuf (process-buffer proc))
@@ -1080,7 +1073,7 @@ May we get rid of the temporary file?"
             (setq erg (py--execute-file-base nil (expand-file-name filename) nil nil origline))
           (py--execute-file-base nil (expand-file-name filename)))
       (message "%s not readable. %s" filename "Do you have write permissions?"))
-    (py--shell-manage-windows py-buffer-name py-exception-buffer nil (or (interactive-p)))
+    (py--shell-manage-windows py-output-buffer py-exception-buffer nil (or (interactive-p)))
     erg))
 
 (defun py-execute-string (&optional strg shell dedicated switch fast)

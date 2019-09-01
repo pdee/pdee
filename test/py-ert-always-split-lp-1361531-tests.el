@@ -32,8 +32,8 @@
 print(\"I'm the py-always-split-dedicated-lp-1361531-python-test\")"
     (delete-other-windows)
     (let* ((py-split-window-on-execute 'always)
-	   (erg1 (progn (py-execute-statement-python-dedicated) py-buffer-name))
-	   (erg2 (progn (py-execute-statement-python-dedicated) py-buffer-name)))
+	   (erg1 (progn (py-execute-statement-python-dedicated) py-output-buffer))
+	   (erg2 (progn (py-execute-statement-python-dedicated) py-output-buffer)))
       (sit-for 1 t)
       (when py-debug-p (message "(count-windows) %s" (count-windows)))
       (should (< 2 (count-windows)))
@@ -48,8 +48,8 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-python-test\")"
 print(\"I'm the py-always-split-dedicated-lp-1361531-ipython-test\")"
     (delete-other-windows)
     (let* ((py-split-window-on-execute 'always)
-	   (erg1 (progn (py-execute-statement-ipython-dedicated) py-buffer-name))
-	   (erg2 (progn (py-execute-statement-ipython-dedicated) py-buffer-name)))
+	   (erg1 (progn (py-execute-statement-ipython-dedicated) py-output-buffer))
+	   (erg2 (progn (py-execute-statement-ipython-dedicated) py-output-buffer)))
       (sit-for 1 t)
       (when py-debug-p (message "(count-windows) %s" (count-windows)))
       (should (< 2 (count-windows)))
@@ -64,8 +64,8 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-ipython-test\")"
 print(\"I'm the py-always-split-dedicated-lp-1361531-jython-test\")"
     (delete-other-windows)
     (let* ((py-split-window-on-execute 'always)
-	   (erg1 (progn (py-execute-statement-jython-dedicated) py-buffer-name))
-	   (erg2 (progn (py-execute-statement-jython-dedicated) py-buffer-name)))
+	   (erg1 (progn (py-execute-statement-jython-dedicated) py-output-buffer))
+	   (erg2 (progn (py-execute-statement-jython-dedicated) py-output-buffer)))
       (sit-for 1 t)
       (when py-debug-p (message "(count-windows) %s" (count-windows)))
       (should (< 2 (count-windows)))
@@ -80,8 +80,8 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-jython-test\")"
 print(\"I'm the py-always-split-dedicated-lp-1361531-python3-test\")"
     (delete-other-windows)
     (let* ((py-split-window-on-execute 'always)
-	   (erg1 (progn (py-execute-statement-python3-dedicated) py-buffer-name))
-	   (erg2 (progn (py-execute-statement-python3-dedicated) py-buffer-name)))
+	   (erg1 (progn (py-execute-statement-python3-dedicated) py-output-buffer))
+	   (erg2 (progn (py-execute-statement-python3-dedicated) py-output-buffer)))
       (sit-for 1 t)
       (when py-debug-p (message "(count-windows) %s" (count-windows)))
       (should (< 2 (count-windows)))

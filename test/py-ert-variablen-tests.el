@@ -551,7 +551,7 @@
   (should (boundp 'py-block-or-clause-re)))
 
 (ert-deftest py-ert-buffer-name-test ()
-  (should (boundp 'py-buffer-name)))
+  (should (boundp 'py-output-buffer)))
 
 (ert-deftest py-ert-builtins-face-test ()
   (should (boundp 'py-builtins-face)))

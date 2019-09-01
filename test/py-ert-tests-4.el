@@ -111,7 +111,7 @@ impo")))
     (push-mark)
     (goto-char (point-min))
     (py-execute-region (point) (mark))
-    (set-buffer (get-buffer py-buffer-name))
+    (set-buffer (get-buffer py-output-buffer))
     (should-not (search-backward "FileNotFoundError" nil t 1))))
 
 (ert-deftest py-end-of-def-or-class-test-1 ()

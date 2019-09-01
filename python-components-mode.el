@@ -2140,7 +2140,7 @@ Default is nil"
       "Used if ‘python-mode-v5-behavior-p’ is t.
 
 Otherwise output buffer is created dynamically according to Python version and kind of process-handling")
-;; (make-variable-buffer-local 'py-output-buffer)
+(make-variable-buffer-local 'py-output-buffer)
 
 (defcustom py-force-default-output-buffer-p nil
   "Enforce sending output to the default output ‘buffer-name’.
