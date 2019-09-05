@@ -831,7 +831,7 @@ Returns position where output starts."
 	  (py--execute-file-base proc tempfile nil procbuf origline fast)
 	(and (file-readable-p tempfile) (delete-file tempfile py-debug-p))))))
 
-(defun py-execute-python-mode-v5 (start end exception-buffer origline filename)
+(defun py-execute-python-mode-v5 (start end origline filename)
   "Take START END &optional EXCEPTION-BUFFER ORIGLINE."
   (interactive "r")
   (let ((output-buffer "*Python Output*")
@@ -861,7 +861,7 @@ Optional FAST RETURN"
   (cond ;; (fast (py-fast-send-string strg proc buffer result))
    ;; enforce proceeding as python-mode.el v5
    (python-mode-v5-behavior-p
-    (py-execute-python-mode-v5 start end py-exception-buffer origline filename))
+    (py-execute-python-mode-v5 start end origline filename))
    (py-execute-no-temp-p
     (py--execute-ge24.3 start end execute-directory py-shell-name py-exception-buffer proc file origline))
    ((and filename wholebuf)
@@ -1346,8 +1346,7 @@ With \\[univeral-argument] (programmatically, optional argument
 BOTTOM), jump to the bottom (innermost) exception in the exception
 stack."
   (interactive "P")
-  (let* ((proc (get-process py-output-buffer))
-         (buffer py-output-buffer))
+  (let* ((buffer py-output-buffer))
     (if bottom
         (py--find-next-exception 'eob buffer 're-search-backward "Bottom")
       (py--find-next-exception 'eol buffer 're-search-forward "Bottom"))))
@@ -1357,8 +1356,7 @@ stack."
 With \\[universal-argument] (programmatically, optional argument TOP)
 jump to the top (outermost) exception in the exception stack."
   (interactive "P")
-  (let* ((proc (get-process py-output-buffer))
-         (buffer py-output-buffer))
+  (let* ((buffer py-output-buffer))
     (if top
         (py--find-next-exception 'bob buffer 're-search-forward "Top")
       (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
@@ -1394,9 +1392,9 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 					  (when (looking-at
 						 ;; all prompt-regexp known
 						 py-fast-filter-re)
-					    (goto-char (match-end 0))))
+					    (goto-char (match-end 0)))))
 
-					(skip-chars-forward " \t\r\n\f") (point) (line-end-position)))
+					(progn (skip-chars-forward " \t\r\n\f"   (line-end-position))(point)))
 		  (insert (concat "    File " (buffer-name exception-buffer) ", line "
 				  (prin1-to-string origline)))))
 	      ;; these are let-bound as ‘tempbuf’
