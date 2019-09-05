@@ -369,7 +369,6 @@ may want to re-add custom functions to it using the
     (define-key py-shell-mode-map "\t"
       'py-indent-or-complete)))
   (make-local-variable 'py-pdbtrack-buffers-to-kill)
-  (make-local-variable 'py-pdbtrack-tracked-buffer)
   (make-local-variable 'py-shell-fast-last-output)
   (set (make-local-variable 'py-shell--block-prompt) nil)
   (set (make-local-variable 'py-shell--prompt-calculated-output-regexp) nil)

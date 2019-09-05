@@ -14,8 +14,11 @@ New in version 6.2.4
 - New commands:
   py-toggle-py-split-window-on-execute
   py-toggle-session-mode
+  py-show
+  py-show-all
+  py-hide-section
 
-
+py-show-FORM commands replaced by single ‘py-show’
 
 New in version 6.2.3
 ---------------------

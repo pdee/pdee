@@ -351,58 +351,5 @@ I.e. switch it from \"True\" to \"False\" and vice versa"
            (replace-match "True"))
           (t (message "%s" "Can't see \"True or False\" here")))))
 
-;; (when (featurep 'thing-at-point-utils)
-;;   (defun py-beginning-of-list (&optional iact orig limit done last)
-;;     "Go to beginning of any parentized, braced or bracketed expression in statement. "
-;;     (interactive "p")
-;;     (save-restriction
-;;       (let ((orig (or orig (point)))
-;;             (done done)
-;;             (limit (or limit (re-search-backward "^[a-zA-Z]" nil t 1)))
-;;             (last last))
-;;         (unless (or done (not limit)) (narrow-to-region limit (point-max)))
-;;         (setq done t)
-;;         (goto-char orig)
-;;         (let* ((pt (car-safe (ar-in-parentized-p-atpt)))
-;;                (br (car-safe (ar-in-braced-p-atpt)))
-;;                (bk (car-safe (ar-in-bracketed-p-atpt)))
-;;                (erg (car (sort (delq nil (list pt br bk)) '<))))
-;;           (if erg
-;;               (progn
-;;                 (goto-char (1- erg))
-;;                 (setq last erg)
-;;                 (py-beginning-of-list iact (1- erg) limit done last))
-;;             (when last
-;;               (goto-char last))
-;;             (when iact (message "%s" last))
-;;             last)))))
-
-;;   (defun py-end-of-list (&optional iact orig limit done last)
-;;     "Go to end of any parentized, braced or bracketed expression in statement. "
-;;     (interactive "p")
-;;     (save-restriction
-;;       (let ((orig (or orig (point)))
-;;             (done done)
-;;             (limit (or limit (re-search-backward "^[a-zA-Z]" nil t 1)))
-;;             (last last))
-;;         (unless (or done (not limit)) (narrow-to-region limit (point-max)))
-;;         (setq done t)
-;;         (goto-char orig)
-;;         (let* ((pt (car-safe (ar-in-parentized-p-atpt)))
-;;                (br (car-safe (ar-in-braced-p-atpt)))
-;;                (bk (car-safe (ar-in-bracketed-p-atpt)))
-;;                (erg (car (sort (delq nil (list pt br bk)) '<))))
-;;           (if erg
-;;               (progn
-;;                 (goto-char (1- erg))
-;;                 (setq last erg)
-;;                 (py-end-of-list iact (1- erg) limit done last))
-;;             (when last
-;;               (goto-char last)
-;;               (match-paren)
-;;               (setq last (1+ (point)))
-;;               (when iact (message "%s" last))
-;;               last)))))))
-
 (provide 'python-components-extensions)
 ;;; python-components-extensions.el ends here

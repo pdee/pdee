@@ -471,11 +471,12 @@ according to ‘py-split-windows-on-execute-function’."
 
 Optional EXCEPTION-BUFFER SPLIT SWITCH
 Return nil."
-  (let* ((exception-buffer  (or exception-buffer (other-buffer)))
+  (let* ((exception-buffer (or exception-buffer (other-buffer)))
 	 (old-window-list (window-list))
 	 (number-of-windows (length old-window-list))
 	 (split (or split py-split-window-on-execute))
-	 (switch (or switch py-switch-buffers-on-execute-p)))
+	 (switch
+	  (or py-switch-buffers-on-execute-p switch py-pdbtrack-tracked-buffer)))
     ;; (output-buffer-displayed-p)
     (cond
      (py-keep-windows-configuration
@@ -484,7 +485,7 @@ Return nil."
       (goto-char (point-max)))
      ((and (eq split 'always)
 	   switch)
-      (if (member (get-buffer-window output-buffer)(window-list))
+      (if (member (get-buffer-window output-buffer) (window-list))
 	  ;; (delete-window (get-buffer-window output-buffer))
 	  (select-window (get-buffer-window output-buffer))
 	(py--manage-windows-split exception-buffer)
@@ -496,7 +497,7 @@ Return nil."
      ((and
        (eq split 'always)
        (not switch))
-      (if (member (get-buffer-window output-buffer)(window-list))
+      (if (member (get-buffer-window output-buffer) (window-list))
 	  (select-window (get-buffer-window output-buffer))
 	(py--manage-windows-split exception-buffer)
 	(display-buffer output-buffer)
@@ -517,7 +518,7 @@ Return nil."
       (switch-to-buffer exception-buffer)
       (delete-other-windows)
       (unless
-	  (member (get-buffer-window output-buffer)(window-list))
+	  (member (get-buffer-window output-buffer) (window-list))
 	(py--manage-windows-split exception-buffer))
       ;; Fixme: otherwise new window appears above
       (save-excursion
@@ -529,23 +530,23 @@ Return nil."
        split
        (not switch))
       ;; https://bugs.launchpad.net/python-mode/+bug/1478122
-      ;; > If the shell is visible in any of the windows it  should re-use that window
+      ;; > If the shell is visible in any of the windows it should re-use that window
       ;; > I did double check and py-keep-window-configuration is nil and split is t.
       (py--split-t-not-switch-wm output-buffer number-of-windows exception-buffer))
      ((and split switch)
       (unless
-	  (member (get-buffer-window output-buffer)(window-list))
+	  (member (get-buffer-window output-buffer) (window-list))
 	(py--manage-windows-split exception-buffer))
       ;; Fixme: otherwise new window appears above
       ;; (save-excursion
       ;; (other-window 1)
-	;; (pop-to-buffer output-buffer)
-	;; [Bug 1579309] python buffer window on top when using python3
-	(set-buffer output-buffer)
-	(switch-to-buffer output-buffer)
-	(goto-char (point-max))
-	;; (other-window 1)
-	)
+      ;; (pop-to-buffer output-buffer)
+      ;; [Bug 1579309] python buffer window on top when using python3
+      (set-buffer output-buffer)
+      (switch-to-buffer output-buffer)
+      (goto-char (point-max))
+      ;; (other-window 1)
+      )
      ((not switch)
       (let (pop-up-windows)
 	(py-restore-window-configuration))))))

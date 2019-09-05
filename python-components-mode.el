@@ -1094,21 +1094,6 @@ No semantic indent,  which diff to `py-indent-offset' indicates"
   :version "25.1"
   :type 'float)
 
-(defcustom py-shell-compilation-regexp-alist
-  `((,(rx line-start (1+ (any " \t")) "File \""
-          (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
-          "\", line " (group (1+ digit)))
-     1 2)
-    (,(rx " in file " (group (1+ not-newline)) " on line "
-          (group (1+ digit)))
-     1 2)
-    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
-          "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
-     1 2))
-  "`compilation-error-regexp-alist' for inferior Python."
-  :type '(alist string)
-  :group 'python-mode)
-
 (defvar py-shell--first-prompt-received-output-buffer nil)
 (defvar py-shell--first-prompt-received nil)
 
@@ -1124,8 +1109,6 @@ eventually provide a shell."
   :group 'python-mode)
 
 (defvar py-shell--parent-buffer nil)
-
-(defvar py-shell--font-lock-buffer nil)
 
 (defvar py-shell--package-depth 10)
 
@@ -1478,6 +1461,8 @@ If `py-keep-windows-configuration' is t, this will take precedence over setting 
   :type 'boolean
   :tag "py-switch-buffers-on-execute-p"
   :group 'python-mode)
+;; made buffer-local as pdb might need t in all circumstances
+(make-variable-buffer-local 'py-switch-buffers-on-execute-p)
 
 (defcustom py-split-window-on-execute 'just-two
   "When non-nil split windows.
@@ -2821,7 +2806,7 @@ for options to pass to the DOCNAME interpreter. \"
   (interactive \"P\")
   (let\* ((py-shell-name \"FULLNAME\"))
     (py-shell argprompt)
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))
+    (when (interactive-p) (switch-to-buffer (current-buffer))
           (goto-char (point-max)))))
 ")
 
@@ -3302,29 +3287,21 @@ to paths in Emacs."
   :tag "py-pdbtrack-minor-mode-string"
   :group 'python-mode)
 
-(defcustom py-pdbtrack-stacktrace-info-regexp
-  "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
-  "Regular expression matching stacktrace information.
-Used to extract the current line and module being inspected."
-  :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+;; (defcustom py-pdbtrack-stacktrace-info-regexp
+;;   "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
+;;   "Regular expression matching stacktrace information.
+;; Used to extract the current line and module being inspected."
+;;   :type 'string
+;;   :group 'python-mode
+;;   :safe 'stringp)
 
-(defcustom py-pdbtrack-stacktrace-info-regexp
-  "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
-  "Regular expression matching stacktrace information.
-Used to extract the current line and module being inspected."
-  :type 'string
-  :group 'python-mode
-  :safe 'stringp)
-
-(defvar py-pdbtrack-tracked-buffer nil
-  "Variable containing the value of the current tracked buffer.
-Never set this variable directly, use
-`py-pdbtrack-set-tracked-buffer' instead.")
-
-(defvar py-pdbtrack-buffers-to-kill nil
-  "List of buffers to be deleted after tracking finishes.")
+;; (defcustom py-pdbtrack-stacktrace-info-regexp
+;;   "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
+;;   "Regular expression matching stacktrace information.
+;; Used to extract the current line and module being inspected."
+;;   :type 'string
+;;   :group 'python-mode
+;;   :safe 'stringp)
 
 (defconst py-pdbtrack-stack-entry-regexp
    (concat ".*\\("py-shell-input-prompt-1-regexp">\\|"py-ipython-input-prompt-re">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
@@ -3344,76 +3321,7 @@ Never set this variable directly, use
 
 (defvar py-pdbtrack-is-tracking-p nil)
 
-(defcustom py-shell-completion-native-output-timeout 5.0
-  "Time in seconds to wait for completion output before giving up."
-  :version "25.1"
-  :type 'float)
-
-(defcustom py-shell-completion-native-try-output-timeout 1.0
-  "Time in seconds to wait for *trying* native completion output."
-  :version "25.1"
-  :type 'float)
-
-(defcustom py-shell-compilation-regexp-alist
-  `((,(rx line-start (1+ (any " \t")) "File \""
-          (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
-          "\", line " (group (1+ digit)))
-     1 2)
-    (,(rx " in file " (group (1+ not-newline)) " on line "
-          (group (1+ digit)))
-     1 2)
-    (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
-          "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
-     1 2))
-  "`compilation-error-regexp-alist' for inferior Python."
-  :type '(alist string)
-  :group 'python-mode)
-
-(defcustom py-pdbtrack-stacktrace-info-regexp
-  "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
-  "Regular expression matching stacktrace information.
-Used to extract the current line and module being inspected."
-  :type 'string
-  :group 'python-mode
-  :safe 'stringp)
-
-(defvar py-pdbtrack-tracked-buffer nil
-  "Variable containing the value of the current tracked buffer.
-Never set this variable directly, use
-`py-pdbtrack-set-tracked-buffer' instead.")
-
-(defvar py-pdbtrack-buffers-to-kill nil
-  "List of buffers to be deleted after tracking finishes.")
-
-(defvar py-shell--first-prompt-received-output-buffer nil)
-(defvar py-shell--first-prompt-received nil)
-
-(defcustom py-shell-first-prompt-hook nil
-  "Hook run upon first (non-pdb) shell prompt detection.
-This is the place for shell setup functions that need to wait for
-output.  Since the first prompt is ensured, this helps the
-current process to not hang while waiting.  This is useful to
-safely attach setup code for long-running processes that
-eventually provide a shell."
-  :version "25.1"
-  :type 'hook
-  :group 'python-mode)
-
-(defvar py-shell--parent-buffer nil)
-
 (defvar py-shell--font-lock-buffer nil)
-
-(defvar py-shell--package-depth 10)
-
-;; (defcustom py-shell-completion-native-enable t
-;;   "Enable readline based native completion."
-;;   :version "25.1"
-;;   :type 'boolean)
-
-(defcustom py-shell-completion-native-output-timeout 5.0
-  "Time in seconds to wait for completion output before giving up."
-  :version "25.1"
-  :type 'float)
 
 (defcustom py-completion-setup-code
   "
@@ -4007,7 +3915,6 @@ Optional argument END specify end."
 (defun py--escape-open-paren-col1 (start end)
   "Start from position START until position END."
   (goto-char start)
-  ;; (switch-to-buffer (current-buffer))
   (while (re-search-forward "^(" end t 1)
     (insert "\\")
     (end-of-line)))
