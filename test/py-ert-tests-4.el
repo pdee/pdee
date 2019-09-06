@@ -264,7 +264,12 @@ else: "
     (goto-char (point-max))
     (should (eq 4  (py-compute-indentation)))))
 
-
+(ert-deftest py-in-list-indent-test-LEON2Q ()
+  (py-test-with-temp-buffer
+      "print(rest)"
+    (goto-char (point-max)) 
+    (search-backward "rest")
+    (should-not (call-interactively 'py-indent-or-complete))))
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

@@ -627,16 +627,16 @@ Choices are:
     (goto-char (nth 1 pps))
     (py-compute-indentation--according-to-list-style))))
 
-(defun py-compute-list-indent--according-to-circumstance (pps line)
-  (goto-char (nth 1 pps))
+(defun py-compute-list-indent--according-to-circumstance (pps line origline)
+  (and (nth 1 pps) (goto-char (nth 1 pps)))
   (if (looking-at "[({][ \t]*$")
       (+ (current-indentation) py-indent-offset)
-    ;; (py-compute--dict-indent pps)
-    (cond ((and line (eq 0 (current-column)))
-           (1+ py-indent-offset))
-          (t (py-compute-indentation--according-to-list-style)))))
+    (when (or line (< (py-count-lines) origline))
+      (cond ((eq 0 (current-column))
+	     (1+ py-indent-offset))
+	    (t (py-compute-indentation--according-to-list-style))))))
 
-(defun py-compute-indentation-in-list (pps line closing orig)
+(defun py-compute-indentation-in-list (pps line closing orig origline)
   (if closing
       (py-compute-indentation-closing-list pps)
     (cond ((and (not line)(looking-back py-assignment-re (line-beginning-position)))
@@ -645,7 +645,7 @@ Choices are:
           (t (when (looking-back "[ \t]*\\(\\s(\\)" (line-beginning-position))
                (goto-char (match-beginning 1))
                (setq pps (parse-partial-sexp (point-min) (point))))
-             (py-compute-list-indent--according-to-circumstance pps line)))))
+             (py-compute-list-indent--according-to-circumstance pps line origline)))))
 
 (defun py-compute-comment-indentation (pps iact orig origline closing line nesting repeat indent-offset liep)
   (cond ((nth 8 pps)
@@ -813,7 +813,7 @@ LIEP stores line-end-position at point-of-interest
 			 (py-compute-comment-indentation pps iact orig origline closing line nesting repeat indent-offset liep))
 			;; lists
 			((nth 1 pps)
-			 (py-compute-indentation-in-list pps line closing orig))
+			 (py-compute-indentation-in-list pps line closing orig origline))
 			((and (eq (char-after) (or ?\( ?\{ ?\[)) line)
 			 (1+ (current-column)))
 			((py-preceding-line-backslashed-p)
