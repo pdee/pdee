@@ -223,10 +223,7 @@ not inside a defun."
        (when py-debug-p (message "%s" (current-buffer)))
        (py-send-string cmd nil nil nil nil (current-buffer))
        )))
-       ;; (let ((erg (py-send-string cmd nil t nil nil (current-buffer))))
-       ;; 	 (when erg
-       ;; 	   (insert erg))))))
-
+       
 (defun py-help-at-point ()
   "Print help on symbol at point.
 

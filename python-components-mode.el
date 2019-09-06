@@ -1837,7 +1837,7 @@ As v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncode
 
 (defun py-toggle-python-mode-v5-behavior ()
   "Switch the values of ‘python-mode-v5-behavior-p’"
-  (interactive) 
+  (interactive)
   (setq python-mode-v5-behavior-p (not python-mode-v5-behavior-p))
   (when (interactive-p) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p)))
 
@@ -3922,12 +3922,13 @@ Optional argument END specify end."
 (and py-company-pycomplete-p (require 'company-pycomplete))
 
 ;; Macros
-(defmacro empty-line-p ()
-  "Return t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
-  `(save-excursion
-     (progn
-       (beginning-of-line)
-       (looking-at "\\s-*$"))))
+(unless (functionp 'empty-line-p)
+  (defmacro empty-line-p ()
+    "Return t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
+    `(save-excursion
+       (progn
+	 (beginning-of-line)
+	 (looking-at "\\s-*$")))))
 
 (defun py-toggle-closing-list-dedents-bos (&optional arg)
   "Switches boolean variable ‘py-closing-list-dedents-bos’.

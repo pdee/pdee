@@ -265,9 +265,6 @@ process buffer for a list of commands.)"
       (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
     buffer))
 
-(defun py-determine-argsdoc (ele)
-  (py--provide-command-args erg py-fast-process-p))
-
 (defun py-load-named-shells ()
   (interactive)
   (dolist (ele py-known-shells)
@@ -1305,7 +1302,8 @@ Arg REGEXP, a symbol"
 		  (py--down-according-to-indent regexp nil 0))
 		 ;; look upward
 		 (t (py--go-to-keyword regexp))))
-	       (secondvalue (ignore-errors (nth 2 res))))
+	       (secondvalue (ignore-errors (nth 2 res)))
+	       erg)
 	       ;; (py-for-block-p (looking-at py-for-re))
 	  (setq indent (or (and res (car-safe res)) indent))
 	  (cond
@@ -1711,7 +1709,7 @@ Return the output."
      (with-current-buffer (process-buffer proc)
        (comint-interrupt-subjob)))))
 
-(defun py-send-string (strg &optional process result no-output orig buffer delete)
+(defun py-send-string (strg &optional process result no-output orig buffer)
   "Evaluate STRG in Python PROCESS.
 
 With optional Arg RESULT return output"

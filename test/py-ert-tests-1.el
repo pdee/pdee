@@ -1509,18 +1509,6 @@ def baz():
     (and (should (string= "getchildren()[0]" (py-partial-expression)))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
-(ert-deftest py-ert-moves-up-execute-statement-test ()
-  (py-test-with-temp-buffer-point-min
-      "print(\"I'm the py-execute-statement-test\")"
-    (goto-char (point-min))
-    (let ((py-shell-name "python2"))
-      (py-execute-statement)
-      (sit-for 0.1) 
-      (set-buffer (get-buffer  "*Python2*"))
-      (goto-char (point-max))
-      (and (should (search-backward "py-execute-statement-test" nil t 1))
-	   (py-kill-buffer-unconditional (current-buffer))))))
-
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-1 ()
   "Indent line-by-line as first line is okay "
   (py-test-with-temp-buffer-point-min
