@@ -632,8 +632,7 @@ Choices are:
   (if (looking-at "[({][ \t]*$")
       (+ (current-indentation) py-indent-offset)
     (if (or line (< (py-count-lines) origline))
-	(py-compute-indentation--according-to-list-style)
-      (error "py-compute-list-indent--according-to-circumstance failed"))))
+	(py-compute-indentation--according-to-list-style))))
 
 (defun py-compute-indentation-in-list (pps line closing orig origline)
 (if closing
@@ -812,7 +811,10 @@ LIEP stores line-end-position at point-of-interest
 			 (py-compute-comment-indentation pps iact orig origline closing line nesting repeat indent-offset liep))
 			;; lists
 			((nth 1 pps)
-			 (py-compute-indentation-in-list pps line closing orig origline))
+			 (if (< (nth 1 pps) (line-beginning-position))
+			     (py-compute-indentation-in-list pps line closing orig origline)
+			   (back-to-indentation)
+			   (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep)))
 			((and (eq (char-after) (or ?\( ?\{ ?\[)) line)
 			 (1+ (current-column)))
 			((py-preceding-line-backslashed-p)

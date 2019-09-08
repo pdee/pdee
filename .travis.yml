@@ -1,7 +1,7 @@
 language: python
 
 before_install:
-  sudo apt-get install ipython jython pypy
+  apt-get install ipython ipython3 jython pypy bpython
 
 env:
   EMACS=emacs24
