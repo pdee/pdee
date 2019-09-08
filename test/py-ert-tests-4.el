@@ -249,12 +249,10 @@ def foo(x):
 
     print('Try to guess a number between 1 and 20, using the four clues if you need them, You have 5 guesses')
 
-
     while (guess!=ziffer) and (tries<5):
         print(\"Falsch\")
         tries += 1
         guess = int(input ('What is your guess? '))
-
 
     if guess == ziffer:
         print(\"Erfolg\")
@@ -272,6 +270,22 @@ print(rest)"
     (search-backward "rest")
     (py-indent-or-complete)
     (should (eq 4 (current-indentation)))))
+
+(ert-deftest py-fill-paragraph-LEON2Q ()
+  (py-test-with-temp-buffer
+      "r\'\'\'aaa
+
+this is a test this is a test this is a test this is a test this is a test this k
+is a test
+
+\'\'\'"
+    (goto-char (point-max))
+    (search-backward "k")
+    (end-of-line)
+    (py-fill-paragraph)
+    (search-backward "'''")
+    (forward-line 1) 
+    (should-not (eq (char-after) ?\\))))
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

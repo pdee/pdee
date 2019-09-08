@@ -358,26 +358,11 @@ See lp:1066489 "
     ;; adjust the region to fill according to style
     (goto-char end)))
 
-(defun py--fill-docstring-first-line (beg end thisbeg thisend style)
+(defun py--fill-docstring-first-line (beg end)
   "Refill first line after newline maybe. "
-  (let (multi-line-p)
-    (fill-region beg (line-end-position))
-    (forward-line 1)
-    (fill-region (line-beginning-position) end)))
-
-;; (save-restriction
-;;       (widen)
-;;       (setq multi-line-p (string-match "\n" (buffer-substring-no-properties thisbeg thisend))))
-;;     (when multi-line-p
-;;       ;; adjust the region to fill according to style
-;;       (goto-char beg)
-;;       (skip-chars-forward "\"'")
-;;       ;; style might be nil
-;;       (when style
-;; 	(unless (or (eq style 'pep-257-nn)(eq style 'pep-257)(eq (char-after) ?\n))
-;; 	  (newline-and-indent)
-;; 	  ;; if TQS is at a single line, re-fill remaining line
-;; 	  (fill-region (point) end))))))
+  (fill-region beg (line-end-position))
+  (forward-line 1)
+  (fill-region (line-beginning-position) end))
 
 (defun py--fill-docstring (justify style docstring orig py-current-indent)
   ;; Delete spaces after/before string fence
@@ -399,7 +384,7 @@ See lp:1066489 "
     (when (string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
       (py-fill-labelled-string beg end))
     (when first-line-p
-      (py--fill-docstring-first-line beg end thisbeg thisend style))
+      (py--fill-docstring-first-line beg end))
     (when (save-excursion (goto-char end)
 			  (or (member (char-after) (list ?\" ?\'))
 			      (member (char-before) (list ?\" ?\'))))
@@ -489,7 +474,7 @@ Fill according to `py-docstring-style' "
 				   (or
 				    (and in-string
 					 (progn
-					   (goto-char beg)
+					   (goto-char (nth 8 pps))
 					   (setq tqs (looking-at "\"\"\"\\|'''"))
 					   (forward-sexp) (point)))
 				    (progn
