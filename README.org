@@ -1,4 +1,4 @@
-[![MELPA](https://melpa.org/packages/python-mode-badge.svg)](https://melpa.org/#/python-mode)
+[[https://melpa.org/packages/python-mode-badge.svg][https://melpa.org/#/python-mode]]
 * Initialize
   Put the following into your initialization file:
 
