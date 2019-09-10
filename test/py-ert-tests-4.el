@@ -301,6 +301,35 @@ is a test
       (goto-char (point-max))
       (search-backward "\"b")
       (should (eq (py-forward-indent) 54))))
-      
+
+(ert-deftest py-forward-indent-AvmF3n ()
+  (py-test-with-temp-buffer-point-min
+      "class kugel(object):
+    zeit = time\.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time\.strftime('%Y-%m-%d--%H-%M-%S')
+    spiel = \[]
+    gruen = \[0]
+"
+    (goto-char (point-min)) 
+    (search-forward "zeit")
+    (end-of-line)
+    (py-forward-indent)
+    (should (eq (char-before) ?\]))))
+
+(ert-deftest py-forward-indent-tWBEjf ()
+  (py-test-with-temp-buffer-point-min
+    "def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = \[\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+
+        ausgabe\[0] = treffer
+        fertig = ''
+"
+    (goto-char (point-min))
+    (forward-line 1)
+    (end-of-line)
+    (py-forward-indent)
+    (should (eq (char-before) ?'))))
+
       (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

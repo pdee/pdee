@@ -200,5 +200,18 @@
   (interactive)
   (py-hide-base 'top-level))
 
+(defun py-dynamically-hide-indent ()
+  (interactive)
+  (py-show)
+  (py-hide-indent))
+
+(defun py-dynamically-hide-further-indent (&optional arg) 
+  (interactive "P")
+  (if (eq 4  (prefix-numeric-value arg))
+      (py-show)
+  (py-show)
+  (py-forward-indent)
+  (py-hide-indent)))
+
 ;; python-components-hide-show.el ends here
 (provide 'python-components-hide-show)
