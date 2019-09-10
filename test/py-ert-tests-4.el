@@ -300,7 +300,7 @@ is a test
 }"
       (goto-char (point-max))
       (search-backward "\"b")
-      (should (eq (py-forward-indent) 54))))
+      (should (eq (py-forward-indent) 31))))
 
 (ert-deftest py-forward-indent-AvmF3n ()
   (py-test-with-temp-buffer-point-min
