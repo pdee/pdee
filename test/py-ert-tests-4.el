@@ -269,6 +269,7 @@ print(rest)"
     (goto-char (point-max))
     (search-backward "rest")
     (py-indent-or-complete)
+    (sit-for 0.1) 
     (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-fill-paragraph-LEON2Q ()
@@ -287,5 +288,19 @@ is a test
     (forward-line 1) 
     (should-not (eq (char-after) ?\\))))
 
-(provide 'py-interactive-tests)
+(ert-deftest py-forward-indent-jcMT2k ()
+  (py-test-with-temp-buffer
+      "{
+  \"a\": 1
+  \"b\": {
+    \"c\": {
+      \"d\": 2
+    }
+  }
+}"
+      (goto-char (point-max))
+      (search-backward "\"b")
+      (should (eq (py-forward-indent) 54))))
+      
+      (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

@@ -92,16 +92,15 @@ Travel this INDENT forward"
 If already at the end, go down to next indent in buffer
 Returns final position when called from inside section, nil otherwise"
   (interactive)
-  (unless (eobp)
-    (let (done indent)
-      (when (py-forward-statement)
-	(save-excursion
-	  (setq done (point))
-	  (setq indent (and (py-backward-statement)(current-indentation))))
-      (setq done (py--travel-this-indent-forward indent))
-      (when done (goto-char done)))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" done))
-      done)))
+  (let (done
+	(last (point))
+	(orig (point))
+	(indent (current-indentation)))
+    (while (and (not (eobp)) (not done) (progn (forward-line 1) (back-to-indentation) (or (and (<= indent (current-indentation))(< last (point))(setq last (point)))(setq done t)))))
+    (when last (goto-char last))
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (and (< orig (point))(point))))
 
 (defun py-forward-indent-bol ()
   "Go to beginning of line following of a section of equal indentation.

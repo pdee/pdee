@@ -85,6 +85,216 @@ h1() {
 -f ert-run-tests-batch-and-exit
 }
 
+h2() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST2 \
+-f ert-run-tests-batch-and-exit
+}
+
+h3() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST3 \
+-f ert-run-tests-batch-and-exit
+}
+
+h4() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST4 \
+-f ert-run-tests-batch-and-exit
+}
+
+h5() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST5 \
+-f ert-run-tests-batch-and-exit
+}
+
+h6() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST6 \
+-f ert-run-tests-batch-and-exit
+}
+
+h7() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST7 \
+-f ert-run-tests-batch-and-exit
+}
+
+h8() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST8 \
+-f ert-run-tests-batch-and-exit
+}
+
+h9() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST9 \
+-f ert-run-tests-batch-and-exit
+}
+
+h10() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST10 \
+-f ert-run-tests-batch-and-exit
+}
+
+h11() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST11 \
+-f ert-run-tests-batch-and-exit
+}
+
+h12() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST12 \
+-f ert-run-tests-batch-and-exit
+}
+
+h13() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST13 \
+-f ert-run-tests-batch-and-exit
+}
+
+h14() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST14 \
+-f ert-run-tests-batch-and-exit
+}
+
+h15() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST15 \
+-f ert-run-tests-batch-and-exit
+}
+
+h16() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST16 \
+-f ert-run-tests-batch-and-exit
+}
+
 hierv5() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
@@ -227,16 +437,31 @@ $EMACS -Q --batch \
 }
 
 if [ $WERKSTATT -eq 0 ]; then
-    while getopts 15abehkv option
+    while getopts 123456789abehijkpqrstuvx option
     do
         case $option in
 	    1) echo "Lade \$TEST1: \"$TEST1\"";h1;;
-	    5) echo "Lade testumgebung \"EXTRA\"";hierv5;;
+	    2) echo "Lade \$TEST2: \"$TEST2\"";h2;;
+	    3) echo "Lade \$TEST3: \"$TEST3\"";h3;;
+	    4) echo "Lade \$TEST4: \"$TEST4\"";h4;;
+	    5) echo "Lade \$TEST5: \"$TEST5\"";h5;;
+	    6) echo "Lade \$TEST6: \"$TEST6\"";h6;;
+	    7) echo "Lade \$TEST7: \"$TEST7\"";h7;;
+	    8) echo "Lade \$TEST8: \"$TEST8\"";h8;;
+	    9) echo "Lade \$TEST9: \"$TEST9\"";h9;;
+	    i) echo "Lade \$TEST10: \"$TEST10\"";h10;;
+	    j) echo "Lade \$TEST11: \"$TEST11\"";h11;;
+	    k) echo "Lade \$TEST12: \"$TEST12\"";h12;;
+	    p) echo "Lade \$TEST13: \"$TEST13\"";h13;;
+	    q) echo "Lade \$TEST14: \"$TEST14\"";h14;;
+	    r) echo "Lade \$TEST15: \"$TEST15\"";h15;;
+	    s) echo "Lade \$TEST16: \"$TEST16\"";h16;;
 	    a) echo "Lade erst"; erst;;
 	    b) echo "Lade zweit"; zweit;;
 	    e) echo "Lade testumgebung \"ENTFERNT\""; entfernt;;
             h) echo "Lade testumgebung \"HIER1\"";hier;;
-	    k) echo "Lade testumgebung \"EXTRA\"";extra;;
+	    u) echo "Lade testumgebung \"EXTRA\"";hierv5;;
+	    x) echo "Lade testumgebung \"EXTRA\"";extra;;
 	    v) echo "Lade testumgebung \"EXTRA\"";extrav5;;
 	esac
     done

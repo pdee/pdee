@@ -179,7 +179,7 @@
 (defun py--beginning-of-indent-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘indent’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
-    (and (not (or (nth 8 pps)(nth 1 pps)))
+    (and ;; (not (or (nth 8 pps)(nth 1 pps)))
          (looking-at py-indent-re)
          (looking-back "[^ \t]*" (line-beginning-position))
          (eq (current-column)(current-indentation))

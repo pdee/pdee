@@ -1,6 +1,6 @@
-;;; py-shell-arg-ert-tests.el --- py-shell ert tests
+;;; py-shell-arg-ert-tests.el --- py-shell ert tests -*- lexical-binding: t; -*- 
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2019  Andreas Röhler
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
