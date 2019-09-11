@@ -239,7 +239,7 @@ process buffer for a list of commands.)"
 		   (process-buffer (apply 'start-process shell buffer-name shell args))
 		 (apply #'make-comint-in-buffer shell buffer-name
 			shell nil args))))))
-	 (py-output-buffer (if python-mode-v5-behavior-p py-output-buffer buffer)))
+	 (py-output-buffer (buffer-name (if python-mode-v5-behavior-p py-output-buffer buffer))))
     (unless done
       (with-current-buffer buffer
 	(setq delay (py--which-delay-process-dependent buffer-name))
@@ -261,9 +261,9 @@ process buffer for a list of commands.)"
 	  ;; (py--update-lighter shell)
 	  )))
     (when (or interactivep
-	      (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
-      (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
-    buffer))
+	      (or switch dedicated py-switch-buffers-on-execute-p py-split-window-on-execute))
+      (py--shell-manage-windows buffer exception-buffer split (or interactivep switch dedicated))
+    buffer)))
 
 (defun py-load-named-shells ()
   (interactive)
@@ -281,7 +281,7 @@ Calls ‘py-shell’
   (when (functionp (car (read-from-string (car-safe py-known-shells))))
     (when py-verbose-p (message "py-load-named-shells: %s" "installed named-shells"))))
 
-(py-load-named-shells)
+;; (py-load-named-shells)
 
 (defun py-load-file (file-name)
   "Load a Python file FILE-NAME into the Python process.

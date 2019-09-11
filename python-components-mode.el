@@ -2125,7 +2125,7 @@ Default is nil"
       "Used if ‘python-mode-v5-behavior-p’ is t.
 
 Otherwise output buffer is created dynamically according to Python version and kind of process-handling")
-(make-variable-buffer-local 'py-output-buffer)
+;; (make-variable-buffer-local 'py-output-buffer)
 
 (defcustom py-force-default-output-buffer-p nil
   "Enforce sending output to the default output ‘buffer-name’.
@@ -4018,6 +4018,7 @@ Preserves the `buffer-modified-p' state of the current buffer."
 (require 'python-components-auto-fill)
 (require 'python-components-fast-complete)
 (require 'python-components-intern)
+(require 'python-components-named-shells)
 (require 'python-components-close-forms)
 (require 'python-components-section-forms)
 (require 'python-components-narrow)
