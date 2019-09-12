@@ -149,7 +149,8 @@ REPEAT - count and consider repeats"
 	 ;; lists
 	 ((nth 1 pps)
 	  (goto-char (nth 1 pps))
-	  (skip-chars-backward py-expression-skip-chars))
+	  (skip-chars-backward py-expression-skip-chars)
+	  )
 	 ;; in string
 	 ((nth 3 pps)
 	  (goto-char (nth 8 pps)))
@@ -186,10 +187,10 @@ REPEAT - count and consider repeats"
 	(cond
 	 ;; in comment
 	 ((nth 4 pps)
-	  (or (< (point) (progn (forward-comment 1)(point)))(forward-line 1))
+	  (or (< (point) (progn (forward-comment 1) (point)))(forward-line 1))
 	  (py-forward-expression orig done repeat))
 	 ;; empty before comment
-	 ((and (looking-at "[ \t]*#")(looking-back "^[ \t]*" (line-beginning-position)))
+	 ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
 	  (while (and (looking-at "[ \t]*#") (not (eobp)))
 	    (forward-line 1))
 	  (py-forward-expression orig done repeat))
@@ -203,14 +204,15 @@ REPEAT - count and consider repeats"
 	  (goto-char (scan-sexps (point) 1))
 	  (setq done t)
 	  (py-forward-expression orig done repeat))
-	 ((nth 1 pps)
-	  (goto-char (nth 1 pps))
-	  (goto-char (scan-sexps (point) 1))
-	  (setq done t)
-	  (py-forward-expression orig done repeat))
 	 ;; looking at opening delimiter
 	 ((eq 4 (car-safe (syntax-after (point))))
 	  (goto-char (scan-sexps (point) 1))
+	  (skip-chars-forward py-expression-skip-chars)
+	  (setq done t))
+	 ((nth 1 pps)
+	  (goto-char (nth 1 pps))
+	  (goto-char (scan-sexps (point) 1))
+	  (skip-chars-forward py-expression-skip-chars)
 	  (setq done t)
 	  (py-forward-expression orig done repeat))
 	 ((and (eq orig (point)) (looking-at py-operator-re))
@@ -223,7 +225,7 @@ REPEAT - count and consider repeats"
 	 ;; at colon following arglist
 	 ((looking-at ":[ \t]*$")
 	  (forward-char 1)))
-	(unless (or (eq (point) orig)(and (eobp)(bolp)))
+	(unless (or (eq (point) orig)(and (eobp) (bolp)))
 	  (setq erg (point)))
 	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	erg))))

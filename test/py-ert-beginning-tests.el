@@ -246,6 +246,22 @@ class bar:
     (py-backward-expression)
     (should (eq (char-after) ?r))))
 
+(ert-deftest py-ert-beginning-of-expression-test-XKIlTr ()
+  (py-test-with-temp-buffer
+      "# -*- coding: utf-8 -*-
+class bar:
+    def foo ():
+        try:
+            if True:
+                for a in range(anzahl):
+                    pass
+        except:
+            block2
+"
+    (goto-char (point-max))
+    (search-backward "ange")
+    (should-not (py--beginning-of-expression-p))))
+
 (ert-deftest py-ert-beginning-of-partial-expression-test ()
   (py-test-with-temp-buffer
       "# -*- coding: utf-8 -*-

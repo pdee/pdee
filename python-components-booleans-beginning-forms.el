@@ -54,6 +54,7 @@
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
          (looking-at py-expression-re)
+	 (not (save-excursion (< 0 (abs (skip-chars-backward py-expression-skip-chars)))))
          (point))))
 
 (defun py--beginning-of-partial-expression-p (&optional pps)
