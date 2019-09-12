@@ -251,19 +251,25 @@ process buffer for a list of commands.)"
 		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
 	  (setq py-modeline-display (py--update-lighter buffer-name))
 	  (sit-for delay t)
-	  (py-shell-mode)
 	  (when interactivep
 	    (cond ((string-match "^.I" buffer-name)
 		   (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
 		  ((string-match "^.+3" buffer-name)
-		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
+		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay)))))))
+    (if (get-buffer-process buffer)
+	(progn
+	  (with-current-buffer buffer
+	    (py-shell-mode))
 	  ;; (py-send-string-no-output "print(\"py-shell-mode loaded\")" (get-buffer-process buffer) buffer-name)
 	  ;; (py--update-lighter shell)
-	  )))
-    (when (or interactivep
-	      (or switch dedicated py-switch-buffers-on-execute-p py-split-window-on-execute))
-      (py--shell-manage-windows buffer exception-buffer split (or interactivep switch dedicated))
-    buffer)))
+
+	  (when (or interactivep
+		    (or switch dedicated py-switch-buffers-on-execute-p py-split-window-on-execute))
+	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch dedicated))
+	    buffer))
+      (setq erg (py--fetch-error py-output-buffer))
+      ;; (message "%s" erg)
+      (error erg))))
 
 (defun py-load-named-shells ()
   (interactive)

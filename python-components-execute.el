@@ -966,42 +966,29 @@ If an exception occurred return error-string, otherwise return nil.
 BUF must exist.
 
 Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source buffer"
-  (let* (erg)
-    (with-current-buffer output-buffer
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      ;; (setq py-error (buffer-substring-no-properties (point) (point-max)))
-      (goto-char (point-min))
-      (when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
-	(when filename
-	  (replace-match filename nil nil nil 1))
-	(replace-match origline nil nil nil 2)
-	(setq py-error (buffer-substring-no-properties (point) (point-max))))
-      ;; (while (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t))
-      ;; (setq erg (copy-marker (point)))
-      ;; Replace hints to temp-file by orig-file
-      ;; (delete-region (progn (beginning-of-line)
-      ;; 			(save-match-data
-      ;; 			  (when (looking-at
-      ;; 				 ;; all prompt-regexp known
-      ;; 				 py-fast-filter-re)
-      ;; 			    (goto-char (match-end 0))))
-
-      ;; 			(skip-chars-forward " \t\r\n\f") (line-end-position) (point)))
-      ;; (insert (concat "    File " (buffer-name py-exception-buffer) ", line "
-      ;; 		  (prin1-to-string origline))))
-      (when erg
-	(goto-char erg)
-	(save-match-data
-	  (and (not (py--buffer-filename-remote-maybe
-		     (or
-		      (get-buffer py-exception-buffer)
-		      (get-buffer (file-name-nondirectory py-exception-buffer)))))
-	       (string-match "^[ \t]*File" (buffer-substring-no-properties (point) (line-end-position)))
-	       (looking-at "[ \t]*File")
-	       (replace-match " Buffer")))
-	(setq py-error (buffer-substring-no-properties (point-min) (point-max)))
-	(sit-for 0.1 t)
-	py-error))))
+  (with-current-buffer output-buffer
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (setq py-error (buffer-substring-no-properties (point) (point-max)))
+    (goto-char (point-max))
+    (when (re-search-backward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
+      (when (and filename (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
+		 (replace-match filename nil nil nil 1))
+	(when (and origline (re-search-forward "line \\([0-9]+\\)\\(.*\\)$" (line-end-position) t 1))
+	  (replace-match origline nil nil nil 2)))
+      (setq py-error (buffer-substring-no-properties (point) (point-max))))
+    ;; (when erg
+    ;;   (goto-char erg)
+    ;;   (save-match-data
+    ;; 	(and (not (py--buffer-filename-remote-maybe
+    ;; 		   (or
+    ;; 		    (get-buffer py-exception-buffer)
+    ;; 		    (get-buffer (file-name-nondirectory py-exception-buffer)))))
+    ;; 	     (string-match "^[ \t]*File" (buffer-substring-no-properties (point) (line-end-position)))
+    ;; 	     (looking-at "[ \t]*File")
+    ;; 	     (replace-match " Buffer")))
+    ;;   (setq py-error (buffer-substring-no-properties (point-min) (point-max)))
+    ;; (sit-for 0.1 t)
+    py-error))
 
 (defun py--execute-ge24.3 (start end execute-directory which-shell &optional exception-buffer proc file origline)
   "An alternative way to do it.
