@@ -21,6 +21,7 @@
 
 ;;; Code:
 
+;; Stuff merged/adapted from python.el
 (defun py-info-encoding ()
   "Return encoding for file.
 Try `py-info-encoding-from-cookie', if none is found then
@@ -555,9 +556,9 @@ goes wrong and syntax highlighting in the shell gets messed up."
 (defun py-font-lock-post-command-hook ()
   "Fontifies current line in shell buffer."
   (let ((prompt-end
-	 (or (cdr (python-util-comint-last-prompt))
+	 (or (cdr (py-util-comint-last-prompt))
 	     (progn (sit-for 0.1)
-		    (cdr (python-util-comint-last-prompt))))))
+		    (cdr (py-util-comint-last-prompt))))))
     (when (and prompt-end (> (point) prompt-end)
                (process-live-p (get-buffer-process (current-buffer))))
       (let* ((input (buffer-substring-no-properties

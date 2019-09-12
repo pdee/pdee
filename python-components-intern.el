@@ -239,7 +239,8 @@ process buffer for a list of commands.)"
 		   (process-buffer (apply 'start-process shell buffer-name shell args))
 		 (apply #'make-comint-in-buffer shell buffer-name
 			shell nil args))))))
-	 (py-output-buffer (buffer-name (if python-mode-v5-behavior-p py-output-buffer buffer))))
+	 (py-output-buffer (buffer-name (if python-mode-v5-behavior-p py-output-buffer buffer)))
+	 erg)
     (unless done
       (with-current-buffer buffer
 	(setq delay (py--which-delay-process-dependent buffer-name))
@@ -575,7 +576,6 @@ When interactively called, copy and message it"
   (ignore-errors (with-current-buffer buffer
     (let (kill-buffer-query-functions set-buffer-modified-p)
       (ignore-errors (kill-process (get-buffer-process buffer)))
-      (set-buffer-modified-p 'nil)
       (ignore-errors (kill-buffer buffer))))))
 
 (defun py--line-backward-maybe ()
