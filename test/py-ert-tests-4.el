@@ -108,12 +108,15 @@ impo")))
       "def foo(x):
     if x == 1:
         return 0"
-    (push-mark)
-    (goto-char (point-min))
-    (py-execute-region (point) (mark))
-    (set-buffer "*Python3*")
-    (switch-to-buffer (current-buffer)) 
-    (should-not (search-backward "FileNotFoundError" nil t 1))))
+    (let ((py-output-buffer (py-shell)))
+      (push-mark)
+      (goto-char (point-min))
+      (py-execute-region (point) (mark))
+      (message "%s" py-output-buffer)
+      (set-buffer py-output-buffer)
+      ;; (set-buffer "*Python3*")
+      (switch-to-buffer (current-buffer))
+      (should-not (search-backward "FileNotFoundError" nil t 1)))))
 
 (ert-deftest py-end-of-def-or-class-test-1 ()
   (py-test-with-temp-buffer
@@ -270,7 +273,7 @@ print(rest)"
     (goto-char (point-max))
     (search-backward "rest")
     (py-indent-or-complete)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-fill-paragraph-LEON2Q ()
@@ -286,7 +289,7 @@ is a test
     (end-of-line)
     (py-fill-paragraph)
     (search-backward "'''")
-    (forward-line 1) 
+    (forward-line 1)
     (should-not (eq (char-after) ?\\))))
 
 (ert-deftest py-forward-indent-jcMT2k ()
@@ -311,7 +314,7 @@ is a test
     spiel = \[]
     gruen = \[0]
 "
-    (goto-char (point-min)) 
+    (goto-char (point-min))
     (search-forward "zeit")
     (end-of-line)
     (py-forward-indent)
