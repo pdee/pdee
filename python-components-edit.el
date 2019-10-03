@@ -329,7 +329,7 @@ Returns value of `indent-tabs-mode' switched to."
       (setq indent-tabs-mode (not indent-tabs-mode))
     (setq tab-width py-indent-offset))
   (when (and py-verbose-p (called-interactively-p 'any)) (message "indent-tabs-mode %s  py-indent-offset %s" indent-tabs-mode py-indent-offset))
-  indentnnnnnnn-tabs-mode)
+  indent-tabs-mode)
 
 (defun py-indent-tabs-mode (arg &optional iact)
   "With positive ARG switch `indent-tabs-mode' on.
@@ -846,7 +846,7 @@ Returns the string inserted."
 	(switch-to-buffer (current-buffer))
 	(insert docstring)
 	(python-mode)
-	(local-set-key [(control c)(control c)] 'py--write-back-docstring)
+	(when (eq this-command 'py-edit-docstring)(local-set-key [(control c)(control c)] 'py--write-back-docstring))
 	(goto-char relpos)
 	(message "%s" "Type C-c C-c writes contents back")))))
 

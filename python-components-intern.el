@@ -215,12 +215,6 @@ process buffer for a list of commands.)"
 	 (buffer-name
 	  (or buffer
 	      (py--choose-buffer-name shell dedicated fast)))
-	 ;; (executable (cond
-	 ;; 	      (shell)
-	 ;; 	      (py-shell-name)
-	 ;; 	      (buffer
-	 ;; 	       (py--report-executable buffer))))
-	 ;; (avoid-delay)
 	 (proc (get-buffer-process buffer-name))
 	 (done nil)
 	 (delay nil)

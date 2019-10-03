@@ -874,8 +874,6 @@ Optional FAST RETURN"
 
 (defun py--execute-base (&optional start end shell filename proc file wholebuf fast dedicated split switch)
   "Update optional variables START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
-  (setq py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
-			     (py--choose-buffer-name shell dedicated fast)))
   (setq py-error nil)
   (when py-debug-p (message "py--execute-base: (current-buffer): %s" (current-buffer)))
   (when (or fast py-fast-process-p) (ignore-errors (py-kill-buffer-unconditional py-output-buffer)))
@@ -905,6 +903,9 @@ Optional FAST RETURN"
 		 (py-choose-shell)
 		 ;;)
 		 ))
+	 (shell (or shell (py-choose-shell)))
+	 (buffer-name
+	      (py--choose-buffer-name shell dedicated fast))
 	 (execute-directory
 	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
 		((and py-use-current-dir-when-execute-p (buffer-file-name))
@@ -919,11 +920,15 @@ Optional FAST RETURN"
 	 (filename (or (and filename (expand-file-name filename))
 		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
-	 (proc (or proc (get-buffer-process py-output-buffer)
+	 (proc (get-buffer-process buffer-name))
+
+	 (proc (or proc (get-buffer-process buffer-name)
 		   (prog1
-		       (get-buffer-process (py-shell nil nil dedicated shell py-output-buffer fast exception-buffer split switch))
+		       (get-buffer-process (py-shell nil nil dedicated shell buffer-name fast exception-buffer split switch))
 		     (sit-for 0.1))))
-	 (split (if python-mode-v5-behavior-p 'just-two split)))
+	 (split (if python-mode-v5-behavior-p 'just-two split))
+	 (py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
+			       (py--choose-buffer-name shell dedicated fast))))
     (py--execute-base-intern strg filename proc file wholebuf py-output-buffer origline execute-directory start end fast)
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch))))
