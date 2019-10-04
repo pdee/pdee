@@ -591,7 +591,7 @@ Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ "
     (py--execute-prepare block-or-clause 'python3 t 'switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-buffer (&optional shell dedicated fast split switch proc)
-  "Send buffer at point to  interpreter."
+  "Send buffer at point to interpreter."
   (interactive)
   (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
         (wholebuf t)
@@ -602,6 +602,7 @@ Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ "
 	    buffer (or (get-file-buffer filename)
 		       (find-file-noselect filename)))
       (set-buffer buffer))
+    (unless (and (file-readable-p (buffer-file-name)) (not (buffer-modified-p))) (write-file (buffer-file-name)))
     (py--execute-prepare buffer shell dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-switch (&optional shell dedicated fast split proc)
