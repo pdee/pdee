@@ -820,8 +820,8 @@ Returns position where output starts."
 	    (setq py-error (prin1-to-string py-error))
 	  erg)))))
 
-(defun py--execute-buffer-finally (strg proc procbuf origline filename fast)
-  (if (and filename (not (buffer-modified-p)))
+(defun py--execute-buffer-finally (strg proc procbuf origline filename fast wholebuf)
+  (if (and filename wholebuf (not (buffer-modified-p)))
       (unwind-protect
 	  (py--execute-file-base proc filename nil procbuf origline fast))
     (let* ((tempfile (concat (expand-file-name py-temp-directory) py-separator-char "temp" (md5 (format "%s" (nth 3 (current-time)))) ".py")))
@@ -847,7 +847,7 @@ Returns position where output starts."
                                pcmd output-buffer))
     (if (not (get-buffer output-buffer))
         (message "No output.")
-      (setq py-result (py--fetch-result (get-buffer  output-buffer)))
+      (setq py-result (py--fetch-result (get-buffer  output-buffer) nil))
       (if (string-match "Traceback" py-result)
 	  (message "%s" (setq py-error (py--fetch-error output-buffer origline filename)))
 	py-result))))
@@ -869,7 +869,7 @@ Optional FAST RETURN"
     (py--execute-file-base proc filename nil buffer origline fast))
    (t
     ;; (message "(current-buffer) %s" (current-buffer))
-    (py--execute-buffer-finally strg proc buffer origline filename fast)
+    (py--execute-buffer-finally strg proc buffer origline filename fast wholebuf)
     ;; (py--delete-temp-file tempfile)
     )))
 
@@ -939,8 +939,10 @@ Optional FAST RETURN"
   (declare  (debug t))
   (save-excursion
     `(let* ((form ,(prin1-to-string form))
-           (origline (py-count-lines))
-	   (fast (or ,fast py-fast-process-p))
+           ;; (origline (py-count-lines))
+	   (fast 
+	    (or fast py-fast-process-p)
+	    )
 	   (py-exception-buffer (current-buffer))
            (beg (unless ,file
                   (prog1

@@ -43,6 +43,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 
 (defun py-fast-send-string (strg proc output-buffer &optional result no-output)
   (let ((inhibit-read-only t)
+	(limit (marker-position (process-mark proc)))
 	erg)
     (with-current-buffer output-buffer
       ;; (switch-to-buffer (current-buffer))
@@ -54,12 +55,12 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 	     (erase-buffer))
 	    (result
 	     (if
-		 (setq erg (py--fetch-result output-buffer strg))
+		 (setq erg (py--fetch-result output-buffer limit strg))
 		 (setq py-result (py--filter-result erg))
 	       (dotimes (_ 3) (unless (setq erg (py--fetch-result output-buffer proc))(sit-for 1 t)))
-	       (unless (setq erg (py--fetch-result output-buffer proc))
+	       (unless (setq erg (py--fetch-result output-buffer limit))
 		 (setq py-result nil)
-		 (error "py-fast-send-string: py--fetch-result output-buffer proc: no result")))))
+		 (error "py-fast-send-string: py--fetch-result: no result")))))
       py-result)))
 
 (defun py--send-to-fast-process (strg proc output-buffer result)

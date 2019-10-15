@@ -1718,7 +1718,8 @@ With optional Arg RESULT return output"
   (save-excursion
     (let* ((buffer (or buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell)))))
 	   (proc (or process (get-buffer-process buffer) (py-shell nil nil nil nil (buffer-name buffer))))
-	   (orig (or orig (point))))
+	   (orig (or orig (point)))
+	   (limit (marker-position (process-mark proc))))
       (cond (no-output
 	     (py-send-string-no-output strg proc))
 	    ((and (string-match ".\n+." strg) (string-match "^[Ii]" (buffer-name buffer)))  ;; multiline
@@ -1738,7 +1739,7 @@ With optional Arg RESULT return output"
 		 (sit-for py-python-send-delay)
 		 (cond (result
 			(setq py-result
-			      (py--fetch-result buffer strg)))
+			      (py--fetch-result buffer limit strg)))
 		       (no-output
 			(and orig (py--cleanup-shell orig buffer))))))))))
 

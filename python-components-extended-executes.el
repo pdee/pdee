@@ -4259,6 +4259,7 @@ Keep current buffer. Ignores ‘py-switch-buffers-on-execute-p’ "
   "Send statement at point to interpreter."
   (interactive)
   (let (wholebuf)
+    ;; (macroexpand
     (py--execute-prepare statement shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-switch (&optional shell dedicated fast split proc)
