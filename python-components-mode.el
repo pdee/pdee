@@ -3287,22 +3287,6 @@ to paths in Emacs."
   :tag "py-pdbtrack-minor-mode-string"
   :group 'python-mode)
 
-;; (defcustom py-pdbtrack-stacktrace-info-regexp
-;;   "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
-;;   "Regular expression matching stacktrace information.
-;; Used to extract the current line and module being inspected."
-;;   :type 'string
-;;   :group 'python-mode
-;;   :safe 'stringp)
-
-;; (defcustom py-pdbtrack-stacktrace-info-regexp
-;;   "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
-;;   "Regular expression matching stacktrace information.
-;; Used to extract the current line and module being inspected."
-;;   :type 'string
-;;   :group 'python-mode
-;;   :safe 'stringp)
-
 (defconst py-pdbtrack-stack-entry-regexp
    (concat ".*\\("py-shell-input-prompt-1-regexp">\\|"py-ipython-input-prompt-re">\\|>\\) *\\(.*\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>()]+\\)()")
   "Regular expression pdbtrack uses to find a stack trace entry.")

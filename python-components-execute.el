@@ -735,39 +735,37 @@ optional argument."
       (or temp-file-name file-name) encoding encoding file-name)
      proc)))
 
-(defun py--fetch-result (buffer &optional cmd)
+(defun py--fetch-result (buffer limit &optional cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
   (if python-mode-v5-behavior-p
       (with-current-buffer buffer
 	(string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
     (with-silent-modifications
-      (goto-char (point-max))
-      (let ((orig (point-marker)))
-	(unwind-protect
-	    (catch 'py--fetch-result-end
+      (when (< limit (point-max))
+	(goto-char (point-max))
+	(let ((orig (point-marker)))
+	  (unwind-protect
 	      (let ((end
-		     (or (and (re-search-backward py-fast-filter-re nil t 1) (progn (skip-chars-backward " \t\r\n\f") (point-marker)))
-			 (throw 'py--fetch-result-end (error "py--fetch-result: %s" "-end re-search-backward py-fast-filter-re failed")))))
-		(catch 'py--fetch-result-beg
-		  (or (and (re-search-backward py-fast-filter-re nil t 1)
-			   (progn
-			     (goto-char (match-end 0))
-			     (when (and cmd (looking-at cmd))
-			       (delete-region (line-beginning-position) (line-end-position)))
-			     (prog1 (string-trim
-				     (buffer-substring-no-properties (point) end)
-				     "\n")
-			       ;; (when py-verbose-p (message "py--fetch-result: last-command %s" last-command))
-			       ;; cleanup
-			       (and (or
-				     (eq last-command 'py-help-at-point)
-				     py-cleanup-p)
-				    (delete-region (point) end)))))
-		      (throw 'py--fetch-result-beg (message "py--fetch-result: %s" "-beg re-search-backward py-fast-filter-re failed"))))))
-	  (goto-char orig))))))
+		     (or (and (re-search-backward py-fast-filter-re limit t 1) (progn (skip-chars-backward " \t\r\n\f") (point-marker)))
+			 (throw 'py--fetch-result-end (error "py--fetch-result: %s" "re-search-backward py-fast-filter-re failed")))))
+		(and limit end
+		     (progn
+		       (goto-char limit)
+		       (when (and cmd (looking-at cmd))
+			 (delete-region (line-beginning-position) (line-end-position)))
+		       (prog1 (string-trim
+			       (buffer-substring-no-properties (point) end)
+			       "\n")
+			 ;; cleanup
+			 (and (or
+			       (eq last-command 'py-help-at-point)
+			       py-cleanup-p)
+			      (delete-region (point) end))
+			 (goto-char orig)))))))))))
 
-(defun py--postprocess (output-buffer origline &optional cmd filename)
+
+(defun py--postprocess (output-buffer origline limit &optional cmd filename)
   "Provide return values, check result for error, manage windows.
 
 According to OUTPUT-BUFFER ORIGLINE ORIG"
@@ -776,22 +774,24 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
     (with-current-buffer output-buffer
       (when py-debug-p (switch-to-buffer (current-buffer)))
       (sit-for (py--which-delay-process-dependent (prin1-to-string output-buffer)))
-      (catch 'py--postprocess
-	(or (setq py-result (py--fetch-result output-buffer cmd))
-	    (throw 'py--postprocess (error "py--postprocess failed")))
-	(if (and py-result (not (string= "" py-result)))
-	    (if (string-match "^Traceback" py-result)
-		(if filename
-		    (setq py-error py-result)
-		  (progn
-		    (with-temp-buffer
-		      (insert py-result)
-		      (sit-for 0.1 t)
-		      (setq py-error (py--fetch-error origline filename)))))
-	      (when py-store-result-p
-		(kill-new py-result))
-	      py-result)
-	  (message "py--postprocess: %s" "Don't see any result"))))))
+      ;; (catch 'py--postprocess
+      (setq py-result (py--fetch-result output-buffer limit cmd))
+      ;; (throw 'py--postprocess (error "py--postprocess failed"))
+      ;;)
+      (if (and py-result (not (string= "" py-result)))
+	  (if (string-match "^Traceback" py-result)
+	      (if filename
+		  (setq py-error py-result)
+		(progn
+		  (with-temp-buffer
+		    (insert py-result)
+		    (sit-for 0.1 t)
+		    (setq py-error (py--fetch-error origline filename)))))
+	    (when py-store-result-p
+	      (kill-new py-result))
+	    (when py-verbose-p (message "py-result: %s" py-result))
+	    py-result)
+	(when py-verbose-p (message "py--postprocess: %s" "Don't see any result"))))))
 
 (defun py--execute-file-base (&optional proc filename cmd procbuf origline fast)
   "Send to Python interpreter process PROC.
@@ -807,6 +807,7 @@ Returns position where output starts."
   ;; (message "(current-buffer) %s" (current-buffer))
   (let* ((buffer (or procbuf (and proc (process-buffer proc)) (py-shell nil nil nil nil nil fast)))
 	 (proc (or proc (get-buffer-process buffer)))
+	 (limit (marker-position (process-mark proc)))
 	 (cmd (or cmd (py-which-execute-file-command filename)))
 	 erg)
     (if fast
@@ -814,7 +815,7 @@ Returns position where output starts."
       (py-send-string cmd proc))
     (with-current-buffer buffer
       (when (or py-return-result-p py-store-result-p)
-	(setq erg (py--postprocess buffer origline cmd filename))
+	(setq erg (py--postprocess buffer origline limit cmd filename))
 	(if py-error
 	    (setq py-error (prin1-to-string py-error))
 	  erg)))))

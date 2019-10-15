@@ -48,15 +48,17 @@
 
 ;; https://stackoverflow.com/questions/6980749/simpler-way-to-put-pdb-breakpoints-in-python-code
 ;; breakpoint at line 3
+;; avoid inserting pdb.set_trace()
 
 ;; python -m pdb -c "b 3" -c c your_script.py
 
-(defun py-pdb-break-at-current-line ()
+(defun py-pdb-break-at-current-line (&optional line)
   "Set breakpoint at current line.
 
 Optional LINE FILE CONDITION"
-  (interactive)
-  (py-execute-string (concat "import pdb;pdb.break('" (py-count-lines)  "')")))
+  (interactive "p")
+  (let ((line (or line (py-count-lines))))
+    (py-execute-string (concat "import pdb;pdb.break('" line "')"))))
 
 (defun py--pdb-versioned ()
   "Guess existing pdb version from ‘py-shell-name’.
@@ -67,11 +69,11 @@ Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
 	       ;; versions-part
 	       (substring py-shell-name (string-match "[23]" py-shell-name)))))
     (if erg
-      (cond ((executable-find (concat "pdb" erg))
-	     (concat "pdb" erg))
-	    ((and (string-match "\\." erg)
-		  (executable-find (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
-	     (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
+	(cond ((executable-find (concat "pdb" erg))
+	       (concat "pdb" erg))
+	      ((and (string-match "\\." erg)
+		    (executable-find (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
+	       (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
       "pdb")))
 
 (defun py-pdb (command-line)
