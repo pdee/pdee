@@ -1719,7 +1719,7 @@ With optional Arg RESULT return output"
     (let* ((buffer (or buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell)))))
 	   (proc (or process (get-buffer-process buffer) (py-shell nil nil nil nil (buffer-name buffer))))
 	   (orig (or orig (point)))
-	   (limit (marker-position (process-mark proc))))
+   	   (limit (ignore-errors (marker-position (process-mark proc)))))
       (cond (no-output
 	     (py-send-string-no-output strg proc))
 	    ((and (string-match ".\n+." strg) (string-match "^[Ii]" (buffer-name buffer)))  ;; multiline
