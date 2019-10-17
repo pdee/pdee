@@ -410,10 +410,10 @@ Bar
     pass
 "
     (goto-char (point-min) )
-    (let ((py-edit-docstring-buffer "Py-Ert-Edit-Docstring-Test"))
+    (let ((py-edit-buffer "Edit docstring"))
       (search-forward "pass" nil t 1)
       (py-edit-docstring)
-      (set-buffer "Py-Ert-Edit-Docstring-Test")
+      (set-buffer py-edit-buffer)
       (switch-to-buffer (current-buffer))
       (goto-char (point-min))
       (end-of-line)

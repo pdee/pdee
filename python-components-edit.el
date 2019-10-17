@@ -797,58 +797,65 @@ Returns the string inserted."
         (forward-line 1)))))
 
 ;; Edit docstring
-(defun py--edit-docstring-set-vars ()
+(defun py--edit-set-vars ()
   (save-excursion
-    (setq py--docbeg (when (use-region-p) (region-beginning)))
-    (setq py--docend (when (use-region-p) (region-end)))
-    (let ((pps (parse-partial-sexp (point-min) (point))))
+    (let ((py--editbeg (when (use-region-p) (region-beginning)))
+	  (py--editend (when (use-region-p) (region-end)))
+	  (pps (parse-partial-sexp (point-min) (point))))
       (when (nth 3 pps)
-	(setq py--docbeg (or py--docbeg (progn (goto-char (nth 8 pps))
-					       (skip-chars-forward (char-to-string (char-after)))(push-mark)(point))))
-	(setq py--docend (or py--docend
-			     (progn (goto-char (nth 8 pps))
-				    (forward-sexp)
-				    (skip-chars-backward (char-to-string (char-before)))
-				    (point)))))
-      (setq py--docbeg (copy-marker py--docbeg))
-      (setq py--docend (copy-marker py--docend)))))
+	(setq py--editbeg (or py--editbeg (progn (goto-char (nth 8 pps))
+						 (skip-chars-forward (char-to-string (char-after)))(push-mark) (point))))
+	(setq py--editend (or py--editend
+			      (progn (goto-char (nth 8 pps))
+				     (forward-sexp)
+				     (skip-chars-backward (char-to-string (char-before)))
+				     (point)))))
+      (cons (copy-marker py--editbeg) (copy-marker py--editend)))))
 
-(defun py--write-back-docstring ()
+(defun py--write-edit ()
   "When edit is finished, write docstring back to orginal buffer."
   (interactive)
-  (unless (eq (current-buffer) (get-buffer py-edit-docstring-buffer))
-    (set-buffer py-edit-docstring-buffer))
   (goto-char (point-min))
   (while (re-search-forward "[\"']" nil t 1)
     (or (py-escaped)
 	(replace-match (concat "\\\\" (match-string-no-properties 0)))))
-  (jump-to-register py--edit-docstring-register)
+  (jump-to-register py--edit-register)
   ;; (py-restore-window-configuration)
   (delete-region py--docbeg py--docend)
-  (insert-buffer-substring py-edit-docstring-buffer))
+  (insert-buffer-substring py-edit-buffer))
+
+(defun py-edit--intern (buffer-name mode &optional beg end)
+  "Edit string or active region in ‘python-mode’.
+
+arg BUFFER-NAME: a string.
+arg MODE: which buffer-mode used in edit-buffer"
+  (interactive "*")
+  (save-excursion
+    (save-restriction
+      (window-configuration-to-register py--edit-register)
+      (setq py--oldbuf (current-buffer))
+      (let* ((orig (point))
+	     (bounds (or (and beg end)(py--edit-set-vars)))
+	     relpos editstrg)
+	(setq py--docbeg (or beg (car bounds)))
+	(setq py--docend (or end (cdr bounds)))
+	;; store relative position in editstrg
+	(setq relpos (1+ (- orig py--docbeg)))
+	(setq editstrg (buffer-substring py--docbeg py--docend))
+	(setq py-edit-orig-pos orig)
+	(set-buffer (get-buffer-create buffer-name))
+	(erase-buffer)
+	(switch-to-buffer (current-buffer))
+	(insert editstrg)
+	(funcall mode)
+	(local-set-key [(control c) (control c)] 'py--write-edit)
+	(goto-char relpos)
+	(message "%s" "Type C-c C-c writes contents back")))))
 
 (defun py-edit-docstring ()
   "Edit docstring or active region in ‘python-mode’."
   (interactive "*")
-  (save-excursion
-    (save-restriction
-      (window-configuration-to-register py--edit-docstring-register)
-      (setq py--oldbuf (current-buffer))
-      (let ((orig (point))
-	    relpos docstring)
-	(py--edit-docstring-set-vars)
-	;; store relative position in docstring
-	(setq relpos (1+ (- orig py--docbeg)))
-	(setq docstring (buffer-substring py--docbeg py--docend))
-	(setq py-edit-docstring-orig-pos orig)
-	(set-buffer (get-buffer-create py-edit-docstring-buffer))
-	(erase-buffer)
-	(switch-to-buffer (current-buffer))
-	(insert docstring)
-	(python-mode)
-	(when (eq this-command 'py-edit-docstring)(local-set-key [(control c)(control c)] 'py--write-back-docstring))
-	(goto-char relpos)
-	(message "%s" "Type C-c C-c writes contents back")))))
+  (py-edit--intern "Edit docstring" 'python-mode))
 
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here

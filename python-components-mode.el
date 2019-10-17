@@ -550,22 +550,19 @@ Give some hints, if not."
 (defvar highlight-indent-active nil)
 (defvar autopair-mode nil)
 
-(defvar-local py-edit-docstring-orig-pos nil
-  "Internally used by `py-edit-docstring'.")
+(defvar-local py--editbeg nil
+  "Internally used by `py-edit-docstring' and others")
 
-(defvar-local py--docbeg nil
-  "Internally used by `py-edit-docstring'")
-
-(defvar-local py--docend nil
-  "Internally used by `py-edit-docstring'")
+(defvar-local py--editend nil
+  "Internally used by `py-edit-docstring' and others")
 
 (defvar py--oldbuf nil
   "Internally used by `py-edit-docstring'.")
 
-(defvar py-edit-docstring-buffer "Edit docstring"
+(defvar py-edit-buffer "Edit docstring"
   "Name of the temporary buffer to use when editing.")
 
-(defvar py--edit-docstring-register nil)
+(defvar py--edit-register nil)
 
 (defvar py-result nil
   "Internally used.  May store result from Python process.")
