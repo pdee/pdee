@@ -800,5 +800,24 @@ Return position if successful"
 ;;   (interactive)
 ;;   (py--end-of-paragraph 'py-paragraph-re))
 
+(defun py-backward-assignment()
+  "Go to beginning of assigment if inside.
+
+Return position of successful, nil of not started from inside
+When called at beginning non-assignment, check next form upwards."
+  (interactive)
+  (let (last
+	(erg
+	 (or (py--beginning-of-assignment-p)
+	     (progn
+	       (while (and (setq last (py-backward-statement))
+			   (not (looking-at py-assignment-re))
+			   ;; (not (bolp))
+			   ))
+	       (and (looking-at py-assignment-re) last)))))
+    (when (and py-verbose-p (interactive-p))
+      (message "%s" erg))
+    erg))
+
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

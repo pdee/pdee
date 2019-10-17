@@ -864,5 +864,11 @@ arg MODE: which buffer-mode used in edit-buffer"
   (interactive "*")
   (py-edit--intern "Edit docstring" 'python-mode))
 
+(defun py-prettyprint-assignment ()
+  "Prettyprint assignment in ‘python-mode’."
+  (interactive "*")
+  (let* ((beg (py-beginning-of-assignment)))
+    (py-edit--intern "Prettyprint assignment" 'python-mode)))
+
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here

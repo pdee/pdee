@@ -2889,7 +2889,7 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
 
 See ‘py-no-outdent-re-raw’ for better readable content")
 
-(defconst py-assignment-re "\\_<\\w+\\_>[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\).*"
+(defconst py-assignment-re "\\_<\\w+\\_>[[:alnum:]:, \t]*[ \t]*\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\).*"
   "If looking at the beginning of an assignment.")
 
 ;; 'name':

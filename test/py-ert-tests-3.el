@@ -730,15 +730,28 @@ def main():
 (ert-deftest py--beginning-of-assignment-p-test-yJqNFd ()
   (py-test-with-temp-buffer-point-min
       "afd = \"asdf\""
-    (goto-char (point-min)) 
+    (goto-char (point-min))
     (search-forward "f")
     (should-not (py--beginning-of-assignment-p))))
 
 (ert-deftest py--beginning-of-assignment-p-test-nnyBdy ()
   (py-test-with-temp-buffer-point-min
       "afd = \"asdf\""
-    (goto-char (point-min)) 
+    (goto-char (point-min))
     (should (py--beginning-of-assignment-p))))
+
+(ert-deftest py-backward-assignment-test-nnyBdy()
+  (py-test-with-temp-buffer
+      "print('%(language)s has %(number)03d quote types\.' %
+       {'language': \"Python\", \"number\": 2})"
+    (goto-char (point-max))
+    (should-not (py-backward-assignment))))
+
+(ert-deftest py-backward-assignment-test-nnyBdy()
+  (py-test-with-temp-buffer
+      "a, b, c = (1, 2, 3)"
+    (goto-char (point-max))
+    (should (py-backward-assignment))))
 
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here

@@ -181,7 +181,7 @@ Don't save anything for STR matching `py-history-filter-regexp'."
 
 (defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch)
   "Connect process to BUFFER.
-
+ 
 Start an interpreter according to ‘py-shell-name’ or SHELL.
 
 Optional ARGPROMPT: with \\[universal-argument] start in a new
