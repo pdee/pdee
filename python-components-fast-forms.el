@@ -82,82 +82,82 @@ Optional STRG PROC OUTPUT-BUFFER RETURN"
   (let ((py-fast-process-p t))
     (py-execute-region beg end shell dedicated t split switch proc)))
 
-(defun py-execute-block-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-block-fast (&optional shell dedicated switch beg end file fast)
   "Process block at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare block shell dedicated switch beg end file t))
+  (py--execute-prepare block shell dedicated switch beg end file fast))
 
-(defun py-execute-block-or-clause-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-block-or-clause-fast (&optional shell dedicated switch beg end file fast)
   "Process block-or-clause at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare block-or-clause shell dedicated switch beg end file t))
+  (py--execute-prepare block-or-clause shell dedicated switch beg end file fast))
 
-(defun py-execute-class-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-class-fast (&optional shell dedicated switch beg end file fast)
   "Process class at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare class shell dedicated switch beg end file t))
+  (py--execute-prepare class shell dedicated switch beg end file fast))
 
-(defun py-execute-clause-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-clause-fast (&optional shell dedicated switch beg end file fast)
   "Process clause at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare clause shell dedicated switch beg end file t))
+  (py--execute-prepare clause shell dedicated switch beg end file fast))
 
-(defun py-execute-def-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-def-fast (&optional shell dedicated switch beg end file fast)
   "Process def at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare def shell dedicated switch beg end file t))
+  (py--execute-prepare def shell dedicated switch beg end file fast))
 
-(defun py-execute-def-or-class-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-def-or-class-fast (&optional shell dedicated switch beg end file fast)
   "Process def-or-class at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare def-or-class shell dedicated switch beg end file t))
+  (py--execute-prepare def-or-class shell dedicated switch beg end file fast))
 
-(defun py-execute-expression-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-expression-fast (&optional shell dedicated switch beg end file fast)
   "Process expression at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare expression shell dedicated switch beg end file t))
+  (py--execute-prepare expression shell dedicated switch beg end file fast))
 
-(defun py-execute-partial-expression-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-partial-expression-fast (&optional shell dedicated switch beg end file fast)
   "Process partial-expression at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare partial-expression shell dedicated switch beg end file t))
+  (py--execute-prepare partial-expression shell dedicated switch beg end file fast))
 
-(defun py-execute-section-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-section-fast (&optional shell dedicated switch beg end file fast)
   "Process section at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare section shell dedicated switch beg end file t))
+  (py--execute-prepare section shell dedicated switch beg end file fast))
 
-(defun py-execute-statement-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-statement-fast (&optional shell dedicated switch beg end file fast)
   "Process statement at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare statement shell dedicated switch beg end file t))
+  (py--execute-prepare statement shell dedicated switch beg end file fast))
 
-(defun py-execute-top-level-fast (&optional shell dedicated switch beg end file)
+(defun py-execute-top-level-fast (&optional shell dedicated switch beg end file fast)
   "Process top-level at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare top-level shell dedicated switch beg end file t))
+  (py--execute-prepare top-level shell dedicated switch beg end file fast))
 
 (provide 'python-components-fast-forms)
 ;;; python-components-fast-forms.el ends here

@@ -56,13 +56,13 @@
 ;;      (let (hs-minor-mode py--imenu-create-index-p)
 ;;        (insert ,contents)
 ;;        (funcall ,mode)
-;;        (goto-char (point-min)) 
+;;        (goto-char (point-min))
 ;;        (and ,verbose
 ;; 	 (switch-to-buffer (current-buffer))
 ;; 	 (font-lock-fontify-region (point-min)(point-max)))
 ;;        ,@body)))
 
-(defmacro py-test-with-temp-buffer-point-min (contents &rest body)
+(defmacro py-test-with-temp-buffer (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
  at the beginning of buffer."
@@ -71,13 +71,12 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
-       (goto-char (point-min))
        (when py-debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
        ,@body)))
 
-(defmacro py-test-with-temp-buffer (contents &rest body)
+(defmacro py-test-with-temp-buffer-point-min (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
  at the end of buffer."
@@ -86,6 +85,7 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
+       (goto-char (point-min))
        (when py-debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))

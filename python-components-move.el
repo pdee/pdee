@@ -819,5 +819,38 @@ When called at beginning non-assignment, check next form upwards."
       (message "%s" erg))
     erg))
 
+(defun py--forward-assignment-intern ()
+  (let ((orig (point)))
+    (and (looking-at py-assignment-re)
+	 (goto-char (match-end 2))
+	 (skip-chars-forward " \t\r\n\f")
+	 (if (eq (car (syntax-after (point))) 4)
+	     (progn (forward-sexp) (point))
+	   (goto-char orig)
+	   (py-forward-statement)))))
+
+(defun py-forward-assignment()
+  "Go to end of assigment at point if inside.
+
+Return position of successful, nil of not started from inside
+When called at the end of an assignment, check next form downwards."
+  (interactive)
+  (if (eq last-command 'py-backward-assignment)
+      ;; assume at start of an assignment
+      (py--forward-assignment-intern)
+    ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time
+    (let (last
+	  (erg
+	   (or (py--beginning-of-assignment-p)
+	       (progn
+		 (while (and (setq last (py-backward-statement))
+			     (not (looking-at py-assignment-re))
+			     ;; (not (bolp))
+			     ))
+		 (and (looking-at py-assignment-re) last)))))
+      (and erg (py--forward-assignment-intern))
+      (when (and py-verbose-p (interactive-p)) (message "%s" erg))
+      erg)))
+
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

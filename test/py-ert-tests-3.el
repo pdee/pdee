@@ -753,5 +753,29 @@ def main():
     (goto-char (point-max))
     (should (py-backward-assignment))))
 
+(ert-deftest py-forward-assignment-test-nnyBdy()
+    (py-test-with-temp-buffer-point-min
+	"a, b, c = (1, 2, 3)"
+	(goto-char (point-min))
+      (py-forward-assignment)
+      (should (eq (char-before) ?\)))))
+
+(ert-deftest py-forward-assignment-test-wQIiGk()
+    (py-test-with-temp-buffer-point-min
+	"a, b, c = (1, 2, 3)"
+	(goto-char (point-min))
+	(search-forward "b") 
+      (py-forward-assignment)
+      (should (eq (char-before) ?\)))))
+
+(ert-deftest py-forward-assignment-test-2ptHP0()
+    (py-test-with-temp-buffer
+	"a, b, c = (1, 2, 3)
+asdf = []"
+	(search-backward "2") 
+      (py-forward-assignment)
+      (should (eq (char-before) ?\)))))
+
+    
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
