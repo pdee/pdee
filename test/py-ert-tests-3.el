@@ -421,7 +421,7 @@ Bar
       (insert "'''My edit-docstring ert-test'''")
       (beginning-of-line)
       (indent-according-to-mode)
-      (py--write-back-docstring)
+      (py--write-edit)
       ;; back in orginial test buffer
       (forward-line -1)
       (should (and (nth 3 (parse-partial-sexp (point-min) (point)))
