@@ -150,6 +150,7 @@
 
 (setq py-bol-forms
       (list
+       "assignment"
        "block"
        "block-or-clause"
        "class"
@@ -170,9 +171,9 @@
 (setq py-non-bol-forms
       (list
        "comment"
+       "expression"
        "line"
        "paragraph"
-       "expression"
        "partial-expression"
        "section"
        "top-level"
@@ -2621,15 +2622,15 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   (insert arkopf)
   (switch-to-buffer (current-buffer))
   (goto-char (point-max))
-  (dolist (ele
-	   ;; (seq-concatenate 'list py-bol-forms py-non-bol-forms)
-	   py-non-bol-forms)
-    (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
+  (dolist (ele py-non-bol-forms)
+    ;; expression needs "\b"
+    (unless (equal ele "expression") 
+      (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
   \"Return position, if cursor is at the beginning of a ‘" ele "’, nil otherwise.\"\n"))
-	(insert (concat "  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
+      (insert (concat "  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
          (looking-at py-" (ar-block-regexp-name-richten ele) "-re)
-         (point))))\n\n")))
+         (point))))\n\n"))))
   (dolist (ele py-bol-forms)
     (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
   \"Return position, if cursor is at the beginning of a ‘" ele "’, nil otherwise.\""))

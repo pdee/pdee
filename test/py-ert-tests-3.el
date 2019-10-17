@@ -727,5 +727,18 @@ def main():
       (backward-char)
       (should (eq (char-after) ?f)))))
 
+(ert-deftest py--beginning-of-assignment-p-test-yJqNFd ()
+  (py-test-with-temp-buffer-point-min
+      "afd = \"asdf\""
+    (goto-char (point-min)) 
+    (search-forward "f")
+    (should-not (py--beginning-of-assignment-p))))
+
+(ert-deftest py--beginning-of-assignment-p-test-nnyBdy ()
+  (py-test-with-temp-buffer-point-min
+      "afd = \"asdf\""
+    (goto-char (point-min)) 
+    (should (py--beginning-of-assignment-p))))
+
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
