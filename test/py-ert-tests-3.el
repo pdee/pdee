@@ -740,6 +740,35 @@ def main():
     (goto-char (point-min))
     (should (py--beginning-of-assignment-p))))
 
+(ert-deftest py-beginning-of-assignment-test-nnyBdy()
+  (py-test-with-temp-buffer
+      "a, b, c = (1, 2, 3)"
+    (goto-char (point-max))
+    (should (py-beginning-of-assignment))))
+
+(ert-deftest py-end-of-assignment-test-nnyBdy()
+    (py-test-with-temp-buffer-point-min
+	"a, b, c = (1, 2, 3)"
+	(goto-char (point-min))
+      (py-end-of-assignment)
+      (should (eq (char-before) ?\)))))
+
+(ert-deftest py-end-of-assignment-test-wQIiGk()
+    (py-test-with-temp-buffer-point-min
+	"a, b, c = (1, 2, 3)"
+	(goto-char (point-min))
+	(search-forward "b") 
+      (py-end-of-assignment)
+      (should (eq (char-before) ?\)))))
+
+(ert-deftest py-end-of-assignment-test-2ptHP0()
+    (py-test-with-temp-buffer
+	"a, b, c = (1, 2, 3)
+asdf = []"
+	(search-backward "2") 
+      (py-end-of-assignment)
+      (should (eq (char-before) ?\)))))
+
 (ert-deftest py-backward-assignment-test-nnyBdy()
   (py-test-with-temp-buffer
       "print('%(language)s has %(number)03d quote types\.' %
@@ -776,6 +805,13 @@ asdf = []"
       (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
+(ert-deftest py-forward-assignment-test-2ptHP0()
+    (py-test-with-temp-buffer
+	"a, b, c = (1, 2, 3)
+asdf = []"
+      (goto-char (point-max)) 
+      (py-forward-assignment)
+      (should (eq (char-before) ?\]))))
     
 (provide 'py-ert-tests-3)
 ;;; py-ert-tests-3.el ends here
