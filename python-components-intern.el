@@ -59,7 +59,12 @@ Expects START position of string
 Return position of moved, nil otherwise."
   (let ((orig (point)))
     (when start (goto-char start)
+	  (when (looking-at "\"\"\"\\|'''")
+	    (goto-char (1- (match-end 0))))
 	  (forward-sexp)
+	  ;; maybe at the inner fence
+	  (when (looking-at "\"\"\\|''")
+	    (goto-char (match-end 0)))
 	  (and (< orig (point)) (point)))))
 
 (defun py-in-comment-p ()
@@ -181,7 +186,7 @@ Don't save anything for STR matching `py-history-filter-regexp'."
 
 (defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch)
   "Connect process to BUFFER.
- 
+
 Start an interpreter according to ‘py-shell-name’ or SHELL.
 
 Optional ARGPROMPT: with \\[universal-argument] start in a new
