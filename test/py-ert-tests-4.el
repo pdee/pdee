@@ -335,5 +335,26 @@ is a test
     (py-forward-indent)
     (should (eq (char-before) ?'))))
 
-      (provide 'py-interactive-tests)
+(ert-deftest py-TQS-tWBEjf ()
+  (py-test-with-temp-buffer-point-min
+      "#!/usr/bin/env python
+
+#
+# Licensed to theasdf adsf adf  under one or more
+# contributor license agreements\.  See the NOTICE file distributed with
+
+\"\"\"
+Utility for creating release candidates and promoting release candidates to a final relase\.
+asdf asfsd afd
+\"\"\"
+
+from __future__ import foo
+"
+    (goto-char (point-min))
+    (py-end-of-def-or-class)
+    (should-not (nth 3 (parse-partial-sexp (point-min) (point))))
+    (should (eq (char-before) ?o))))
+
+
+(provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

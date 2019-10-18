@@ -753,7 +753,7 @@ def main():
       (py-end-of-assignment)
       (should (eq (char-before) ?\)))))
 
-(ert-deftest py-end-of-assignment-test-wQIiGk()
+(ert-deftest py-end-of-assignment-test-wQIiGk ()
     (py-test-with-temp-buffer-point-min
 	"a, b, c = (1, 2, 3)"
 	(goto-char (point-min))
