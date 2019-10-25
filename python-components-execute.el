@@ -934,14 +934,14 @@ Optional FAST RETURN"
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch))))
 
-(defmacro py--execute-prepare (form &optional shell dedicated switch beg end file fast proc wholebuf split)
+(defmacro py--execute-prepare (form shell dedicated switch beg end file fast proc wholebuf split)
   "Used by python-components-extended-executes ."
   (declare  (debug t))
   (save-excursion
     `(let* ((form ,(prin1-to-string form))
-           ;; (origline (py-count-lines))
+           (origline (py-count-lines))
 	   (fast 
-	    (or fast py-fast-process-p)
+	    (or ,fast ,py-fast-process-p)
 	    )
 	   (py-exception-buffer (current-buffer))
            (beg (unless ,file

@@ -849,7 +849,6 @@ arg MODE: which buffer-mode used in edit-buffer"
 	;; store relative position in editstrg
 	(setq relpos (1+ (- orig py--docbeg)))
 	(setq editstrg (buffer-substring py--docbeg py--docend))
-	(setq py-edit-orig-pos orig)
 	(set-buffer (get-buffer-create buffer-name))
 	(erase-buffer)
 	(switch-to-buffer (current-buffer))
@@ -864,11 +863,11 @@ arg MODE: which buffer-mode used in edit-buffer"
   (interactive "*")
   (py-edit--intern "Edit docstring" 'python-mode))
 
-(defun py-prettyprint-assignment ()
-  "Prettyprint assignment in ‘python-mode’."
-  (interactive "*")
-  (let* ((beg (py-beginning-of-assignment)))
-    (py-edit--intern "Prettyprint assignment" 'python-mode)))
+;; (defun py-prettyprint-assignment ()
+;;   "Prettyprint assignment in ‘python-mode’."
+;;   (interactive "*")
+;;   (let* ((beg (py-beginning-of-assignment)))
+;;     (py-edit--intern "Prettyprint assignment" 'python-mode)))
 
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here

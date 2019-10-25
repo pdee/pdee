@@ -806,15 +806,15 @@ Return position if successful"
 Return position of successful, nil of not started from inside
 When called at beginning non-assignment, check next form upwards."
   (interactive)
-  (let (last
-	(erg
-	 (or (py--beginning-of-assignment-p)
-	     (progn
-	       (while (and (setq last (py-backward-statement))
-			   (not (looking-at py-assignment-re))
-			   ;; (not (bolp))
-			   ))
-	       (and (looking-at py-assignment-re) last)))))
+  (let* (last
+	 (erg
+	  (or (py--beginning-of-assignment-p)
+	      (progn
+		(while (and (setq last (py-backward-statement))
+			    (not (looking-at py-assignment-re))
+			    ;; (not (bolp))
+			    ))
+		(and (looking-at py-assignment-re) last)))))
     (when (and py-verbose-p (interactive-p))
       (message "%s" erg))
     erg))
@@ -837,16 +837,16 @@ When called at the end of an assignment, check next form downwards."
 	;; assume at start of an assignment
 	(py--forward-assignment-intern)
       ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time
-      (let (last
-	    (orig (point))
-	    (erg
-	     (or (py--beginning-of-assignment-p)
-		 (progn
-		   (while (and (setq last (py-backward-statement))
-			       (not (looking-at py-assignment-re))
-			       ;; (not (bolp))
-			       ))
-		   (and (looking-at py-assignment-re) last)))))
+      (let* (last
+	     (orig (point))
+	     (erg
+	      (or (py--beginning-of-assignment-p)
+		  (progn
+		    (while (and (setq last (py-backward-statement))
+				(not (looking-at py-assignment-re))
+				;; (not (bolp))
+				))
+		    (and (looking-at py-assignment-re) last)))))
 	(and erg (py--forward-assignment-intern))
 	(when (eq (point) orig)
 	  (while (and (not (eobp)) (re-search-forward py-assignment-re) (setq last (match-beginning 1)) (py-in-string-or-comment-p)))

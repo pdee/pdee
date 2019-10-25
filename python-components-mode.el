@@ -3304,6 +3304,12 @@ to paths in Emacs."
 
 (defvar py-shell--font-lock-buffer nil)
 
+(defvar py--docbeg nil
+  "internally used by py--write-edit")
+
+(defvar py--docend nil
+  "internally used by py--write-edit")
+
 (defcustom py-completion-setup-code
   "
 def __PYTHON_EL_get_completions(text):
