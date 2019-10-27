@@ -1077,10 +1077,11 @@
 	  (write--unified-extended-execute-buffer-form)
 	  (write--unified-extended-execute-let-form)
 	  )
-	(insert (concat "    (py--execute-prepare "ele))
+	(insert (concat "    (py--execute-prepare '"ele))
 	(write--unified-extended-execute-shells elt)
 	(write--extended-execute-switches ele pyo)))))
 
+;; not ready, don't use
 (defun install--unified-extended-execute-forms ()
   ;; (switch-to-buffer (current-buffer))
   ;; (goto-char (point-max))
