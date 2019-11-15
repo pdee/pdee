@@ -831,7 +831,7 @@ Returns the string inserted."
   (delete-region py--docbeg py--docend)
   (insert-buffer-substring py-edit-buffer))
 
-(defun py-edit--intern (buffer-name mode &optional beg end)
+(defun py-edit--intern (buffer-name mode &optional beg end prefix suffix action)
   "Edit string or active region in ‘python-mode’.
 
 arg BUFFER-NAME: a string.
@@ -843,7 +843,8 @@ arg MODE: which buffer-mode used in edit-buffer"
       (setq py--oldbuf (current-buffer))
       (let* ((orig (point))
 	     (bounds (or (and beg end)(py--edit-set-vars)))
-	     relpos editstrg)
+	     relpos editstrg
+	     erg)
 	(setq py--docbeg (or beg (car bounds)))
 	(setq py--docend (or end (cdr bounds)))
 	;; store relative position in editstrg
@@ -852,8 +853,14 @@ arg MODE: which buffer-mode used in edit-buffer"
 	(set-buffer (get-buffer-create buffer-name))
 	(erase-buffer)
 	(switch-to-buffer (current-buffer))
+	(when prefix (insert prefix))
 	(insert editstrg)
+	(when suffix (insert suffix))
 	(funcall mode)
+	(when action
+	  (setq erg (funcall action))
+	  (erase-buffer)
+	  (insert erg))
 	(local-set-key [(control c) (control c)] 'py--write-edit)
 	(goto-char relpos)
 	(message "%s" "Type C-c C-c writes contents back")))))
@@ -863,11 +870,40 @@ arg MODE: which buffer-mode used in edit-buffer"
   (interactive "*")
   (py-edit--intern "Edit docstring" 'python-mode))
 
-;; (defun py-prettyprint-assignment ()
-;;   "Prettyprint assignment in ‘python-mode’."
-;;   (interactive "*")
-;;   (let* ((beg (py-beginning-of-assignment)))
-;;     (py-edit--intern "Prettyprint assignment" 'python-mode)))
+(defun py--prettyprint-assignment-intern (beg end name buffer)
+  (let ((oldbuf (current-buffer))
+	(proc (get-buffer-process buffer)))
+    (py-send-string "import pprint" proc nil t)
+    ;; send the dict/assigment
+    (py-send-string (buffer-substring-no-properties beg end) proc nil t)
+    ;; do pretty-print
+    (setq erg (py-send-string (concat "pprint(" name")") proc t))
+    (py-edit--intern "PPrint" 'python-mode beg end)
+    (setq erg (py-execute-region-dedicated beg end nil nil t t))
+    (message "%s" erg)))
+
+(defun py-prettyprint-assignment ()
+  "Prettyprint assignment in ‘python-mode’."
+  (interactive "*")
+  (save-excursion
+    (let* ((beg (py-beginning-of-assignment))
+	   (name (py-expression))
+	   (end (py-end-of-assignment))
+	   (proc-buf (python '(4))))
+      (py--prettyprint-assignment-intern beg end name proc-buf))))
+
+(defun py-unpretty-assignment ()
+  "Revoke prettyprint, write assignment in a shortest way."
+  (interactive "*")
+  (save-excursion
+    (let* ((beg (py-beginning-of-assignment))
+	   (end (copy-marker (py-forward-assignment)))
+	   last)
+      (goto-char beg)
+      (while (setq last (re-search-forward "[ \t]+" end t 1))
+	(when (eq (current-column) (current-indentation)) (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point))))
+	(fixup-whitespace)
+	(goto-char last)))))
 
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here

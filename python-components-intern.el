@@ -260,12 +260,9 @@ process buffer for a list of commands.)"
 	(progn
 	  (with-current-buffer buffer
 	    (py-shell-mode))
-	  ;; (py-send-string-no-output "print(\"py-shell-mode loaded\")" (get-buffer-process buffer) buffer-name)
-	  ;; (py--update-lighter shell)
-
 	  (when (or interactivep
 		    (or switch dedicated py-switch-buffers-on-execute-p py-split-window-on-execute))
-	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch dedicated))
+	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch))
 	    buffer))
       (setq erg (py--fetch-error py-output-buffer))
       ;; (message "%s" erg)
@@ -1715,13 +1712,17 @@ Return the output."
      (with-current-buffer (process-buffer proc)
        (comint-interrupt-subjob)))))
 
-(defun py-send-string (strg &optional process result no-output orig buffer)
+(defun py-send-string (strg &optional process result no-output orig output-buffer)
   "Evaluate STRG in Python PROCESS.
 
-With optional Arg RESULT return output"
+With optional Arg PROCESS send to process.
+With optional Arg RESULT store result in var ‘py-result’, also return it.
+With optional Arg NO-OUTPUT don't display any output
+With optional Arg ORIG deliver original position.
+With optional Arg OUTPUT-BUFFER specify output-buffer"
   (interactive "sPython command: ")
   (save-excursion
-    (let* ((buffer (or buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell)))))
+    (let* ((buffer (or output-buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell)))))
 	   (proc (or process (get-buffer-process buffer) (py-shell nil nil nil nil (buffer-name buffer))))
 	   (orig (or orig (point)))
    	   (limit (ignore-errors (marker-position (process-mark proc)))))
@@ -1746,7 +1747,8 @@ With optional Arg RESULT return output"
 			(setq py-result
 			      (py--fetch-result buffer limit strg)))
 		       (no-output
-			(and orig (py--cleanup-shell orig buffer))))))))))
+			(and orig (py--cleanup-shell orig buffer)))))))))
+  (switch-to-buffer (current-buffer)))
 
 (defun py-send-file (file-name process)
   "Send FILE-NAME to Python PROCESS."

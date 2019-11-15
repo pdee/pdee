@@ -126,8 +126,6 @@
 (defalias 'py-markup-region-as-section 'py-sectionize-region)
 (defalias 'py-up 'py-up-block)
 (defalias 'py-count-indentation 'py-compute-indentation)
-(defalias 'py-beginning-of-assignment 'py-backward-assignment)
-(defalias 'py-end-of-assignment 'py-forward-assignment)
 
 ;;;###autoload
 (define-derived-mode py-auto-completion-mode python-mode "Pac"
