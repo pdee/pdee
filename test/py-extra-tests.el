@@ -139,6 +139,7 @@ finally:
       (call-interactively 'py-execute-statement-python3-dedicated)
       ;; (sit-for 0.1 t)
       (set-buffer py-output-buffer)
+      (switch-to-buffer (current-buffer)) 
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 

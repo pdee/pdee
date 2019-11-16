@@ -870,17 +870,37 @@ arg MODE: which buffer-mode used in edit-buffer"
   (interactive "*")
   (py-edit--intern "Edit docstring" 'python-mode))
 
+(defun py-unpretty-assignment ()
+  "Revoke prettyprint, write assignment in a shortest way."
+  (interactive "*")
+  (save-excursion
+    (let* ((beg (py-beginning-of-assignment))
+	   (end (copy-marker (py-forward-assignment)))
+	   last)
+      (goto-char beg)
+      (while (and (not (eobp))(re-search-forward "^\\([ \t]*\\)\[\]\"'{}]" end t 1) (setq last (copy-marker (point))))
+	(save-excursion (goto-char (match-end 1))
+			(when (eq (current-column) (current-indentation)) (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point)))))
+	(when last (goto-char last))))))
+
 (defun py--prettyprint-assignment-intern (beg end name buffer)
   (let ((oldbuf (current-buffer))
 	(proc (get-buffer-process buffer)))
-    (py-send-string "import pprint" proc nil t)
+    ;; (py-send-string "import pprint" proc nil t)
+    (py-send-string "import json" proc nil t)
     ;; send the dict/assigment
     (py-send-string (buffer-substring-no-properties beg end) proc nil t)
     ;; do pretty-print
-    (setq erg (py-send-string (concat "pprint(" name")") proc t))
-    (py-edit--intern "PPrint" 'python-mode beg end)
-    (setq erg (py-execute-region-dedicated beg end nil nil t t))
-    (message "%s" erg)))
+    ;; print(json.dumps(neudict4, indent=4))
+    (setq erg (py-send-string (concat "print(json.dumps("name", indent=5))") proc t))
+    ;; (message "%s" erg)
+    ;; (py-edit--intern "PPrint" 'python-mode beg end)
+    ;; (message "%s" (current-buffer))
+    ;; (switch-to-buffer (current-buffer))
+    (goto-char beg)
+    (skip-chars-forward "^{")
+    (delete-region (point) (progn (forward-sexp) (point)))
+    (insert erg)))
 
 (defun py-prettyprint-assignment ()
   "Prettyprint assignment in ‘python-mode’."
@@ -891,19 +911,6 @@ arg MODE: which buffer-mode used in edit-buffer"
 	   (end (py-end-of-assignment))
 	   (proc-buf (python '(4))))
       (py--prettyprint-assignment-intern beg end name proc-buf))))
-
-(defun py-unpretty-assignment ()
-  "Revoke prettyprint, write assignment in a shortest way."
-  (interactive "*")
-  (save-excursion
-    (let* ((beg (py-beginning-of-assignment))
-	   (end (copy-marker (py-forward-assignment)))
-	   last)
-      (goto-char beg)
-      (while (setq last (re-search-forward "[ \t]+" end t 1))
-	(when (eq (current-column) (current-indentation)) (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point))))
-	(fixup-whitespace)
-	(goto-char last)))))
 
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here

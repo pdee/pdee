@@ -906,7 +906,7 @@ Optional FAST RETURN"
 		 ))
 	 (shell (or shell (py-choose-shell)))
 	 (buffer-name
-	      (py--choose-buffer-name shell dedicated fast))
+	  (py--choose-buffer-name shell dedicated fast))
 	 (execute-directory
 	  (cond ((ignore-errors (file-name-directory (file-remote-p (buffer-file-name) 'localname))))
 		((and py-use-current-dir-when-execute-p (buffer-file-name))
@@ -927,9 +927,9 @@ Optional FAST RETURN"
 		   (prog1
 		       (get-buffer-process (py-shell nil nil dedicated shell buffer-name fast exception-buffer split switch))
 		     (sit-for 0.1))))
-	 (split (if python-mode-v5-behavior-p 'just-two split))
-	 (py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
-			       (py--choose-buffer-name shell dedicated fast))))
+	 (split (if python-mode-v5-behavior-p 'just-two split)))
+    (setq py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
+			       (py--choose-buffer-name shell dedicated fast)))
     (py--execute-base-intern strg filename proc file wholebuf py-output-buffer origline execute-directory start end fast)
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch))))

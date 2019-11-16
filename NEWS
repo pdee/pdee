@@ -12,6 +12,7 @@ New in version 6.2.4
   if indentation step is unknown.
 
 - New commands:
+  py-prettyprint-assignment
   py-toggle-py-split-window-on-execute
   py-toggle-session-mode
   py-show

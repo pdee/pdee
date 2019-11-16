@@ -238,8 +238,8 @@ process buffer for a list of commands.)"
 		   (process-buffer (apply 'start-process shell buffer-name shell args))
 		 (apply #'make-comint-in-buffer shell buffer-name
 			shell nil args))))))
-	 (py-output-buffer (buffer-name (if python-mode-v5-behavior-p py-output-buffer buffer)))
 	 erg)
+    (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p py-output-buffer buffer)))
     (unless done
       (with-current-buffer buffer
 	(setq delay (py--which-delay-process-dependent buffer-name))
@@ -261,7 +261,7 @@ process buffer for a list of commands.)"
 	  (with-current-buffer buffer
 	    (py-shell-mode))
 	  (when (or interactivep
-		    (or switch dedicated py-switch-buffers-on-execute-p py-split-window-on-execute))
+		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
 	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch))
 	    buffer))
       (setq erg (py--fetch-error py-output-buffer))
@@ -1748,7 +1748,8 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 			      (py--fetch-result buffer limit strg)))
 		       (no-output
 			(and orig (py--cleanup-shell orig buffer)))))))))
-  (switch-to-buffer (current-buffer)))
+  ;; (switch-to-buffer (current-buffer))
+  )
 
 (defun py-send-file (file-name process)
   "Send FILE-NAME to Python PROCESS."
