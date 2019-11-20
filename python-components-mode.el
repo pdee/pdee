@@ -1480,7 +1480,6 @@ visible, open them manually and set `py-keep-windows-configuration' to t.
 
 See also `py-keep-windows-configuration'"
   :type '(choice
-
           (const :tag "default" just-two)
 	  (const :tag "reuse" t)
           (const :tag "no split" nil)

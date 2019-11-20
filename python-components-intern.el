@@ -262,11 +262,9 @@ process buffer for a list of commands.)"
 	    (py-shell-mode))
 	  (when (or interactivep
 		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
-	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch))
-	    buffer))
-      (setq erg (py--fetch-error py-output-buffer))
-      ;; (message "%s" erg)
-      (error erg))))
+	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
+	  buffer)
+      (error (concat "py-shell:" (py--fetch-error py-output-buffer))))))
 
 (defun py-load-named-shells ()
   (interactive)

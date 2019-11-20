@@ -772,7 +772,7 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
   ;; py--fast-send-string doesn't set origline
   (when (or py-return-result-p py-store-result-p)
     (with-current-buffer output-buffer
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       (sit-for (py--which-delay-process-dependent (prin1-to-string output-buffer)))
       ;; (catch 'py--postprocess
       (setq py-result (py--fetch-result output-buffer limit cmd))
@@ -813,6 +813,7 @@ Returns position where output starts."
     (if fast
 	(process-send-string proc cmd)
       (py-send-string cmd proc))
+    ;; (message "%s" (current-buffer))
     (with-current-buffer buffer
       (when (or py-return-result-p py-store-result-p)
 	(setq erg (py--postprocess buffer origline limit cmd filename))
@@ -921,9 +922,9 @@ Optional FAST RETURN"
 	 (filename (or (and filename (expand-file-name filename))
 		       (py--buffer-filename-remote-maybe)))
 	 (py-orig-buffer-or-file (or filename (current-buffer)))
-	 (proc (get-buffer-process buffer-name))
+	 (proc-raw (or proc (get-buffer-process buffer-name)))
 
-	 (proc (or proc (get-buffer-process buffer-name)
+	 (proc (or proc-raw (get-buffer-process buffer-name)
 		   (prog1
 		       (get-buffer-process (py-shell nil nil dedicated shell buffer-name fast exception-buffer split switch))
 		     (sit-for 0.1))))
