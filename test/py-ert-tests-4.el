@@ -355,6 +355,14 @@ from __future__ import foo
     (should-not (nth 3 (parse-partial-sexp (point-min) (point))))
     (should (eq (char-before) ?o))))
 
+(ert-deftest py-backward-indent-tWBEjf ()
+  (py-test-with-temp-buffer
+      "except:
+    print(\"Setze anzahl auf 1\")
+    anzahl = 1"
+    (goto-char (point-max))
+    (py-backward-indent)
+    (should (eq (char-after) ?p))))
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

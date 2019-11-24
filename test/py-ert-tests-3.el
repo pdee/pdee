@@ -175,7 +175,7 @@ More docstring here.
       (skip-chars-forward " \t\r\n\f")
       (should (eq 4 (current-indentation))))))
 
-(ert-deftest py-ert-backward-indent-test ()
+(ert-deftest py-ert-backward-indent-test-hJv5Sb ()
   (py-test-with-temp-buffer
       "class A(object):
     def a(self):
@@ -187,11 +187,7 @@ More docstring here.
         pass"
     (goto-char (point-max))
     (py-backward-indent)
-    (should (eq (char-after) ?a))
-    (py-backward-indent)
-    (should (eq (char-after) ?d))
-    (py-backward-indent)
-    (should (eq (char-after) ?s))))
+    (should (eq (char-after) ?a))))
 
 (ert-deftest py-ert-forward-indent-test-1 ()
   (py-test-with-temp-buffer-point-min

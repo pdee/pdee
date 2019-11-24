@@ -28,14 +28,17 @@
 ;; Indentation
 ;; Travel current level of indentation
 (defun py--travel-this-indent-backward (&optional indent)
-  "Travel INDENT given.
+  "Travel current INDENT backward.
 
-Otherwise travel current level of indentation"
-  (let (erg)
-    (while (and (py-backward-statement)
-		(or indent (setq indent (current-indentation)))
-		(eq indent (current-indentation))(setq erg (point)) (not (bobp))))
-    erg))
+With optional INDENT travel bigger or equal indentation"
+  (let ((indent (or indent (current-indentation)))
+	last)
+    (while (and (not (bobp))
+		(py-backward-statement)
+		(<= indent (current-indentation))
+		(setq last (point))))
+    (when last (goto-char last))
+    last))
 
 (defun py-backward-indent ()
   "Go to the beginning of a section of equal indent.
