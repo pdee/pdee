@@ -87,14 +87,14 @@ Optional STRG PROC OUTPUT-BUFFER RETURN"
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare block shell dedicated switch beg end file t))
+  (py--execute-prepare 'block shell dedicated switch beg end file t))
 
 (defun py-execute-block-or-clause-fast (&optional shell dedicated switch beg end file fast)
   "Process block-or-clause at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
-  (py--execute-prepare block-or-clause shell dedicated switch beg end file t))
+  (py--execute-prepare 'block-or-clause shell dedicated switch beg end file t))
 
 (defun py-execute-class-fast (&optional shell dedicated switch beg end file)
   "Process class at point by a Python interpreter.

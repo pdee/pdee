@@ -3462,7 +3462,8 @@ See also `py-object-reference-face'"
   :group 'python-mode)
 
 ;; subr-x.el might not exist yet
-(unless (functionp 'string-trim)
+;; #73, Byte compilation on Emacs 25.3 fails on different trim-right signature
+(unless (or (functionp 'string-trim) (functionp 'string-trim-right)(functionp 'string-trim-left))
   (defsubst string-trim-left (strg &optional regexp)
     "Trim STRING of leading string matching REGEXP.
 
