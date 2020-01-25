@@ -52,7 +52,9 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       (or (string-match "\n$" strg)
 	  (process-send-string proc "\n"))
       (cond (no-output
-	     (erase-buffer))
+	     ;; (erase-buffer)
+	     (delete-region (point-min) (line-beginning-position))
+	     )
 	    (result
 	     (if
 		 (setq erg (py--fetch-result output-buffer limit strg))
@@ -82,14 +84,14 @@ Optional STRG PROC OUTPUT-BUFFER RETURN"
   (let ((py-fast-process-p t))
     (py-execute-region beg end shell dedicated t split switch proc)))
 
-(defun py-execute-block-fast (&optional shell dedicated switch beg end file fast)
+(defun py-execute-block-fast (&optional shell dedicated switch beg end file)
   "Process block at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"
   (interactive)
   (py--execute-prepare 'block shell dedicated switch beg end file t))
 
-(defun py-execute-block-or-clause-fast (&optional shell dedicated switch beg end file fast)
+(defun py-execute-block-or-clause-fast (&optional shell dedicated switch beg end file)
   "Process block-or-clause at point by a Python interpreter.
 
 Output buffer not in comint-mode, displays \"Fast\"  by default"

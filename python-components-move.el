@@ -854,7 +854,6 @@ Return position of successful, nil of not started from inside"
 	(py--forward-assignment-intern)
       ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time
       (let* (last
-	     (orig (point))
 	     (beg
 	      (or (py--beginning-of-assignment-p)
 		  (progn

@@ -258,19 +258,20 @@ See lp:1066489 "
 (defun py--in-or-behind-or-before-a-docstring ()
   (interactive "*")
   (save-excursion
-    (let* ((raw-pps (nth 8 (parse-partial-sexp (point-min) (point))))
+    (let* ((pps (parse-partial-sexp (point-min) (point)))
+	   (strg-start-pos (when (nth 3 pps) (nth 8 pps)))
 	   ;; ;; maybe just behind a string
-	   (n8 (or raw-pps
-		   ;; maybe in front of a string
-		   (back-to-indentation)
-		   (nth 8 (parse-partial-sexp (point-min) (point)))))
-	   (n8pps (or n8
+	   ;; (n8 (or raw-pps
+	   ;; 	   ;; maybe in front of a string
+	   ;; 	   (back-to-indentation)
+	   ;; 	   (nth 8 (parse-partial-sexp (point-min) (point)))))
+	   (n8pps (or strg-start-pos
 		      (when
 			  (equal (string-to-syntax "|")
 				 (syntax-after (point)))
 			(and
-			  (< 0 (skip-chars-forward "\"'"))
-			  (nth 8 (parse-partial-sexp (point-min) (point))))))))
+			 (< 0 (skip-chars-forward "\"'"))
+			 (nth 3 (parse-partial-sexp (point-min) (point))))))))
       (and n8pps (py--docstring-p n8pps)))))
 
 (defun py--string-fence-delete-spaces (&optional start)
@@ -485,6 +486,15 @@ Fill according to `py-docstring-style' "
 		 (when (and in-string (not tqs))
 		   (py--continue-lines-region beg end))))))
       (jump-to-register py-windows-config-register))))
+
+(defun py-fill-string-or-comment ()
+  "Serve auto-fill-mode"
+  (let ((pps (parse-partial-sexp (point-min) (point))))
+    (if (nth 3 pps)
+	(py-fill-string pps)
+      ;; (py-fill-comment pps)
+      (do-auto-fill)
+      )))
 
 (provide 'python-components-paragraph)
 ;;; python-components-paragraph.el ends here

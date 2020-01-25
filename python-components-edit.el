@@ -884,8 +884,7 @@ arg MODE: which buffer-mode used in edit-buffer"
 	(when last (goto-char last))))))
 
 (defun py--prettyprint-assignment-intern (beg end name buffer)
-  (let ((oldbuf (current-buffer))
-	(proc (get-buffer-process buffer))
+  (let ((proc (get-buffer-process buffer))
 	erg)
     ;; (py-send-string "import pprint" proc nil t)
     (py-send-string "import json" proc nil t)

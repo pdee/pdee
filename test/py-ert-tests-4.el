@@ -364,5 +364,16 @@ from __future__ import foo
     (py-backward-indent)
     (should (eq (char-after) ?p))))
 
+(ert-deftest py-fill-comment-test-MQfKpX ()
+  (py-test-with-temp-buffer
+      "def foo():
+    # asdf asdf adf adf adsf adsf adsf adf adf adf ad adf adf adf adf"
+      (goto-char (point-max))
+      (turn-on-auto-fill)
+      (insert " ")
+      (insert "asd")
+      (py-fill-string-or-comment)
+      (should (eq 9 (current-column)))))
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

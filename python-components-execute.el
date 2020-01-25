@@ -738,6 +738,7 @@ optional argument."
 (defun py--fetch-result (buffer limit &optional cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
+  ;; (switch-to-buffer (current-buffer)) 
   (if python-mode-v5-behavior-p
       (with-current-buffer buffer
 	(string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
@@ -763,7 +764,6 @@ Delete it here"
 			       py-cleanup-p)
 			      (delete-region (point) end))
 			 (goto-char orig)))))))))))
-
 
 (defun py--postprocess (output-buffer origline limit &optional cmd filename)
   "Provide return values, check result for error, manage windows.

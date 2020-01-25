@@ -2595,13 +2595,10 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
                           `py-custom-temp-directory' will take precedence when setq")
 
-(defvar py-ipython-input-prompt-re "In \\[[0-9]+\\]: *\\|^[ ]\\{3\\}[.]\\{3,\\}: *"
+(defvar py-ipython-input-prompt-re "In \\[?[0-9 ]*\\]?: *\\|^[ ]\\{3\\}[.]\\{3,\\}: *"
   "A regular expression to match the IPython input prompt.")
 
-;; (setq py-ipython-input-prompt-re "In .[0-9]+]: *")
-
-;; prevent ipython.el's setting
-(setq py-ipython-input-prompt-re   "[IO][un]t? \\[[0-9]+\\]: *\\|^[ ]\\{3\\}[.]\\{3,\\}: *" )
+;; (setq py-ipython-input-prompt-re "In \\[?[0-9 ]*\\]?: *\\|^[ ]\\{3\\}[.]\\{3,\\}: *")
 
 (defvar py-exec-command nil
   "Internally used.")
@@ -2818,6 +2815,12 @@ for options to pass to the DOCNAME interpreter. \"
   "Internally used by `py-fast-filter'.
 ‘ansi-color-filter-apply’ might return
 Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
+
+(setq py-fast-filter-re (concat "^\\("
+			       (mapconcat 'identity
+					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{3,\\}:? *"))
+					  "\\|")
+			       "\\)"))
 
 ;; Constants
 (defconst py-block-closing-keywords-re

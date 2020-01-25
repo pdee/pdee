@@ -19,8 +19,6 @@
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
-  ;; (with-current-buffer buffer
-  ;; (erase-buffer)
   (let ((completions
 	 (py-fast-send-string
 	  (format completion-code input) process buffer t)))
@@ -33,7 +31,7 @@ completions on the current context."
   (let (py-store-result-p)
     (when imports
       ;; (message "%s" imports)
-      (py-fast-send-string-intern imports process)))
+      (py-fast-send-string imports process buffer nil t)))
   (let* ((completion
 	  (py--fast-completion-get-completions input process code buffer)))
     (sit-for 0.1)
