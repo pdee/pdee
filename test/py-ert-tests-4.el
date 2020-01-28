@@ -375,17 +375,6 @@ from __future__ import foo
       (py-fill-string-or-comment)
       (should (eq 9 (current-column)))))
 
-(ert-deftest py-fill-comment-test-64-UUplP9 ()
-  (py-test-with-temp-buffer
-      "def foo():
-    #r# asdf asdf adf adf adsf adsf adsf adf adf adf ad adf adf adf adf"
-      (goto-char (point-max))
-      (turn-on-auto-fill)
-      (insert " ")
-      (insert "asd")
-      (py-fill-string-or-comment)
-      (should (eq 9 (current-column)))))
-
 (ert-deftest py-fill-comment-test-64-kGN9tr ()
   (py-test-with-temp-buffer
       "def foo():
