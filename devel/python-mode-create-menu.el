@@ -1,6 +1,6 @@
 ;;; python-components-create-menu.el - Generate the menu
 
-;; Copyright (C) 2015  Andreas Röhler
+;; Copyright (C) 2015-2020  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
