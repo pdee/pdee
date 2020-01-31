@@ -3128,7 +3128,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; whether this is an opening or closing triple or whether it's
   ;; quoted anyhow, and should be ignored.  (For that we need to do
   ;; the same job as `syntax-ppss' to be correct and it seems to be OK
-  ;; to use it here despite initial worries.)  We also have to sort
+  ;; to use it here despite initial worries.) We also have to sort
   ;; out a possible prefix -- well, we don't _have_ to, but I think it
   ;; should be treated as part of the string.
 
@@ -3142,8 +3142,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
     (cond
      ;; Consider property for the last char if in a fenced string.
      ((= n 3)
-      (let* ((font-lock-syntactic-keywords nil)
-	     (syntax (parse-partial-sexp (point-min) (point))))
+      (let* ((syntax (parse-partial-sexp (point-min) (point))))
 	(when (eq t (nth 3 syntax))	; after unclosed fence
 	  (goto-char (nth 8 syntax))	; fence position
 	  ;; (skip-chars-forward "uUrR")	; skip any prefix
@@ -3151,13 +3150,12 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 	  (if (eq (char-after) (char-after (match-beginning 2)))
 	      (eval-when-compile (string-to-syntax "|"))))))
      ;; Consider property for initial char, accounting for prefixes.
-     ((or (and (= n 2)			; leading quote (not prefix)
+     ((or (and (= n 2) ; leading quote (not prefix)
 	       (not (match-end 1)))     ; prefix is null
-	  (and (= n 1)			; prefix
+	  (and (= n 1) ; prefix
 	       (match-end 1)))          ; non-empty
-      (let ((font-lock-syntactic-keywords nil))
-	(unless (eq 'string (syntax-ppss-context (parse-partial-sexp (point-min) (point))))
-	  (eval-when-compile (string-to-syntax "|")))))
+      (unless (eq 'string (syntax-ppss-context (parse-partial-sexp (point-min) (point))))
+	(eval-when-compile (string-to-syntax "|"))))
      ;; Otherwise (we're in a non-matching string) the property is
      ;; nil, which is OK.
      )))
