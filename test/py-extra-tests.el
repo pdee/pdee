@@ -210,6 +210,18 @@ finally:
   (sit-for 0.1)
   (should (or (eq ?t (char-before))(eq ?\( (char-before)))))
 
+(ert-deftest py-ert-execute-statement-fast-test ()
+  (py-test-with-temp-buffer-point-min
+      "print(123234)"
+    (goto-char (point-min))
+    (let (py-split-window-on-execute py-switch-buffers-on-execute-p)
+      (py-execute-statement-fast)
+      (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
+      (sit-for 1)
+      (goto-char (point-max))
+      (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))
+      (should (search-backward "123234")))))
+
 (ert-deftest py-ert-fast-complete-1 ()
   (py-test-with-temp-buffer
       "obj"

@@ -738,11 +738,12 @@ optional argument."
 (defun py--fetch-result (buffer limit &optional cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
-  ;; (switch-to-buffer (current-buffer)) 
+  ;; (switch-to-buffer (current-buffer))
   (if python-mode-v5-behavior-p
       (with-current-buffer buffer
 	(string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
     (with-silent-modifications
+      ;; (switch-to-buffer (current-buffer))
       (when (< limit (point-max))
 	(goto-char (point-max))
 	(let ((orig (point-marker)))

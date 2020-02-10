@@ -245,12 +245,27 @@ Default is t")
 	   symbol-end) (1 py-builtins-face))
         ("\\([._[:word:]]+\\)\\(?:\\[[^]]+]\\)?[[:space:]]*\\(?:\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
          (1 py-variable-name-face nil nil))
+	;; https://emacs.stackexchange.com/questions/55184/
+	;; how-to-highlight-in-different-colors-for-variables-inside-fstring-on-python-mo
+	;;
+	;; this is the full string.
+        ;; group 1 is the quote type and a closing quote is matched
+        ;; group 2 is the string part
+        ("f\\(['\"]\\{1,3\\}\\)\\([^\\1]+?\\)\\1"
+         ;; these are the {keywords}
+         ("{[^}]*?}"
+          ;; Pre-match form
+          (progn (goto-char (match-beginning 0)) (match-end 0))
+          ;; Post-match form
+          (goto-char (match-end 0))
+          ;; face for this match
+          (0 font-lock-variable-name-face t)))
         ;; a, b, c = (1, 2, 3)
         (,(lambda (limit)
             (let ((re (rx (group (+ (any word ?. ?_))) (* space)
-			   (* ?, (* space) (+ (any word ?. ?_)) (* space))
-			   ?, (* space) (+ (any word ?. ?_)) (* space)
-			   (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**=" ">>=" "<<=" "&=" "^=" "|=")))
+			  (* ?, (* space) (+ (any word ?. ?_)) (* space))
+			  ?, (* space) (+ (any word ?. ?_)) (* space)
+			  (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**=" ">>=" "<<=" "&=" "^=" "|=")))
                   (res nil))
               (while (and (setq res (re-search-forward re limit t))
                           (goto-char (match-end 1))

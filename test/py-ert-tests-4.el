@@ -388,17 +388,17 @@ from __future__ import foo
       (py-fill-string-or-comment)
       (should (eq 15 (current-column))))))
 
-(ert-deftest py-ert-execute-statement-fast-test ()
-  (py-test-with-temp-buffer-point-min
-      "print(123234)"
-    (goto-char (point-min))
-    (let (py-split-window-on-execute py-switch-buffers-on-execute-p)
-      (py-execute-statement-fast)
-      (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
-      (sit-for 1)
-      (goto-char (point-max))
-      (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))
-      (should (search-backward "123234")))))
+(ert-deftest py-highlight-vars-inside-fstring-76-kGN9tr ()
+  (py-test-with-temp-buffer
+      "name = 'Fred'
+age = 42
+doo = f'He said his name is {name} and he is {age} years old'"
+    (goto-char (point-max))
+    (search-backward "age")
+    (font-lock-fontify-buffer) 
+    (should (eq (face-at-point) 'font-lock-variable-name-face))))
+
+
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

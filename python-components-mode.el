@@ -2807,7 +2807,7 @@ for options to pass to the DOCNAME interpreter. \"
   "Recognize the pydb-prompt.")
 ;; (setq py-pdbtrack-input-prompt "^[(< \t]*[Ii]?[Pp]y?db[>)]*.*")
 
-(defvar py-fast-filter-re (concat "^\\("
+(defvar py-fast-filter-re (concat "\\("
 			       (mapconcat 'identity
 					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{3,\\}:? *"))
 					  "\\|")
@@ -2816,7 +2816,7 @@ for options to pass to the DOCNAME interpreter. \"
 ‘ansi-color-filter-apply’ might return
 Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
 
-(setq py-fast-filter-re (concat "^\\("
+(setq py-fast-filter-re (concat "\\("
 			       (mapconcat 'identity
 					  (delq nil (list py-shell-input-prompt-1-regexp py-shell-input-prompt-2-regexp py-ipython-input-prompt-re py-ipython-output-prompt-re py-pdbtrack-input-prompt py-pydbtrack-input-prompt "[.]\\{3,\\}:? *"))
 					  "\\|")
