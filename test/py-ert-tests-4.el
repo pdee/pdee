@@ -388,6 +388,24 @@ from __future__ import foo
       (py-fill-string-or-comment)
       (should (eq 15 (current-column))))))
 
+(ert-deftest py-fill-string-test-75-kGN9tr ()
+  (py-test-with-temp-buffer
+      "def foo():
+    try:
+        run()
+    except Timeout:
+        print('foo
+    # Things are no good.
+    for line in proc.stdout.splitlines():
+        mo = CRE.match(line)
+        version = mo['version']"
+    (goto-char (point-max)) 
+    (search-backward "foo")
+    (end-of-line)
+    (insert " ")
+    (py-fill-string-or-comment)
+    (should (eolp))))
+
 (ert-deftest py-highlight-vars-inside-fstring-76-kGN9tr ()
   (py-test-with-temp-buffer
       "name = 'Fred'

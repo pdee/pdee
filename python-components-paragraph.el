@@ -393,7 +393,7 @@ See lp:1066489 "
     (fill-region beg end justify)
     (py--fill-docstring-base thisbeg thisend style multi-line-p beg end py-current-indent orig)))
 
-(defun py-fill-string (&optional justify style docstring)
+(defun py-fill-string (&optional justify style docstring pps)
   "String fill function for `py-fill-paragraph'.
 JUSTIFY should be used (if applicable) as in `fill-paragraph'.
 
@@ -402,7 +402,7 @@ Fill according to `py-docstring-style' "
   (let* ((justify (or justify (if current-prefix-arg 'full t)))
 	 (style (or style py-docstring-style))
 	 (docstring (or docstring (py--in-or-behind-or-before-a-docstring)))
-	 (pps (parse-partial-sexp (point-min) (point)))
+	 (pps (or pps (parse-partial-sexp (point-min) (point))))
 	 (indent (save-excursion (and (nth 3 pps) (goto-char (nth 8 pps)) (current-indentation))))
 	 ;; fill-paragraph sets orig
 	 (orig (point))
@@ -410,25 +410,27 @@ Fill according to `py-docstring-style' "
 			(py--in-or-behind-or-before-a-docstring)
 		      docstring))
 	 (beg (and (nth 3 pps) (nth 8 pps)))
-	 end tqs)
+	 (tqs (progn (and beg (goto-char beg)) (looking-at "\"\"\"\\|'''")))
+	 (end (if tqs
+		  (progn
+		    (forward-sexp) (point))
+		(goto-char orig) 
+		(line-end-position))))
+    (goto-char orig)
     (when beg
       (if docstring
 	  (py--fill-docstring justify style docstring orig indent)
-	(save-excursion
-	  (setq end
-		(progn (goto-char beg)
-		       (setq tqs (looking-at "\"\"\"\\|'''"))
-		       (forward-sexp) (point))))
 	(save-restriction
 	  (if (not tqs)
 	      (if (py-preceding-line-backslashed-p)
 		  (progn
+		    (setq end (line-end-position))
 		    (narrow-to-region (line-beginning-position) end)
-		    (fill-region (line-beginning-position) end)
+		    (fill-region (line-beginning-position) end justify t)
 		    (when (< 1 (py-count-lines))
 		      (py--continue-lines-region (point-min) end)))
 		(narrow-to-region beg end)
-		(fill-region beg end justify)
+		(fill-region beg end justify t)
 		(when
 		    ;; counting in narrowed buffer
 		    (< 1 (py-count-lines))
@@ -491,7 +493,7 @@ Fill according to `py-docstring-style' "
   "Serve auto-fill-mode"
   (let ((pps (parse-partial-sexp (point-min) (point))))
     (if (nth 3 pps)
-	(py-fill-string pps)
+	(py-fill-string nil nil nil pps)
       ;; (py-fill-comment pps)
       (do-auto-fill)
       )))
