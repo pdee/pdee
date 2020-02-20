@@ -28,8 +28,6 @@
   "__PYDOC_get_help('''%s''')\n"
   "Python code used to get a string with the documentation of an object.")
 
-(defalias 'py-eldoc 'py-eldoc-function)
-
 ;;  Info-look functionality.
 (require 'info-look)
 (eval-when-compile (require 'info))
@@ -191,7 +189,6 @@ not inside a defun."
       (mapconcat (lambda (strg) strg) names "."))))
 
 (defalias 'py-describe-symbol 'py-help-at-point)
-(defalias 'py-eldoc-function 'py-help-at-point)
 (defun py--help-at-point-intern (sym orig)
   (let* ((origfile (py--buffer-filename-remote-maybe))
 	 ;; (temp (md5 (buffer-name)))

@@ -198,7 +198,8 @@ See available customizations listed in files variables-python-mode at directory 
                                   py-outline-mode-keywords)
                           "\\|")))
   (when (>= emacs-major-version 25)
-    (global-eldoc-mode -1))
+    (global-eldoc-mode -1)
+    (eldoc-mode py-eldoc-mode-p))
   (when py-font-lock-defaults-p
     (if py-use-font-lock-doc-face-p
 	(set (make-local-variable 'font-lock-defaults)
@@ -247,8 +248,7 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'normal-auto-fill-function) 'py-fill-string-or-comment)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (set (make-local-variable 'tab-width) py-indent-offset)
-  (set (make-local-variable 'eldoc-documentation-function)
-       #'py-eldoc-function)
+  (set (make-local-variable 'eldoc-documentation-function) 'py-eldoc-function)
   (and py-load-skeletons-p
        (py-load-skeletons)
        (set (make-local-variable 'skeleton-further-elements)
