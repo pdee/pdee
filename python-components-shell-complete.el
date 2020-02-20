@@ -195,8 +195,7 @@ in (I)Python shell-modes `py-shell-complete'"
 	 (ignore-errors (completion-at-point)))
 	(t
 	 ;; (py-fast-complete)
-	 (ignore-errors (completion-at-point))
-)))
+	 (completion-at-point))))
 
 	    ;; (substring (process-name (get-buffer-process (current-buffer))) 0 (string-match "<" (process-name (get-buffer-process (current-buffer)))))
 (provide 'python-components-shell-complete)

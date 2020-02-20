@@ -417,6 +417,12 @@ doo = f'He said his name is {name} and he is {age} years old'"
     (should (eq (face-at-point) 'font-lock-variable-name-face))))
 
 
+(ert-deftest py-typing-replaces-buffer-with-scratch-buffer-77-test-Nldz2m ()
+  (py-test-with-temp-buffer
+  ""
+  (insert "\t")
+  (should (eq major-mode 'python-mode))))
+  
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

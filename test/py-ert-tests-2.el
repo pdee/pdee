@@ -1204,7 +1204,7 @@ if __name__ == \"__main__\":
 GeomSim."
     (goto-char(point-max))
     ;; (switch-to-buffer (current-buffer)) 
-    (py-indent-or-complete)
+    (ignore-errors (py-indent-or-complete))
     (sit-for 0.1) 
     (should (eq (char-before) ?.))))
 
