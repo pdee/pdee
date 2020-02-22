@@ -83,6 +83,7 @@
 (require 'which-func)
 (require 'tramp)
 (require 'tramp-sh)
+(require 'org)
 
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
