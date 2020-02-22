@@ -58,7 +58,7 @@ completions on the current context."
   (let* (py-split-window-on-execute py-switch-buffers-on-execute-p
 	 (shell (or shell "python"))
 	 (buffer (py-shell nil nil nil shell nil t))
-	 (proc (get-buffer-process buffer))
+ 	 (proc (get-buffer-process buffer))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
 		   (py-set-ipython-completion-command-string shell)
 		 py-shell-module-completion-code)))

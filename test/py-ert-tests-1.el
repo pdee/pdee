@@ -1354,7 +1354,7 @@ def baz():
     (search-forward "\"\"\"")
     (forward-line -1)
     ;; (sit-for 0.1 t)
-    (should (not (empty-line-p)))
+    (should (not (py-empty-line-p)))
 
     ))
 
@@ -1421,7 +1421,7 @@ def baz():
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -1)
-      (should (empty-line-p))
+      (should (py-empty-line-p))
       )))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-onetwo ()
@@ -1448,7 +1448,7 @@ def baz():
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -1)
-      (should (empty-line-p)))))
+      (should (py-empty-line-p)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-2 ()
   (let ((py-docstring-style 'django))
@@ -1466,7 +1466,7 @@ def baz():
       (fill-paragraph)
       (search-forward "\"\"\"")
       (forward-line -2)
-      (should (empty-line-p)))))
+      (should (py-empty-line-p)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-symmetric ()
   (let ((py-docstring-style 'symmetric))
@@ -1492,7 +1492,7 @@ def baz():
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -1)
-      (should (not (empty-line-p))))))
+      (should (not (py-empty-line-p))))))
 
 (ert-deftest py-partial-expression-test-1 ()
   (py-test-with-temp-buffer-point-min
@@ -1897,7 +1897,7 @@ else:
     "
       (goto-char (point-min))
       (py-match-paren)
-      (should (empty-line-p))
+      (should (py-empty-line-p))
       (py-match-paren)
       (should (eq (char-after) ?i))))
 
@@ -2016,7 +2016,7 @@ if __name__ == \"__main__\":
     (goto-char (point-max))
     (search-backward "if")
     (py-match-paren)
-    (should (empty-line-p))
+    (should (py-empty-line-p))
     (py-match-paren)
     (should (eq (char-after) ?i))))
 
@@ -2049,7 +2049,7 @@ import os
     (goto-char (point-max))
     (search-backward "class")
     (py-match-paren)
-    (should (empty-line-p))
+    (should (py-empty-line-p))
     (should (eq 4 (current-column)))
     ))
 
@@ -2078,7 +2078,7 @@ except:
     (should (eq (char-after) ?a))
     (py-match-paren)
     (should (eq (char-before) 32))
-    (should (empty-line-p))
+    (should (py-empty-line-p))
     (should (eq 4 (current-column)))))
 
 (ert-deftest py-ert-match-paren-test-9 ()

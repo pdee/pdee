@@ -99,7 +99,7 @@ Returns final position when called from inside section, nil otherwise"
 	(last (point))
 	(orig (point))
 	(indent (current-indentation)))
-    (while (and (not (eobp)) (not done) (progn (forward-line 1) (back-to-indentation) (or (empty-line-p) (and (<= indent (current-indentation))(< last (point))(setq last (point)))(setq done t))))
+    (while (and (not (eobp)) (not done) (progn (forward-line 1) (back-to-indentation) (or (py-empty-line-p) (and (<= indent (current-indentation))(< last (point))(setq last (point)))(setq done t))))
       (and (< indent (current-indentation))(setq done t)))
     (if (and last (< orig last))
 	(progn (goto-char last)
@@ -536,7 +536,7 @@ Returns position if succesful"
 	    (back-to-indentation)
 	    (while (and (progn (looking-at "@\\w+")(not (looking-at "\\w+")))
 			(not
-			 ;; (empty-line-p)
+			 ;; (py-empty-line-p)
 			 (member (char-after) (list 9 10)))
 			(not (bobp))(forward-line -1))
 	      (back-to-indentation))
@@ -616,7 +616,7 @@ Keyword detected from REGEXP
 Honor MAXINDENT if provided
 Optional IGNOREINDENT: find next keyword at any indentation"
   (unless (bobp)
-    ;;    (when (empty-line-p) (skip-chars-backward " \t\r\n\f"))
+    ;;    (when (py-empty-line-p) (skip-chars-backward " \t\r\n\f"))
     (let* ((orig (point))
 	   (condition
 	    (or condition '<))

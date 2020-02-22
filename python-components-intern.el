@@ -792,10 +792,18 @@ LIEP stores line-end-position at point-of-interest
 			 (cond
 			  ((py--docstring-p (nth 8 pps))
 			   (save-excursion
+			     ;; (goto-char (match-beginning 0))
 			     (back-to-indentation)
-			     (skip-chars-backward " \t\r\n\f")
-			     (back-to-indentation)
-			     (current-indentation)))
+			     (if (looking-at "[uUrR]?\"\"\"\\|[uUrR]?'''")
+				 (progn
+				   (skip-chars-backward " \t\r\n\f")
+				   (back-to-indentation)
+				   (if (looking-at py-def-or-class-re)
+				       (+ (current-column) py-indent-offset)
+				     (current-indentation)))
+			       (skip-chars-backward " \t\r\n\f")
+			       (back-to-indentation)
+			       (current-indentation))))
 			  (t 0)))
 			((and (looking-at "\"\"\"\\|'''") (not (bobp)))
 			 (py-backward-statement)
@@ -2134,11 +2142,11 @@ Use current region unless optional args BEG END are delivered."
         (end (or (and end (copy-marker end)) (copy-marker (region-end)))))
     (save-excursion
       (goto-char beg)
-      (unless (empty-line-p) (split-line))
+      (unless (py-empty-line-p) (split-line))
       (beginning-of-line)
       (insert py-section-start)
       (goto-char end)
-      (unless (empty-line-p) (newline 1))
+      (unless (py-empty-line-p) (newline 1))
       (insert py-section-end))))
 
 (defun py-execute-section-prepare (&optional shell)
@@ -2199,7 +2207,7 @@ Use current region unless optional args BEG END are delivered."
     (py--end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline
-        (unless (empty-line-p) (split-line))
+        (unless (py-empty-line-p) (split-line))
       (fixup-whitespace))
     (indent-to-column cui)
     cui))

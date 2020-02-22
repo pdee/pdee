@@ -169,7 +169,7 @@ by the
     (sit-for 0.1 t)
     (fill-paragraph)
     (forward-line -2)
-    (should (not (empty-line-p)))
+    (should (not (py-empty-line-p)))
     (forward-line 1)
     (should (eq (char-after) ?\n))
     (search-forward "one-line summary." nil t 1)
@@ -177,7 +177,7 @@ by the
     (fill-paragraph)
     (forward-line 1)
     (sit-for 0.1 t)
-    (should (empty-line-p))
+    (should (py-empty-line-p))
     (search-forward "Foo bar" nil t 1)
     (fill-paragraph)
     (forward-line 2)
@@ -759,7 +759,7 @@ class asdf:
     (goto-char(point-max))
    (skip-chars-backward " \t\r\n\f")
    (py-dedent-forward-line)
-   (should (empty-line-p))
+   (should (py-empty-line-p))
    (forward-line -1)
    (should (eq 4 (current-indentation)))))
 
@@ -1132,7 +1132,7 @@ if __name__ == \"__main__\":
        (forward-char 4)
       (fill-paragraph)
       (forward-line 1)
-      (should (not (empty-line-p)))))
+      (should (not (py-empty-line-p)))))
 
 (ert-deftest py-ert-nil-docstring-style-lp-1477422-test ()
   (py-test-with-temp-buffer-point-min
@@ -1144,7 +1144,7 @@ if __name__ == \"__main__\":
       (save-excursion
         (fill-paragraph))
       (forward-line 1)
-      (should (not (empty-line-p))))))
+      (should (not (py-empty-line-p))))))
 
 (ert-deftest py-markup-region-as-section-test ()
   (py-test-with-temp-buffer-point-min

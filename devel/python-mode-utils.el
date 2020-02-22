@@ -1561,7 +1561,7 @@ Return outmost indentation reached.\"
         (push-mark))
       (goto-char (match-beginning 0))
       (delete-region (point) erg)
-      (if (empty-line-p)
+      (if (py-empty-line-p)
           (delete-region (line-beginning-position) (1+ (line-end-position)))
         (push-mark)
         (setq erg (point))

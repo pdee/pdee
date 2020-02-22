@@ -1200,7 +1200,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n"))))
   "Make docu fit for displaying in tooltip. "
   (setq end (copy-marker (line-end-position)))
   (while (< 5 (- line origline))
-    (while (and (not (bobp)) (< orig (point)) (forward-line -1) (not (empty-line-p))))
+    (while (and (not (bobp)) (< orig (point)) (forward-line -1) (not (py-empty-line-p))))
     (delete-region (line-beginning-position) end)))
 
 ;; (defun py-write-delete-menu ()

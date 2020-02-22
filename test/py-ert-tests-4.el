@@ -406,6 +406,27 @@ from __future__ import foo
     (py-fill-string-or-comment)
     (should (eolp))))
 
+(ert-deftest py-fill-string-test-75-QkyOzd ()
+  (py-test-with-temp-buffer
+      "def test():
+    \"a b"
+    (auto-fill-mode 1)
+    (goto-char (point-max)) 
+    (insert " ")
+    (py-fill-string-or-comment)
+    (should (eq 9 (current-column)))))
+
+(ert-deftest py-fill-string-test-75-f0mU3i ()
+  (py-test-with-temp-buffer
+      "https://github\.com/swig/swig/issues/889
+def foo(rho, x):
+    r\"\"\"Calculate :math:\`D^\\nu \\rho(x)"
+    (auto-fill-mode 1)
+    (goto-char (point-max)) 
+    (insert " ")
+    (py-fill-string-or-comment)
+    (should (equal 39 (current-column)))))
+
 (ert-deftest py-highlight-vars-inside-fstring-76-kGN9tr ()
   (py-test-with-temp-buffer
       "name = 'Fred'
@@ -416,13 +437,11 @@ doo = f'He said his name is {name} and he is {age} years old'"
     (font-lock-fontify-buffer) 
     (should (eq (face-at-point) 'font-lock-variable-name-face))))
 
-
 (ert-deftest py-typing-replaces-buffer-with-scratch-buffer-77-test-Nldz2m ()
   (py-test-with-temp-buffer
   ""
   (insert "\t")
   (should (eq major-mode 'python-mode))))
-  
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

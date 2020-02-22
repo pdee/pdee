@@ -3544,18 +3544,25 @@ Used by `py-ipython-module-completion-string'"
   "If at beginning of a raw-string."
   (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R))))
 
-(defun py--docstring-p (&optional pos)
+(defun py--docstring-p (pos)
   "Check to see if there is a docstring at POS."
-  (let ((pos (or pos (nth 8 (parse-partial-sexp (point-min) (point))))))
-    (and pos
-	 (save-excursion
-	   (goto-char pos)
-	   (when (py--at-raw-string)
-	     (forward-char -1)
-	     (setq pos (point)))
-	   (when (py-backward-statement)
-	     (when (looking-at py-def-or-class-re)
-	       pos))))))
+  (save-excursion
+    (let ((erg
+	   (progn
+	     (goto-char pos)
+	     (and (looking-at "\"\"\"\\|'''")
+		  ;; https://github.com/swig/swig/issues/889
+		  ;; def foo(rho, x):
+		  ;;     r"""Calculate :math:`D^\nu \rho(x)`."""
+		  ;;     return True
+		  (if (py--at-raw-string)
+		      (progn
+			(forward-char -1)
+			(point))
+		    (point))))))
+      (when (and erg (py-backward-statement))
+	(when (looking-at py-def-or-class-re)
+	  erg)))))
 
 (defun py--font-lock-syntactic-face-function (state)
   "STATE expected as result von (parse-partial-sexp (point-min) (point)."
@@ -3909,14 +3916,20 @@ Optional argument END specify end."
 
 (and py-company-pycomplete-p (require 'company-pycomplete))
 
-;; Macros
-(unless (functionp 'empty-line-p)
-  (defmacro empty-line-p ()
-    "Return t if cursor is at an line with nothing but whitespace-characters, nil otherwise."
-    `(save-excursion
-       (progn
-	 (beginning-of-line)
-	 (looking-at "\\s-*$")))))
+(defcustom py-empty-line-p-chars "^[ \t\r]*$"
+  "empty-line-p-chars"
+  :type 'regexp
+  :group 'convenience)
+
+(defun py-empty-line-p (&optional iact)
+  "Return t if cursor is at an empty line, nil otherwise.
+Optional argument INTERACT bla."
+  (interactive "p")
+  (save-excursion
+    (beginning-of-line)
+    (when (and iact py-verbose-p)
+      (message "%s" (looking-at py-empty-line-p-chars)))
+    (looking-at py-empty-line-p-chars)))
 
 (defun py-toggle-closing-list-dedents-bos (&optional arg)
   "Switches boolean variable ‘py-closing-list-dedents-bos’.

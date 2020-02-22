@@ -41,7 +41,7 @@ With \\[universal argument] just indent.
         (unless (eq 4 (prefix-numeric-value arg))
           (if (eobp) (newline)
             (progn (forward-line 1))
-            (when (and py-kill-empty-line (empty-line-p) (not (looking-at "[ \t]*\n[[:alpha:]]")) (not (eobp)))
+            (when (and py-kill-empty-line (py-empty-line-p) (not (looking-at "[ \t]*\n[[:alpha:]]")) (not (eobp)))
               (delete-region (line-beginning-position) (line-end-position)))))))
     (back-to-indentation)
     (when (or (eq 4 (prefix-numeric-value arg)) (< orig (point))) (setq erg (current-column)))
@@ -151,7 +151,7 @@ With interactive call, send it to the message buffer too. "
 	;; may current-column greater as needed indent?
 	(if (< 0 cui)
 	    (progn
-	      (unless (empty-line-p) (split-line))
+	      (unless (py-empty-line-p) (split-line))
 	      (indent-to cui))
 	  (forward-char cui))
 	(unless (eq (char-before) 32)(insert 32)(forward-char -1))))))
@@ -197,7 +197,7 @@ With interactive call, send it to the message buffer too. "
 	 (cui (min cuc cui)))
     (if (eq 0 cui)
 	(py-backward-top-level)
-      (when (empty-line-p) (delete-region (line-beginning-position) (point)))
+      (when (py-empty-line-p) (delete-region (line-beginning-position) (point)))
       (py-backward-statement)
       (unless (< (current-column) cuc)
       (while (and (not (bobp))
@@ -253,9 +253,6 @@ Matches lists, but also block, statement, string and comment. "
 	;; Python specific blocks
 	(py--match-paren-blocks))))))
 
-(unless (boundp 'empty-line-p-chars)
-  (defvar empty-line-p-chars "^[ \t\f\r]*$"))
-
 (unless (functionp 'in-string-p)
   (defun in-string-p (&optional pos)
     (interactive)
@@ -305,7 +302,7 @@ Matches lists, but also block, statement, string and comment. "
   (let ((orig (copy-marker (point))))
     (search-backward "pdb.set_trace()")
     (replace-match "")
-    (when (empty-line-p)
+    (when (py-empty-line-p)
       (delete-region (line-beginning-position) (line-end-position)))
     (goto-char orig)
     (insert "pdb.set_trace()")))

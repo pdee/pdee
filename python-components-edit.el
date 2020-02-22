@@ -277,7 +277,7 @@ Start from position ORIG"
     (let ((pos (copy-marker (point))))
       (save-excursion
 	(goto-char orig)
-	(if (empty-line-p)
+	(if (py-empty-line-p)
 	    (if (py---emacs-version-greater-23)
 		(delete-trailing-whitespace (line-beginning-position) pos)
 	      (save-restriction
@@ -502,10 +502,10 @@ BEG END deliver the boundaries of region to work within"
   (py-indent-and-forward)
   ;; (forward-line 1)
   (while (< (line-end-position) end)
-    (if (empty-line-p)
+    (if (py-empty-line-p)
 	(forward-line 1)
       (py-indent-and-forward)))
-  (unless (empty-line-p) (py-indent-and-forward)))
+  (unless (py-empty-line-p) (py-indent-and-forward)))
 
 (defun py-indent-region (beg end)
   "Reindent a region delimited by BEG END.
