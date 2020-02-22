@@ -22,6 +22,7 @@
 
 ;;; Code:
 
+(require 'org)
 (ignore-errors (require 'subr-x))
 (require 'subr-x)
 (defvar py-debug-p nil

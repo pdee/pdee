@@ -39,11 +39,11 @@ JUSTIFY should be used (if applicable) as in `fill-paragraph'."
 		   (paragraph-start "\f\\|[ \t]*$")
 		   (paragraph-separate ","))
 	      (when (and beg end (narrow-to-region beg end))
-		    (fill-region beg end justify)
-		    (while (not (eobp))
-		      (forward-line 1)
-		      (py-indent-line)
-		      (goto-char (line-end-position))))))))))
+		(fill-region beg end justify)
+		(while (not (eobp))
+		  (forward-line 1)
+		  (py-indent-line)
+		  (goto-char (line-end-position))))))))))
 
 (defun py-fill-string-django (&optional justify)
   "Fill docstring according to Django's coding standards style.
@@ -126,7 +126,6 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
 "
   (interactive "*P")
   (py-fill-string justify 'symmetric t))
-
 
 (defun py-set-nil-docstring-style ()
   "Set py-docstring-style to 'nil"
@@ -406,23 +405,27 @@ Fill according to `py-docstring-style' "
   (let* ((justify (or justify (if current-prefix-arg 'full t)))
 	 (style (or style py-docstring-style))
 	 (pps (or pps (parse-partial-sexp (point-min) (point))))
-	 (docstring (or docstring (py--in-or-behind-or-before-a-docstring pps)))
-	 (indent (save-excursion (and (nth 3 pps) (goto-char (nth 8 pps)) (current-indentation))))
-	 ;; fill-paragraph sets orig
+	 (indent
+	  ;; set inside tqs
+	  ;; (save-excursion (and (nth 3 pps) (goto-char (nth 8 pps)) (current-indentation)))
+	  nil)
 	 (orig (copy-marker (point)))
-	 (docstring (if (and docstring (not (number-or-marker-p docstring)))
-			(py--in-or-behind-or-before-a-docstring pps)
-		      docstring))
+	 ;; (docstring (or docstring (py--in-or-behind-or-before-a-docstring pps)))
+	 (docstring (cond (docstring
+			   (if (not (number-or-marker-p docstring))
+			       (py--in-or-behind-or-before-a-docstring pps))
+			   docstring)
+			  (t (py--in-or-behind-or-before-a-docstring pps))))
 	 (beg (and (nth 3 pps) (nth 8 pps)))
-	 (tqs (progn (and beg (goto-char beg)) (looking-at "\"\"\"\\|'''")))
-	 (end (if tqs
-		  (unless
-		      (progn (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
-		    (goto-char orig)
-		    (line-end-position))
-		(or (progn (goto-char beg) (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
-		    (goto-char orig)
-		    (line-end-position)))))
+	 (tqs (progn (and beg (goto-char beg) (looking-at "\"\"\"\\|'''") (setq indent (current-column)))))
+	 (end (copy-marker (if tqs
+			       (or
+				(progn (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
+				(goto-char orig)
+				(line-end-position))
+			     (or (progn (goto-char beg) (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
+				 (goto-char orig)
+				 (line-end-position))))))
     (goto-char orig)
     (when beg
       (if docstring
@@ -431,7 +434,7 @@ Fill according to `py-docstring-style' "
 	  (if (not tqs)
 	      (if (py-preceding-line-backslashed-p)
 		  (progn
-		    (setq end (line-end-position))
+		    (setq end (copy-marker (line-end-position)))
 		    (narrow-to-region (line-beginning-position) end)
 		    (fill-region (line-beginning-position) end justify t)
 		    (when (< 1 (py-count-lines))
