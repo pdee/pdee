@@ -59,7 +59,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 	     (if
 		 (setq erg (py--fetch-result output-buffer limit strg))
 		 (setq py-result (py--filter-result erg))
-	       (dotimes (_ 3) (unless (setq erg (py--fetch-result output-buffer proc))(sit-for 1 t)))
+	       (dotimes (_ 3) (unless (setq erg (py--fetch-result output-buffer limit))(sit-for 1 t)))
 	       (unless (setq erg (py--fetch-result output-buffer limit))
 		 (setq py-result nil)
 		 (error "py-fast-send-string: py--fetch-result: no result")))))

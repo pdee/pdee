@@ -1192,8 +1192,24 @@ if __name__ == \"__main__\":
         First note line
     second note line\"\"\"
     pass"
+    (ignore-errors (unload-feature 'python))
     (goto-char (point-min))
-     (search-forward "second")
+    (search-forward "\"\"\"")
+    (message "(syntax-after (point)) (point): %s %s" (syntax-after (point)) (point))
+    (message "(syntax-after (1- (point)) (point)): %s %s" (syntax-after (1- (point))) (1- (point)))
+    (message "(syntax-after (- (point) 2)): %s %s" (syntax-after (- (point) 2)) (- (point) 2))
+    (message "(syntax-after (- (point) 3)): %s %s" (syntax-after (- (point) 3)) (- (point) 3))
+    (message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
+    (message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
+    (message "(ar-syntax-class-atpt (point)) (point): %s %s" (ar-syntax-class-atpt (point)) (point))
+    (message "(ar-syntax-class-atpt (1- (point)) (point)): %s %s" (ar-syntax-class-atpt (1- (point))) (1- (point)))
+    (message "(ar-syntax-class-atpt (- (point) 2)): %s %s" (ar-syntax-class-atpt (- (point) 2)) (- (point) 2))
+    (message "(ar-syntax-class-atpt (- (point) 3)): %s %s" (ar-syntax-class-atpt (- (point) 3)) (- (point) 3))
+    (message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
+    (message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
+    (message "(ar-syntax-atpt 1 nil (- (point) 2)): %s %s" (ar-syntax-atpt 1 nil (- (point) 2)) (- (point) 2))
+    (message "(ar-syntax-atpt 1 nil (- (point) 3)): %s %s" (ar-syntax-atpt 1 nil (- (point) 3)) (- (point) 3))
+    (search-forward "second")
     (back-to-indentation)
     (should (eq 8 (py-compute-indentation)))))
 
@@ -1203,9 +1219,9 @@ if __name__ == \"__main__\":
 
 GeomSim."
     (goto-char(point-max))
-    ;; (switch-to-buffer (current-buffer)) 
+    ;; (switch-to-buffer (current-buffer))
     (ignore-errors (py-indent-or-complete))
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (should (eq (char-before) ?.))))
 
 (ert-deftest py-beginning-of-block-test ()
