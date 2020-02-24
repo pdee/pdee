@@ -443,5 +443,12 @@ doo = f'He said his name is {name} and he is {age} years old'"
   (insert "\t")
   (should (eq major-mode 'python-mode))))
 
+(ert-deftest py-backward-def-or-class-text-IZvvZ5 ()
+  (py-test-with-temp-buffer
+      "  d       
+  "
+    (goto-char (point-max))
+    (should (eq nil (py-backward-def-or-class)))))
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

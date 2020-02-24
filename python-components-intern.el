@@ -2249,7 +2249,7 @@ Return and move to match-beginning if successful"
 	(back-to-indentation)
 	(unless (and (< (point) orig) (looking-at regexpvalue))
 	  (py--backward-regexp regexp (current-indentation) condition orig)))
-      (unless (eq (point) orig) (back-to-indentation))
+      (unless (or (eq (point) orig)(bobp)) (back-to-indentation))
       (and (looking-at regexpvalue) (not (nth 8 (parse-partial-sexp (point-min) (point))))(point)))))
 
 (defun py--forward-regexp (regexp)
