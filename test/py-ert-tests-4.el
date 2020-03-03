@@ -399,7 +399,7 @@ from __future__ import foo
     for line in proc.stdout.splitlines():
         mo = CRE.match(line)
         version = mo['version']"
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     (search-backward "foo")
     (end-of-line)
     (insert " ")
@@ -411,7 +411,7 @@ from __future__ import foo
       "def test():
     \"a b"
     (auto-fill-mode 1)
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     (insert " ")
     (py-fill-string-or-comment)
     (should (eq 9 (current-column)))))
@@ -422,7 +422,7 @@ from __future__ import foo
 def foo(rho, x):
     r\"\"\"Calculate :math:\`D^\\nu \\rho(x)"
     (auto-fill-mode 1)
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     (insert " ")
     (py-fill-string-or-comment)
     (should (equal 39 (current-column)))))
@@ -434,7 +434,7 @@ age = 42
 doo = f'He said his name is {name} and he is {age} years old'"
     (goto-char (point-max))
     (search-backward "age")
-    (font-lock-fontify-buffer) 
+    (font-lock-fontify-buffer)
     (should (eq (face-at-point) 'font-lock-variable-name-face))))
 
 (ert-deftest py-typing-replaces-buffer-with-scratch-buffer-77-test-Nldz2m ()
@@ -445,10 +445,18 @@ doo = f'He said his name is {name} and he is {age} years old'"
 
 (ert-deftest py-backward-def-or-class-text-IZvvZ5 ()
   (py-test-with-temp-buffer
-      "  d       
+      "  d
   "
     (goto-char (point-max))
     (should (eq nil (py-backward-def-or-class)))))
+
+(ert-deftest  py-indent-or-complete-7NWa5T ()
+  (py-test-with-temp-buffer
+      "def foo:
+    pass\n\npri"
+    (goto-char (point-max))
+    (py-indent-or-complete)
+    (should (looking-back "print.?" (line-beginning-position)))))
 
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here
