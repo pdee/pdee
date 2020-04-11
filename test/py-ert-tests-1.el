@@ -1297,101 +1297,6 @@ my_list = [
     (py-newline-and-indent)
     (should (eq 42 (point)))))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-lp-1286318 ()
-  (py-test-with-temp-buffer-point-min
-      "# r1416
-
-def baz():
-    \"\"\"Hello there.
-
-    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-
-# The last line of the docstring is longer than fill-column (set to
-# 78 = for me). Put point on the 'T' in 'This' and hit M-q= . Nothing
-# happens.
-#
-# Another example:
-#
-def baz():
-    \"\"\"Hello there.
-
-    This is a multiline
-    function definition.
-    Don't worry, be happy.
-    Be very very happy.
-    Very. happy.
-    \"\"\"
-    return 7
-
-# All of those lines are shorter than fill-column. Put point anywhere
-# = in that paragraph and hit M-q. Nothing happens.
-#
-# In both cases I would expect to end up with:
-#
-def baz():
-    \"\"\"Hello there.
-
-    This is a multiline function definition. Don= 't worry, be happy. Be very
-    very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-    (goto-char 49)
-    ;; (sit-for 0.1 t)
-    (fill-paragraph)
-    (end-of-line)
-    (should (<= (current-column) 72))
-    (goto-char 409)
-    (fill-paragraph)
-    (end-of-line)
-    (should (<= (current-column) 72))
-    (goto-char 731)
-    (fill-paragraph)
-    (end-of-line)
-    (should (<= (current-column) 72))
-    (search-forward "\"\"\"")
-    (forward-line -1)
-    ;; (sit-for 0.1 t)
-    (should (not (py-empty-line-p)))
-
-    ))
-
-(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-1 ()
-  (let ((py-docstring-style 'pep-257-nn))
-    (py-test-with-temp-buffer-point-min
-	"# r1416
-
-def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-
-    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-      (goto-char 49)
-      (py-fill-string)
-      (end-of-line)
-      ;; (sit-for 0.1 t)
-      (should (<= (current-column) 72))
-      (forward-line 2)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (forward-line 1)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (forward-line 1)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (search-forward "\"\"\"")
-      (forward-line -1)
-      (fill-paragraph)
-      (end-of-line)
-      ;; (sit-for 0.1 t)
-      (should (<= (current-column) 72))
-      )))
-
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257 ()
   (let ((py-docstring-style 'pep-257))
     (py-test-with-temp-buffer-point-min
@@ -1448,24 +1353,6 @@ def baz():
       (should (<= (current-column) 72))
       (search-forward "\"\"\"")
       (forward-line -1)
-      (should (py-empty-line-p)))))
-
-(ert-deftest py-ert-moves-up-fill-paragraph-django-2 ()
-  (let ((py-docstring-style 'django))
-    (py-test-with-temp-buffer-point-min
-	"# r1416
-
-def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-
-    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-      (goto-char 49)
-      (fill-paragraph)
-      (search-forward "\"\"\"")
-      (forward-line -2)
       (should (py-empty-line-p)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-symmetric ()
