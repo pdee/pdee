@@ -458,5 +458,17 @@ doo = f'He said his name is {name} and he is {age} years old'"
     (py-indent-or-complete)
     (should (looking-back "print.?" (line-beginning-position)))))
 
+
+(ert-deftest py-multline-arguments-with-literal-lists-79-test-7NWa5T ()
+  (py-test-with-temp-buffer
+      ;; Improper indentation for multline arguments with liiteral lists (#79)
+      "def foo():
+    bar = dosomething([
+                       x <- point"
+    (goto-char (point-max))
+    (search-backward "x")
+    (should (eq 8 (py-compute-indentation)))))
+
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

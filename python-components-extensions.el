@@ -307,8 +307,6 @@ Matches lists, but also block, statement, string and comment. "
     (goto-char orig)
     (insert "pdb.set_trace()")))
 
-(defalias 'durck 'py-printform-insert)
-
 (defun py-printform-insert (&optional arg strg)
   "Inserts a print statement out of current `(car kill-ring)' by default, inserts STRING if delivered.
 
@@ -328,7 +326,7 @@ With optional \\[universal-argument] print as string"
 print(\"\\nfoo: {}\"\.format(foo))"
   (interactive "*")
   (let ((name (py--string-strip (or strg (car kill-ring)))))
-    (insert (concat "print(\"" name ": {}\".format(\"" name "\"))"))))
+    (insert (concat "print(\"" name ": {}\".format(" name "))"))))
 
 (defun py-line-to-printform-python2 ()
   "Transforms the item on current in a print statement. "

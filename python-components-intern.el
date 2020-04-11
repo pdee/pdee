@@ -184,7 +184,7 @@ Don't save anything for STR matching `py-history-filter-regexp'."
   ;; (switch-to-buffer buffer)
   ;; (setq py-output-buffer buffer))
 
-(defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch)
+(defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch internal)
   "Connect process to BUFFER.
 
 Start an interpreter according to ‘py-shell-name’ or SHELL.
@@ -237,7 +237,9 @@ process buffer for a list of commands.)"
 	       (if fast
 		   (process-buffer (apply 'start-process shell buffer-name shell args))
 		 (apply #'make-comint-in-buffer shell buffer-name
-			shell nil args)))))))
+			shell nil args))))))
+	 ;; (py-shell-prompt-detect-p (or (string-match "^\*IP" buffer) py-shell-prompt-detect-p))
+	 )
     (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p py-output-buffer buffer)))
     (unless done
       (with-current-buffer buffer
@@ -249,16 +251,12 @@ process buffer for a list of commands.)"
 		  ((string-match "^.+3" buffer-name)
 		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
 	  (setq py-modeline-display (py--update-lighter buffer-name))
-	  (sit-for delay t)
-	  (when interactivep
-	    (cond ((string-match "^.I" buffer-name)
-		   (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
-		  ((string-match "^.+3" buffer-name)
-		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay)))))))
-    (if (get-buffer-process buffer)
+	  (sit-for delay t))))
+    (if (setq proc (get-buffer-process buffer))
 	(progn
 	  (with-current-buffer buffer
-	    (py-shell-mode))
+	    (py-shell-mode)
+	    (and internal (set-process-query-on-exit-flag proc nil)))
 	  (when (or interactivep
 		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
 	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
@@ -628,21 +626,21 @@ Choices are:
 
 (defun py-compute-list-indent--according-to-circumstance (pps line origline)
   (and (nth 1 pps) (goto-char (nth 1 pps)))
-  (if (looking-at "[({][ \t]*$")
+  (if (looking-at "[({\\[][ \t]*$")
       (+ (current-indentation) py-indent-offset)
     (if (or line (< (py-count-lines) origline))
 	(py-compute-indentation--according-to-list-style))))
 
 (defun py-compute-indentation-in-list (pps line closing orig origline)
-(if closing
-    (py-compute-indentation-closing-list pps)
-  (cond ((and (not line) (looking-back py-assignment-re (line-beginning-position)))
-	 (py--fetch-indent-statement-above orig))
-	;; (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep)
-	(t (when (looking-back "[ \t]*\\(\\s(\\)" (line-beginning-position))
-	     (goto-char (match-beginning 1))
-	     (setq pps (parse-partial-sexp (point-min) (point))))
-	   (py-compute-list-indent--according-to-circumstance pps line origline)))))
+  (if closing
+      (py-compute-indentation-closing-list pps)
+    (cond ((and (not line) (looking-back py-assignment-re (line-beginning-position)))
+	   (py--fetch-indent-statement-above orig))
+	  ;; (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep)
+	  (t (when (looking-back "[ \t]*\\(\\s(\\)" (line-beginning-position))
+	       (goto-char (match-beginning 1))
+	       (setq pps (parse-partial-sexp (point-min) (point))))
+	     (py-compute-list-indent--according-to-circumstance pps line origline)))))
 
 (defun py-compute-comment-indentation (pps iact orig origline closing line nesting repeat indent-offset liep)
   (cond ((nth 8 pps)
