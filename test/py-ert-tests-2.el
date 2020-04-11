@@ -89,99 +89,7 @@ def baz(self):
     (forward-line -1)
     (should (eq (char-after) ?\n))))
 
-(ert-deftest py-ert-respect-paragraph-1294829 ()
-  (py-test-with-temp-buffer-point-min
-      "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
-# reflowing the docstring, e.g.
 
-def foo(self)
-    \"\"\"First one-line summary.
-
-    Some other stuff which I don\'t want a paragraph break inserted into
-    the middle of.
-
-    And another para hjkdfgh fdjkg hfdjkg hdfjk ghdfk ghjkdf
-    ghjkdf ghjdf ghjdkf k
-    \"\"\"
-
-def foo(self)
-    \"\"\"Second one-line summary. Some other stuff which I don\'t want a
-paragraph
-
-    break inserted into the middle of. And another para hjkdfgh
-fdjkg
-    hfdjkg hdfjk ghdfk ghjkdf ghjkdf ghjdf ghjdkf k \"\"\"
-
-# I feel it would be better if it didn\'t attempt to
-# reflow the whole docstring, rather just reflow the
-# particular paragraph within it which the point is
-# positioned in.
-
-# It would also be good if it could avoid mangling parameter
-# descriptions like this:
-
-def foo(self):
-    \"\"\"Summary line.
-
-    Foo bar fhgdjkfd hgjfd hgjkfd ghjkdf ghjkdf hgjdf ghjkdf
-hgjdf hjgk dfhjkg dfhjkg dfhjkg fdhjkg hjfdkg
-
-    Parameters
-    ----------
-    endog : array-like
-        1-d endogenous response variable. The dependent variable.
-    exog : array-like
-        A nobs x k array where `nobs` is the number of
-observations and `k`
-        is the number of regressors. An interecept is not
-included by default
-        and should be added by the user. See
-        `statsmodels.tools.add_constant`.\"\"\"
-
-def foo(self):
-    \"\"\"Summary line. Foo bar fhgdjkfdhgjfd hgjkfd ghjkdf ghjkdf
-hgjdf
-
-    ghjkdf hgjdf hjgk dfhjkg dfhjkg dfhjkg fdhjkghjfdkg
-Parameters
-    ---------- endog : array-like 1-d endogenous response
-variable. The
-    dependent variable. exog : array-like A nobs x karray where
-`nobs`
-    is the number of observations and `k` is the number of
-regressors.
-    An interecept is not included by default and should be added
-by the
-    user. See `statsmodels.tools.add_constant`.
-    \"\"\"
-
-# Failing that though, if I can at least choose to
-# reflow individual paragraphs in the docstring and
-# leave others intact, I can format these things
-# manually while still being able to flow other
-# paragraphs using M-q.
-"
-    'python-mode
-    py-debug-p
-    (goto-char (point-min))
-    ;; (font-lock-fontify-region (point-min)(point-max))
-    (search-forward "Some other" nil t 1)
-    (sit-for 0.1 t)
-    (fill-paragraph)
-    (forward-line -2)
-    (should (not (py-empty-line-p)))
-    (forward-line 1)
-    (should (eq (char-after) ?\n))
-    (search-forward "one-line summary." nil t 1)
-    (when py-debug-p (message "fill-column: %s" fill-column))
-    (fill-paragraph)
-    (forward-line 1)
-    (sit-for 0.1 t)
-    (should (py-empty-line-p))
-    (search-forward "Foo bar" nil t 1)
-    (fill-paragraph)
-    (forward-line 2)
-    (should (eq (char-after) ?\n))))
 
 (ert-deftest py-ert-backward-same-level-test ()
   (py-test-with-temp-buffer-point-min
@@ -1071,7 +979,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
 # }}
 "
     (goto-char (point-min))
-     (py-forward-section)
+    (py-forward-section)
     (should (eq (char-before) ?}))
     (py-forward-section)
     (should (eq (char-before) ?}))))
@@ -1082,7 +990,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})
 "
     (goto-char (point-min))
-     (end-of-line)
+    (end-of-line)
     (py-sectionize-region (point-min) (point-max))
     (goto-char (point-min))
     (should (eq (char-after) ?#))
@@ -1139,7 +1047,7 @@ if __name__ == \"__main__\":
       "def foo():
     '''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf'''"
     (goto-char (point-min))
-     (let (py-docstring-style)
+    (let (py-docstring-style)
       (search-forward "'''")
       (save-excursion
         (fill-paragraph))
@@ -1175,44 +1083,13 @@ if __name__ == \"__main__\":
     main()
 "
     (goto-char (point-min))
-       (search-forward "fertig")
-      (py-sectionize-region (match-beginning 0) (line-end-position))
-      (py-mark-section)
-      (should (eq 371 (region-beginning)))
-      (should (eq 408 (region-end)))))
+    (search-forward "fertig")
+    (py-sectionize-region (match-beginning 0) (line-end-position))
+    (py-mark-section)
+    (should (eq 371 (region-beginning)))
+    (should (eq 408 (region-end)))))
 
-(ert-deftest py-indent-in-docstring-gh6 ()
-  (py-test-with-temp-buffer-point-min
-      "def f():
-    \"\"\"
-    Return nothing.
 
-    .. NOTE::
-
-        First note line
-    second note line\"\"\"
-    pass"
-    (ignore-errors (unload-feature 'python))
-    (goto-char (point-min))
-    (when py-debug-p
-      (search-forward "\"\"\"")
-      (message "(syntax-after (point)) (point): %s %s" (syntax-after (point)) (point))
-      (message "(syntax-after (1- (point)) (point)): %s %s" (syntax-after (1- (point))) (1- (point)))
-      (message "(syntax-after (- (point) 2)): %s %s" (syntax-after (- (point) 2)) (- (point) 2))
-      (message "(syntax-after (- (point) 3)): %s %s" (syntax-after (- (point) 3)) (- (point) 3))
-      (message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
-      (message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
-      (message "(ar-syntax-class-atpt (point)) (point): %s %s" (ar-syntax-class-atpt (point)) (point))
-      (message "(ar-syntax-class-atpt (1- (point)) (point)): %s %s" (ar-syntax-class-atpt (1- (point))) (1- (point)))
-      (message "(ar-syntax-class-atpt (- (point) 2)): %s %s" (ar-syntax-class-atpt (- (point) 2)) (- (point) 2))
-      (message "(ar-syntax-class-atpt (- (point) 3)): %s %s" (ar-syntax-class-atpt (- (point) 3)) (- (point) 3))
-      (message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
-      (message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
-      (message "(ar-syntax-atpt 1 nil (- (point) 2)): %s %s" (ar-syntax-atpt 1 nil (- (point) 2)) (- (point) 2))
-      (message "(ar-syntax-atpt 1 nil (- (point) 3)): %s %s" (ar-syntax-atpt 1 nil (- (point) 3)) (- (point) 3))
-      (search-forward "second"))
-    (back-to-indentation)
-    (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-test-embedded-51-test ()
   (py-test-with-temp-buffer
@@ -2444,8 +2321,6 @@ see no sign that the breakpoint was reached.
 def run(statement, globals=None, locals=None):
     Pdb().run(statement, globals, locals)
 "
-    'python-mode
-    py-verbose-p
     (let (py-font-lock-defaults-p)
       (goto-char (point-min))
       (search-forward "return answer")
@@ -2492,8 +2367,6 @@ With a command name as argument, print help about that command
 \"help pdb\" pipes the full documentation file to the $PAGER
 \"help exec\" gives help on the ! command\"\"\"
 "
-    'python-mode
-    py-verbose-p
     (goto-char (point-max))
     (search-backward "prompt_prefix)" nil t)
     (end-of-line)

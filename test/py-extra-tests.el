@@ -1099,5 +1099,192 @@ print(u'\\xA9')"
 ;;     (org-babel-execute-src-block)
 ;;     (should (search-forward "@"))))
 
+(ert-deftest py-ert-respect-paragraph-1294829 ()
+  (py-test-with-temp-buffer-point-min
+      "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
+# reflowing the docstring, e.g.
+
+def foo(self)
+    \"\"\"First one-line summary.
+
+    Some other stuff which I don\'t want a paragraph break inserted into
+    the middle of.
+
+    And another para hjkdfgh fdjkg hfdjkg hdfjk ghdfk ghjkdf
+    ghjkdf ghjdf ghjdkf k
+    \"\"\"
+
+def foo(self)
+    \"\"\"Second one-line summary. Some other stuff which I don\'t want a
+paragraph
+
+    break inserted into the middle of. And another para hjkdfgh
+fdjkg
+    hfdjkg hdfjk ghdfk ghjkdf ghjkdf ghjdf ghjdkf k \"\"\"
+
+# I feel it would be better if it didn\'t attempt to
+# reflow the whole docstring, rather just reflow the
+# particular paragraph within it which the point is
+# positioned in.
+
+# It would also be good if it could avoid mangling parameter
+# descriptions like this:
+
+def foo(self):
+    \"\"\"Summary line.
+
+    Foo bar fhgdjkfd hgjfd hgjkfd ghjkdf ghjkdf hgjdf ghjkdf
+hgjdf hjgk dfhjkg dfhjkg dfhjkg fdhjkg hjfdkg
+
+    Parameters
+    ----------
+    endog : array-like
+        1-d endogenous response variable. The dependent variable.
+    exog : array-like
+        A nobs x k array where `nobs` is the number of
+observations and `k`
+        is the number of regressors. An interecept is not
+included by default
+        and should be added by the user. See
+        `statsmodels.tools.add_constant`.\"\"\"
+
+def foo(self):
+    \"\"\"Summary line. Foo bar fhgdjkfdhgjfd hgjkfd ghjkdf ghjkdf
+hgjdf
+
+    ghjkdf hgjdf hjgk dfhjkg dfhjkg dfhjkg fdhjkghjfdkg
+Parameters
+    ---------- endog : array-like 1-d endogenous response
+variable. The
+    dependent variable. exog : array-like A nobs x karray where
+`nobs`
+    is the number of observations and `k` is the number of
+regressors.
+    An interecept is not included by default and should be added
+by the
+    user. See `statsmodels.tools.add_constant`.
+    \"\"\"
+
+# Failing that though, if I can at least choose to
+# reflow individual paragraphs in the docstring and
+# leave others intact, I can format these things
+# manually while still being able to flow other
+# paragraphs using M-q.
+"
+    'python-mode
+    py-debug-p
+    (goto-char (point-min))
+    ;; (font-lock-fontify-region (point-min)(point-max))
+    (search-forward "Some other" nil t 1)
+    (sit-for 0.1 t)
+    (fill-paragraph)
+    (forward-line -2)
+    (should (not (py-empty-line-p)))
+    (forward-line 1)
+    (should (eq (char-after) ?\n))
+    (search-forward "one-line summary." nil t 1)
+    (when py-debug-p (message "fill-column: %s" fill-column))
+    (fill-paragraph)
+    (forward-line 1)
+    (sit-for 0.1 t)
+    (should (py-empty-line-p))
+    (search-forward "Foo bar" nil t 1)
+    (fill-paragraph)
+    (forward-line 2)
+    (should (eq (char-after) ?\n))))
+
+(ert-deftest py-indent-in-docstring-gh6 ()
+  (py-test-with-temp-buffer-point-min
+      "def f():
+    \"\"\"
+    Return nothing.
+
+    .. NOTE::
+
+        First note line
+    second note line\"\"\"
+    pass"
+    (ignore-errors (unload-feature 'python))
+    (goto-char (point-min))
+    (when py-debug-p
+      (search-forward "\"\"\"")
+      (message "(syntax-after (point)) (point): %s %s" (syntax-after (point)) (point))
+      (message "(syntax-after (1- (point)) (point)): %s %s" (syntax-after (1- (point))) (1- (point)))
+      (message "(syntax-after (- (point) 2)): %s %s" (syntax-after (- (point) 2)) (- (point) 2))
+      (message "(syntax-after (- (point) 3)): %s %s" (syntax-after (- (point) 3)) (- (point) 3))
+      (message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
+      (message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
+      (message "(ar-syntax-class-atpt (point)) (point): %s %s" (ar-syntax-class-atpt (point)) (point))
+      (message "(ar-syntax-class-atpt (1- (point)) (point)): %s %s" (ar-syntax-class-atpt (1- (point))) (1- (point)))
+      (message "(ar-syntax-class-atpt (- (point) 2)): %s %s" (ar-syntax-class-atpt (- (point) 2)) (- (point) 2))
+      (message "(ar-syntax-class-atpt (- (point) 3)): %s %s" (ar-syntax-class-atpt (- (point) 3)) (- (point) 3))
+      (message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
+      (message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
+      (message "(ar-syntax-atpt 1 nil (- (point) 2)): %s %s" (ar-syntax-atpt 1 nil (- (point) 2)) (- (point) 2))
+      (message "(ar-syntax-atpt 1 nil (- (point) 3)): %s %s" (ar-syntax-atpt 1 nil (- (point) 3)) (- (point) 3))
+      (search-forward "second"))
+    (back-to-indentation)
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest  py-indent-or-complete-7NWa5T ()
+  (py-test-with-temp-buffer
+      "def foo:
+    pass\n\npri"
+    (goto-char (point-max))
+    (py-indent-or-complete)
+    (should (looking-back "print.?" (line-beginning-position)))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-1 ()
+  (let ((py-docstring-style 'pep-257-nn))
+    (py-test-with-temp-buffer-point-min
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      (py-fill-string)
+      (end-of-line)
+      ;; (sit-for 0.1 t)
+      (should (<= (current-column) 72))
+      (forward-line 2)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (forward-line 1)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (forward-line 1)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (search-forward "\"\"\"")
+      (forward-line -1)
+      (fill-paragraph)
+      (end-of-line)
+      ;; (sit-for 0.1 t)
+      (should (<= (current-column) 72))
+      )))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-django-2 ()
+  (let ((py-docstring-style 'django))
+    (py-test-with-temp-buffer-point-min
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char 49)
+      (fill-paragraph)
+      (search-forward "\"\"\"")
+      (forward-line -2)
+      (should (py-empty-line-p)))))
+
 (provide 'py-extra-tests)
 ;;; py-extra-tests.el ends here
