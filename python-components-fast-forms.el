@@ -50,7 +50,9 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
       ;; (erase-buffer)
       (process-send-string proc strg)
       (or (string-match "\n$" strg)
-	  (process-send-string proc "\n"))
+	  (process-send-string proc "\n")
+	  (goto-char (point-max))
+	  )
       (cond (no-output
 	     ;; (erase-buffer)
 	     (delete-region (point-min) (line-beginning-position))
@@ -60,10 +62,8 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 		 (setq erg (py--fetch-result output-buffer limit strg))
 		 (setq py-result (py--filter-result erg))
 	       (dotimes (_ 3) (unless (setq erg (py--fetch-result output-buffer limit))(sit-for 1 t)))
-	       (unless (setq erg (py--fetch-result output-buffer limit))
-		 (setq py-result nil)
-		 (error "py-fast-send-string: py--fetch-result: no result")))))
-      py-result)))
+	       (or (py--fetch-result output-buffer limit))
+	       (error "py-fast-send-string: py--fetch-result: no result")))))))
 
 (defun py--send-to-fast-process (strg proc output-buffer result)
   "Called inside of ‘py--execute-base-intern’.

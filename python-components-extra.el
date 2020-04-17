@@ -322,8 +322,7 @@ Build and set the values for input- and output-prompt regexp
 using the values from `py-shell-prompt-regexp',
 `py-shell-input-prompt-2-regexp', `py-shell-prompt-pdb-regexp',
 `py-shell-prompt-output-regexp', `py-shell-prompt-input-regexp',
-`py-shell-prompt-output-regexps' and detected prompts from
-`py-shell-prompt-detect'."
+ and detected prompts from `py-shell-prompt-detect'."
   (when (not (and py-shell--prompt-calculated-input-regexp
                   py-shell--prompt-calculated-output-regexp))
     (let* ((detected-prompts (py-shell-prompt-detect))

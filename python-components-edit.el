@@ -887,12 +887,12 @@ arg MODE: which buffer-mode used in edit-buffer"
   (let ((proc (get-buffer-process buffer))
 	erg)
     ;; (py-send-string "import pprint" proc nil t)
-    (py-send-string "import json" proc nil t)
+    (py-fast-send-string "import json" proc buffer)
     ;; send the dict/assigment
-    (py-send-string (buffer-substring-no-properties beg end) proc nil t)
+    (py-fast-send-string (buffer-substring-no-properties beg end) proc buffer)
     ;; do pretty-print
     ;; print(json.dumps(neudict4, indent=4))
-    (setq erg (py-send-string (concat "print(json.dumps("name", indent=5))") proc t))
+    (setq erg (py-fast-send-string (concat "print(json.dumps("name", indent=5))") proc buffer t))
     ;; (message "%s" erg)
     ;; (py-edit--intern "PPrint" 'python-mode beg end)
     ;; (message "%s" (current-buffer))
@@ -905,12 +905,14 @@ arg MODE: which buffer-mode used in edit-buffer"
 (defun py-prettyprint-assignment ()
   "Prettyprint assignment in ‘python-mode’."
   (interactive "*")
+  (window-configuration-to-register py-windows-config-register)
   (save-excursion
     (let* ((beg (py-beginning-of-assignment))
 	   (name (py-expression))
 	   (end (py-end-of-assignment))
-	   (proc-buf (python '(4))))
-      (py--prettyprint-assignment-intern beg end name proc-buf))))
+	   (proc-buf (python nil nil "Fast Intern Utility Re-Use")))
+      (py--prettyprint-assignment-intern beg end name proc-buf)))
+  (py-restore-window-configuration))
 
 (provide 'python-components-edit)
 ;;; python-components-edit.el ends here

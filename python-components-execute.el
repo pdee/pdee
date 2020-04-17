@@ -738,33 +738,20 @@ optional argument."
 (defun py--fetch-result (buffer limit &optional cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
-  ;; (switch-to-buffer (current-buffer))
-  (if python-mode-v5-behavior-p
-      (with-current-buffer buffer
-	(string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
-    (with-silent-modifications
-      ;; (switch-to-buffer (current-buffer))
+  (let ((fetch-re (if (and py-shell--prompt-calculated-input-regexp
+			   py-shell--prompt-calculated-output-regexp)
+		      (concat py-shell--prompt-calculated-input-regexp "\\|" py-shell--prompt-calculated-output-regexp)
+		    (progn
+		      (py-shell-prompt-set-calculated-regexps)
+		      (concat py-shell--prompt-calculated-input-regexp "\\|" py-shell--prompt-calculated-output-regexp)
+		      ))))
+    (when py-verbose-p (message "(current-buffer): %s" (current-buffer))
+	  (switch-to-buffer (current-buffer)))
+    (if python-mode-v5-behavior-p
+	(with-current-buffer buffer
+	  (string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
       (when (< limit (point-max))
-	(goto-char (point-max))
-	(let ((orig (point-marker)))
-	  (unwind-protect
-	      (let ((end
-		     (or (and (re-search-backward py-fast-filter-re limit t 1) (progn (skip-chars-backward " \t\r\n\f") (point-marker)))
-			 (throw 'py--fetch-result-end (error "py--fetch-result: %s" "re-search-backward py-fast-filter-re failed")))))
-		(and limit end
-		     (progn
-		       (goto-char limit)
-		       (when (and cmd (looking-at cmd))
-			 (delete-region (line-beginning-position) (line-end-position)))
-		       (prog1 (string-trim
-			       (buffer-substring-no-properties (point) end)
-			       "\n")
-			 ;; cleanup
-			 (and (or
-			       (eq last-command 'py-help-at-point)
-			       py-cleanup-p)
-			      (delete-region (point) end))
-			 (goto-char orig)))))))))))
+	(string-trim (replace-regexp-in-string fetch-re "" (buffer-substring-no-properties limit (point-max))))))))
 
 (defun py--postprocess (output-buffer origline limit &optional cmd filename)
   "Provide return values, check result for error, manage windows.
@@ -773,7 +760,7 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
   ;; py--fast-send-string doesn't set origline
   (when (or py-return-result-p py-store-result-p)
     (with-current-buffer output-buffer
-      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (sit-for (py--which-delay-process-dependent (prin1-to-string output-buffer)))
       ;; (catch 'py--postprocess
       (setq py-result (py--fetch-result output-buffer limit cmd))
