@@ -60,6 +60,8 @@ TEST13=$TESTDIR/py-ert-tests-3.el
 TEST14=$TESTDIR/py-ert-forward-tests.el
 TEST15=$TESTDIR/py-ert-tests-4.el
 TEST16=$TESTDIR/py-extra-tests.el
+TEST17=$HOME/emacs/test/lisp/progmodes/python-tests.el
+TEST18=$TESTDIR/translated-python-tests.el
 
 if [ -s emacs27 ]; then
     EMACS=emacs27
@@ -295,6 +297,13 @@ h16() {
 -f ert-run-tests-batch-and-exit
 }
 
+h17() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+-l $TEST17 \
+-f ert-run-tests-batch-and-exit
+}
+
 hierv5() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
@@ -437,7 +446,7 @@ $EMACS -Q --batch \
 }
 
 if [ $WERKSTATT -eq 0 ]; then
-    while getopts 123456789abehijkpqrstuvx option
+    while getopts 123456789abcehijkpqrstuvx option
     do
         case $option in
 	    1) echo "Lade \$TEST1: \"$TEST1\"";h1;;
@@ -449,6 +458,10 @@ if [ $WERKSTATT -eq 0 ]; then
 	    7) echo "Lade \$TEST7: \"$TEST7\"";h7;;
 	    8) echo "Lade \$TEST8: \"$TEST8\"";h8;;
 	    9) echo "Lade \$TEST9: \"$TEST9\"";h9;;
+	    a) echo "Lade erst"; erst;;
+	    b) echo "Lade zweit"; zweit;;
+ 	    c) echo "Running python-tests.el";h17;;
+	    e) echo "Lade testumgebung \"ENTFERNT\""; entfernt;;
 	    i) echo "Lade \$TEST10: \"$TEST10\"";h10;;
 	    j) echo "Lade \$TEST11: \"$TEST11\"";h11;;
 	    k) echo "Lade \$TEST12: \"$TEST12\"";h12;;
@@ -456,13 +469,10 @@ if [ $WERKSTATT -eq 0 ]; then
 	    q) echo "Lade \$TEST14: \"$TEST14\"";h14;;
 	    r) echo "Lade \$TEST15: \"$TEST15\"";h15;;
 	    s) echo "Lade \$TEST16: \"$TEST16\"";h16;;
-	    a) echo "Lade erst"; erst;;
-	    b) echo "Lade zweit"; zweit;;
-	    e) echo "Lade testumgebung \"ENTFERNT\""; entfernt;;
-            h) echo "Lade testumgebung \"HIER1\"";hier;;
 	    u) echo "Lade testumgebung \"EXTRA\"";hierv5;;
-	    x) echo "Lade testumgebung \"EXTRA\"";extra;;
 	    v) echo "Lade testumgebung \"EXTRA\"";extrav5;;
+	    x) echo "Lade testumgebung \"EXTRA\"";extra;;
+            h) echo "Lade testumgebung \"HIER1\"";hier;;
 	esac
     done
 
