@@ -1,6 +1,6 @@
 ;;; setup-ert-tests.el --- Provide needed forms -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2018  Andreas Röhler
+;; Copyright (C) 2014-2020  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: lisp
@@ -68,7 +68,6 @@
       (if docu
 	  (format "%s" stax)
 	elt))))
-
 
 ;; (defmacro py-test (contents mode verbose &rest body)
 ;;   "Create temp buffer inserting CONTENTS.
@@ -139,74 +138,12 @@ Preserves the `buffer-modified-p' state of the current buffer."
      (with-silent-modifications
        ,@body)))
 
-
-
-
-;; (defvar py-forward-text "
-;; # {{
-;; class bar:
-;;     def foo ():
-;;         try:
-;;             if foo:
-;;                 for a in b:
-;;                     print('%(language)s has %(number)03d quote types.' %
-;;        {'language': \"Python\", \"number\": 2})
-
-;;             elif bar:
-;;                 for a in b:
-;;                     pass
-;;             else:
-;;                 for a in b:
-;;                     pass
-;; # }}
-;;         except:
-;;             block2
-;; ")
-
-;; (defvar py-up-text "
-;; def foo():
-;;     if True:
-;;         def bar():
-;;             pass
-;;     elif False:
-;;         def baz():
-;;             pass
-;;     else:
-;;         try:
-;;             1 == 1
-;;         except True:
-;;             def foo1():
-;;                 if True:
-;;                     def bar1():
-;;                         pass
-;;                 elif False:
-;;                     def baz1():
-;;                         pass
-;;                 else:
-;;                     try:
-;;                         1 == 1
-;;                     except True:
-;;                         pass
-;;                     else True:
-;;                         pass
-;;                     finally:
-;;                         pass
-;;         else True:
-;;             pass
-;;         finally:
-;;             pass
-;; ")
-
-
-
 (defmacro py-bug-tests-intern (testname arg teststring)
   "Just interally. "
   (declare (debug (edebug-form-spec t)))
   `(let ((debug-on-error t)
          (enable-local-variables :all)
          py-load-pymacs-p
-         ;; py-split-window-on-execute
-         ;; py-switch-buffers-on-execute-p
          py-start-run-py-shell
          proc
          py-fontify-shell-buffer-p

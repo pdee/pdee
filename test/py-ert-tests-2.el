@@ -89,8 +89,6 @@ def baz(self):
     (forward-line -1)
     (should (eq (char-after) ?\n))))
 
-
-
 (ert-deftest py-ert-backward-same-level-test ()
   (py-test-with-temp-buffer-point-min
       "def foo():
@@ -163,7 +161,7 @@ def baz(self):
                     finally:
                         pass"
     (goto-char (point-max))
-     (py-up-block)
+    (py-up-block)
     (should (looking-at "if"))))
 
 (ert-deftest py-ert-up-level-test-2-taTfXm ()
@@ -196,7 +194,7 @@ def baz(self):
                     finally:
                         pass"
     (goto-char (point-max))
-     (py-up-clause)
+    (py-up-clause)
     (should (looking-at "else:"))))
 
 (ert-deftest py-ert-deletes-too-much-lp:1300270 ()
@@ -214,7 +212,7 @@ x = {'abc':'def',
       "assert pycompletions('TestClass.test' , name) == \
           ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']"
     (goto-char (point-max))
-     (forward-char -1)
+    (forward-char -1)
     (py-mark-expression)
     (should (eq 119 (mark)))
     (goto-char 44)
@@ -222,7 +220,7 @@ x = {'abc':'def',
     (should (eq 46 (mark)))))
 
 (ert-deftest py-dedicated-shell-test ()
-   (let ((erg (buffer-name (py-shell nil nil t "python"))))
+  (let ((erg (buffer-name (py-shell nil nil t "python"))))
     (should (< 8 (length erg)))
     (should (eq 0 (string-match "^*Python" erg)))))
 
@@ -255,22 +253,22 @@ x = {'abc':'def',
       (should (eq (window-height) full-height)))))
 
 (ert-deftest py-compute-indentation-after-import-test ()
-    (py-test-with-temp-buffer
-    "import pdb
+  (py-test-with-temp-buffer
+      "import pdb
 "
     (goto-char (point-max))
-     (should (eq 0 (py-compute-indentation)))))
+    (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-compute-indentation-bob-test ()
-    (py-test-with-temp-buffer-point-min
-    " def foo():
+  (py-test-with-temp-buffer-point-min
+      " def foo():
     if True:
         pass
     else:
         pass
 "
     (goto-char (point-min))
-     (should (eq 0 (py-compute-indentation)))))
+    (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-indentation-lp-1375122-test ()
   (py-test-with-temp-buffer
@@ -294,7 +292,7 @@ pass
   (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
   (py-test-with-temp-buffer
       ""
-     (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python"))
       (py-shell)
       (sit-for 0.1 t)
@@ -305,7 +303,7 @@ pass
   (py-test-with-temp-buffer
       ""
     (goto-char (point-max))
-     (let ((py-shell-name "python3"))
+    (let ((py-shell-name "python3"))
       (py-shell)
       (sit-for 0.1 t)
       (should (buffer-live-p (get-buffer "*Python3*"))))))
@@ -314,7 +312,7 @@ pass
   (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "*Python2*"))
   (py-test-with-temp-buffer
       ""
-     (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python2"))
       (py-shell)
       (sit-for 0.1 t)
@@ -369,7 +367,7 @@ class bar:
             block2
              "
     (goto-char (point-max))
-     (py-backward-except-block)
+    (py-backward-except-block)
     (should (eq (char-after) ?e))))
 
 (ert-deftest py-ert-backward-except-block-bol-test ()
@@ -385,8 +383,8 @@ class bar:
             block2
              "
     (goto-char(point-max))
-     (py-backward-except-block-bol)
-     (sit-for 0.1)
+    (py-backward-except-block-bol)
+    (sit-for 0.1)
     (should (eq (char-after) 32))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-1 ()
@@ -413,7 +411,7 @@ asdf = {
 asdf = {
     'a':{"
     (goto-char(point-max))
-     (should (eq 4 (py-compute-indentation)))))
+    (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-4 ()
   (py-test-with-temp-buffer
@@ -423,7 +421,7 @@ asdf = {
          'b':3,
          'c':4"
     (goto-char(point-max))
-     (beginning-of-line)
+    (beginning-of-line)
     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-5 ()
@@ -434,7 +432,7 @@ asdf = {
          'b':3,
          'c':4"
     (goto-char(point-max))
-     (should (eq 8 (py-compute-indentation)))))
+    (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-6 ()
   (py-test-with-temp-buffer
@@ -522,8 +520,6 @@ asdf = {
          'c':4
     }
     }"
-   'python-mode
-    'py-debug-p
     (goto-char(point-max))
     (let ((py-closing-list-dedents-bos t))
       (should (eq 0 (py-compute-indentation))))))
@@ -658,18 +654,16 @@ class asdf:
 
 (ert-deftest py-ert-dedent-forward-test ()
   (py-test-with-temp-buffer
-   "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
+      "with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
     for i in range(anzahl):
         klauf.pylauf()
         datei.write(str(spiel[i]) + \"\\n\")"
-   'python-mode
-    'py-debug-p
     (goto-char(point-max))
-   (skip-chars-backward " \t\r\n\f")
-   (py-dedent-forward-line)
-   (should (py-empty-line-p))
-   (forward-line -1)
-   (should (eq 4 (current-indentation)))))
+    (skip-chars-backward " \t\r\n\f")
+    (py-dedent-forward-line)
+    (should (py-empty-line-p))
+    (forward-line -1)
+    (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-face-lp-1454858-python2-1-test ()
   (py-test-with-temp-buffer
@@ -744,7 +738,6 @@ print()"
     def test(self):
         self.assertEqual(fun(3), 4)
 
-
 "
     'python-mode
     py-debug-p
@@ -773,8 +766,8 @@ print()"
         klauf.pylauf()
                     "
     (goto-char(point-max))
-      (py-narrow-to-block)
-      (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+    (py-narrow-to-block)
+    (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-block-test-xnEs46 ()
   (py-test-with-temp-buffer
@@ -783,8 +776,8 @@ print()"
         klauf.pylauf()
         "
     (goto-char(point-max))
-      (py-narrow-to-block)
-      (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+    (py-narrow-to-block)
+    (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-block-or-clause-test ()
   (py-test-with-temp-buffer
@@ -1026,7 +1019,7 @@ if __name__ == \"__main__\":
     main()
 "
     (goto-char(point-max))
-     (search-backward "if ")
+    (search-backward "if ")
     (forward-line -1)
     (indent-to 12)
     (py-backward-block)
@@ -1037,10 +1030,10 @@ if __name__ == \"__main__\":
       "'''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''"
     (goto-char (point-min))
-       (forward-char 4)
-      (fill-paragraph)
-      (forward-line 1)
-      (should (not (py-empty-line-p)))))
+    (forward-char 4)
+    (fill-paragraph)
+    (forward-line 1)
+    (should (not (py-empty-line-p)))))
 
 (ert-deftest py-ert-nil-docstring-style-lp-1477422-test ()
   (py-test-with-temp-buffer-point-min
@@ -1088,8 +1081,6 @@ if __name__ == \"__main__\":
     (py-mark-section)
     (should (eq 371 (region-beginning)))
     (should (eq 408 (region-end)))))
-
-
 
 (ert-deftest py-test-embedded-51-test ()
   (py-test-with-temp-buffer

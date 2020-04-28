@@ -1,6 +1,6 @@
 ;;; python-components-execute.el --- Part of python-components-mode -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2018 Andreas Röhler
+;; Copyright (C) 2015-2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 

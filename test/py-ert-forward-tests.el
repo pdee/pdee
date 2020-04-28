@@ -1,6 +1,6 @@
 ;;; py-ert-forward-tests.el --- Just some more tests
 
-;; Copyright (C) 2015-2018  Andreas Röhler
+;; Copyright (C) 2015-2020  Andreas Röhler
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
@@ -29,9 +29,8 @@
 ;; directory devel. Edits here might not be persistent.
 
 (ert-deftest py-ert-forward-block-test ()
-  (let (py-font-lock-defaults-p)
-    (py-test-with-temp-buffer-point-min
-	"if foo:
+  (py-test-with-temp-buffer-point-min
+      "if foo:
     for a in b:
         print('%(language)s has %(number)03d quote types.' %
    {'language': \"Python\", \"number\": 2})
@@ -43,9 +42,8 @@ else:
     for a in b:
         pass
 "
-      'python-mode
-      'py-debug-p
-      (goto-char (point-min))
+    (goto-char (point-min))
+    (let (py-font-lock-defaults-p)
       (py-forward-block)
       (should (eq (char-before) ?s)))))
 
@@ -345,8 +343,6 @@ class bar:
         except:
             block2
 "
-    'python-mode
-    'py-debug-p 
     (goto-char (point-min))
     (search-forward "if")
     (py-forward-minor-block)
@@ -373,7 +369,7 @@ class bar:
         except:
             block2
 "
-    (goto-char (point-min)) 
+    (goto-char (point-min))
     (search-forward "try:")
     (py-forward-minor-block)
     (should (eq (char-before) ?2))))

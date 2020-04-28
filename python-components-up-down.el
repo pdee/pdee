@@ -1,6 +1,6 @@
 ;;; python-components-up-down.el -- Searching up/downwards in buffer -*- lexical-binding: t; -*- 
 
-;; Copyright (C) 2015-2018 Andreas Röhler
+;; Copyright (C) 2015-2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
