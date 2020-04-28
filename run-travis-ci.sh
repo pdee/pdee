@@ -63,8 +63,8 @@ TEST16=$TESTDIR/py-extra-tests.el
 TEST17=$HOME/emacs/test/lisp/progmodes/python-tests.el
 TEST18=$TESTDIR/translated-python-tests.el
 
-if [ -s emacs27 ]; then
-    EMACS=emacs27
+if [ -s $HOME/emacs-20200406/src/emacs ]; then
+    EMACS=$HOME/emacs-20200406/src/emacs
 else
     EMACS=emacs
 fi
@@ -300,6 +300,7 @@ h16() {
 h17() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
+-l /home/speck/emacs-20200406/lisp/progmodes/python.el \
 -l $TEST17 \
 -f ert-run-tests-batch-and-exit
 }
@@ -460,8 +461,9 @@ if [ $WERKSTATT -eq 0 ]; then
 	    9) echo "Lade \$TEST9: \"$TEST9\"";h9;;
 	    a) echo "Lade erst"; erst;;
 	    b) echo "Lade zweit"; zweit;;
- 	    c) echo "Running python-tests.el";h17;;
+	    c) echo "Running python-tests.el";h17;;
 	    e) echo "Lade testumgebung \"ENTFERNT\""; entfernt;;
+            h) echo "Lade testumgebung \"HIER1\"";hier;;
 	    i) echo "Lade \$TEST10: \"$TEST10\"";h10;;
 	    j) echo "Lade \$TEST11: \"$TEST11\"";h11;;
 	    k) echo "Lade \$TEST12: \"$TEST12\"";h12;;
@@ -472,7 +474,6 @@ if [ $WERKSTATT -eq 0 ]; then
 	    u) echo "Lade testumgebung \"EXTRA\"";hierv5;;
 	    v) echo "Lade testumgebung \"EXTRA\"";extrav5;;
 	    x) echo "Lade testumgebung \"EXTRA\"";extra;;
-            h) echo "Lade testumgebung \"HIER1\"";hier;;
 	esac
     done
 

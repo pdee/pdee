@@ -1736,11 +1736,6 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 		    (file-name (or (buffer-file-name) temp-file-name)))
 	       (py-send-file file-name proc)))
 	    (t (with-current-buffer buffer
-		 ;; (setq orig (py--report-end-marker proc))
-		 ;; remove stuff after last prompt
-		 (with-silent-modifications
-		   (unless (ignore-errors (eq (field-beginning (point)) (field-end (point))))
-		     (delete-region (field-beginning (point)) (field-end (point)))))
 		 (comint-send-string proc strg)
 		 (when (or (not (string-match "\n\\'" strg))
 			   (string-match "\n[ \t].*\n?\\'" strg))

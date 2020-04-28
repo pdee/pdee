@@ -37,7 +37,7 @@
     (goto-char (point-min))
     (let ((py-shell-name "python2"))
       (py-execute-statement)
-      (sit-for 0.1) 
+      (sit-for 0.1)
       (set-buffer (get-buffer  "*Python2*"))
       (goto-char (point-max))
       (and (should (search-backward "py-execute-statement-test" nil t 1))
@@ -139,7 +139,7 @@ finally:
       (call-interactively 'py-execute-statement-python3-dedicated)
       ;; (sit-for 0.1 t)
       (set-buffer py-output-buffer)
-      (switch-to-buffer (current-buffer)) 
+      (switch-to-buffer (current-buffer))
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
@@ -1099,7 +1099,7 @@ print(u'\\xA9')"
 ;;     (org-babel-execute-src-block)
 ;;     (should (search-forward "@"))))
 
-(ert-deftest py-ert-respect-paragraph-1294829 ()
+(ert-deftest py-ert-respect-paragraph-1294829-test-NLzyHr ()
   (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
@@ -1181,7 +1181,83 @@ by the
     (forward-line -2)
     (should (not (py-empty-line-p)))
     (forward-line 1)
-    (should (eq (char-after) ?\n))
+    (should (eq (char-after) ?\n))))
+
+(ert-deftest py-ert-respect-paragraph-1294829-test-s7lFth ()
+  (py-test-with-temp-buffer-point-min
+      "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
+# reflowing the docstring, e.g.
+
+def foo(self)
+    \"\"\"First one-line summary.
+
+    Some other stuff which I don\'t want a paragraph break inserted into
+    the middle of.
+
+    And another para hjkdfgh fdjkg hfdjkg hdfjk ghdfk ghjkdf
+    ghjkdf ghjdf ghjdkf k
+    \"\"\"
+
+def foo(self)
+    \"\"\"Second one-line summary. Some other stuff which I don\'t want a
+paragraph
+
+    break inserted into the middle of. And another para hjkdfgh
+fdjkg
+    hfdjkg hdfjk ghdfk ghjkdf ghjkdf ghjdf ghjdkf k \"\"\"
+
+# I feel it would be better if it didn\'t attempt to
+# reflow the whole docstring, rather just reflow the
+# particular paragraph within it which the point is
+# positioned in.
+
+# It would also be good if it could avoid mangling parameter
+# descriptions like this:
+
+def foo(self):
+    \"\"\"Summary line.
+
+    Foo bar fhgdjkfd hgjfd hgjkfd ghjkdf ghjkdf hgjdf ghjkdf
+hgjdf hjgk dfhjkg dfhjkg dfhjkg fdhjkg hjfdkg
+
+    Parameters
+    ----------
+    endog : array-like
+        1-d endogenous response variable. The dependent variable.
+    exog : array-like
+        A nobs x k array where `nobs` is the number of
+observations and `k`
+        is the number of regressors. An interecept is not
+included by default
+        and should be added by the user. See
+        `statsmodels.tools.add_constant`.\"\"\"
+
+def foo(self):
+    \"\"\"Summary line. Foo bar fhgdjkfdhgjfd hgjkfd ghjkdf ghjkdf
+hgjdf
+
+    ghjkdf hgjdf hjgk dfhjkg dfhjkg dfhjkg fdhjkghjfdkg
+Parameters
+    ---------- endog : array-like 1-d endogenous response
+variable. The
+    dependent variable. exog : array-like A nobs x karray where
+`nobs`
+    is the number of observations and `k` is the number of
+regressors.
+    An interecept is not included by default and should be added
+by the
+    user. See `statsmodels.tools.add_constant`.
+    \"\"\"
+
+# Failing that though, if I can at least choose to
+# reflow individual paragraphs in the docstring and
+# leave others intact, I can format these things
+# manually while still being able to flow other
+# paragraphs using M-q.
+"
+    'python-mode
+    py-debug-p
+    (goto-char (point-min))
     (search-forward "one-line summary." nil t 1)
     (when py-debug-p (message "fill-column: %s" fill-column))
     (fill-paragraph)
