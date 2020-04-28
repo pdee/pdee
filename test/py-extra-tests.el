@@ -31,7 +31,7 @@
        (python . t)
        ))
 
-(ert-deftest py-ert-moves-up-execute-statement-test ()
+(ert-deftest py-ert-moves-up-execute-statement-test-RdqUKX ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
     (goto-char (point-min))
@@ -44,7 +44,7 @@
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
 
-(ert-deftest py-complete-in-python3-shell-test ()
+(ert-deftest py-complete-in-python3-shell-test-JtNakZ ()
   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
   (set-buffer (python3))
   (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -55,7 +55,7 @@
   (py-indent-or-complete)
   (should (looking-back "print(")))
 
-(ert-deftest UnicodeEncodeError-lp-550661-test-1 ()
+(ert-deftest UnicodeEncodeError-lp-550661-test-1-1oxvP0 ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python3
 print(u'\\xA9')"
@@ -67,7 +67,7 @@ print(u'\\xA9')"
       ;; (message "UnicodeEncodeError-lp-550661-test-1 erg: %s" erg)
       (should (string= "©" py-result)))))
 
-(ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test ()
+(ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2 ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -82,7 +82,7 @@ os.write"
     (switch-to-buffer (current-buffer))
     (should (string-match "write" (buffer-substring-no-properties (point-min) (point-max))))))
 
-(ert-deftest py-complete-empty-string-result-test ()
+(ert-deftest py-complete-empty-string-result-test-jI82K3 ()
   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
   (set-buffer (python3))
   (goto-char (point-max))
@@ -91,7 +91,7 @@ os.write"
   (sit-for 0.1)
   (should (looking-back "foo")))
 
-(ert-deftest py-ert-execute-block-fast-9Ui5ja ()
+(ert-deftest py-ert-execute-block-fast-9Ui5ja-zo3sa5 ()
   (py-test-with-temp-buffer-point-min
       "try:
     a
@@ -110,7 +110,7 @@ finally:
       (when py-debug-p (message "py-ert-execute-block-fast-9Ui5ja, py-result: %s" py-result))
       (should (string-match "[0-9]" py-result)))))
 
-(ert-deftest py-ert-execute-block-9Ui5ja ()
+(ert-deftest py-ert-execute-block-9Ui5ja-DUvXA6 ()
   (py-test-with-temp-buffer-point-min
       "try:
     a
@@ -130,7 +130,7 @@ finally:
       (when py-debug-p (message "py-ert-execute-block-fast-9Ui5ja, py-result: %s" py-result))
       (should (string-match "[0-9]+" py-result)))))
 
-(ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test ()
+(ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test-zI51W7 ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
     (let ((py-debug-p t)
@@ -143,14 +143,14 @@ finally:
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
-(ert-deftest py-ert-exception-name-face-lp-1294742 ()
+(ert-deftest py-ert-exception-name-face-lp-1294742-7hEOh9 ()
   (py-test-with-temp-buffer
       "ArithmeticError"
     (forward-char -1)
     (font-lock-fontify-region (point-min) (point-max))
     (should (eq 'py-exception-name-face (get-char-property (point) 'face)))))
 
-(ert-deftest py-ert-execute-block-jython-test ()
+(ert-deftest py-ert-execute-block-jython-test-9gQUza ()
   (let ((buffer (py--choose-buffer-name "jython"))
 	py-split-window-on-execute py-switch-buffers-on-execute-p)
     (py-test-with-temp-buffer
@@ -161,7 +161,7 @@ finally:
       (sit-for 2)
       (should (string-match "two" py-result)))))
 
-(ert-deftest py-shell-complete-in-dedicated-shell ()
+(ert-deftest py-shell-complete-in-dedicated-shell-XafVPb ()
   ;; (py-test-with-temp-buffer
   (with-current-buffer (python '(4))
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -172,7 +172,7 @@ finally:
     (sit-for 0.1 t)
     (should (or (looking-back "print.?" (line-beginning-position))))))
 
-(ert-deftest py-ert-execute-statement-python2-fast-1 ()
+(ert-deftest py-ert-execute-statement-python2-fast-1-7RNU3c ()
   (py-test-with-temp-buffer-point-min
    "print(1)"
    (let ((py-fast-process-p t)
@@ -182,7 +182,7 @@ finally:
      (py-execute-statement "python2")
      (should (string= "1" py-result)))))
 
-(ert-deftest py-ert-execute-statement-fast-2 ()
+(ert-deftest py-ert-execute-statement-fast-2-7XrRee ()
   (py-test-with-temp-buffer-point-min
       "print(2)"
     (let ((py-fast-process-p t)
@@ -193,14 +193,14 @@ finally:
       (should (string= "2" py-result)))))
 
 ;; adapted from python.el
-(ert-deftest py-syntax-after-backspace-TwyMwn ()
+(ert-deftest py-syntax-after-backspace-TwyMwn-xjlPqf ()
   (py-test-with-temp-buffer
       "\"\""
     (goto-char (point-max))
     (should (string= (buffer-string) "\"\""))
     (should (null (nth 3 (parse-partial-sexp (point-min) (point)))))))
 
-(ert-deftest py-complete-in-python-shell-test ()
+(ert-deftest py-complete-in-python-shell-test-LYnVJh ()
   (ignore-errors (py-kill-buffer-unconditional "*Python*"))
   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
   (set-buffer (python))
@@ -210,7 +210,7 @@ finally:
   (sit-for 0.1)
   (should (or (eq ?t (char-before))(eq ?\( (char-before)))))
 
-(ert-deftest py-ert-execute-statement-fast-test ()
+(ert-deftest py-ert-execute-statement-fast-test-noYr4j ()
   (py-test-with-temp-buffer-point-min
       "print(123234)"
     (goto-char (point-min))
@@ -222,7 +222,7 @@ finally:
       (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))
       (should (search-backward "123234")))))
 
-(ert-deftest py-ert-fast-complete-1 ()
+(ert-deftest py-ert-fast-complete-1-vS8fnm ()
   (py-test-with-temp-buffer
       "obj"
     (goto-char (point-max))
@@ -232,7 +232,7 @@ finally:
     (when py-debug-p (message "py-ert-fast-complete-1, current-buffer: %s" (current-buffer)))
     (should (search-backward "ect"))))
 
-(ert-deftest py-send-string-text-dtOWbA ()
+(ert-deftest py-send-string-text-dtOWbA-X25uDo ()
   (py-test-with-temp-buffer
       ""
     (let (erg)
@@ -240,7 +240,7 @@ finally:
       (should (string= erg "foo"))
       (should (string= py-result "foo")))))
 
-(ert-deftest py-ert-class-definitions-lp-1018164-test ()
+(ert-deftest py-ert-class-definitions-lp-1018164-test-3pDuRq ()
     (py-test-with-temp-buffer
   "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -1064,7 +1064,7 @@ class EmacsFrameThemeManager(datatypes.Singleton, metaclass=cldef.metaClass):
     (py-end-of-def-or-class)
     (should (eq 26242 (point)))))
 
-(ert-deftest py-execute-region-ipython-test-1 ()
+(ert-deftest py-execute-region-ipython-test-1-1gyFLs ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python3
 print(u'\\xA9')"
@@ -1099,7 +1099,7 @@ print(u'\\xA9')"
 ;;     (org-babel-execute-src-block)
 ;;     (should (search-forward "@"))))
 
-(ert-deftest py-ert-respect-paragraph-1294829-test-NLzyHr ()
+(ert-deftest py-ert-respect-paragraph-1294829-test-NLzyHr-dpmi5s ()
   (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
@@ -1183,7 +1183,7 @@ by the
     (forward-line 1)
     (should (eq (char-after) ?\n))))
 
-(ert-deftest py-ert-respect-paragraph-1294829-test-s7lFth ()
+(ert-deftest py-ert-respect-paragraph-1294829-test-s7lFth-7tLEjt ()
   (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
@@ -1269,7 +1269,7 @@ by the
     (forward-line 2)
     (should (eq (char-after) ?\n))))
 
-(ert-deftest py-indent-in-docstring-gh6 ()
+(ert-deftest py-indent-in-docstring-gh6-7Zafwt ()
   (py-test-with-temp-buffer-point-min
       "def f():
     \"\"\"
@@ -1310,7 +1310,7 @@ by the
     (py-indent-or-complete)
     (should (looking-back "print.?" (line-beginning-position)))))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-1 ()
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-1-BBJoDt ()
   (let ((py-docstring-style 'pep-257-nn))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -1344,7 +1344,7 @@ def baz():
       (should (<= (current-column) 72))
       )))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-django-2 ()
+(ert-deftest py-ert-moves-up-fill-paragraph-django-2-BVA4Jt ()
   (let ((py-docstring-style 'django))
     (py-test-with-temp-buffer-point-min
 	"# r1416

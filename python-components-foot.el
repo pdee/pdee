@@ -88,6 +88,7 @@
 (defalias 'pyhton 'python)
 (defalias 'pyt 'python)
 (defalias 'py3 'python3)
+(defalias 'py2 'python2)
 (defalias 'py-beginning-of-block 'py-backward-block)
 (defalias 'py-beginning-of-block-bol 'py-backward-block-bol)
 (defalias 'py-beginning-of-block-or-clause 'py-backward-block-or-clause)

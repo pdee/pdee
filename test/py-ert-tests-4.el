@@ -39,7 +39,7 @@ impo")))
   ;; (sit-for 0.1)
   (assert (looking-back "import") nil "py-shell-complete-test failed"))
 
-(ert-deftest py-ert-shift-right-test-1 ()
+(ert-deftest py-ert-shift-right-test-1-n8l82j ()
   (py-test-with-temp-buffer
       "def foo():
     if path == '/tmp':
@@ -48,7 +48,7 @@ impo")))
     (py-shift-right 1)
     (should (eq 8 (current-indentation)))))
 
-(ert-deftest py-ert-shift-right-test-2 ()
+(ert-deftest py-ert-shift-right-test-2-CF12wC ()
   (py-test-with-temp-buffer
       "def foo():
     if path == '/tmp':
@@ -58,7 +58,7 @@ impo")))
     (forward-line -1)
     (should (eq 4 (current-indentation)))))
 
-(ert-deftest py-ert-shift-right-test-3 ()
+(ert-deftest py-ert-shift-right-test-3-fxBOYU ()
   (py-test-with-temp-buffer
       "def foo():
     if path == '/tmp':
@@ -68,7 +68,7 @@ impo")))
     (forward-line -1)
     (should (eq 4 (current-indentation)))))
 
-(ert-deftest py-ert-shift-right-test-4 ()
+(ert-deftest py-ert-shift-right-test-4-Ub4nod ()
   (py-test-with-temp-buffer
       "def foo():
     if path == '/tmp':
@@ -80,7 +80,7 @@ impo")))
     (beginning-of-buffer)
     (should (eq 0 (current-indentation)))))
 
-(ert-deftest py-ert-shift-right-test-5 ()
+(ert-deftest py-ert-shift-right-test-5-rmZsLv ()
   (py-test-with-temp-buffer
       "def foo():
     if path == '/tmp':
@@ -92,7 +92,7 @@ impo")))
     (beginning-of-buffer)
     (should (eq 0 (current-indentation)))))
 
-(ert-deftest py-ert-shift-right-test-6 ()
+(ert-deftest py-ert-shift-right-test-6-iJd75N ()
   (py-test-with-temp-buffer
       "def foo():
     if path == '/tmp':
@@ -103,7 +103,7 @@ impo")))
     (beginning-of-buffer)
     (should (eq 0 (current-indentation)))))
 
-(ert-deftest py-execute-region-test-1 ()
+(ert-deftest py-execute-region-test-1-R45Ll6 ()
   (py-test-with-temp-buffer
       "def foo(x):
     if x == 1:
@@ -118,7 +118,7 @@ impo")))
       (switch-to-buffer (current-buffer))
       (should-not (search-backward "FileNotFoundError" nil t 1)))))
 
-(ert-deftest py-end-of-def-or-class-test-1 ()
+(ert-deftest py-end-of-def-or-class-test-1-YpTSCo ()
   (py-test-with-temp-buffer
       "class foo:
     \"\"\"asdf\"\"\"
@@ -136,7 +136,7 @@ impo")))
     (py-end-of-def-or-class)
     (should (looking-back "pass"))))
 
-(ert-deftest py-down-statement-test-1 ()
+(ert-deftest py-down-statement-test-1-zsvwPG ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -152,7 +152,7 @@ impo")))
     (py-down-statement)
     (should (eq (char-after) ?d))))
 
-(ert-deftest py-backward-minor-block-test-1 ()
+(ert-deftest py-backward-minor-block-test-1-OLNs0Y ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -170,7 +170,7 @@ impo")))
     (py-backward-minor-block)
     (should (eq (char-after) ?i))))
 
-(ert-deftest py-forward-block-or-clause-test-1 ()
+(ert-deftest py-forward-block-or-clause-test-1-FCZrch ()
   (py-test-with-temp-buffer
       "def main():
     if len(sys.argv) == 1:
@@ -187,7 +187,7 @@ impo")))
     (py-forward-block-or-clause)
     (should (eq (char-before) ?\)))))
 
-(ert-deftest py-forward-statement-38-test ()
+(ert-deftest py-forward-statement-38-test-ghDkby ()
   (py-test-with-temp-buffer
       "def gen_segments(x, y):
     for i in range(0, len(x)-1):
@@ -196,13 +196,13 @@ impo")))
     (py-forward-statement)
     (should (eobp))))
 
-(ert-deftest py-wrong-on-quotes-31-test ()
+(ert-deftest py-wrong-on-quotes-31-test-hVRL4O ()
   (py-test-with-temp-buffer
       "print(\"don't\")"
     (py-execute-statement)
     (should (not (nth 3 (parse-partial-sexp (point-min) (point)))))))
 
-(ert-deftest py-support-PEP-553-built-in-breakpoint-42-test ()
+(ert-deftest py-support-PEP-553-built-in-breakpoint-42-test-CPvkW5 ()
   (py-test-with-temp-buffer
   "# point is at the end, now hit return
 # point ends up here when it should line up under the 'b'
@@ -211,11 +211,9 @@ def foo(x):
         breakpoint()"
   (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest py-fill-singlequoted-string-test()
+(ert-deftest py-fill-singlequoted-string-test-zeKa2U ()
   (py-test-with-temp-buffer
       "asd = 'asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf '"
-    'python-mode
-    py-verbose-p
     (goto-char (point-max))
     (backward-char 2)
     (py-fill-string)
@@ -227,11 +225,9 @@ def foo(x):
     (skip-chars-backward " \t\r\n\f")
     (should (eq (char-before) ?\\))))
 
-(ert-deftest py-fill-doublequoted-string-test()
+(ert-deftest py-fill-doublequoted-string-test-Xi6FaW ()
   (py-test-with-temp-buffer
       "asd = \"asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf \""
-    'python-mode
-    py-verbose-p
     (goto-char (point-max))
     (backward-char 2)
     (py-fill-string)
@@ -261,8 +257,6 @@ def foo(x):
     if guess == ziffer:
         print(\"Erfolg\")
 else: "
-    'python-mode
-    py-verbose-p
     (goto-char (point-max))
     (should (eq 4  (py-compute-indentation)))))
 

@@ -25,7 +25,7 @@
 (load "py-ert-tests-1.el" nil t)
 
 ;; py-if-name-main-permission-p
-(ert-deftest py-ert-if-name-main-permission-lp-326620-test ()
+(ert-deftest py-ert-if-name-main-permission-lp-326620-test-CZefpG ()
   (py-test-with-temp-buffer-point-min
    "#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
@@ -47,7 +47,7 @@ py_if_name_main_permission_test()
      (goto-char (point-max))
      (should (search-backward "run" nil t)))))
 
-(ert-deftest py-ert-indent-try-test ()
+(ert-deftest py-ert-indent-try-test-zg6QYI ()
   (py-test-with-temp-buffer-point-min
       "#! /usr/bin/env python
 
@@ -59,7 +59,7 @@ import os
     (search-forward "try")
     (should (eq 0 (py-compute-indentation)))))
 
-(ert-deftest py-ert-multiple-decorators-test-1 ()
+(ert-deftest py-ert-multiple-decorators-test-1-KyE0zL ()
   (py-test-with-temp-buffer
       "@blah
 @blub
@@ -71,7 +71,7 @@ def foo():
       (py-beginning-of-def-or-class)
       (should (bobp)))))
 
-(ert-deftest py-ert-multiple-decorators-test-2 ()
+(ert-deftest py-ert-multiple-decorators-test-2-D9kV8N ()
   (py-test-with-temp-buffer
       "@blah
 @blub
@@ -83,7 +83,7 @@ def foo():
            (erg (py-beginning-of-def-or-class)))
       (should (eq 13 erg)))))
 
-(ert-deftest py-ert-async-backward-block-test ()
+(ert-deftest py-ert-async-backward-block-test-OdiTDQ ()
   (py-test-with-temp-buffer
       "async def coro(name, lock):
     print('coro {}: waiting for lock'.format(name))
@@ -95,7 +95,7 @@ def foo():
     (py-backward-block)
     (should (looking-at "async with"))))
 
-(ert-deftest py-ert-async-backward-def-test ()
+(ert-deftest py-ert-async-backward-def-test-lF1w7S ()
   (py-test-with-temp-buffer
       "async def coro(name, lock):
     print('coro {}: waiting for lock'.format(name))
@@ -107,7 +107,7 @@ def foo():
     (py-backward-def)
     (should (looking-at "async def"))))
 
-(ert-deftest py-ert-async-indent-test ()
+(ert-deftest py-ert-async-indent-test-MFS8IW ()
   (py-test-with-temp-buffer-point-min
       "async def coro(name, lock):
 
@@ -122,7 +122,7 @@ def foo():
     (forward-line 3)
     (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest py-ert-fill-comment-test ()
+(ert-deftest py-ert-fill-comment-test-Byd1i0 ()
   (py-test-with-temp-buffer-point-min
       "class Foo(Bar):
     def baz(self):
@@ -137,7 +137,7 @@ def foo():
     (should (eq 8 (current-column)))
     (should (eq 6 (count-lines (point-min) (point))))))
 
-(ert-deftest py-ert-parens-span-multiple-lines-lp-1191225-test ()
+(ert-deftest py-ert-parens-span-multiple-lines-lp-1191225-test-AkoTP3 ()
   (py-test-with-temp-buffer-point-min
       "# -*- coding: utf-8 -*-
 def foo():
@@ -159,7 +159,7 @@ def foo():
       (search-forward "b")
       (should (eq 12 (py-compute-indentation))))))
 
-(ert-deftest py-raw-docstring-test-pep-257-nn ()
+(ert-deftest py-raw-docstring-test-pep-257-nn-pbqel7 ()
   (py-test-with-temp-buffer-point-min
       "def f():
     r\"\"\" This is the docstring for my function.It's a raw docstring because I want to type \\t here, and maybe \\n,for example in LaTeX code like \\tau or \\nu.
@@ -175,7 +175,7 @@ More docstring here.
       (skip-chars-forward " \t\r\n\f")
       (should (eq 4 (current-indentation))))))
 
-(ert-deftest py-ert-backward-indent-test-hJv5Sb ()
+(ert-deftest py-ert-backward-indent-test-hJv5Sb-qSF0Qa ()
   (py-test-with-temp-buffer
       "class A(object):
     def a(self):
@@ -189,7 +189,7 @@ More docstring here.
     (py-backward-indent)
     (should (eq (char-after) ?a))))
 
-(ert-deftest py-ert-forward-indent-test-1 ()
+(ert-deftest py-ert-forward-indent-test-1-D3Bcke ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -204,7 +204,7 @@ More docstring here.
     (py-forward-indent)
     (should (eq (char-before) ?s))))
 
-(ert-deftest py-ert-beginning-of-indent-p-test ()
+(ert-deftest py-ert-beginning-of-indent-p-test-AAX9Kh ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -216,7 +216,7 @@ More docstring here.
     (py-backward-indent)
     (should (py--beginning-of-indent-p))))
 
-(ert-deftest py-ert-beginning-of-indent-bol-p-test ()
+(ert-deftest py-ert-beginning-of-indent-bol-p-test-TqZeal ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -228,7 +228,7 @@ More docstring here.
     (beginning-of-line)
     (should (py--beginning-of-indent-bol-p))))
 
-(ert-deftest py-ert-copy-indent-test ()
+(ert-deftest py-ert-copy-indent-test-UbzMto ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -242,7 +242,7 @@ More docstring here.
     (py-backward-statement)
     (should (py--beginning-of-indent-p))))
 
-(ert-deftest py-ert-delete-indent-test ()
+(ert-deftest py-ert-delete-indent-test-HhZNOr ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -254,7 +254,7 @@ More docstring here.
     (should (eobp))
     (should (bolp))))
 
-(ert-deftest py-ert-kill-indent-test ()
+(ert-deftest py-ert-kill-indent-test-ECwA5u ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -267,7 +267,7 @@ More docstring here.
     (should (eobp))
     (should (bolp))))
 
-(ert-deftest py-ert-mark-indent-test ()
+(ert-deftest py-ert-mark-indent-test-lJ6Hny ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -279,7 +279,7 @@ More docstring here.
     ;; (message "%s" (buffer-substring-no-properties (region-beginning) (region-end)))
     (should (eq 28 (length (buffer-substring-no-properties (region-beginning) (region-end)))))))
 
-(ert-deftest py-ert-backward-comment-test ()
+(ert-deftest py-ert-backward-comment-test-OGNbDB ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -292,7 +292,7 @@ More docstring here.
     (py-backward-comment)
     (should (eq 43 (point)))))
 
-(ert-deftest py-ert-forward-comment-test-ibueq9 ()
+(ert-deftest py-ert-forward-comment-test-ibueq9-1vqzQE ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -303,7 +303,7 @@ More docstring here.
     (py-forward-comment)
     (should (eq (char-before) ?e))))
 
-(ert-deftest py-ert-else-clause-test ()
+(ert-deftest py-ert-else-clause-test-gIyr2H ()
   (py-test-with-temp-buffer
       "def foo()
     if aaa:
@@ -315,7 +315,7 @@ More docstring here.
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest py-ert-shift-indent-test ()
+(ert-deftest py-ert-shift-indent-test-NZCkbL ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -330,7 +330,7 @@ More docstring here.
     (py-shift-indent-left)
     (should (eq 8 (current-indentation)))))
 
-(ert-deftest py-ert-list-indent-test-1 ()
+(ert-deftest py-ert-list-indent-test-1-48C7hO ()
   (py-test-with-temp-buffer
       "print('test'
           'string'
@@ -339,7 +339,7 @@ More docstring here.
     (beginning-of-line)
     (should (eq 6 (py-compute-indentation)))))
 
-(ert-deftest py-ert-list-indent-test-2 ()
+(ert-deftest py-ert-list-indent-test-2-THFplR ()
   (py-test-with-temp-buffer
       "if (release_time != -1 and
     datetime.datetime.now() > release_time + CLOCK_SLOP):
@@ -352,7 +352,7 @@ More docstring here.
       (indent-line-to (py-compute-indentation))
       (should (eq 4 (current-indentation))))))
 
-(ert-deftest py-ert-list-indent-test-3 ()
+(ert-deftest py-ert-list-indent-test-3-GXE2bT ()
   (py-test-with-temp-buffer
       "if (release_time != -1 and
     datetime.datetime.now() > release_time + CLOCK_SLOP):
@@ -365,14 +365,14 @@ More docstring here.
       (indent-line-to (py-compute-indentation))
       (should (eq 8 (current-indentation))))))
 
-(ert-deftest py-ert-list-indent-test-4 ()
+(ert-deftest py-ert-list-indent-test-4-hvCk3U ()
   (py-test-with-temp-buffer
       "if (release_time != -1 and
     datetime.datetime.now() > release_time + CLOCK_SLOP):"
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
-(ert-deftest py-ert-embedded-def-or-class-test-RrkIDD ()
+(ert-deftest py-ert-embedded-def-or-class-test-RrkIDD-Cu8cTW ()
   (py-test-with-temp-buffer
       " class Foo:
     def bar(self):
@@ -386,7 +386,7 @@ string.
     (py-backward-def-or-class)
     (should (eq (char-after) ?d))))
 
-(ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test ()
+(ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test-P19RGY ()
   (py-test-with-temp-buffer
       "def foo():
     print(\"\"\"
@@ -398,7 +398,7 @@ Bar
     (forward-line -3)
     (should (eq 0 (py-compute-indentation)))))
 
-(ert-deftest py-ert-edit-docstring-write-content-back-test ()
+(ert-deftest py-ert-edit-docstring-write-content-back-test-mh1es0 ()
   (py-test-with-temp-buffer-point-min
       "def foo():
     \"\"\"def bar():
@@ -424,7 +424,7 @@ Bar
                    (nth 8 (parse-partial-sexp (point-min) (point)))))
       )))
 
-(ert-deftest py-ert-nested-def-lp-1594263-test ()
+(ert-deftest py-ert-nested-def-lp-1594263-test-3Tbta2 ()
   (py-test-with-temp-buffer
       "def decoratorFunctionWithArguments(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
@@ -451,7 +451,7 @@ Bar
     (py-backward-def-or-class)
     (should (looking-at "def wwrap"))))
 
-(ert-deftest py--indent-line-by-line-lp-1621672 ()
+(ert-deftest py--indent-line-by-line-lp-1621672-GmsSN3 ()
   (py-test-with-temp-buffer
       "def asdf()
      pass"
@@ -459,14 +459,14 @@ Bar
     (py-indent-region (point-min) (point-max))
     (should (eq 4 (current-indentation)))))
 
-(ert-deftest py--indent-line-by-line-lp-1621672-b ()
+(ert-deftest py--indent-line-by-line-lp-1621672-b-tACrr5 ()
   (py-test-with-temp-buffer
       "    print(\"asdf\")"
     (goto-char (point-max))
     (py-indent-region (point-min) (point-max))
     (should (eq 0 (current-indentation)))))
 
-(ert-deftest py-forward-def-or-class-1 ()
+(ert-deftest py-forward-def-or-class-1-cmHY16 ()
   (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
@@ -487,7 +487,7 @@ Bar
     (py-forward-def-or-class)
     (should (eq (char-before) ?f))))
 
-(ert-deftest py-forward-def-or-class-9oeKIr ()
+(ert-deftest py-forward-def-or-class-9oeKIr-jqD5z8 ()
   (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
@@ -508,7 +508,7 @@ Bar
     (py-forward-def-or-class)
     (should (eq (char-before) ?f))))
 
-(ert-deftest py-forward-block-1 ()
+(ert-deftest py-forward-block-1-Ex3K59 ()
   (py-test-with-temp-buffer-point-min
       "if True:
     def bar():
@@ -544,7 +544,7 @@ else:
     (py-forward-block)
     (should (eobp))))
 
-(ert-deftest py-forward-clause-lp-1630952-1 ()
+(ert-deftest py-forward-clause-lp-1630952-1-HFqYAb ()
   (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
@@ -563,7 +563,7 @@ else:
     (py-forward-clause)
     (should (eq (char-before) ?'))))
 
-(ert-deftest py-up-block-test-Ek86Xk ()
+(ert-deftest py-up-block-test-Ek86Xk-GRei3c ()
   (py-test-with-temp-buffer
       "
 def foo():
@@ -582,7 +582,7 @@ def foo():
     (py-up-block)
     (should (looking-at "if True:"))))
 
-(ert-deftest py-execute-region-no-transmm-test-1 ()
+(ert-deftest py-execute-region-no-transmm-test-1-7nmEse ()
   (py-test-with-temp-buffer
       "print(u'\\xA9')"
     (goto-char (point-max))
@@ -592,7 +592,7 @@ def foo():
       (py-shift-region-right)
       (should (eq 4 (current-indentation))))))
 
-(ert-deftest py-forward-statement-test-3 ()
+(ert-deftest py-forward-statement-test-3-ealLPf ()
   (py-test-with-temp-buffer-point-min
       "print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})
@@ -604,7 +604,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (py-forward-statement)
     (should (eobp))))
 
-(ert-deftest py-execute-import-or-reload-test ()
+(ert-deftest py-execute-import-or-reload-test-ZYUvdh ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -613,7 +613,7 @@ import os"
     (py-execute-import-or-reload)
     (should t)))
 
-(ert-deftest py-fill-docstring-pep-257-nn-test ()
+(ert-deftest py-fill-docstring-pep-257-nn-test-ylBRzi ()
   (py-test-with-temp-buffer
       "def usage():
     \'\'\' asdf\' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
@@ -628,7 +628,7 @@ import os"
     (should (eq 4 (current-indentation)))))
 
 ;; https://bugs.launchpad.net/python-mode/+bug/1321266
-(ert-deftest py-fill-string-lp-1321266-test ()
+(ert-deftest py-fill-string-lp-1321266-test-f8sTTj ()
   (py-test-with-temp-buffer
       "print(\"%(language)s has %(number)03d quote types. asdf asdf asdf asdfa sasdf asdfasdfasdfasdfasdfasda asd asdfa a asdf asdfa asdf \" %
        {'language': \"Python\", \"number\": 2})"
@@ -639,7 +639,7 @@ import os"
     (end-of-line)
     (should (eq (char-before) 92))))
 
-(ert-deftest py-syntax-highlighting-for-builtin-functions-55-test ()
+(ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
   (py-test-with-temp-buffer
       "range(len(list((1, 2, 3))))"
     (goto-char (point-max))
