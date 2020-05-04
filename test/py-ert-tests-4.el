@@ -454,5 +454,18 @@ doo = f'He said his name is {name} and he is {age} years old'"
     (search-backward "x")
     (should (eq 8 (py-compute-indentation)))))
 
+(ert-deftest lines-after-return-80-Ahdpe8 ()
+  (py-test-with-temp-buffer
+      "def empty():
+    return
+    yield"
+    (goto-char (point-max))
+    (beginning-of-line)
+    (should (eq 4 (py-compute-indentation)))
+    (search-backward "return")
+    (should (eq 4 (py-compute-indentation)))))
+
+
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

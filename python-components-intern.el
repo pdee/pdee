@@ -845,7 +845,10 @@ LIEP stores line-end-position at point-of-interest
                                (t (current-column))))
 			((looking-at py-block-closing-keywords-re)
 			 (if (< (line-end-position) orig)
-			     (- (current-indentation) (or indent-offset py-indent-offset))
+			     ;; #80, Lines after return cannot be correctly indented
+			     (if (looking-at "return[ \\t]*$")
+				 (current-indentation)
+			       (- (current-indentation) (or indent-offset py-indent-offset)))
 			   (py-backward-block-or-clause)
 			   (current-indentation)))
 			;; ((and (looking-at py-elif-re) (eq (py-count-lines) origline))

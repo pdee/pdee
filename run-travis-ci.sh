@@ -392,7 +392,6 @@ zweit() {
 -l $TEST13 \
 -l $TEST14 \
 -l $TEST15 \
--l $TEST16 \
 -f ert-run-tests-batch-and-exit
 }
 
