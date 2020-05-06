@@ -41,12 +41,15 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
         (erase-buffer))
       proc)))
 
-(defun py-fast-send-string (strg proc output-buffer &optional result no-output)
-  (let ((inhibit-read-only t)
-	(limit (marker-position (process-mark proc)))
-	erg)
+(defun py-fast-send-string (strg  &optional proc output-buffer result no-output argprompt args dedicated shell exception-buffer)
+  (interactive
+   (list (read-string "Python command: ")))
+  (py-send-string strg proc result no-output nil output-buffer t argprompt args dedicated shell exception-buffer))
+
+(defun py--fast-send-string-no-output-intern (strg proc limit output-buffer no-output)
+  (let (erg)
     (with-current-buffer output-buffer
-      ;; (switch-to-buffer (current-buffer))
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       ;; (erase-buffer)
       (process-send-string proc strg)
       (or (string-match "\n$" strg)
@@ -64,6 +67,9 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 	       (dotimes (_ 3) (unless (setq erg (py--fetch-result output-buffer limit))(sit-for 1 t)))
 	       (or (py--fetch-result output-buffer limit))
 	       (error "py-fast-send-string: py--fetch-result: no result")))))))
+  
+(defun py--fast-send-string-no-output (strg  &optional proc output-buffer result)
+  (py-fast-send-string strg proc output-buffer result t))
 
 (defun py--send-to-fast-process (strg proc output-buffer result)
   "Called inside of ‘py--execute-base-intern’.

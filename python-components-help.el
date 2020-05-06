@@ -213,14 +213,15 @@ not inside a defun."
     (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
     (ignore-errors (py-kill-buffer-unconditional buffer-name))
     (with-temp-buffer-window
-     (set-buffer (get-buffer-create buffer-name))
-     (setq inhibit-read-only t)
-     (setq inhibit-point-motion-hooks t)
-       (erase-buffer)
-       (when py-debug-p (message "%s" (current-buffer)))
-       (py-send-string cmd nil nil nil nil (current-buffer))
-       )))
-       
+	(set-buffer (get-buffer-create buffer-name))
+	(setq inhibit-read-only t)
+	(setq inhibit-point-motion-hooks t)
+      (erase-buffer)
+      (when py-debug-p (message "%s" (current-buffer)))
+      (py-send-string cmd nil t)
+      (insert py-result)
+      )))
+
 (defun py-help-at-point ()
   "Print help on symbol at point.
 

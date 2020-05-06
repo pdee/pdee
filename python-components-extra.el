@@ -284,7 +284,7 @@ detection and just returns nil."
               "  + `py-shell-input-prompt-2-regexp'\n"
               "  + `py-shell-prompt-output-regexp'\n"
               "Or alternatively in:\n"
-              "  + `py-shell-prompt-input-regexp'\n"
+              "  + `py-shell-input-prompt-regexps'\n"
               "  + `py-shell-prompt-output-regexps'"))
           prompts)))))
 
@@ -299,14 +299,12 @@ regexps: `py-shell-prompt-regexp',
 `py-shell-input-prompt-2-regexp',
 `py-shell-prompt-pdb-regexp',
 `py-shell-prompt-output-regexp',
-`py-shell-prompt-input-regexp',
+`py-shell-input-prompt-regexps',
 `py-shell-prompt-output-regexps'."
-  (dolist (symbol (list 'py-shell-prompt-input-regexp
+  (dolist (symbol (list 'py-shell-input-prompt-1-regexp
                         'py-shell-prompt-output-regexps
-                        'py-shell-prompt-regexp
                         'py-shell-input-prompt-2-regexp
-                        'py-shell-prompt-pdb-regexp
-                        'py-shell-prompt-output-regexp))
+                        'py-shell-prompt-pdb-regexp))
     (dolist (regexp (let ((regexps (symbol-value symbol)))
                       (if (listp regexps)
                           regexps
@@ -321,7 +319,7 @@ regexps: `py-shell-prompt-regexp',
 Build and set the values for input- and output-prompt regexp
 using the values from `py-shell-prompt-regexp',
 `py-shell-input-prompt-2-regexp', `py-shell-prompt-pdb-regexp',
-`py-shell-prompt-output-regexp', `py-shell-prompt-input-regexp',
+`py-shell-prompt-output-regexp', `py-shell-input-prompt-regexps',
  and detected prompts from `py-shell-prompt-detect'."
   (when (not (and py-shell--prompt-calculated-input-regexp
                   py-shell--prompt-calculated-output-regexp))
@@ -344,9 +342,8 @@ using the values from `py-shell-prompt-regexp',
       ;; Validate ALL regexps
       (py-shell-prompt-validate-regexps)
       ;; Collect all user defined input prompts
-      (dolist (prompt (append py-shell-prompt-input-regexp
-                              (list py-shell-prompt-regexp
-                                    py-shell-input-prompt-2-regexp
+      (dolist (prompt (append py-shell-input-prompt-regexps
+                              (list py-shell-input-prompt-2-regexp
                                     py-shell-prompt-pdb-regexp)))
         (cl-pushnew prompt input-prompts :test #'string=))
       ;; Collect all user defined output prompts

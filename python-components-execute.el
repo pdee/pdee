@@ -738,20 +738,13 @@ optional argument."
 (defun py--fetch-result (buffer limit &optional cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
-  (let ((fetch-re (if (and py-shell--prompt-calculated-input-regexp
-			   py-shell--prompt-calculated-output-regexp)
-		      (concat py-shell--prompt-calculated-input-regexp "\\|" py-shell--prompt-calculated-output-regexp)
-		    (progn
-		      (py-shell-prompt-set-calculated-regexps)
-		      (concat py-shell--prompt-calculated-input-regexp "\\|" py-shell--prompt-calculated-output-regexp)
-		      ))))
-    (when py-verbose-p (message "(current-buffer): %s" (current-buffer))
-	  (switch-to-buffer (current-buffer)))
-    (if python-mode-v5-behavior-p
-	(with-current-buffer buffer
-	  (string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
-      (when (< limit (point-max))
-	(string-trim (replace-regexp-in-string fetch-re "" (buffer-substring-no-properties limit (point-max))))))))
+  (when py-verbose-p (message "(current-buffer): %s" (current-buffer))
+	(switch-to-buffer (current-buffer)))
+  (if python-mode-v5-behavior-p
+      (with-current-buffer buffer
+	(string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
+    (when (< limit (point-max))
+      (string-trim (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max)))))))
 
 (defun py--postprocess (output-buffer origline limit &optional cmd filename)
   "Provide return values, check result for error, manage windows.
@@ -877,7 +870,7 @@ Optional FAST RETURN"
 		     (py--fix-if-name-main-permission (buffer-substring-no-properties start end))))
 	 (strg (py--fix-start strg-raw))
 	 (wholebuf (unless file (or wholebuf (and (eq (buffer-size) (- end start))))))
-	 ;; (windows-config (window-configuration-to-register py-windows-config-register))
+	 ;; error messages may mention differently when running from a temp-file
 	 (origline
 	  (format "%s" (save-restriction
 			 (widen)
@@ -1391,8 +1384,9 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 	  (unless (looking-back py-pdbtrack-input-prompt (line-beginning-position))
 	    (forward-line -1)
 	    (end-of-line)
-	    (when (or (re-search-backward py-shell-prompt-regexp nil t 1)
-		      (re-search-backward (concat py-ipython-input-prompt-re "\\|" py-ipython-output-prompt-re) nil t 1))
+	    (when (re-search-backward py-shell-prompt-regexp t 1)
+		;; (or (re-search-backward py-shell-prompt-regexp nil t 1)
+		;; (re-search-backward (concat py-ipython-input-prompt-re "\\|" py-ipython-output-prompt-re) nil t 1))
 	      (save-excursion
 		(when (re-search-forward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
 		  (setq erg (copy-marker (point)))
@@ -1400,7 +1394,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 					(save-match-data
 					  (when (looking-at
 						 ;; all prompt-regexp known
-						 py-fast-filter-re)
+						 1py-shell-prompt-regexp)
 					    (goto-char (match-end 0)))))
 
 					(progn (skip-chars-forward " \t\r\n\f"   (line-end-position))(point)))

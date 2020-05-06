@@ -43,7 +43,6 @@
       (and (should (search-backward "py-execute-statement-test" nil t 1))
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
-
 (ert-deftest py-complete-in-python3-shell-test-JtNakZ ()
   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
   (set-buffer (python3))
@@ -232,7 +231,7 @@ finally:
     (when py-debug-p (message "py-ert-fast-complete-1, current-buffer: %s" (current-buffer)))
     (should (search-backward "ect"))))
 
-(ert-deftest py-send-string-text-dtOWbA-X25uDo ()
+(ert-deftest py-send-string-text-dtOWbA1 ()
   (py-test-with-temp-buffer
       ""
     (let (erg)
@@ -1099,7 +1098,7 @@ print(u'\\xA9')"
 ;;     (org-babel-execute-src-block)
 ;;     (should (search-forward "@"))))
 
-(ert-deftest py-ert-respect-paragraph-1294829-test-NLzyHr-dpmi5s ()
+(ert-deftest py-ert-respect-paragraph-1294829-test-dpmi5s ()
   (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
@@ -1183,7 +1182,7 @@ by the
     (forward-line 1)
     (should (eq (char-after) ?\n))))
 
-(ert-deftest py-ert-respect-paragraph-1294829-test-s7lFth-7tLEjt ()
+(ert-deftest py-ert-respect-paragraph-1294829-test-s7lFth ()
   (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
@@ -1361,6 +1360,14 @@ def baz():
       (search-forward "\"\"\"")
       (forward-line -2)
       (should (py-empty-line-p)))))
+
+(ert-deftest py--fast-send-string-no-output-VxbcvH ()
+  (py-test-with-temp-buffer
+      "print(234)"
+    (py--fast-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
+    (set-buffer "*Python3 Fast*")
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (should (eq 1 (point-max)))))
 
 (provide 'py-extra-tests)
 ;;; py-extra-tests.el ends here

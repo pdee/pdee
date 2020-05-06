@@ -255,7 +255,7 @@ process buffer for a list of commands.)"
     (if (setq proc (get-buffer-process buffer))
 	(progn
 	  (with-current-buffer buffer
-	    (py-shell-mode)
+	    (unless fast (py-shell-mode))
 	    (and internal (set-process-query-on-exit-flag proc nil)))
 	  (when (or interactivep
 		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
@@ -1718,7 +1718,7 @@ Return the output."
      (with-current-buffer (process-buffer proc)
        (comint-interrupt-subjob)))))
 
-(defun py-send-string (strg &optional process result no-output orig output-buffer)
+(defun py-send-string (strg &optional process result no-output orig output-buffer fast argprompt args dedicated shell exception-buffer split switch internal)
   "Evaluate STRG in Python PROCESS.
 
 With optional Arg PROCESS send to process.
@@ -1728,13 +1728,19 @@ With optional Arg ORIG deliver original position.
 With optional Arg OUTPUT-BUFFER specify output-buffer"
   (interactive "sPython command: ")
   (save-excursion
-    (let* ((buffer (or output-buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell)))))
-	   (proc (or process (get-buffer-process buffer) (py-shell nil nil nil nil (buffer-name buffer))))
+    (let* ((buffer (or output-buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell argprompt args dedicated shell output-buffer fast exception-buffer split switch internal)))))
+	   (proc (or process (get-buffer-process buffer)))
+	   ;; nil nil nil nil (buffer-name buffer))))
 	   (orig (or orig (point)))
    	   (limit (ignore-errors (marker-position (process-mark proc)))))
-      (cond (no-output
+      (cond ((and no-output fast)
+	     (py--fast-send-string-no-output-intern strg proc limit buffer no-output))
+	    (no-output
 	     (py-send-string-no-output strg proc))
-	    ((and (string-match ".\n+." strg) (string-match "^[Ii]" (buffer-name buffer)))  ;; multiline
+	    ((and (string-match ".\n+." strg) (string-match "^[Ii]"
+							    ;; (buffer-name buffer)
+							    buffer
+							    ))  ;; multiline
 	     (let* ((temp-file-name (py-temp-file-name strg))
 		    (file-name (or (buffer-file-name) temp-file-name)))
 	       (py-send-file file-name proc)))
@@ -1748,9 +1754,7 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 			(setq py-result
 			      (py--fetch-result buffer limit strg)))
 		       (no-output
-			(and orig (py--cleanup-shell orig buffer)))))))))
-  ;; (switch-to-buffer (current-buffer))
-  )
+			(and orig (py--cleanup-shell orig buffer))))))))))
 
 (defun py-send-file (file-name process)
   "Send FILE-NAME to Python PROCESS."

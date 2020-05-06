@@ -464,8 +464,6 @@ doo = f'He said his name is {name} and he is {age} years old'"
     (should (eq 4 (py-compute-indentation)))
     (search-backward "return")
     (should (eq 4 (py-compute-indentation)))))
-
-
-
+    
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here
