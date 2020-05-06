@@ -18,6 +18,8 @@ New in version 6.2.4
   py-show
   py-show-all
   py-hide-section
+  py-fast-send-string
+  py-toggle-py-verbose-p
 
 py-show-FORM commands replaced by single ‘py-show’
 

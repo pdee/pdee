@@ -1958,6 +1958,15 @@ As v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncode
   (setq python-mode-v5-behavior-p (not python-mode-v5-behavior-p))
   (when (interactive-p) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p)))
 
+(defun py-toggle-py-verbose-p ()
+  "Switch the values of ‘py-verbose-p-p’
+
+Default is nil.
+If on, messages value of ‘py-result’ for instance."
+  (interactive)
+  (setq py-verbose-p-p (not py-verbose-p-p))
+  (when (interactive-p) (message "py-verbose-p-p: %s" py-verbose-p-p)))
+
 (defcustom py-trailing-whitespace-smart-delete-p nil
   "Default is nil.
 
