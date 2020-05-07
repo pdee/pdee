@@ -20,6 +20,7 @@ New in version 6.2.4
   py-hide-section
   py-fast-send-string
   py-toggle-py-verbose-p
+  py-execute-buffer-fast
 
 py-show-FORM commands replaced by single ‘py-show’
 
