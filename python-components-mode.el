@@ -1396,27 +1396,19 @@ Default is \"--errors-only\""
 (defvar py-pdbtrack-input-prompt "^[(<]*[Ii]?[Pp]y?db[>)]+ *"
   "Recognize the prompt.")
 
-;; (defcustom py-shell-input-prompt-1-regexp ">>> "
-;;   "A regular expression to match the input prompt of the shell."
-;;   :type 'regexp
-;;   :tag "py-shell-input-prompt-1-regexp"
-;;   :group 'python-mode)
+(defcustom py-shell-input-prompt-1-regexp ">>> "
+  "A regular expression to match the input prompt of the shell."
+  :type 'regexp
+  :tag "py-shell-input-prompt-1-regexp"
+  :group 'python-mode)
 
-;; (defcustom py-shell-input-prompt-2-regexp "[.][.][.]:? "
-;;   "A regular expression to match the input prompt.
+(defcustom py-shell-input-prompt-2-regexp "[.][.][.]:? "
+  "A regular expression to match the input prompt.
 
-;; Applies to the shell after the first line of input."
-;;   :type 'string
-;;   :tag "py-shell-input-prompt-2-regexp"
-;;   :group 'python-mode)
-
-(defvar py-shell-input-prompt-1-regexp ">>> *"
-  "Regular Expression matching top-level input prompt of python shell.
-It should not contain a caret (^) at the beginning.")
-
-(defvar py-shell-input-prompt-2-regexp "\\.\\.\\. "
-  "Regular Expression matching top-level input prompt of python shell.
-It should not contain a caret (^) at the beginning.")
+Applies to the shell after the first line of input."
+  :type 'string
+  :tag "py-shell-input-prompt-2-regexp"
+  :group 'python-mode)
 
 (defvar py-shell-ipython-input-prompt-1-regexp "In \\[[0-9]+\\]: "
   "Regular Expression matching top-level input prompt of python shell.
