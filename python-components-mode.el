@@ -71,7 +71,6 @@
 (require 'ansi-color)
 (ignore-errors (require 'subr-x))
 (require 'cc-cmds)
-(require 'cl)
 (require 'comint)
 (require 'compile)
 (require 'custom)

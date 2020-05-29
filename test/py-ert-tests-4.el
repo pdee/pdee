@@ -464,6 +464,34 @@ doo = f'He said his name is {name} and he is {age} years old'"
     (should (eq 4 (py-compute-indentation)))
     (search-backward "return")
     (should (eq 4 (py-compute-indentation)))))
-    
+
+(defun py-pdbtrack-test-Zz3qmu ()
+  (interactive)
+  (py-test-with-temp-buffer
+    "import pdb
+import sys
+import os
+pdb\.set_trace()
+
+args = sys\.argv
+def usage():
+    print(\"\"\"Fehler: %s
+Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
+'python roulette\.py 1, 'python roulette\.py 2', \.\.\. 'python roulette\.py n'\.
+\"\"\" % (
+          os\.path\.basename(sys\.argv\[0])))
+
+def main():
+    if len(sys\.argv) == 1:
+        usage()
+        # sys\.exit()
+"
+    (py-execute-buffer)
+    (should (buffer-live-p (get-buffer  "*Python3*")))
+    (set-buffer (get-buffer  "*Python3*"))
+    (goto-char (point-max))
+    (let ((inhibit-field-text-motion t))
+      (should (string-match "Pdb" (buffer-substring-no-properties (line-beginning-position) (point)))))))
+
 (provide 'py-interactive-tests)
 ;;; py-interactive-tests.el ends here

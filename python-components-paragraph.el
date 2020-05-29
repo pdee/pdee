@@ -307,17 +307,17 @@ See lp:1066489 "
   ;; fill-paragraph causes wrong indent, lp:1397936
   ;; (narrow-to-region thisbeg thisend)
   (let ((delimiters-style
-	 (case style
+	 (pcase style
 	   ;; delimiters-style is a cons cell with the form
 	   ;; (START-NEWLINES .  END-NEWLINES). When any of the sexps
 	   ;; is NIL means to not add any newlines for start or end
 	   ;; of docstring.  See `py-docstring-style' for a
 	   ;; graphic idea of each style.
-	   (django (cons 1 1))
-	   (onetwo (and multi-line-p (cons 1 2)))
-	   (pep-257 (and multi-line-p (cons nil 2)))
-	   (pep-257-nn (and multi-line-p (cons nil 1)))
-	   (symmetric (and multi-line-p (cons 1 1))))))
+	   (`django (cons 1 1))
+	   (`onetwo (and multi-line-p (cons 1 2)))
+	   (`pep-257 (and multi-line-p (cons nil 2)))
+	   (`pep-257-nn (and multi-line-p (cons nil 1)))
+	   (`symmetric (and multi-line-p (cons 1 1))))))
     ;;  (save-excursion
     (when style
       ;; Add the number of newlines indicated by the selected style

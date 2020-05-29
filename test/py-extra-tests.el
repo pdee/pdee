@@ -1369,5 +1369,35 @@ def baz():
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (should (eq 1 (point-max)))))
 
+(ert-deftest py-pdbtrack-test-H6CpKY ()
+  (py-test-with-temp-buffer
+      "import pdb
+import sys
+import os
+pdb\.set_trace()
+
+args = sys\.argv
+def usage():
+    print(\"\"\"Fehler: %s
+Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
+'python roulette\.py 1, 'python roulette\.py 2', \.\.\. 'python roulette\.py n'\.
+\"\"\" % (
+          os\.path\.basename(sys\.argv\[0])))
+
+def main():
+    if len(sys\.argv) == 1:
+        usage()
+        # sys\.exit()
+"
+    (save-excursion
+      (let ((inhibit-field-text-motion t)
+	    py-split-window-on-execute
+	    py-switch-buffers-on-execute-p)
+	(py-execute-buffer)
+	(should (buffer-live-p (get-buffer  "*Python3*")))
+	(set-buffer (get-buffer  "*Python3*"))
+	(goto-char (point-max))
+	(should (string-match "Pdb" (buffer-substring-no-properties (line-beginning-position) (point-max))))))))
+
 (provide 'py-extra-tests)
 ;;; py-extra-tests.el ends here
