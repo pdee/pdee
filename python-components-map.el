@@ -260,11 +260,11 @@ Default is t")
           (goto-char (match-end 0))
           ;; face for this match
           (0 font-lock-variable-name-face t)))
+	;; assignment
         ;; a, b, c = (1, 2, 3)
         (,(lambda (limit)
             (let ((re (rx (group (+ (any word ?. ?_))) (* space)
 			  (* ?, (* space) (+ (any word ?. ?_)) (* space))
-			  ?, (* space) (+ (any word ?. ?_)) (* space)
 			  (or "=" "+=" "-=" "*=" "/=" "//=" "%=" "**=" ">>=" "<<=" "&=" "^=" "|=")))
                   (res nil))
               (while (and (setq res (re-search-forward re limit t))
