@@ -1399,5 +1399,13 @@ def main():
 	(goto-char (point-max))
 	(should (string-match "Pdb" (buffer-substring-no-properties (line-beginning-position) (point-max))))))))
 
+(ert-deftest highlight-typed-variables-in-python-41684-test-ZFhHGT ()
+  (py-test-with-temp-buffer
+      ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2020-06/msg00128.html
+      "foo: int = 1"
+    (goto-char (point-max))
+    (search-backward "foo")
+    (should (equal (face-at-point) 'py-variable-name-face))))
+
 (provide 'py-extra-tests)
 ;;; py-extra-tests.el ends here
