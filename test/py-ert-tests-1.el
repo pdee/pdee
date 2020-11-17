@@ -1398,7 +1398,7 @@ def baz():
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-1-2H3ET7 ()
   "Indent line-by-line as first line is okay "
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1410,10 +1410,11 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   (goto-char (point-min))
-   (search-forward "True")
+   (goto-char (point-max))
+   (push-mark) 
+   (search-backward "True")
    (save-excursion
-     (py-indent-region (line-beginning-position) (point-max)))
+     (py-indent-region (line-beginning-position) (point-max) t))
    (should (eq 4 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-2-wF0CYZ ()
@@ -1430,16 +1431,17 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   (goto-char (point-min))
-   (search-forward "True")
+   (goto-char (point-max))
+   (push-mark) 
+   (search-backward "True")
    (save-excursion
-     (py-indent-region (line-beginning-position) (point-max)))
+     (py-indent-region (line-beginning-position) (point-max) t))
    (search-forward "with file")
    (should (eq 8 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-3-yAzv0R ()
   "Indent line-by-line as first line is okay "
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1451,16 +1453,17 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   (goto-char (point-min))
-   (search-forward "True")
+   (goto-char (point-max))
+   (push-mark) 
+   (search-backward "True")
    (save-excursion
-     (py-indent-region (line-beginning-position) (point-max)))
+     (py-indent-region (line-beginning-position) (point-max) t))
    (search-forward "for i ")
    (should (eq 12 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-4-MvlWZJ ()
   "Indent line-by-line as first line is okay "
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1472,16 +1475,17 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   (goto-char (point-min))
-   (search-forward "True")
+   (goto-char (point-max))
+   (push-mark) 
+   (search-backward "True")
    (save-excursion
-     (py-indent-region (line-beginning-position) (point-max)))
+     (py-indent-region (line-beginning-position) (point-max) t))
    (search-forward "bar.")
    (should (eq 16 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-5-cXQ3WB ()
   "Indent line-by-line as first line is okay "
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 def foo ():
@@ -1493,16 +1497,17 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         bar.dosomething()
         datei.write(str(baz[i]) + \"\\n\")
 "
-   (goto-char (point-min))
-   (search-forward "True")
+   (goto-char (point-max))
+   (push-mark) 
+   (search-backward "True")
    (save-excursion
-     (py-indent-region (line-beginning-position) (point-max)))
+     (py-indent-region (line-beginning-position) (point-max) t))
    (search-forward "datei.write")
    (should (eq 16 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-arg-2-test-gDZcSt ()
   "Indent line-by-line as first line is okay "
-  (py-test-with-temp-buffer-point-min
+  (py-test-with-temp-buffer
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 with file(\"foo\" + zeit + \".ending\", 'w') as datei:
@@ -1512,10 +1517,11 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         # wrong indent should to be fixed
             datei.write(str(baz[i]) + \"\\n\")
 "
-    (goto-char (point-min))
-    (search-forward "with file")
+    (goto-char (point-max))
+    (push-mark) 
+    (search-backward "with file")
     (save-excursion
-      (py-indent-region (line-beginning-position) (point-max)))
+      (py-indent-region (point) (point-max) t))
     (should (eq 0 (current-indentation)))
     (search-forward "for i ")
     (should (eq 4 (current-indentation)))
