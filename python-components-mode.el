@@ -3495,7 +3495,7 @@ See also `py-object-reference-face'"
 
 (defface py-exception-name-face
   '((t (:inherit font-lock-builtin-face)))
-  "."
+  "Face for Python exceptions."
   :tag "py-exception-name-face"
   :group 'python-mode)
 
