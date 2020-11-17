@@ -507,7 +507,7 @@ BEG END deliver the boundaries of region to work within"
       (py-indent-and-forward)))
   (unless (py-empty-line-p) (py-indent-and-forward)))
 
-(defun py-indent-region (beg end)
+(defun py-indent-region (&optional beg end no-check)
   "Reindent a region delimited by BEG END.
 
 In case first line accepts an indent, keep the remaining
@@ -515,10 +515,16 @@ lines relative.
 Otherwise lines in region get outmost indent,
 same with optional argument
 
-In order to shift a chunk of code, where the first line is okay, start with second line."
+In order to shift a chunk of code, where the first line is okay, start with second line.
+
+Optional BEG: used by tests
+Optional END: used by tests
+Optional NO-CHECK: used by tests
+"
   (interactive "*")
-  (let ((end (copy-marker end)))
-    (goto-char beg)
+  (or no-check (use-region-p) (error "Don't see an active region"))
+  (let ((end (copy-marker (or end (region-end)))))
+    (goto-char (or beg (region-beginning)))
     (beginning-of-line)
     (setq beg (point))
     (skip-chars-forward " \t\r\n\f")

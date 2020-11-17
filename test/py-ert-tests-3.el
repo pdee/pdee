@@ -456,14 +456,18 @@ Bar
       "def asdf()
      pass"
     (goto-char (point-max))
-    (py-indent-region (point-min) (point-max))
+    (push-mark)
+    (goto-char (point-min))
+    (py-indent-region (point-min) (point-max) t)
     (should (eq 4 (current-indentation)))))
 
 (ert-deftest py--indent-line-by-line-lp-1621672-b-tACrr5 ()
   (py-test-with-temp-buffer
       "    print(\"asdf\")"
     (goto-char (point-max))
-    (py-indent-region (point-min) (point-max))
+    (push-mark)
+    (goto-char (point-min)) 
+    (py-indent-region (point-min) (point-max) t)
     (should (eq 0 (current-indentation)))))
 
 (ert-deftest py-forward-def-or-class-1-cmHY16 ()
