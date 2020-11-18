@@ -60,7 +60,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 	     ;; (erase-buffer)
 	     (delete-region (point-min) (line-beginning-position))
 	     )
-	    (result
+	    (t
 	     (if
 		 (setq erg (py--fetch-result output-buffer limit strg))
 		 (setq py-result (py--filter-result erg))

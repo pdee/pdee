@@ -238,14 +238,6 @@ Default is t"
 (setq py-coding-re
   "\\(# *coding[ \t]*=\\|#[ \t]*\-*\-[ \t]*coding:\\|#[ \t]*encoding:\\)[ \t]*\\([[:graph:]+]\\)")
 
-;; and
-
-;; #[ \t]*-*-[ \t]*coding:[ \t]* utf-8 -*-
-
-;; What about
-
-;; #[ \t]*encoding:[ \t]* utf-8"
-
 (defcustom py-comment-auto-fill-p nil
   "When non-nil, fill comments.
 
@@ -1273,13 +1265,6 @@ Default is t."
   :tag "py-current-defun-delay"
   :group 'python-mode)
 
-;; (defcustom py--delete-temp-file-delay 1
-;;   "Used by `py--delete-temp-file'."
-
-;;   :type 'number
-;;   :tag "py--delete-temp-file-delay"
-;;   :group 'python-mode)
-
 (defcustom py-python-send-delay 1
   "Seconds to wait for output, used by `py--send-...' functions.
 
@@ -1681,7 +1666,6 @@ At any case only current input gets fontified."
 (defcustom py-shell-name
   (if (eq system-type 'windows-nt)
       "C:/Python27/python"
-    ;; "python"
     "python")
 
   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for.
@@ -1950,13 +1934,13 @@ As v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncode
   (when (interactive-p) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p)))
 
 (defun py-toggle-py-verbose-p ()
-  "Switch the values of ‘py-verbose-p-p’
+  "Switch the values of ‘py-verbose-p’
 
 Default is nil.
 If on, messages value of ‘py-result’ for instance."
   (interactive)
-  (setq py-verbose-p-p (not py-verbose-p-p))
-  (when (interactive-p) (message "py-verbose-p-p: %s" py-verbose-p-p)))
+  (setq py-verbose-p (not py-verbose-p))
+  (when (interactive-p) (message "py-verbose-p: %s" py-verbose-p)))
 
 (defcustom py-trailing-whitespace-smart-delete-p nil
   "Default is nil.
@@ -2446,72 +2430,6 @@ Iff ‘py-shell--prompt-calculated-input-regexp’
 or ‘py-shell--prompt-calculated-output-regexp’ are set
 ‘py-shell-prompt-set-calculated-regexps’ isn't run.
 ")
-
-;; (defmacro py-rx (&rest regexps)
-;;   "Python mode specialized rx macro.
-;; This variant of `rx' supports common Python named REGEXPS."
-;;   `(rx-let ((block-start       (seq symbol-start
-;;                                     (or "def" "class" "if" "elif" "else" "try"
-;;                                         "except" "finally" "for" "while" "with"
-;;                                         ;; Python 3.5+ PEP492
-;;                                         (and "async" (+ space)
-;;                                              (or "def" "for" "with")))
-;;                                     symbol-end))
-;;             (dedenter          (seq symbol-start
-;;                                     (or "elif" "else" "except" "finally")
-;;                                     symbol-end))
-;;             (block-ender       (seq symbol-start
-;;                                     (or
-;;                                      "break" "continue" "pass" "raise" "return")
-;;                                     symbol-end))
-;;             (decorator         (seq line-start (* space) ?@ (any letter ?_)
-;;                                     (* (any word ?_))))
-;;             (defun             (seq symbol-start
-;;                                     (or "def" "class"
-;;                                         ;; Python 3.5+ PEP492
-;;                                         (and "async" (+ space) "def"))
-;;                                     symbol-end))
-;;             (if-name-main      (seq line-start "if" (+ space) "__name__"
-;;                                     (+ space) "==" (+ space)
-;;                                     (any ?' ?\") "__main__" (any ?' ?\")
-;;                                     (* space) ?:))
-;;             (symbol-name       (seq (any letter ?_) (* (any word ?_))))
-;;             (open-paren        (or "{" "[" "("))
-;;             (close-paren       (or "}" "]" ")"))
-;;             (simple-operator   (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))
-;;             (not-simple-operator (not simple-operator))
-;;             (operator          (or "==" ">=" "is" "not"
-;;                                    "**" "//" "<<" ">>" "<=" "!="
-;;                                    "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
-;;                                    "=" "%"))
-;;             (assignment-operator (or "+=" "-=" "*=" "/=" "//=" "%=" "**="
-;;                                      ">>=" "<<=" "&=" "^=" "|="
-;;                                      "="))
-;;             (string-delimiter  (seq
-;;                                 ;; Match even number of backslashes.
-;;                                 (or (not (any ?\\ ?\' ?\")) point
-;;                                     ;; Quotes might be preceded by an
-;;                                     ;; escaped quote.
-;;                                     (and (or (not (any ?\\)) point) ?\\
-;;                                          (* ?\\ ?\\) (any ?\' ?\")))
-;;                                 (* ?\\ ?\\)
-;;                                 ;; Match single or triple quotes of any kind.
-;;                                 (group (or  "\"\"\"" "\"" "'''" "'"))))
-;;             (coding-cookie (seq line-start ?# (* space)
-;;                                 (or
-;;                                  ;; # coding=<encoding name>
-;;                                  (: "coding" (or ?: ?=) (* space)
-;;                                     (group-n 1 (+ (or word ?-))))
-;;                                  ;; # -*- coding: <encoding name> -*-
-;;                                  (: "-*-" (* space) "coding:" (* space)
-;;                                     (group-n 1 (+ (or word ?-)))
-;;                                     (* space) "-*-")
-;;                                  ;; # vim: set fileencoding=<encoding name> :
-;;                                  (: "vim:" (* space) "set" (+ space)
-;;                                     "fileencoding" (* space) ?= (* space)
-;;                                     (group-n 1 (+ (or word ?-)))
-;;                                     (* space) ":")))))
-;;      (rx ,@regexps)))
 
 (defvar py-shell-prompt-output-regexp ""
   "See py-shell-prompt-output-regexps")
