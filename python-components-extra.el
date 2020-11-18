@@ -417,8 +417,9 @@ using that one instead of current buffer's process."
        (start
 	(save-excursion
 	  (if (not (re-search-backward
-		    (py-rx
-		     (or whitespace open-paren close-paren string-delimiter simple-operator))
+		    ;; (py-rx
+		    ;;  (or whitespace open-paren close-paren string-delimiter simple-operator))
+		    "[[:space:]]\\|[([{]\\|[])}]\\|\\(?:[^\"'\\]\\|\\=\\|\\(?:[^\\]\\|\\=\\)\\\\\\(?:\\\\\\\\\\)*[\"']\\)\\(?:\\\\\\\\\\)*\\(\\(?:\"\"\"\\|'''\\|[\"']\\)\\)\\|[%&*+/<->^|~-]"
 		    line-start
 		    t 1))
 	      line-start
@@ -659,7 +660,10 @@ Returns the encoding as a symbol."
              (buffer-substring-no-properties
               (point)
               (point-min))))))
-    (when (string-match (py-rx coding-cookie) first-two-lines)
+    (when (string-match 
+	   ;; (py-rx coding-cookie)
+	   "^#[[:space:]]*\\(?:coding[:=][[:space:]]*\\(?1:\\(?:[[:word:]]\\|-\\)+\\)\\|-\\*-[[:space:]]*coding:[[:space:]]*\\(?1:\\(?:[[:word:]]\\|-\\)+\\)[[:space:]]*-\\*-\\|vim:[[:space:]]*set[[:space:]]+fileencoding[[:space:]]*=[[:space:]]*\\(?1:\\(?:[[:word:]]\\|-\\)+\\)[[:space:]]*:\\)"
+	   first-two-lines)
       (intern (match-string-no-properties 1 first-two-lines)))))
 
 (unless (functionp 'file-local-name)
