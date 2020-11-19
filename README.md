@@ -256,3 +256,11 @@ There is also
   (note that I not only have to add the python command, but also fully
   qualify the script file, since otherwise it complains it can't find
   the file).
+
+# Testing
+
+  File ‘run-travis-ci.sh’ runs tests in batch-mode locally and remote.
+  If the shell-variable WERKSTATT is set to 0, local run is assumed.
+  The script does
+  WERKSTATT=${WERKSTATT:=1}
+  i.e. if WERKSTATT is not set, it  will be 1, which means "remote" here.
