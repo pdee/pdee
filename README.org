@@ -1,4 +1,9 @@
 [![MELPA](https://melpa.org/packages/python-mode-badge.svg)](https://melpa.org/#/python-mode)
+
+Send source code to all known Python shells without need to reconfigure default.
+Provide fine grained navigation of all known Python constructs.
+No known indentation bugs.
+
 * Initialize
   Put the following into your initialization file:
 
@@ -16,6 +21,9 @@
   If different flavours of Python are installed, in order to adress
   them customize var ‘py-known-shells’ and reload. python-mode will
   create the required commands according to contents of this list.
+
+  Depending from your instell the var py-known-shells might show contents like that:
+  ("ipython" "ipython2.7" "ipython3" "jython" "python" "python2" "python3" "pypy")
 
   If needed, customize respective arguments
   py-SHELL-command-args,  i.e.
@@ -47,7 +55,6 @@
   In case you will run code by default-shell, ignoring shebang, set
   `py-force-py-shell-name-p' to. This might be done also via menu
   Python/.../Switches
-
 
   Run a local shell by evaluating
 
