@@ -51,7 +51,6 @@ Default is t")
         (define-key map [(control c) (control q)] 'py-forward-block)
         (define-key map [(control meta a)] 'py-backward-def-or-class)
         (define-key map [(control meta e)] 'py-forward-def-or-class)
-
         ;; (define-key map [(meta i)] 'py-indent-forward-line)
         (define-key map [(control j)] 'py-newline-and-indent)
         ;; Most Pythoneers expect RET `py-newline-and-indent'
@@ -65,7 +64,8 @@ Default is t")
         (define-key map [(control c) (control r)] 'py-shift-right)
         (define-key map [(control c) (<)] 'py-shift-left)
         (define-key map [(control c) (>)] 'py-shift-right)
-        (define-key map [(control c) (tab)] 'py-indent-region)
+        ;; (define-key map [(control c) (tab)] 'py-indent-region)
+	(define-key map (kbd "C-c TAB") 'py-indent-region)
         (define-key map [(control c) (:)] 'py-guess-indent-offset)
         ;; subprocess commands
         (define-key map [(control c) (control c)] 'py-execute-buffer)
