@@ -1589,7 +1589,7 @@ See also `py-keep-windows-configuration'"
   "Toggle between customized value and nil"
   (interactive)
   (setq py-split-window-on-execute (not py-split-window-on-execute))
-  (when (interactive-p)
+  (when (called-interactively-p 'interactive)
     (message "py-split-window-on-execute: %s" py-split-window-on-execute)
     py-split-window-on-execute))
 
@@ -1931,7 +1931,8 @@ As v5 did it - lp:990079. This might fail with certain chars - see UnicodeEncode
   "Switch the values of ‘python-mode-v5-behavior-p’"
   (interactive)
   (setq python-mode-v5-behavior-p (not python-mode-v5-behavior-p))
-  (when (interactive-p) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p)))
+  (when (called-interactively-p 'interactive)
+    (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p)))
 
 (defun py-toggle-py-verbose-p ()
   "Switch the values of ‘py-verbose-p’
@@ -1940,7 +1941,8 @@ Default is nil.
 If on, messages value of ‘py-result’ for instance."
   (interactive)
   (setq py-verbose-p (not py-verbose-p))
-  (when (interactive-p) (message "py-verbose-p: %s" py-verbose-p)))
+  (when (called-interactively-p 'interactive)
+    (message "py-verbose-p: %s" py-verbose-p)))
 
 (defcustom py-trailing-whitespace-smart-delete-p nil
   "Default is nil.
@@ -2773,8 +2775,9 @@ for options to pass to the DOCNAME interpreter. \"
   (interactive \"P\")
   (let\* ((py-shell-name \"FULLNAME\"))
     (py-shell argprompt)
-    (when (interactive-p) (switch-to-buffer (current-buffer))
-          (goto-char (point-max)))))
+    (when (called-interactively-p 'interactive)
+      (switch-to-buffer (current-buffer))
+      (goto-char (point-max)))))
 ")
 
 ;; Constants
@@ -3456,13 +3459,15 @@ TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
   "Toggle value of ‘py--imenu-create-index-p’"
   (interactive)
   (setq py--imenu-create-index-p (not py--imenu-create-index-p))
-  (when (interactive-p) (message "py--imenu-create-index-p: %s" py--imenu-create-index-p)))
+  (when (called-interactively-p 'interactive)
+    (message "py--imenu-create-index-p: %s" py--imenu-create-index-p)))
 
 (defun py-toggle-shell-completion ()
   "Switches value of buffer-local var ‘py-shell-complete-p’"
   (interactive)
     (setq py-shell-complete-p (not py-shell-complete-p))
-    (when (interactive-p) (message "py-shell-complete-p: %s" py-shell-complete-p)))
+    (when (called-interactively-p 'interactive)
+      (message "py-shell-complete-p: %s" py-shell-complete-p)))
 
 (defun py--python-send-setup-code-intern (name buffer)
   (save-excursion

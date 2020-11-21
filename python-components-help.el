@@ -151,7 +151,8 @@ Useful for newly defined symbol, not known to python yet."
           (when erg
             (set-buffer (get-buffer-create "*Python-Help*"))
             (erase-buffer)
-            ;; (when (interactive-p) (switch-to-buffer (current-buffer)))
+            ;; (when (called-interactively-p 'interactive)
+            ;;   (switch-to-buffer (current-buffer)))
             (insert erg)))))))
 
 (defun py-info-current-defun (&optional include-type)
@@ -607,7 +608,7 @@ Interactively, prompt for SYMBOL."
          (symbol-raw (or symbol (with-syntax-table py-dotted-expression-syntax-table
 				  (current-word))))
          ;; (enable-recursive-minibuffers t)
-         (symbol (if (interactive-p)
+         (symbol (if (called-interactively-p 'interactive)
 		     (read-string (format "Find location of (default %s): " symbol-raw)
 		                  symbol-raw nil symbol-raw)
 		   symbol-raw))

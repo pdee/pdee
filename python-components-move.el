@@ -814,7 +814,7 @@ Return position if successful."
 	    (while (and (setq last (py-backward-statement))
 			(not (looking-at py-assignment-re))))
 	    (and (looking-at py-assignment-re) last))))
-    (when (and py-verbose-p (interactive-p))
+    (when (and py-verbose-p (called-interactively-p 'interactive))
       (message "%s" erg))
     erg))
 
@@ -832,7 +832,7 @@ Return position of successful, nil of not started from inside."
 			    ;; (not (bolp))
 			    ))
 		(and (looking-at py-assignment-re) last)))))
-    (when (and py-verbose-p (interactive-p))
+    (when (and py-verbose-p (called-interactively-p 'interactive))
       (message "%s" erg))
     erg))
 
@@ -864,7 +864,8 @@ Return position of successful, nil of not started from inside"
 		    (and (looking-at py-assignment-re) last))))
 	     erg)
 	(and beg (setq erg (py--forward-assignment-intern)))
-	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
+	(when (and py-verbose-p (called-interactively-p 'interactive))
+          (message "%s" erg))
 	erg))))
 
 (defun py-forward-assignment()
@@ -895,7 +896,8 @@ When called at the end of an assignment, check next form downwards."
 	  (when last
 	    (goto-char last)
 	    (setq erg (point))))
-	(when (and py-verbose-p (interactive-p)) (message "%s" erg))
+	(when (and py-verbose-p (called-interactively-p 'interactive))
+          (message "%s" erg))
 	erg))))
 
 (provide 'python-components-move)

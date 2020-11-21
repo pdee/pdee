@@ -667,7 +667,8 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
     (if proc
 	(setq erg (py-send-string (concat "import os\;os.getcwd()") proc nil t))
       (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.getcwd())\"")))))
-    (when (interactive-p) (message "CWD: %s" erg))
+    (when (called-interactively-p 'interactive)
+      (message "CWD: %s" erg))
     erg))
 
 (defun py-set-working-directory (&optional directory)
@@ -680,7 +681,8 @@ when given, to value of ‘py-default-working-directory’ otherwise"
 	 erg)
     (py-send-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
     (setq erg (py-send-string "os.getcwd()" proc nil t))
-    (when (interactive-p) (message "CWD changed to: %s" erg))
+    (when (called-interactively-p 'interactive)
+      (message "CWD changed to: %s" erg))
     erg))
 
 (defun py--update-execute-directory-intern (dir proc procbuf fast)
@@ -1077,7 +1079,8 @@ May we get rid of the temporary file?"
             (setq erg (py--execute-file-base nil (expand-file-name filename) nil nil origline))
           (py--execute-file-base nil (expand-file-name filename)))
       (message "%s not readable. %s" filename "Do you have write permissions?"))
-    (py--shell-manage-windows py-output-buffer py-exception-buffer nil (or (interactive-p)))
+    (py--shell-manage-windows py-output-buffer py-exception-buffer nil
+                              (or (called-interactively-p 'interactive)))
     erg))
 
 (defun py-execute-string (&optional strg shell dedicated switch fast)

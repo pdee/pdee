@@ -149,7 +149,7 @@ If no class name is found, return nil."
         (py-backward-class)
         (when (looking-at (concat py-class-re " *\\([^( ]+\\)"))
           (setq classname (match-string-no-properties 2))
-          (if (interactive-p)
+          (if (called-interactively-p 'interactive)
               (message "%s" classname)))))
     classname))
 

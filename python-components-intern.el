@@ -555,7 +555,7 @@ When interactively called, copy and message it"
   (let ((erg (with-syntax-table
                  py-dotted-expression-syntax-table
                (current-word))))
-    (when (interactive-p) (kill-new erg)
+    (when (called-interactively-p 'interactive) (kill-new erg)
 	  (message "%s" erg))
     erg))
 

@@ -153,7 +153,6 @@
 (defun all-mode-setting ()
   (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
   (set (make-local-variable 'eldoc-message-function) 'py-help-at-point)
-  
   )
 
 ;;;###autoload
@@ -189,7 +188,7 @@ See available customizations listed in files variables-python-mode at directory 
 
 \\{python-mode-map}"
   :group 'python-mode
-  ;; load known shell listed in 
+  ;; load known shell listed in
   ;; Local vars
   (all-mode-setting)
   (set (make-local-variable 'electric-indent-inhibit) nil)
@@ -322,7 +321,7 @@ See available customizations listed in files variables-python-mode at directory 
 
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   (when py-outline-minor-mode-p (outline-minor-mode 1))
-  (when (interactive-p)
+  (when (called-interactively-p 'interactive)
     (py-message-which-python-mode))
   (force-mode-line-update))
 
