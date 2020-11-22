@@ -164,9 +164,9 @@ the dot, else nil."
           (if pos
               (goto-char pos))
           (cond
-           ((looking-back "\\(\\[\\|,[^[]*\\)\\]") "list")
-           ((looking-back "['\"]") "str")
-           ((looking-back "}") "dict"))))))
+           ((looking-back "\\(\\[\\|,[^[]*\\)\\]") "list" (point-min))
+           ((looking-back "['\"]") "str" (point-min))
+           ((looking-back "}") "dict" (point-min)))))))
 
 (defun py-complete-substitute-type-for-var (word)
   "Substitute the type for the variable starting the dot-expression word.
