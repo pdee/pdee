@@ -74,7 +74,7 @@ Used with ‘eval-after-load’."
 	       (condition-case ()
 		   (progn
 		     (Info-goto-node
-		      (format "(python-lib)Miscellaneous Index" version))
+		      (format "(python%s-lib)Miscellaneous Index" version))
 		     nil)
 		 (error
 		  ;; Otherwise look for any versioned Info file.
