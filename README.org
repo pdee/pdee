@@ -5,10 +5,9 @@ Provide fine grained navigation of all known Python constructs.
 No known indentation bugs.
 
 * Initialize
-  Put the following into your initialization file:
-
-  (setq py-install-directory "PATH/TO/PYTHON-MODE/")
-  (add-to-list 'load-path py-install-directory)
+  Make sure the directory, where python-mode.el resides, is in load-path
+  For expample put something like that in your init-file: 
+  (add-to-list 'load-path "PATH/TO/PYTHON-MODE")
   (require 'python-mode)
 
 * Selecting a Python shell:

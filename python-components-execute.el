@@ -1397,7 +1397,7 @@ Indicate LINE if code wasn't run from a file, thus remember line of source buffe
 					(save-match-data
 					  (when (looking-at
 						 ;; all prompt-regexp known
-						 1py-shell-prompt-regexp)
+						 py-shell-prompt-regexp)
 					    (goto-char (match-end 0)))))
 
 					(progn (skip-chars-forward " \t\r\n\f"   (line-end-position))(point)))
