@@ -63,8 +63,8 @@ TEST16=$TESTDIR/py-extra-tests.el
 TEST17=$HOME/emacs/test/lisp/progmodes/python-tests.el
 TEST18=$TESTDIR/translated-python-tests.el
 
-if [ -s $HOME/emacs-20200406/src/emacs ]; then
-    EMACS=$HOME/emacs-20200406/src/emacs
+if [ -s $HOME/emacs-20201119/src/emacs ]; then
+    EMACS=$HOME/emacs-20201119/src/emacs
 else
     EMACS=emacs
 fi
@@ -78,6 +78,7 @@ h1() {
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(require 'ert)" \
+--eval "(setq py-install-dir \"$PDIR\")" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
@@ -331,31 +332,6 @@ hierv5() {
 }
 
 
-hier() {
-    date; time -p $EMACS -Q --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(setq py-verbose-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST1 \
--l $TEST2 \
--l $TEST4 \
--l $TEST5 \
--l $TEST6 \
--l $TEST7 \
--l $TEST8 \
--l $TEST11 \
--l $TEST12 \
--l $TEST13 \
--l $TEST14 \
--l $TEST15 \
--l $TEST16 \
--f ert-run-tests-batch-and-exit
-}
 
 erst() {
     date; time -p $EMACS -Q --batch \
@@ -442,6 +418,32 @@ $EMACS -Q --batch \
 -l $TEST14 \
 -l $TEST15 \
 --eval "(setq py-debug-p nil)" \
+-f ert-run-tests-batch-and-exit
+}
+
+hier() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
+-l $TEST1 \
+-l $TEST2 \
+-l $TEST4 \
+-l $TEST5 \
+-l $TEST6 \
+-l $TEST7 \
+-l $TEST8 \
+-l $TEST11 \
+-l $TEST12 \
+-l $TEST13 \
+-l $TEST14 \
+-l $TEST15 \
+-l $TEST16 \
 -f ert-run-tests-batch-and-exit
 }
 

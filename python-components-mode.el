@@ -129,6 +129,7 @@ Emacs doesn't read .bashrc"
   :tag "py-pythonpath"
   :group 'python-mode)
 
+;; (setq py-install-directory "")
 (when (string= "" py-install-directory)
   (setq py-install-directory default-directory))
 
@@ -3684,12 +3685,10 @@ Return nil, if no executable found."
   "Make sure DIRECTORY ends with a file-path separator char.
 
 Returns DIRECTORY"
-  (let ((erg (cond ((string-match (concat py-separator-char "$") directory)
-                    directory)
-                   ((not (string= "" directory))
-                    (concat directory py-separator-char)))))
-    (unless erg (when py-verbose-p (message "Warning: directory is empty")))
-    erg))
+  (cond ((string-match (concat py-separator-char "$") directory)
+         directory)
+        ((not (string= "" directory))
+         (concat directory py-separator-char))))
 
 (defun py--normalize-pythonpath (pythonpath)
   "Make sure PYTHONPATH ends with a colon.
