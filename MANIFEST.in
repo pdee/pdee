@@ -19,7 +19,7 @@ include doc/variables-python-mode.org
 include doc/variables-python-mode.rst
 include python-mode.el
 include test/doctest-mode.el
-include test/py-ert-tests-1.el
+include test/py-ert-indent-tests-1.el
 include test/py-ert-tests-2.el
 include test/py-ert-always-split-lp-1361531-tests.el
 include test/py-ert-just-two-split-lp-1361531-tests.el

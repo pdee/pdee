@@ -12,7 +12,13 @@
 # GNU General Public License for more details.
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 # Commentary:
+
+# run all tests calling this script
+# or
+# run-travis-ci.sh -[OPTION]
+# selecting single test-files
 
 # This script tests functions from python-mode.el.
 

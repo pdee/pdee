@@ -21,8 +21,8 @@
 
 ;; tests are expected to run from directory test
 
-(add-to-list 'load-path default-directory)
-(load "py-ert-tests-1.el" nil t)
+;; (add-to-list 'load-path default-directory)
+;; (load "py-ert-tests-3.el" nil t)
 
 ;; py-if-name-main-permission-p
 (ert-deftest py-ert-if-name-main-permission-lp-326620-test-CZefpG ()
