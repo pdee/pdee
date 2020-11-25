@@ -112,6 +112,7 @@ Needed for completion and other environment stuff only."
 avoiding it might speed up things."
 
   :type 'boolean
+  :tag "py-font-lock-defaults-p"
   :group 'python-mode
   :safe 'booleanp)
 
@@ -119,8 +120,8 @@ avoiding it might speed up things."
   "If eldoc-mode is loaded by python-mode.
 
 Default is nil"
-
   :type 'boolean
+  :tag "py-eldoc-mode-p"
   :group 'python-mode
   :safe 'booleanp)
 
@@ -215,6 +216,7 @@ Results arrive in output buffer, which is not in comint-mode"
      1 2))
   "`compilation-error-regexp-alist' for py-shell."
   :type '(alist string)
+  :tag "py-shell-compilation-regexp-alist"
   :group 'python-mode)
 
 (defcustom py-shift-require-transient-mark-mode-p t
@@ -223,6 +225,7 @@ Results arrive in output buffer, which is not in comint-mode"
 Default is t"
 
   :type 'boolean
+  :tag "py-shift-require-transient-mark-mode-p"
   :group 'python-mode
   :safe 'booleanp)
 
@@ -245,6 +248,7 @@ Default is t"
 Defaut is nil"
 
   :type 'boolean
+  :tag "py-comment-auto-fill-p"
   :group 'python-mode
   :safe 'booleanp)
 
@@ -254,6 +258,7 @@ Defaut is nil"
 Respective ‘backward-sexp’ will call ‘py-backward-expression’
 Default is t"
   :type 'boolean
+  :tag "py-sexp-use-expression-p"
   :group 'python-mode
   :safe 'booleanp)
 
@@ -367,6 +372,7 @@ Default is nil")
  where write-access is not given."
 
  :type 'boolean
+ :tag "py--execute-use-temp-file-p"
  :group 'python-mode)
 
 (defvar py--match-paren-forward-p nil
@@ -383,6 +389,7 @@ Restart ‘py-shell’ once with new Emacs/‘python-mode’.")
 Works around a bug in `choose-completion'.
 Default is nil"
   :type 'boolean
+  :tag "py-electric-close-active-p"
   :group 'python-mode)
 
 (defcustom py-hide-show-minor-mode-p nil
@@ -665,7 +672,6 @@ Default is t"
   "When non-nil, command `org-cycle' is available at shift-TAB, <backtab>.
 
 Default is nil."
-
   :type 'boolean
   :tag "py-org-cycle-p"
   :group 'python-mode)
@@ -684,7 +690,6 @@ See also resp. edit `py-complete-set-keymap'"
 
 (defcustom py-outline-minor-mode-p t
   "If outline minor-mode should be on, default is t."
-
   :type 'boolean
   :tag "py-outline-minor-mode-p"
   :group 'python-mode)
@@ -692,7 +697,6 @@ See also resp. edit `py-complete-set-keymap'"
 (defvar py-guess-py-install-directory-p nil)
 (defcustom py-guess-py-install-directory-p nil
   "If in cases, `py-install-directory' isn't set,  `py-set-load-path'should guess it from variable `buffer-file-name'."
-
   :type 'boolean
   :tag "py-guess-py-install-directory-p"
   :group 'python-mode)
@@ -704,7 +708,6 @@ Default is nil.
 
 Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.ca"
-
   :type 'boolean
   :tag "py-load-pymacs-p"
   :group 'python-mode)
@@ -713,7 +716,6 @@ See original source: http://pymacs.progiciels-bpi.ca"
   "If functions should report results.
 
 Default is nil."
-
   :type 'boolean
   :tag "py-verbose-p"
   :group 'python-mode)
@@ -803,7 +805,6 @@ result = some_function_that_takes_arguments(
 
 Examples from PEP8
 URL: https://www.python.org/dev/peps/pep-0008/#indentation"
-
   :type 'boolean
   :tag "py-closing-list-dedents-bos"
   :group 'python-mode)
@@ -811,9 +812,9 @@ URL: https://www.python.org/dev/peps/pep-0008/#indentation"
 (defvar py-imenu-max-items 99)
 (defcustom py-imenu-max-items 99
  "Python-mode specific `imenu-max-items'."
-
-:type 'number
-:group 'python-mode)
+ :type 'number
+ :tag "py-imenu-max-items"
+ :group 'python-mode)
 
 (defcustom py-closing-list-space 1
   "Number of chars, closing parenthesis outdent from opening, default is 1."
@@ -1079,12 +1080,16 @@ No semantic indent,  which diff to `py-indent-offset' indicates"
 (defcustom py-shell-completion-native-output-timeout 5.0
   "Time in seconds to wait for completion output before giving up."
   :version "25.1"
-  :type 'float)
+  :type 'float
+  :tag "py-shell-completion-native-output-timeout"
+  :group 'python-mode)
 
 (defcustom py-shell-completion-native-try-output-timeout 1.0
   "Time in seconds to wait for *trying* native completion output."
   :version "25.1"
-  :type 'float)
+  :type 'float
+  :tag "py-shell-completion-native-try-output-timeout"
+  :group 'python-mode)
 
 (defvar py-shell--first-prompt-received-output-buffer nil)
 (defvar py-shell--first-prompt-received nil)
@@ -1098,6 +1103,7 @@ safely attach setup code for long-running processes that
 eventually provide a shell."
   :version "25.1"
   :type 'hook
+  :tag "py-shell-first-prompt-hook"
   :group 'python-mode)
 
 (defvar py-shell--parent-buffer nil)
@@ -1414,6 +1420,7 @@ It should not contain a caret (^) at the beginning.")
   "List of regular expressions matching input prompts."
   :type '(repeat string)
   :version "24.4"
+  :tag "py-shell-input-prompt-2-regexps"
   :group 'python-mode)
 
 (defcustom py-shell-input-prompt-regexps
@@ -1426,6 +1433,7 @@ It should not contain a caret (^) at the beginning.")
   "List of regular expressions matching input prompts."
   :type '(repeat regexp)
   :version "24.4"
+  :tag "py-shell-input-prompt-regexps"
   :group 'python-mode)
 
 (defvar py-ipython-output-prompt-re "^Out\\[[0-9]+\\]: "
@@ -1438,6 +1446,7 @@ It should not contain a caret (^) at the beginning.")
   "List of regular expressions matching output prompts."
   :type '(repeat string)
   :version "24.4"
+  :tag "py-shell-output-prompt-regexps"
   :group 'python-mode)
 
 (defvar py-pydbtrack-input-prompt "^[(]*ipydb[>)]+ "
@@ -1489,7 +1498,9 @@ Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
   "Non-nil enables autodetection of interpreter prompts."
   :type 'boolean
   :safe 'booleanp
-  :version "24.4")
+  :version "24.4"
+  :tag "py-shell-prompt-detect-p"
+  :group 'python-mode)
 
 (defcustom py-shell-prompt-read-only t
   "If non-nil, the python prompt is read only.
@@ -2247,8 +2258,9 @@ Bug #31 - wrong fontification caused by string-delimiters in output"
 When non-nil, this may prevent delayed and missing output in the
 Python shell.  See commentary for details."
   :type 'boolean
-  :group 'python-mode
-  :safe 'booleanp)
+  :safe 'booleanp
+  :tag "py-shell-unbuffered"
+  :group 'python-mode)
 
 (defcustom py-shell-process-environment nil
   "List of overridden environment variables for subprocesses to inherit.
@@ -2258,6 +2270,7 @@ process environment before starting it.  Any variables already
 present in the current environment are superseded by variables
 set here."
   :type '(repeat string)
+  :tag "py-shell-process-environment"
   :group 'python-mode)
 
 (defcustom py-shell-extra-pythonpaths nil
@@ -2268,6 +2281,7 @@ here that already exists in PYTHONPATH are moved to the beginning
 of the list so that they are prioritized when looking for
 modules."
   :type '(repeat string)
+  :tag "py-shell-extra-pythonpaths"
   :group 'python-mode)
 
 (defcustom py-shell-exec-path nil
@@ -2277,6 +2291,7 @@ the PATH before starting processes.  Any values present here that
 already exists in PATH are moved to the beginning of the list so
 that they are prioritized when looking for executables."
   :type '(repeat string)
+  :tag "py-shell-exec-path"
   :group 'python-mode)
 
 (defcustom py-shell-remote-exec-path nil
@@ -2289,6 +2304,7 @@ plan to ensure a particular set of paths to all Python shell
 executed through tramp connections."
   :version "25.1"
   :type '(repeat string)
+  :tag "py-shell-remote-exec-path"
   :group 'python-mode)
 
 (defcustom py-shell-virtualenv-root nil
@@ -2297,6 +2313,7 @@ This variable, when set to a string, makes the environment to be
 modified such that shells are started within the specified
 virtualenv."
   :type '(choice (const nil) string)
+  :tag "py-shell-virtualenv-root"
   :group 'python-mode)
 
 (defvar py-eldoc-window-configuration nil
@@ -2367,41 +2384,14 @@ virtualenv."
     return doc"
   "Python code to setup documentation retrieval."
   :type 'string
+  :tag "py-python-eldoc-setup-code"
   :group 'python-mode)
 
 (defcustom py-python-eldoc-string-code
   "__PYDOC_get_help('''%s''')"
   "Python code used to get a string with the documentation of an object."
   :type 'string
-  :group 'python-mode)
-
-(defcustom py-python-ffap-setup-code
-  "
-def __FFAP_get_module_path(objstr):
-    try:
-        import inspect
-        import os.path
-        # NameError exceptions are delayed until this point.
-        obj = eval(objstr)
-        module = inspect.getmodule(obj)
-        filename = module.__file__
-        ext = os.path.splitext(filename)[1]
-        if ext in ('.pyc', '.pyo'):
-            # Point to the source file.
-            filename = filename[:-1]
-        if os.path.exists(filename):
-            return filename
-        return ''
-    except:
-        return ''"
-  "Python code to get a module path."
-  :type 'string
-  :group 'python-mode)
-
-(defcustom py-python-ffap-string-code
-  "__FFAP_get_module_path('''%s''')"
-  "Python code used to get a string with the path of a module."
-  :type 'string
+  :tag "py-python-eldoc-string-code"
   :group 'python-mode)
 
 (defvar py-shell-completion-native-redirect-buffer
@@ -2623,6 +2613,7 @@ some logging etc."
 Set TAB accordingly. "
 
   :type 'boolean
+  :tag "py-shell-complete-p"
   :group 'python-mode)
 (make-variable-buffer-local 'py-shell-complete-p)
 
@@ -3162,6 +3153,7 @@ Default is t.
 Add hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file"
 
   :type 'boolean
+  :tag "pdb-track-stack-from-shell-p"
   :group 'python-mode)
 
 (defcustom py-update-gud-pdb-history-p t
@@ -3200,15 +3192,18 @@ If you ignore the location `M-x py-guess-pdb-path' might display it."
 (defcustom py-shell-prompt-pdb-regexp "[(<]*[Ii]?[Pp]db[>)]+ "
   "Regular expression matching pdb input prompt of Python shell.
 It should not contain a caret (^) at the beginning."
-  :type 'string)
+  :type 'string
+  :tag "py-shell-prompt-pdb-regexp"
+  :group 'python-mode)
 
 (defcustom py-pdbtrack-stacktrace-info-regexp
   "> \\([^\"(<]+\\)(\\([0-9]+\\))\\([?a-zA-Z0-9_<>]+\\)()"
   "Regular expression matching stacktrace information.
 Used to extract the current line and module being inspected."
   :type 'string
-  :group 'python-mode
-  :safe 'stringp)
+  :safe 'stringp
+  :tag "py-pdbtrack-stacktrace-info-regexp"
+  :group 'python-mode)
 
 (defvar py-pdbtrack-tracked-buffer nil
   "Variable containing the value of the current tracked buffer.
@@ -3323,7 +3318,8 @@ def __PYTHON_EL_get_completions(text):
     return completions"
   "Code used to setup completion in inferior Python processes."
   :type 'string
-  :group 'python)
+  :tag "py-completion-setup-code"
+  :group 'python-mode)
 
 (defcustom py-shell-completion-string-code
   "';'.join(__PYTHON_EL_get_completions('''%s'''))"
@@ -3331,7 +3327,8 @@ def __PYTHON_EL_get_completions(text):
 The string passed to the function is the current python name or
 the full statement in the case of imports."
   :type 'string
-  :group 'python)
+  :tag "py-shell-completion-string-code"
+  :group 'python-mode)
 
 (defsubst py-keep-region-active ()
   "Keep the region active in XEmacs."
@@ -3879,7 +3876,16 @@ Optional argument END specify end."
 (defcustom py-empty-line-p-chars "^[ \t\r]*$"
   "empty-line-p-chars"
   :type 'regexp
-  :group 'convenience)
+  :tag "py-empty-line-p-chars"
+  :group 'python-mode)
+
+(defcustom py-default-working-directory ""
+  "If not empty used by ‘py-set-current-working-directory’"
+  :type 'string
+  :tag "py-default-working-directory"
+  :group 'python-mode)
+
+
 
 (defun py-empty-line-p (&optional iact)
   "Return t if cursor is at an empty line, nil otherwise.

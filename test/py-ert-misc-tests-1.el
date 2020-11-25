@@ -337,6 +337,7 @@ py_if_name_main_permission_test()
      (py-execute-buffer-python2)
      (set-buffer "*Python2*")
      (goto-char (point-max))
+     (sit-for 0.1) 
      (should (search-backward "run" nil t)))))
 
 (ert-deftest py-multline-arguments-with-literal-lists-79-test-7NWa5T ()

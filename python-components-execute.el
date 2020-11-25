@@ -653,12 +653,6 @@ Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for 
   "If no error occurred and ‘py-store-result-p’ store ERG for yank."
   (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 
-(defcustom py-default-working-directory ""
-  "If not empty used by ‘py-set-current-working-directory’"
-  :type 'string
-  :tag "py-default-working-directory"
-  :group 'python-mode)
-
 (defun py-current-working-directory ()
   "Return the directory of current python SHELL."
   (interactive)
