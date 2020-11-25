@@ -1,3 +1,30 @@
+;;; py-ert-scope-tests-1.el --- testing python-mode.el  -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2020  Andreas Röhler
+
+;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; Keywords: languages
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; 
+
+;;; Code:
+
+(require 'setup-ert-tests)
 
 (ert-deftest py-partial-expression-test-1-2JmcBn ()
   (py-test-with-temp-buffer-point-min
@@ -517,8 +544,6 @@ if __name__ == \"__main__\":
     (py-narrow-to-statement)
     (should (eq 32 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
-
-
 (ert-deftest py-ert-bracket-closing-1-4wPEHo ()
   ""
   (py-test-with-temp-buffer
@@ -595,16 +620,6 @@ my_list = [
     (let ((py-closing-list-dedents-bos nil))
       (should (eq 4 (py-compute-indentation))))))
 
-(ert-deftest py-ert-indent-closing-tx8E5Q-m4T4xF ()
-  (py-test-with-temp-buffer
-      "
-my_list = [
-    1, 2, 3,
-    4, 5, 6,
-    ]"
-    (goto-char (point-max))
-    (should (eq 4 (py-compute-indentation)))))
-
 (ert-deftest py-ert-multiple-decorators-test-1-KyE0zL ()
   (py-test-with-temp-buffer
       "@blah
@@ -628,8 +643,6 @@ def foo():
     (let* (py-mark-decorators
            (erg (py-beginning-of-def-or-class)))
       (should (eq 13 erg)))))
-
-
 
 (ert-deftest py-ert-multiple-decorators-test-1-KyE0zL ()
   (py-test-with-temp-buffer
@@ -678,3 +691,6 @@ def foo():
     (goto-char (point-max))
     (py-backward-def)
     (should (looking-at "async def"))))
+
+(provide 'py-ert-scope-tests-1)
+;;; py-ert-scope-tests-1.el ends here

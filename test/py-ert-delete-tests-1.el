@@ -1,7 +1,8 @@
-;; py-ert-delete-tests.el --- Tests, some adapted from python.el -*- lexical-binding: t; -*-
+;; py-ert-delete-tests.el --- testing python-mode.el -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013 Free Software Foundation, Inc.
 ;; Copyright (C) 2014-2020 Andreas Röhler, <andreas.roehler@online.de>
+;; Keywords: languages 
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -19,6 +20,8 @@
 ;;; Commentary:
 
 ;;; Code:
+
+(require 'setup-ert-tests)
 
 (ert-deftest py-ert-electric-kill-backward-bracket-test-COL0W9 ()
   (let ((py-electric-kill-backward-p t))
@@ -82,7 +85,6 @@
       (goto-char (point-max))
       (py-electric-backspace 1)
       (should (eq ?\} (char-after))))))
-
 
 (provide 'py-ert-delete-tests-1)
 ;;; py-ert-delete-tests-1.el ends here

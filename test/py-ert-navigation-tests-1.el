@@ -3,7 +3,7 @@
 ;; Copyright (C) 2020  Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
-;; Keywords: convenience
+;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 ;; 
 
 ;;; Code:
+
+(require 'setup-ert-tests)
 
 (ert-deftest py-ert-moves-up-def-or-class-bol-iPn4ge-u4t728 ()
   (py-test-with-temp-buffer

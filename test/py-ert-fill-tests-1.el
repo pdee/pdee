@@ -1,6 +1,7 @@
-;; py-ert-fill-tests-1.el --- Some more Tests -*- lexical-binding: t; -*-
+;; py-ert-fill-tests-1.el --- testing python-mode.el -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014 Andreas Röhler, <andreas.roehler@online.de>
+;; Copyright (C) 2014-2020 Andreas Röhler, <andreas.roehler@online.de>
+;; Keywords: languages
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -18,6 +19,8 @@
 ;;; Commentary:
 
 ;;; Code:
+
+(require 'setup-ert-tests)
 
 (ert-deftest py-ert-fill-comment-test-Byd1i0 ()
   (py-test-with-temp-buffer-point-min

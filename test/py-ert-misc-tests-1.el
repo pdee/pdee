@@ -1,6 +1,7 @@
-;; py-ert-misc-tests-1.el --- Tests, some adapted from python.el -*- lexical-binding: t; -*-
+;; py-ert-misc-tests-1.el --- testing python-mode.el -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014-2020 Andreas Röhler, <andreas.roehler@online.de>
+;; Keywords: languages
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
