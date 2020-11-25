@@ -52,19 +52,19 @@ SETUP=$TESTDIR/setup-ert-tests.el
 
 TEST1=$TESTDIR/py-ert-indent-tests-1.el
 TEST2=$TESTDIR/py-ert-misc-tests-1.el
-TEST3=$TESTDIR/py-ert-always-split-lp-1361531-tests.el
+TEST3=$TESTDIR/py-ert-scope-tests-1.el
 TEST4=$TESTDIR/py-ert-just-two-split-lp-1361531-tests.el
 TEST5=$TESTDIR/py-ert-beginning-tests.el
 TEST6=$TESTDIR/py-ert-forward-tests.el
 TEST7=$TESTDIR/py-ert-function-tests.el
 TEST8=$TESTDIR/py-ert-variablen-tests.el
-TEST9=$TESTDIR/py-shell-arg-ert-tests.el
-TEST10=$TESTDIR/py-ert-execute-block-test.el
+TEST9=$TESTDIR/py-ert-navigation-tests-1.el
+TEST10=$TESTDIR/py-ert-delete-tests-1.el
 TEST11=$TESTDIR/py-ert-execute-region-test.el
 TEST12=$TESTDIR/py-execute-region-commandp-test.el
-TEST13=$TESTDIR/py-ert-tests-3.el
+TEST13=$TESTDIR/py-ert-fill-tests-1.el
 TEST14=$TESTDIR/py-ert-forward-tests.el
-TEST15=$TESTDIR/py-ert-tests-4.el
+# TEST15=$TESTDIR/py-ert-tests-4.el
 TEST16=$TESTDIR/py-extra-tests.el
 TEST17=$HOME/emacs/test/lisp/progmodes/python-tests.el
 TEST18=$TESTDIR/translated-python-tests.el
@@ -276,19 +276,19 @@ h14() {
 -f ert-run-tests-batch-and-exit
 }
 
-h15() {
-    date; time -p $EMACS -Q --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(require 'ert)" \
---eval "(setq python-mode-v5-behavior-p t)" \
---eval "(setq py-verbose-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $PYTHONMODE \
--l $TEST15 \
--f ert-run-tests-batch-and-exit
-}
+# h15() {
+#     date; time -p $EMACS -Q --batch \
+# --eval "(message (emacs-version))" \
+# --eval "(setq py-debug-p nil)" \
+# --eval "(require 'ert)" \
+# --eval "(setq python-mode-v5-behavior-p t)" \
+# --eval "(setq py-verbose-p nil)" \
+# --eval "(add-to-list 'load-path \"$PDIR/\")" \
+# --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+# -load $PYTHONMODE \
+# -l $TEST15 \
+# -f ert-run-tests-batch-and-exit
+# }
 
 h16() {
     date; time -p $EMACS -Q --batch \
@@ -332,7 +332,6 @@ hierv5() {
 -l $TEST12 \
 -l $TEST13 \
 -l $TEST14 \
--l $TEST15 \
 -l $TEST16 \
 -f ert-run-tests-batch-and-exit
 }
@@ -373,7 +372,6 @@ zweit() {
 -l $TEST12 \
 -l $TEST13 \
 -l $TEST14 \
--l $TEST15 \
 -f ert-run-tests-batch-and-exit
 }
 
@@ -422,7 +420,6 @@ $EMACS -Q --batch \
 -l $TEST12 \
 -l $TEST13 \
 -l $TEST14 \
--l $TEST15 \
 --eval "(setq py-debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }
@@ -439,16 +436,18 @@ hier() {
 -load $PYTHONMODE \
 -l $TEST1 \
 -l $TEST2 \
+-l $TEST3 \
 -l $TEST4 \
 -l $TEST5 \
 -l $TEST6 \
 -l $TEST7 \
 -l $TEST8 \
+-l $TEST9 \
+-l $TEST10 \
 -l $TEST11 \
 -l $TEST12 \
 -l $TEST13 \
 -l $TEST14 \
--l $TEST15 \
 -l $TEST16 \
 -f ert-run-tests-batch-and-exit
 }
@@ -497,16 +496,4 @@ else
 fi
 
 
-# -l $TEST1 \
-# -l $TEST2 \
-# -l $TEST4 \
-# -l $TEST5 \
-# -l $TEST6 \
-# -l $TEST7 \
-# -l $TEST8 \
-# -l $TEST11 \
-# -l $TEST12 \
-# -l $TEST13 \
-# -l $TEST14 \
-# -l $TEST15 \
-# -l $TEST16 \
+

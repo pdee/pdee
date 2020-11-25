@@ -1,4 +1,4 @@
-;; py-ert-tests-3.el --- Some more Tests -*- lexical-binding: t; -*-
+;; py-ert-fill-tests-1.el --- Some more Tests -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 Andreas Röhler, <andreas.roehler@online.de>
 
@@ -18,109 +18,6 @@
 ;;; Commentary:
 
 ;;; Code:
-
-;; tests are expected to run from directory test
-
-;; (add-to-list 'load-path default-directory)
-;; (load "py-ert-tests-3.el" nil t)
-
-;; py-if-name-main-permission-p
-(ert-deftest py-ert-if-name-main-permission-lp-326620-test-CZefpG ()
-  (py-test-with-temp-buffer-point-min
-   "#! /usr/bin/env python2
-# -*- coding: utf-8 -*-
-def py_if_name_main_permission_test():
-    if __name__ == \"__main__\" :
-        print(\"__name__ == '__main__' run\")
-        return True
-
-    else:
-        print(\"__name__ == '__main__' supressed\")
-        return False
-
-py_if_name_main_permission_test()
-"
-   (goto-char (point-min))
-   (let ((py-if-name-main-permission-p t))
-     (py-execute-buffer-python2)
-     (set-buffer "*Python2*")
-     (goto-char (point-max))
-     (should (search-backward "run" nil t)))))
-
-(ert-deftest py-ert-indent-try-test-zg6QYI ()
-  (py-test-with-temp-buffer-point-min
-      "#! /usr/bin/env python
-
-import sys
-import os
-
-        try:"
-    (goto-char (point-min) )
-    (search-forward "try")
-    (should (eq 0 (py-compute-indentation)))))
-
-(ert-deftest py-ert-multiple-decorators-test-1-KyE0zL ()
-  (py-test-with-temp-buffer
-      "@blah
-@blub
-def foo():
-    pass
-"
-    (goto-char (point-max))
-    (let ((py-mark-decorators t))
-      (py-beginning-of-def-or-class)
-      (should (bobp)))))
-
-(ert-deftest py-ert-multiple-decorators-test-2-D9kV8N ()
-  (py-test-with-temp-buffer
-      "@blah
-@blub
-def foo():
-    pass
-"
-    (goto-char (point-max))
-    (let* (py-mark-decorators
-           (erg (py-beginning-of-def-or-class)))
-      (should (eq 13 erg)))))
-
-(ert-deftest py-ert-async-backward-block-test-OdiTDQ ()
-  (py-test-with-temp-buffer
-      "async def coro(name, lock):
-    print('coro {}: waiting for lock'.format(name))
-    async with lock:
-        print('coro {}: holding the lock'.format(name))
-        await asyncio.sleep(1)
-        print('coro {}: releasing the lock'.format(name))"
-    (goto-char (point-max))
-    (py-backward-block)
-    (should (looking-at "async with"))))
-
-(ert-deftest py-ert-async-backward-def-test-lF1w7S ()
-  (py-test-with-temp-buffer
-      "async def coro(name, lock):
-    print('coro {}: waiting for lock'.format(name))
-    async with lock:
-        print('coro {}: holding the lock'.format(name))
-        await asyncio.sleep(1)
-        print('coro {}: releasing the lock'.format(name))"
-    (goto-char (point-max))
-    (py-backward-def)
-    (should (looking-at "async def"))))
-
-(ert-deftest py-ert-async-indent-test-MFS8IW ()
-  (py-test-with-temp-buffer-point-min
-      "async def coro(name, lock):
-
-    print('coro {}: waiting for lock'.format(name))
-    async with lock:
-        print('coro {}: holding the lock'.format(name))
-        await asyncio.sleep(1)
-        print('coro {}: releasing the lock'.format(name))"
-    (goto-char (point-min) )
-    (forward-line 1)
-    (should (eq 4 (py-compute-indentation)))
-    (forward-line 3)
-    (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-fill-comment-test-Byd1i0 ()
   (py-test-with-temp-buffer-point-min
@@ -812,6 +709,183 @@ asdf = []"
       (goto-char (point-max)) 
       (py-forward-assignment)
       (should (eq (char-before) ?\]))))
+
+
+
+(ert-deftest py-ert-fill-comment-test-Byd1i0 ()
+  (py-test-with-temp-buffer-point-min
+      "class Foo(Bar):
+    def baz(self):
+        # Given a winning upgrade path, we can ceiling the maximum image number from that path to be applied.  This is useful for image testing purposes.  XXX
+        self.assertEqual([str(image.version) for image in state.winner],
+                             [])"
+    (goto-char (point-min))
+    (search-forward "XXX")
+    (fill-paragraph)
+    (search-forward "self")
+    (back-to-indentation)
+    (should (eq 8 (current-column)))
+    (should (eq 6 (count-lines (point-min) (point))))))
+
+
+
+(ert-deftest py-raw-docstring-test-pep-257-nn-pbqel7 ()
+  (py-test-with-temp-buffer-point-min
+      "def f():
+    r\"\"\" This is the docstring for my function.It's a raw docstring because I want to type \\t here, and maybe \\n,for example in LaTeX code like \\tau or \\nu.
+
+More docstring here.
+\"\"\"
+ pass"
+    (goto-char (point-min) )
+    (let ((py-docstring-style 'pep-257-nn))
+      (search-forward "docstring")
+      (fill-paragraph)
+      (forward-line 1)
+      (skip-chars-forward " \t\r\n\f")
+      (should (eq 4 (current-indentation))))))
+
+
+(ert-deftest py-fill-docstring-pep-257-nn-test-ylBRzi ()
+  (py-test-with-temp-buffer
+      "def usage():
+    \'\'\' asdf\' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+\'\'\'
+        pass"
+    (goto-char (point-max))
+    (font-lock-fontify-region (point-min)(point-max))
+    (goto-char (point-min))
+    (search-forward "'''")
+    (py-fill-string nil 'pep-257-nn)
+    (search-forward "'''")
+    (should (eq 4 (current-indentation)))))
+
+;; https://bugs.launchpad.net/python-mode/+bug/1321266
+(ert-deftest py-fill-string-lp-1321266-test-f8sTTj ()
+  (py-test-with-temp-buffer
+      "print(\"%(language)s has %(number)03d quote types. asdf asdf asdf asdfa sasdf asdfasdfasdfasdfasdfasda asd asdfa a asdf asdfa asdf \" %
+       {'language': \"Python\", \"number\": 2})"
+    (goto-char (point-max))
+    (search-backward "asdf")
+    (py-fill-string)
+    (goto-char (point-min))
+    (end-of-line)
+    (should (eq (char-before) 92))))
+
+
+(ert-deftest py-fill-singlequoted-string-test-zeKa2U ()
+  (py-test-with-temp-buffer
+      "asd = 'asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf '"
+    (goto-char (point-max))
+    (backward-char 2)
+    (py-fill-string)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?'))
+    (forward-line -1)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?\\))))
+
+(ert-deftest py-fill-doublequoted-string-test-Xi6FaW ()
+  (py-test-with-temp-buffer
+      "asd = \"asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf \""
+    (goto-char (point-max))
+    (backward-char 2)
+    (py-fill-string)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?\"))
+    (forward-line -1)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?\\))))
+
+
+
+(ert-deftest py-fill-paragraph-LEON2Q ()
+  (py-test-with-temp-buffer
+      "r\'\'\'aaa
+
+this is a test this is a test this is a test this is a test this is a test this k
+is a test
+
+\'\'\'"
+    (goto-char (point-max))
+    (search-backward "k")
+    (end-of-line)
+    (py-fill-paragraph)
+    (search-backward "'''")
+    (forward-line 1)
+    (should-not (eq (char-after) ?\\))))
+
+
+
+
+
+(ert-deftest py-fill-comment-test-MQfKpX ()
+  (py-test-with-temp-buffer
+      "def foo():
+    # asdf asdf adf adf adsf adsf adsf adf adf adf ad adf adf adf adf"
+      (goto-char (point-max))
+      (turn-on-auto-fill)
+      (insert " ")
+      (insert "asd")
+      (py-fill-string-or-comment)
+      (should (eq 9 (current-column)))))
+
+(ert-deftest py-fill-comment-test-64-kGN9tr ()
+  (py-test-with-temp-buffer
+      "def foo():
+    #r# asdf asdf adf adf adsf adsf adsf adf adf adf ad adf adf adf adf"
+    (goto-char (point-max))
+    (turn-on-auto-fill)
+    (let ((comment-start-skip "^[ 	]*#r#+ *")
+	  (comment-start "#r#"))
+      (insert " ")
+      (insert "asd")
+      (py-fill-string-or-comment)
+      (should (eq 15 (current-column))))))
+
+(ert-deftest py-fill-string-test-75-kGN9tr ()
+  (py-test-with-temp-buffer
+      "def foo():
+    try:
+        run()
+    except Timeout:
+        print('foo
+    # Things are no good.
+    for line in proc.stdout.splitlines():
+        mo = CRE.match(line)
+        version = mo['version']"
+    (goto-char (point-max))
+    (search-backward "foo")
+    (end-of-line)
+    (insert " ")
+    (py-fill-string-or-comment)
+    (should (eolp))))
+
+(ert-deftest py-fill-string-test-75-QkyOzd ()
+  (py-test-with-temp-buffer
+      "def test():
+    \"a b"
+    (auto-fill-mode 1)
+    (goto-char (point-max))
+    (insert " ")
+    (py-fill-string-or-comment)
+    (should (eq 9 (current-column)))))
+
+(ert-deftest py-fill-string-test-75-f0mU3i ()
+  (py-test-with-temp-buffer
+      "https://github\.com/swig/swig/issues/889
+def foo(rho, x):
+    r\"\"\"Calculate :math:\`D^\\nu \\rho(x)"
+    (auto-fill-mode 1)
+    (goto-char (point-max))
+    (insert " ")
+    (py-fill-string-or-comment)
+    (should (equal 39 (current-column)))))
+
     
-(provide 'py-ert-tests-3)
-;;; py-ert-tests-3.el ends here
+(provide 'py-ert-fill-tests-1)
+;;; py-ert-fill-tests-1.el ends here

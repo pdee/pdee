@@ -92,7 +92,9 @@
 
 (defconst py-version "6.2.3")
 
-(defvar py-install-directory "")
+(defvar py-install-directory nil
+  "Make sure it exists")
+
 (defcustom py-install-directory ""
   "Directory where python-mode.el and it's subdirectories should be installed.
 
@@ -101,6 +103,8 @@ Needed for completion and other environment stuff only."
   :type 'string
   :tag "py-install-directory"
   :group 'python-mode)
+
+;; (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name))))
 
 (defcustom py-font-lock-defaults-p t
  "If fontification is not required,
@@ -128,10 +132,6 @@ Emacs doesn't read .bashrc"
   :type 'string
   :tag "py-pythonpath"
   :group 'python-mode)
-
-;; (setq py-install-directory "")
-(when (string= "" py-install-directory)
-  (setq py-install-directory default-directory))
 
 (defcustom python-mode-modeline-display "Py"
   "String to display in Emacs modeline."
@@ -689,7 +689,8 @@ See also resp. edit `py-complete-set-keymap'"
   :tag "py-outline-minor-mode-p"
   :group 'python-mode)
 
-(defcustom py-guess-py-install-directory-p t
+(defvar py-guess-py-install-directory-p nil)
+(defcustom py-guess-py-install-directory-p nil
   "If in cases, `py-install-directory' isn't set,  `py-set-load-path'should guess it from variable `buffer-file-name'."
 
   :type 'boolean
