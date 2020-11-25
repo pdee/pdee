@@ -357,8 +357,6 @@ Default is nil"
 (defvar py-shell--font-lock-buffer "*PSFLB*"
   "May contain the `py-buffer-name' currently fontified." )
 
-(setq py-shell--font-lock-buffer "*PSFLB*")
-
 (defvar py-return-result-p nil
   "Internally used.
 
