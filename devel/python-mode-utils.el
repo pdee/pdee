@@ -1,6 +1,6 @@
 ;;; python-mode-utils.el - generating parts of python-mode.el -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2019 Andreas Röhler
+;; Copyright (C) 2015-2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -789,10 +789,10 @@
 		       ))
 
 (setq arkopf
-      "\n;; Copyright (C) 2015-2019 Andreas Röhler
+      "\n;; Copyright (C) 2015-2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
-;; Keywords: languages, convenience
+;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -2387,18 +2387,16 @@ class bar:
 \(defun py--beginning-of-" ele "-position ()
   \"Return beginning of " ele " position.\"
   (save-excursion
-    (let ((erg (or (py--beginning-of-" ele "-p)
-                   (py-backward-" ele "))))
-      erg)))\n")))
+    (or (py--beginning-of-" ele "-p)
+        (py-backward-" ele "))))\n")))
 
   (dolist (ele py-beginning-bol-command-names)
     (insert (concat "
 \(defun py--beginning-of-" ele "-position-bol ()
   \"Return beginning of " ele " position at ‘beginning-of-line’.\"
   (save-excursion
-    (let ((erg (or (py--beginning-of-" ele "-bol-p)
-                   (py-backward-" ele "-bol))))
-      erg)))
+    (or (py--beginning-of-" ele "-bol-p)
+        (py-backward-" ele "-bol))))
 ")))
   (insert "\n(provide 'python-components-beginning-position-forms)
 ;;; python-components-beginning-position-forms.el ends here")

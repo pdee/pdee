@@ -64,7 +64,7 @@ TEST11=$TESTDIR/py-ert-execute-region-test.el
 TEST12=$TESTDIR/py-execute-region-commandp-test.el
 TEST13=$TESTDIR/py-ert-fill-tests-1.el
 TEST14=$TESTDIR/py-ert-forward-tests.el
-# TEST15=$TESTDIR/py-ert-tests-4.el
+TEST15=$TESTDIR/py-ert-interactive-tests.el
 TEST16=$TESTDIR/py-extra-tests.el
 TEST17=$HOME/emacs/test/lisp/progmodes/python-tests.el
 TEST18=$TESTDIR/translated-python-tests.el
@@ -276,19 +276,19 @@ h14() {
 -f ert-run-tests-batch-and-exit
 }
 
-# h15() {
-#     date; time -p $EMACS -Q --batch \
-# --eval "(message (emacs-version))" \
-# --eval "(setq py-debug-p nil)" \
-# --eval "(require 'ert)" \
-# --eval "(setq python-mode-v5-behavior-p t)" \
-# --eval "(setq py-verbose-p nil)" \
-# --eval "(add-to-list 'load-path \"$PDIR/\")" \
-# --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
-# -load $PYTHONMODE \
-# -l $TEST15 \
-# -f ert-run-tests-batch-and-exit
-# }
+h15() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(require 'ert)" \
+--eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq py-verbose-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST15 \
+-f ert-run-tests-batch-and-exit
+}
 
 h16() {
     date; time -p $EMACS -Q --batch \
