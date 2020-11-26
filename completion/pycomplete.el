@@ -21,11 +21,20 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+
 ;; Along with pycomplete.py this file allows programmers to complete Python
 ;; symbols within the current buffer.  See pycomplete.py for the Python side
 ;; of things and a short description of what to expect.
 
 ;; BAW 2012-09-28: pymacs may not be installed on Debian.
+
+;; WRT compiler warnings:
+;; ‘ac-sources’: is provided by auto-complete, which is required by auto-complete-pycomplete.
+;; ‘goto-line’: ‘forward-line’ doesn't look like an appropriate replacement.
+
+
+(require 'python-mode)
+
 (condition-case nil
     (require 'pymacs)
   (file-error nil))
@@ -164,9 +173,9 @@ the dot, else nil."
           (if pos
               (goto-char pos))
           (cond
-           ((looking-back "\\(\\[\\|,[^[]*\\)\\]") "list" (point-min))
-           ((looking-back "['\"]") "str" (point-min))
-           ((looking-back "}") "dict" (point-min)))))))
+           ((looking-back "\\(\\[\\|,[^[]*\\)\\]" "list" (point-min)))
+           ((looking-back "['\"]" "str" (point-min)))
+           ((looking-back "}" "dict" (point-min))))))))
 
 (defun py-complete-substitute-type-for-var (word)
   "Substitute the type for the variable starting the dot-expression word.
@@ -334,7 +343,8 @@ can be used as a hook for completion-at-point-functions."
     (if sym
         (py-complete-help sym))))
 
-(set 'py-complete-current-signature nil)
+(defvar py-complete-current-signature nil
+  "Internally used by pycomplete.el")
 
 (defun py-complete-signature (function)
   "get signature of a python function or method"
