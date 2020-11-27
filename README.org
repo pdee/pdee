@@ -2,7 +2,7 @@
 
 Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
-No known indentation bugs.
+
 
 * Initialize
   Make sure the directory, where python-mode.el resides, is in load-path

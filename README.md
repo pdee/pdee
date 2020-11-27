@@ -4,7 +4,7 @@ PDEE [![Build Status](https://travis-ci.org/pdee/pdee.svg?branch=master)](https:
 
 Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
-No known indentation bugs.
+
 
 # Initialize
   Put the following into your initialization file:

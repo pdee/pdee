@@ -52,11 +52,13 @@ Default is t")
         (define-key map [(control meta a)] 'py-backward-def-or-class)
         (define-key map [(control meta e)] 'py-forward-def-or-class)
         ;; (define-key map [(meta i)] 'py-indent-forward-line)
-        (define-key map [(control j)] 'py-newline-and-indent)
+        ;; (define-key map [(control j)] 'py-newline-and-indent)
+	(define-key map (kbd "C-j") 'newline)
         ;; Most Pythoneers expect RET `py-newline-and-indent'
-        ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
-        (define-key map (kbd "RET") 'py-return-key)
+	;; which is default of var py-return-key’
+        (define-key map (kbd "RET") py-return-key)
         ;; (define-key map (kbd "RET") 'newline)
+        ;; (define-key map (kbd "RET") 'py-newline-and-dedent)
         (define-key map [(super backspace)] 'py-dedent)
         ;; (define-key map [(control return)] 'py-newline-and-dedent)
         ;; indentation level modifiers

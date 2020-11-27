@@ -945,7 +945,7 @@ commands `py-beginning-of-top-level', `py-end-of-top-level'
   :tag "py-tab-indent"
   :group 'python-mode)
 
-(defcustom py-return-key 'newline
+(defcustom py-return-key 'py-newline-and-indent
   "Which command <return> should call."
   :type '(choice
 

@@ -4,6 +4,11 @@ Python Mode News
 New in version 6.2.4
 ---------------------
 
+- <RET> and <C-j> normalized/swapped
+
+  <RET> now defaults to ‘py-newline-and-indent’
+  <C-j> is set to ‘newline’
+
 
 - column-marker.el removed, its provided by melpa
 
