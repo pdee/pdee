@@ -95,7 +95,7 @@
 (defvar py-install-directory nil
   "Make sure it exists")
 
-(defcustom py-install-directory ""
+(defcustom py-install-directory nil
   "Directory where python-mode.el and it's subdirectories should be installed.
 
 Needed for completion and other environment stuff only."
@@ -104,10 +104,15 @@ Needed for completion and other environment stuff only."
   :tag "py-install-directory"
   :group 'python-mode)
 
-;; (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name))))
+(or
+ py-install-directory
+ (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python--mode.el"))))
+      (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-mode.el"))))))
+ (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python-components-mode.el"))))
+      (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el")))))))
 
 (defcustom py-font-lock-defaults-p t
- "If fontification is not required,
+  "If fontification is not required,
 
 avoiding it might speed up things."
 
@@ -3707,23 +3712,21 @@ Returns t if successful."
     erg))
 
 (defun py-guess-py-install-directory ()
-  "Takes value of user directory aka $HOME.
-
-If `(locate-library \"python-mode\")' is not succesful.
+  "If `(locate-library \"python-mode\")' is not succesful.
 
 Used only, if `py-install-directory' is empty."
   (interactive)
-  (let ((erg (cond ((locate-library "python-mode")
-		    (file-name-directory (locate-library "python-mode")))
-		   ((ignore-errors (string-match "python-mode" (py--buffer-filename-remote-maybe)))
-		    (file-name-directory (py--buffer-filename-remote-maybe)))
-		   ((string-match "python-mode" (buffer-name))
-		    default-directory))))
-    (cond ((and (or (not py-install-directory) (string= "" py-install-directory)) erg)
-	   (setq py-install-directory erg))
-	  (t (setq py-install-directory (expand-file-name "~/")))))
-  (when (and py-verbose-p (called-interactively-p 'any)) (message "Setting py-install-directory to: %s" py-install-directory))
-  py-install-directory)
+  (cond ((;; don't reset if it already exists
+	  py-install-directory)
+         ((locate-library "python-mode")
+	  (file-name-directory (locate-library "python-mode")))
+	 ((ignore-errors (string-match "python-mode" (py--buffer-filename-remote-maybe)))
+	  (file-name-directory (py--buffer-filename-remote-maybe)))
+         (t (or
+	     (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python--mode.el"))))
+		  (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-mode.el"))))))
+	     (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python-components-mode.el"))))
+		  (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el")))))))))))
 
 (defun py--fetch-pythonpath ()
   "Consider settings of ‘py-pythonpath’."
@@ -3882,8 +3885,6 @@ Optional argument END specify end."
   :type 'string
   :tag "py-default-working-directory"
   :group 'python-mode)
-
-
 
 (defun py-empty-line-p (&optional iact)
   "Return t if cursor is at an empty line, nil otherwise.
