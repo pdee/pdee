@@ -335,8 +335,7 @@ Variables
 `py-shell-fontify-p',
 `py-completion-setup-code',
 `py-shell-completion-string-code',
-`py-python-eldoc-setup-code', `py-python-eldoc-string-code',
-`py-python-ffap-setup-code' and `py-python-ffap-string-code' can
+`py-python-eldoc-setup-code', `py-python-eldoc-string-code', can
 customize this mode for different Python interpreters.
 
 This mode resets `comint-output-filter-functions' locally, so you

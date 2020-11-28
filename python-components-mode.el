@@ -3711,6 +3711,16 @@ Returns t if successful."
     (when (called-interactively-p 'any) (message "py-install-directory-check: %s" erg))
     erg))
 
+(defun py--buffer-filename-remote-maybe (&optional file-name)
+  (let ((file-name (or file-name
+                       (and
+                        (ignore-errors (file-readable-p (buffer-file-name)))
+                        (buffer-file-name)))))
+    (if (and (featurep 'tramp) (tramp-tramp-file-p file-name))
+        (tramp-file-name-localname
+         (tramp-dissect-file-name file-name))
+      file-name)))
+
 (defun py-guess-py-install-directory ()
   "If `(locate-library \"python-mode\")' is not succesful.
 
@@ -3718,15 +3728,24 @@ Used only, if `py-install-directory' is empty."
   (interactive)
   (cond ((;; don't reset if it already exists
 	  py-install-directory)
-         ((locate-library "python-mode")
-	  (file-name-directory (locate-library "python-mode")))
+         ;; ((locate-library "python-mode")
+	 ;;  (file-name-directory (locate-library "python-mode")))
 	 ((ignore-errors (string-match "python-mode" (py--buffer-filename-remote-maybe)))
 	  (file-name-directory (py--buffer-filename-remote-maybe)))
-         (t (or
-	     (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python--mode.el"))))
-		  (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-mode.el"))))))
-	     (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python-components-mode.el"))))
-		  (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el")))))))))))
+         ((or
+	   (and (get-buffer "python-mode.el")
+		(set-buffer (get-buffer "python-mode.el"))
+		;; (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-mode.el")))))
+		(buffer-file-name (get-buffer  "python-mode.el"))
+		(setq py-install-directory (file-name-directory (buffer-file-name (get-buffer  "python-mode.el")))))
+	   )
+	  (or
+	   (and (get-buffer "python-components-mode.el")
+		(set-buffer (get-buffer "python-components-mode.el"))
+		;; (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el")))))
+		(buffer-file-name (get-buffer  "python-components-mode.el"))
+		(setq py-install-directory (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el"))))))
+	  ))))
 
 (defun py--fetch-pythonpath ()
   "Consider settings of ‘py-pythonpath’."
@@ -3791,19 +3810,16 @@ See original source: http://pymacs.progiciels-bpi.ca"
   "Include needed subdirs of ‘python-mode’ directory."
   (interactive)
   (let ((install-directory (py--normalize-directory py-install-directory)))
-    (cond ((and (not (string= "" install-directory))(stringp install-directory))
-           (push (expand-file-name install-directory) load-path)
-           (push (concat (expand-file-name install-directory) "completion")  load-path)
-           (push (concat (expand-file-name install-directory) "extensions")  load-path)
-           (push (concat (expand-file-name install-directory) "test") load-path)
-           (push (concat (expand-file-name install-directory) "tools")  load-path)
-           (push (concat (expand-file-name install-directory) "autopair")  load-path))
-          (t (error "Please set `py-install-directory', see INSTALL"))
-          (when (called-interactively-p 'any) (message "%s" load-path)))))
-
-(unless py-install-directory
-  (push default-directory  load-path)
-  (push (concat default-directory "extensions")  load-path))
+    (if py-install-directory
+	(cond ((and (not (string= "" install-directory))(stringp install-directory))
+               (push (expand-file-name install-directory) load-path)
+               (push (concat (expand-file-name install-directory) "completion")  load-path)
+               (push (concat (expand-file-name install-directory) "extensions")  load-path)
+               (push (concat (expand-file-name install-directory) "test") load-path)
+               )
+              (t (error "Please set `py-install-directory', see INSTALL")))
+      (error "Please set `py-install-directory', see INSTALL")))
+  (when (called-interactively-p 'interactive) (message "%s" load-path)))
 
 (defun py-count-lines (&optional beg end)
   "Count lines in accessible part until current line.
