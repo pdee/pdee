@@ -3726,26 +3726,24 @@ Returns t if successful."
 
 Used only, if `py-install-directory' is empty."
   (interactive)
-  (cond ((;; don't reset if it already exists
-	  py-install-directory)
-         ;; ((locate-library "python-mode")
-	 ;;  (file-name-directory (locate-library "python-mode")))
-	 ((ignore-errors (string-match "python-mode" (py--buffer-filename-remote-maybe)))
-	  (file-name-directory (py--buffer-filename-remote-maybe)))
-         ((or
-	   (and (get-buffer "python-mode.el")
-		(set-buffer (get-buffer "python-mode.el"))
-		;; (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-mode.el")))))
-		(buffer-file-name (get-buffer  "python-mode.el"))
-		(setq py-install-directory (file-name-directory (buffer-file-name (get-buffer  "python-mode.el")))))
-	   )
-	  (or
-	   (and (get-buffer "python-components-mode.el")
-		(set-buffer (get-buffer "python-components-mode.el"))
-		;; (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el")))))
-		(buffer-file-name (get-buffer  "python-components-mode.el"))
-		(setq py-install-directory (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el"))))))
-	  ))))
+  (cond (;; don't reset if it already exists
+	 py-install-directory)
+        ;; ((locate-library "python-mode")
+	;;  (file-name-directory (locate-library "python-mode")))
+	((ignore-errors (string-match "python-mode" (py--buffer-filename-remote-maybe)))
+	 (file-name-directory (py--buffer-filename-remote-maybe)))
+        (t (if
+	       (and (get-buffer "python-mode.el")
+		    (set-buffer (get-buffer "python-mode.el"))
+		    ;; (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-mode.el")))))
+		    (buffer-file-name (get-buffer  "python-mode.el")))
+	       (setq py-install-directory (file-name-directory (buffer-file-name (get-buffer  "python-mode.el"))))
+	     (if
+		 (and (get-buffer "python-components-mode.el")
+		      (set-buffer (get-buffer "python-components-mode.el"))
+		      (buffer-file-name (get-buffer  "python-components-mode.el")))
+		 (setq py-install-directory (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el"))))))
+	   )))
 
 (defun py--fetch-pythonpath ()
   "Consider settings of ‘py-pythonpath’."
