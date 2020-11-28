@@ -31,8 +31,7 @@
 (defun py-forward-region ()
   "Go to the end of current region."
   (interactive)
-  (let ((end (region-end)))
-    (when end (goto-char end))))
+  (goto-char (region-end)))
 
 (defun py-forward-block (&optional orig bol)
   "Go to end of block.
