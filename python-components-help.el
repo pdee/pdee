@@ -129,9 +129,9 @@ Used with ‘eval-after-load’."
 ;; ;
 (defun py--warn-tmp-files-left ()
   "Detect and warn about file of form \"py11046IoE\" in py-temp-directory."
-  (let ((erg1 (file-readable-p (concat py-temp-directory (char-to-string py-separator-char)  (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
+  (let ((erg1 (file-readable-p (concat py-temp-directory py-separator-char (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
     (when (and py-verbose-p erg1)
-      (message "py--warn-tmp-files-left: %s ?" (concat py-temp-directory (char-to-string py-separator-char) (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
+      (message "py--warn-tmp-files-left: %s ?" (concat py-temp-directory py-separator-char (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
 
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.
@@ -570,10 +570,6 @@ local bindings to py-newline-and-indent."))
 (defun py--find-definition-in-source (sourcefile symbol)
   (called-interactively-p 'any) (message "sourcefile: %s" sourcefile)
   (when (find-file sourcefile)
-    ;; (if (stringp py-separator-char)
-    ;; py-separator-char
-    ;; (char-to-string py-separator-char))
-
     (goto-char (point-min))
     (when
 	(or (re-search-forward (concat py-def-or-class-re symbol) nil t 1)

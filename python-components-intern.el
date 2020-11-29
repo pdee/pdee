@@ -28,15 +28,12 @@
 
 ;;  Keymap
 
-(defun py-separator-char ()
+(defun py-machine-separator-char ()
   "Return the file-path separator char from current machine.
 
 When `py-separator-char' is customized, its taken.
 Returns char found. "
-  (let ((erg (cond ((characterp py-separator-char)
-                    (char-to-string py-separator-char))
-                   ;; epd hack
-                   ((and
+  (let ((erg (cond ((and
                      (string-match "[Ii][Pp]ython" py-shell-name)
                      (string-match "epd\\|EPD" py-shell-name))
                     (replace-regexp-in-string "\n" ""

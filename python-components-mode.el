@@ -1125,13 +1125,16 @@ eventually provide a shell."
   :tag "py-uncomment-indents-p"
   :group 'python-mode)
 
-(defcustom py-separator-char 47
+(defcustom py-separator-char "/"
   "The character, which separates the system file-path components.
 
 Precedes guessing when not empty, returned by function `py-separator-char'."
-  :type 'character
+  :type 'string
   :tag "py-separator-char"
   :group 'python-mode)
+
+(defvar py-separator-char "/"
+  "Values set by defcustom only will not be seen in batch-mode.")
 
 (and
  ;; used as a string finally
@@ -2528,9 +2531,6 @@ or ‘py-ipython0.11-completion-command-string’.
 (defvar py-shebang-regexp "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([biptj]+ython[^ \t\n]*\\)"
   "Detecting the shell in head of file.")
 ;; (setq py-shebang-regexp   "#![ \t]?\\([^ \t\n]+\\)[ \t]*\\([biptj]+ython[^ \t\n]*\\)")
-
-(defvar py-separator-char "/"
-  "Values set by defcustom only will not be seen in batch-mode.")
 
 (defvar py-temp-directory
   (let ((ok '(lambda (x)
