@@ -184,6 +184,15 @@ When `delete-active-region' and (use-region-p), delete region "
          )
         (t (yank arg))))
 
+(defun py-toggle-py-electric-colon-active-p ()
+  (interactive)
+  (setq py-electric-colon-active-p (not py-electric-colon-active-p))
+  (when (and py-verbose-p 
+	     (interactive-p)
+	     ;; (called-interactively-p 'interactive)
+	     )
+    (message "py-electric-colon-active-p: %s" py-electric-colon-active-p)))
+  
 ;; required for pending-del and delsel modes
 (put 'py-electric-colon 'delete-selection t) ;delsel
 (put 'py-electric-colon 'pending-delete t) ;pending-del
