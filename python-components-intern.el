@@ -28,20 +28,21 @@
 
 ;;  Keymap
 
-(defun py-machine-separator-char ()
-  "Return the file-path separator char from current machine.
+;; (defun py-machine-separator-char ()
+;;   "Return the file-path separator char from current machine.
 
-When `py-separator-char' is customized, its taken.
-Returns char found. "
-  (let ((erg (cond ((and
-                     (string-match "[Ii][Pp]ython" py-shell-name)
-                     (string-match "epd\\|EPD" py-shell-name))
-                    (replace-regexp-in-string "\n" ""
-                                              (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))))
-    (if (and erg (string-match "^$" erg))
-        (setq erg (substring erg (string-match "^$" erg)))
-      (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))
-    erg))
+;; When `py-separator-char' is customized, its taken.
+;; Returns char found. "
+;;   (interactive) 
+;;   (let ((erg (cond ((and
+;;                      (string-match "[Ii][Pp]ython" py-shell-name)
+;;                      (string-match "epd\\|EPD" py-shell-name))
+;;                     (replace-regexp-in-string "\n" ""
+;;                                               (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.sep)\"")))))))
+;;     (if (and erg (string-match "^$" erg))
+;;         (setq erg (substring erg (string-match "^$" erg)))
+;;       (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -W ignore" " -c \"import os; print(os.sep)\"")))))
+;;     erg))
 
 (defun pps-emacs-version ()
   "Include the appropriate `parse-partial-sexp' "

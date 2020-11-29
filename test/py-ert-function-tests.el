@@ -1911,8 +1911,8 @@
 (ert-deftest py-ert-set-load-path-functionp-test-oPQqEv ()
   (should (functionp 'py-set-load-path)))
 
-(ert-deftest py-ert-machine-separator-char-functionp-test-SYYdgm ()
-  (should (functionp 'py-machine-separator-char)))
+;; (ert-deftest py-ert-machine-separator-char-functionp-test-SYYdgm ()
+;;   (should (functionp 'py-machine-separator-char)))
 
 (ert-deftest py-ert-pps-emacs-version-functionp-test-euApSc ()
   (should (functionp 'pps-emacs-version)))
