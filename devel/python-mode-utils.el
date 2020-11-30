@@ -833,14 +833,14 @@
     (insert (concat "
   \"Send file to " (py--prepare-shell-name ele) " interpreter\"
   (interactive \"fFile: \")
-  (py--execute-prepare file \"" ele "\" nil nil nil nil filename))\n\n")))
+  (py--execute-base nil nil \"" ele "\" filename))\n\n")))
   (dolist (elt py-shells)
     (setq ele (format "%s" elt))
     (insert (concat "(defun py-execute-file-" ele "-dedicated (filename)"))
     (insert (concat "
   \"Send file to a dedicated" (py--prepare-shell-name ele) " interpreter\"
   (interactive \"fFile: \")
-  (py--execute-prepare file \"" ele "\" t nil nil nil filename))\n\n")))
+  (py--execute-base nil nil \"" ele "\" filename nil t t nil t))\n\n")))
   (insert "(provide 'python-components-execute-file)
 ;;; python-components-execute-file.el ends here\n")
   (when (called-interactively-p 'interactive)

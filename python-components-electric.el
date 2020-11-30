@@ -184,7 +184,16 @@ When `delete-active-region' and (use-region-p), delete region "
          )
         (t (yank arg))))
 
-(defun py-toggle-py-electric-colon-active-p ()
+(defun py-toggle-py-electric-colon-active-p-1 ()
+  (interactive)
+  (setq py-electric-colon-active-p (not py-electric-colon-active-p))
+  (when (and py-verbose-p 
+	     ;; (interactive-p)
+	     (called-interactively-p 'interactive)
+	      )
+    (message "py-electric-colon-active-p: %s" py-electric-colon-active-p)))
+
+(defun py-toggle-py-electric-colon-active-p-2 ()
   (interactive)
   (setq py-electric-colon-active-p (not py-electric-colon-active-p))
   (when (and py-verbose-p 

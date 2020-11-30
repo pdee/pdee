@@ -33,7 +33,7 @@
 
 ;; When `py-separator-char' is customized, its taken.
 ;; Returns char found. "
-;;   (interactive) 
+;;   (interactive)
 ;;   (let ((erg (cond ((and
 ;;                      (string-match "[Ii][Pp]ython" py-shell-name)
 ;;                      (string-match "epd\\|EPD" py-shell-name))
@@ -277,7 +277,7 @@ Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names."
   (interactive "f")
-  (py--execute-file-base (get-buffer-process (get-buffer (py-shell))) file-name))
+  (py--execute-file-base file-name (get-buffer-process (get-buffer (py-shell)))))
 
 (defun py-proc (&optional argprompt)
   "Return the current Python process.

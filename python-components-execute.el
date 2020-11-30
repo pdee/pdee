@@ -770,7 +770,7 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
 	    py-result)
 	(when py-verbose-p (message "py--postprocess: %s" "Don't see any result"))))))
 
-(defun py--execute-file-base (&optional proc filename cmd procbuf origline fast)
+(defun py--execute-file-base (filename &optional proc cmd procbuf origline fast)
   "Send to Python interpreter process PROC.
 
 In Python version 2.. \"execfile('FILENAME')\".
@@ -801,13 +801,13 @@ Returns position where output starts."
 (defun py--execute-buffer-finally (strg proc procbuf origline filename fast wholebuf)
   (if (and filename wholebuf (not (buffer-modified-p)))
       (unwind-protect
-	  (py--execute-file-base proc filename nil procbuf origline fast))
+	  (py--execute-file-base filename proc nil procbuf origline fast))
     (let* ((tempfile (concat (expand-file-name py-temp-directory) py-separator-char "temp" (md5 (format "%s" (nth 3 (current-time)))) ".py")))
       (with-temp-buffer
 	(insert strg)
 	(write-file tempfile))
       (unwind-protect
-	  (py--execute-file-base proc tempfile nil procbuf origline fast)
+	  (py--execute-file-base tempfile proc nil procbuf origline fast)
 	(and (file-readable-p tempfile) (delete-file tempfile py-debug-p))))))
 
 (defun py-execute-python-mode-v5 (start end origline filename)
@@ -844,7 +844,7 @@ Optional FAST RETURN"
    (py-execute-no-temp-p
     (py--execute-ge24.3 start end execute-directory py-shell-name py-exception-buffer proc file origline))
    ((and filename wholebuf)
-    (py--execute-file-base proc filename nil buffer origline fast))
+    (py--execute-file-base filename proc nil buffer origline fast))
    (t
     ;; (message "(current-buffer) %s" (current-buffer))
     (py--execute-buffer-finally strg proc buffer origline filename fast wholebuf)
@@ -936,7 +936,7 @@ Optional FAST RETURN"
 ;;           (progn
 ;;             (setq filename (expand-file-name ,file))
 ;;             (if (file-readable-p filename)
-;;                 (py--execute-file-base nil filename nil nil origline)
+;;                 (py--execute-file-base filename nil nil nil origline)
 ;;               (message "%s not readable. %s" ,file "Do you have write permissions?")))
 ;;         (py--execute-base beg end ,shell filename ,proc ,file ,wholebuf ,fast ,dedicated ,split ,switch)))))
 
@@ -962,7 +962,7 @@ Optional FAST RETURN"
           (progn
             (setq filename (expand-file-name file))
             (if (file-readable-p filename)
-                (py--execute-file-base nil filename nil nil origline)
+                (py--execute-file-base filename nil nil nil origline)
               (message "%s not readable. %s" file "Do you have write permissions?")))
         (py--execute-base beg end shell filename proc file wholebuf fast dedicated split switch)))))
 
@@ -1070,8 +1070,8 @@ May we get rid of the temporary file?"
         erg)
     (if (file-readable-p filename)
         (if py-store-result-p
-            (setq erg (py--execute-file-base nil (expand-file-name filename) nil nil origline))
-          (py--execute-file-base nil (expand-file-name filename)))
+            (setq erg (py--execute-file-base (expand-file-name filename) nil nil nil origline))
+          (py--execute-file-base (expand-file-name filename)))
       (message "%s not readable. %s" filename "Do you have write permissions?"))
     (py--shell-manage-windows py-output-buffer py-exception-buffer nil
                               (or (called-interactively-p 'interactive)))
@@ -1232,7 +1232,7 @@ This may be preferable to ‘\\[py-execute-buffer]’ because:
                      (get-buffer-process (py-shell nil nil py-dedicated-process-p shell (or shell (default-value 'py-shell-name)))))))
           ;; Maybe save some buffers
           (save-some-buffers (not py-ask-about-save) nil)
-          (py--execute-file-base proc file
+          (py--execute-file-base file proc
                                 (if (string-match "\\.py$" file)
                                     (let ((m (py--qualified-module-name (expand-file-name file))))
                                       (if (string-match "python2" py-shell-name)

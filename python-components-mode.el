@@ -3479,7 +3479,7 @@ TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
 	(with-temp-buffer
 	  (insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
 	  (write-file setup-file)))
-      (py--execute-file-base (get-buffer-process buffer) setup-file nil buffer nil t)
+      (py--execute-file-base setup-file (get-buffer-process buffer) nil buffer nil t)
       ;; (when py-verbose-p (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buffer)))))
       )))
 
@@ -3500,7 +3500,7 @@ Used by `py-ipython-module-completion-string'"
       (with-temp-buffer
 	(insert py-ipython-module-completion-code)
 	(write-file setup-file)))
-    (py--execute-file-base nil setup-file nil (current-buffer) nil t)))
+    (py--execute-file-base setup-file nil nil (current-buffer) nil t)))
 
 (defun py--at-raw-string ()
   "If at beginning of a raw-string."
