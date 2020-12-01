@@ -75,4 +75,7 @@
   There was a conflict when Pymacs was installed from source, 
   therefor it's not loaded by default
 
+* History
+  Remarks like lp:837065 refer to a former repository at https://launchpad.net/,
+  https://bugs.launchpad.net/bugs/837065
 

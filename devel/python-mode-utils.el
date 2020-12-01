@@ -3032,7 +3032,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
       (insert "(defun py-execute-region")
       (unless (string= "" ele) (insert (concat "-" ele)))
       (unless (string= "" pyo) (insert (concat "-" pyo)))
-      (insert (concat " (beg end &optional shell filename proc file)
+      (insert (concat " (beg end &optional shell filename proc)
   \"Execute region " ele))
       (insert ".\"
   (interactive \"r\")\n")
@@ -3044,7 +3044,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
       (if (string= "" ele)
 	  (insert "shell")
 	(insert (concat "'" ele)))
-      (insert " filename proc file))")
+      (insert " filename proc))")
       (unless (string= "" pyo)(insert ")"))
       (insert "\n\n")
       )))
@@ -3053,6 +3053,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
   "Uses ‘py-execute-region-forms’."
   (interactive)
   (set-buffer (get-buffer-create "python-components-execute-region.el"))
+  (switch-to-buffer (current-buffer)) 
   (erase-buffer)
   (insert ";;; python-components-execute-region.el --- execute-region forms -*- lexical-binding: t; -*-\n")
   (insert arkopf)
