@@ -316,9 +316,7 @@ named for funcname or define a function funcname."
           (setq got buf)))
     got))
 
-
 ;; pdbtrack functions
-
 (defun py-pdbtrack-set-tracked-buffer (file-name)
   "Set the buffer for FILE-NAME as the tracked buffer.
 Internally it uses the `py-pdbtrack-tracked-buffer' variable.

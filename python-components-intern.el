@@ -314,7 +314,6 @@ Start a new process if necessary. "
 (when py--warn-tmp-files-left-p
   (add-hook 'python-mode-hook 'py--warn-tmp-files-left))
 
-
 (defun py-guess-pdb-path ()
   "If py-pdb-path isn't set, find location of pdb.py. "
   (interactive)

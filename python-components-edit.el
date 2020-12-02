@@ -55,7 +55,6 @@ Used by `py-electric-colon', which will not indent than."
                     (looking-at py-def-re))))
     erg))
 
-
 (defun py-indent-line-outmost (&optional arg)
   "Indent the current line to the outmost reasonable indent.
 

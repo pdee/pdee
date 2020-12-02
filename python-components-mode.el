@@ -3681,7 +3681,6 @@ Return nil, if no executable found."
 	  (when (called-interactively-p 'any) (message "%s" "Could not detect Python on your system. Maybe set `py-edit-only-p'?")))
 	erg)))
 
-
 (defun py--normalize-directory (directory)
   "Make sure DIRECTORY ends with a file-path separator char.
 
