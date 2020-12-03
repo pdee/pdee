@@ -2234,6 +2234,9 @@ Return and move to match-beginning if successful"
                       (and indent
 		      	   (funcall condition indent (current-indentation))))))
 	(back-to-indentation)
+	(and
+         (setq pps (nth 8 (parse-partial-sexp (point-min) (point))))
+         (goto-char pps))
 	(unless (and (< (point) orig) (looking-at regexpvalue))
 	  (py--backward-regexp regexp (current-indentation) condition orig)))
       (unless (or (eq (point) orig)(bobp)) (back-to-indentation))

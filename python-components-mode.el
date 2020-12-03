@@ -3002,10 +3002,11 @@ Second group grabs the name")
   (concat
    "[ \t]*"
    (regexp-opt  py-extended-block-or-clause-re-raw 'symbols)
-   "[( \t]*.*:?")
+   "[( \t]*.*:")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
 
-(defconst py-clause-re py-extended-block-or-clause-re)
+(defconst py-clause-re py-extended-block-or-clause-re
+  "See also py-minor-clause re")
 
 (defcustom py-minor-clause-re-raw
   (list
@@ -3023,7 +3024,7 @@ Second group grabs the name")
   (concat
    "[ \t]*"
    (regexp-opt  py-minor-clause-re-raw 'symbols)
-   "[( \t]*.*:?")
+   "[( \t]*.*:")
   "See ‘py-minor-clause-re-raw’, which it reads.")
 
 (defcustom py-top-level-re
