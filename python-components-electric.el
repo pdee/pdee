@@ -60,7 +60,7 @@ See also `py-electric-colon-greedy-p'"
                              (save-excursion
                                (py-backward-statement)
                                (current-indentation))))
-                    (and (py--top-level-form-p)
+                    (and (looking-at py-def-or-class-re)
                          (< (current-indentation) indent)))
           (beginning-of-line)
           (delete-horizontal-space)

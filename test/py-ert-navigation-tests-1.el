@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -3151,7 +3151,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (py-test-with-temp-buffer-point-min
 	"a, b, c = (1, 2, 3)"
 	(goto-char (point-min))
-	(search-forward "b") 
+	(search-forward "b")
       (py-end-of-assignment)
       (should (eq (char-before) ?\)))))
 
@@ -3159,7 +3159,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (py-test-with-temp-buffer
 	"a, b, c = (1, 2, 3)
 asdf = []"
-	(search-backward "2") 
+	(search-backward "2")
       (py-end-of-assignment)
       (should (eq (char-before) ?\)))))
 
@@ -3187,7 +3187,7 @@ asdf = []"
     (py-test-with-temp-buffer-point-min
 	"a, b, c = (1, 2, 3)"
 	(goto-char (point-min))
-	(search-forward "b") 
+	(search-forward "b")
       (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
@@ -3195,7 +3195,7 @@ asdf = []"
     (py-test-with-temp-buffer
 	"a, b, c = (1, 2, 3)
 asdf = []"
-	(search-backward "2") 
+	(search-backward "2")
       (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
@@ -3203,7 +3203,7 @@ asdf = []"
     (py-test-with-temp-buffer
 	"a, b, c = (1, 2, 3)
 asdf = []"
-      (goto-char (point-max)) 
+      (goto-char (point-max))
       (py-forward-assignment)
       (should (eq (char-before) ?\]))))
 
@@ -3367,6 +3367,14 @@ from __future__ import foo
   "
     (goto-char (point-max))
     (should (eq nil (py-backward-def-or-class)))))
+
+(ert-deftest py-95-reliability-test-LiHlAP ()
+  (py-test-with-temp-buffer
+      "__version__  = \"$Revision: #30 $\"\.split()\[1]   #: current file version"
+    (goto-char (point-max))
+    (py-backward-top-level)
+    (should (py--top-level-form-p))))
+
 
 
 (provide 'py-ert-navigation-tests-1)

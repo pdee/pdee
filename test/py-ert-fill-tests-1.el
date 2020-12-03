@@ -210,7 +210,7 @@ More docstring here.
         if bbb:
             x = 1
         y = 1
-    else
+    else:
 "
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
