@@ -94,12 +94,14 @@ Requires BEG, END as the boundery of region"
     (save-restriction
       (beginning-of-line)
       (narrow-to-region beg end)
-      (forward-line 1)
-      (narrow-to-region (line-beginning-position) end)
-      (py--re-indent-line)
-      (while (< (line-end-position) end)
-        (forward-line 1)
-        (py--re-indent-line)))))
+      (goto-char beg)
+      (let ((end (copy-marker end)))
+	(forward-line 1)
+	(narrow-to-region (line-beginning-position) end)
+	(py--re-indent-line)
+	(while (< (line-end-position) end)
+          (forward-line 1)
+          (py--re-indent-line))))))
 
 (defun py-indent-current-line (need)
   "Indent current line to NEED."
