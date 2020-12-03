@@ -1,9 +1,6 @@
 (ert-deftest py-ert-last-exeption-buffer-test-3sKjIQ ()
   (should (boundp 'py-last-exeption-buffer)))
 
-(ert-deftest py-ert-keywords-test-NZWM9I ()
-  (should (boundp 'py-keywords)))
-
 (ert-deftest py-ert-pdbtrack-is-tracking-p-test-VcB8BB ()
   (should (boundp 'py-pdbtrack-is-tracking-p)))
 

@@ -1,6 +1,6 @@
-;;; python-components-edit.el --- Some more Python edit utilities
+;;; python-components-edit.el --- Some more Python edit utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2016, 2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -24,10 +24,7 @@
 ;;
 
 ;;; Code:
-(defvar py-keywords "\\<\\(ArithmeticError\\|AssertionError\\|AttributeError\\|BaseException\\|BufferError\\|BytesWarning\\|DeprecationWarning\\|EOFError\\|Ellipsis\\|EnvironmentError\\|Exception\\|False\\|FloatingPointError\\|FutureWarning\\|GeneratorExit\\|IOError\\|ImportError\\|ImportWarning\\|IndentationError\\|IndexError\\|KeyError\\|KeyboardInterrupt\\|LookupError\\|MemoryError\\|NameError\\|NoneNotImplementedError\\|NotImplemented\\|OSError\\|OverflowError\\|PendingDeprecationWarning\\|ReferenceError\\|RuntimeError\\|RuntimeWarning\\|StandardError\\|StopIteration\\|SyntaxError\\|SyntaxWarning\\|SystemError\\|SystemExit\\|TabError\\|True\\|TypeError\\|UnboundLocalError\\|UnicodeDecodeError\\|UnicodeEncodeError\\|UnicodeError\\|UnicodeTranslateError\\|UnicodeWarning\\|UserWarning\\|ValueError\\|Warning\\|ZeroDivisionError\\|__debug__\\|__import__\\|__name__\\|abs\\|all\\|and\\|any\\|apply\\|as\\|assert\\|basestring\\|bin\\|bool\\|break\\|buffer\\|bytearray\\|callable\\|chr\\|class\\|classmethod\\|cmp\\|coerce\\|compile\\|complex\\|continue\\|copyright\\|credits\\|def\\|del\\|delattr\\|dict\\|dir\\|divmod\\|elif\\|else\\|enumerate\\|eval\\|except\\|exec\\|execfile\\|exit\\|file\\|filter\\|float\\|for\\|format\\|from\\|getattr\\|global\\|globals\\|hasattr\\|hash\\|help\\|hex\\|id\\|if\\|import\\|in\\|input\\|int\\|intern\\|is\\|isinstance\\|issubclass\\|iter\\|lambda\\|len\\|license\\|list\\|locals\\|long\\|map\\|max\\|memoryview\\|min\\|next\\|not\\|object\\|oct\\|open\\|or\\|ord\\|pass\\|pow\\|print\\|property\\|quit\\|raise\\|range\\|raw_input\\|reduce\\|reload\\|repr\\|return\\|round\\|set\\|setattr\\|slice\\|sorted\\|staticmethod\\|str\\|sum\\|super\\|tuple\\|type\\|unichr\\|unicode\\|vars\\|while\\|with\\|xrange\\|yield\\|zip\\|\\)\\>"
-  "Contents like py-fond-lock-keyword.")
 
-;; ;
 (defun py-insert-default-shebang ()
   "Insert in buffer shebang of installed default Python."
   (interactive "*")
@@ -44,56 +41,65 @@
          (looking-at (concat "\\b" py-expression-re))
          (point))))
 
+;; TODO: The following function can lead to false positive (inside a string).
+;; See ticket #95: https://gitlab.com/python-mode-devs/python-mode/-/issues/95
 (defun py--top-level-form-p ()
   "Return non-nil, if line start with a top level definition.
 
-Used by `py-electric-colon', which will not indent than."
-  (let (erg)
-    (save-excursion
-      (beginning-of-line)
-      (setq erg (or (looking-at py-class-re)
-                    (looking-at py-def-re))))
-    erg))
+Used by `py-electric-colon', which will not indent then."
+  (save-excursion
+    (beginning-of-line)
+    (or (looking-at py-class-re)
+        (looking-at py-def-re))))
 
 (defun py-indent-line-outmost (&optional arg)
   "Indent the current line to the outmost reasonable indent.
 
-With optional \\[universal-argument] ARG an indent with length `py-indent-offset' is inserted unconditionally"
+With optional \\[universal-argument] ARG, unconditionally insert an indent of
+`py-indent-offset' length."
   (interactive "*P")
-  (let* ((need (py-compute-indentation (point)))
-         (cui (current-indentation))
-         (cuc (current-column)))
-    (cond ((eq 4 (prefix-numeric-value arg))
-	   (if indent-tabs-mode
-	       (insert (make-string 1 9))
-	     (insert (make-string py-indent-offset 32))))
-          (t
-           (if (and (eq need cui)(not (eq cuc cui)))
-               (back-to-indentation)
-             (beginning-of-line)
-             (delete-horizontal-space)
-             (indent-to need))))))
+  (cond
+   ((eq 4 (prefix-numeric-value arg))
+    (if indent-tabs-mode
+        (insert (make-string 1 9))
+      (insert (make-string py-indent-offset 32))))
+   ;;
+   (t
+    (let* ((need (py-compute-indentation (point)))
+           (cui (current-indentation))
+           (cuc (current-column)))
+      (if (and (eq need cui)
+               (not (eq cuc cui)))
+          (back-to-indentation)
+        (beginning-of-line)
+        (delete-horizontal-space)
+        (indent-to need))))))
 
+
+(defun py--re-indent-line ()
+  "Re-indent the current line."
+  (beginning-of-line)
+  (delete-region (point)
+                 (progn (skip-chars-forward " \t\r\n\f")
+                        (point)))
+  (indent-to (py-compute-indentation)))
+
+;; TODO: the following function can fall into an infinite loop.
+;; See https://gitlab.com/python-mode-devs/python-mode/-/issues/99
 (defun py--indent-fix-region-intern (beg end)
   "Used when `py-tab-indents-region-p' is non-nil.
 
 Requires BEG, END as the boundery of region"
-  (let ()
-    (save-excursion
-      (save-restriction
-        (beginning-of-line)
-        (narrow-to-region beg end)
+  (save-excursion
+    (save-restriction
+      (beginning-of-line)
+      (narrow-to-region beg end)
+      (forward-line 1)
+      (narrow-to-region (line-beginning-position) end)
+      (py--re-indent-line)
+      (while (< (line-end-position) end)
         (forward-line 1)
-        (narrow-to-region (line-beginning-position) end)
-        (beginning-of-line)
-        (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
-        (indent-to (py-compute-indentation))
-        (while
-            (< (line-end-position) end)
-          (forward-line 1)
-          (beginning-of-line)
-          (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
-          (indent-to (py-compute-indentation)))))))
+        (py--re-indent-line)))))
 
 (defun py-indent-current-line (need)
   "Indent current line to NEED."
@@ -101,6 +107,9 @@ Requires BEG, END as the boundery of region"
   (delete-horizontal-space)
   (indent-to need))
 
+;; TODO: Add docstring.
+;; What is the intent of the this utility function?
+;; What is the purpose of each argument?
 (defun py--indent-line-intern (need cui indent col &optional beg end region)
   (let (erg)
     (if py-tab-indent
@@ -110,12 +119,12 @@ Requires BEG, END as the boundery of region"
 	  (cond
 	   ((bolp)
 	    (if (and py-tab-shifts-region-p region)
-		(progn
-		  (while (< (current-indentation) need)
-		    (py-shift-region-right 1)))
+                (while (< (current-indentation) need)
+                  (py-shift-region-right 1))
 	      (beginning-of-line)
 	      (delete-horizontal-space)
 	      (indent-to need)))
+           ;;
 	   ((< need cui)
 	    (if (and py-tab-shifts-region-p region)
 		(progn
@@ -126,6 +135,7 @@ Requires BEG, END as the boundery of region"
 	      (beginning-of-line)
 	      (delete-horizontal-space)
 	      (indent-to need)))
+           ;;
 	   ((eq need cui)
 	    (if (or (eq this-command last-command)
 		    (eq this-command 'py-indent-line))
@@ -137,24 +147,23 @@ Requires BEG, END as the boundery of region"
 		  (if (<= (line-beginning-position) (+ (point) (- col cui)))
 		      (forward-char (- col cui))
 		    (beginning-of-line)))))
+           ;;
 	   ((< cui need)
 	    (if (and py-tab-shifts-region-p region)
-		(progn
-		  (py-shift-region-right 1))
-	      (progn
-		(beginning-of-line)
-		(delete-horizontal-space)
-		;; indent one indent only if goal < need
-		(setq erg (+ (* (/ cui indent) indent) indent))
-		(if (< need erg)
-		    (indent-to need)
-		  (indent-to erg))
-		(forward-char (- col cui)))))
+                (py-shift-region-right 1)
+              (beginning-of-line)
+              (delete-horizontal-space)
+              ;; indent one indent only if goal < need
+              (setq erg (+ (* (/ cui indent) indent) indent))
+              (if (< need erg)
+                  (indent-to need)
+                (indent-to erg))
+              (forward-char (- col cui))))
+           ;;
 	   (t
 	    (if (and py-tab-shifts-region-p region)
-		(progn
-		  (while (< (current-indentation) need)
-		    (py-shift-region-right 1)))
+                (while (< (current-indentation) need)
+                  (py-shift-region-right 1))
 	      (beginning-of-line)
 	      (delete-horizontal-space)
 	      (indent-to need)
