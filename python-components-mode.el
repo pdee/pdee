@@ -2247,7 +2247,6 @@ Default is nil"
       "Used if ‘python-mode-v5-behavior-p’ is t.
 
 Otherwise output buffer is created dynamically according to Python version and kind of process-handling")
-;; (make-variable-buffer-local 'py-output-buffer)
 
 (defcustom py-force-default-output-buffer-p nil
   "Enforce sending output to the default output ‘buffer-name’.
@@ -2501,13 +2500,11 @@ Syntax or has word syntax and isn't a letter.")
           (modify-syntax-entry ?\_ "_" table))
         table))
 
-(defvar py-local-command nil
+(defvar-local py-local-command nil
   "Returns locally used executable-name.")
-(make-variable-buffer-local 'py-local-command)
 
-(defvar py-local-versioned-command nil
+(defvar-local py-local-versioned-command nil
   "Returns locally used executable-name including its version.")
-(make-variable-buffer-local 'py-local-versioned-command)
 
 (defvar py-ipython-completion-command-string nil
   "Select command according to IPython version.
@@ -2756,11 +2753,10 @@ Currently-active file is at the head of the list.")
   "Default template to expand by `python-expand-template'.
 Updated on each expansion.")
 
-(defvar py-already-guessed-indent-offset nil
+(defvar-local py-already-guessed-indent-offset nil
   "Internal use by ‘py-indent-line’.
 
 When `this-command' is `eq' to `last-command', use the guess already computed.")
-(make-variable-buffer-local 'py-already-guessed-indent-offset)
 
 (defvar py-shell-template "
 \(defun NAME (&optional argprompt)
