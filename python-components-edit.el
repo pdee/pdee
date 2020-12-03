@@ -49,8 +49,11 @@
 Used by `py-electric-colon', which will not indent then."
   (save-excursion
     (beginning-of-line)
-    (or (looking-at py-class-re)
-        (looking-at py-def-re))))
+    (unless
+	;; in string
+	(nth 3 (parse-partial-sexp (point-min) (point)))
+      (or (looking-at py-class-re)
+          (looking-at py-def-re)))))
 
 (defun py-indent-line-outmost (&optional arg)
   "Indent the current line to the outmost reasonable indent.
