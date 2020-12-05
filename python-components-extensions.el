@@ -284,18 +284,6 @@ Matches lists, but also block, statement, string and comment. "
   (shell-command (concat py-shell-name " -c \"from pydoc import help;help(\'" w "\')\"") "*PYDOCS*")
   (view-buffer-other-window "*PYDOCS*" t 'kill-buffer-and-window))
 
-(defun eva ()
-  "Put \"eval(...)\" forms around strings at point. "
-  (interactive "*")
-  (skip-chars-forward " \t\r\n\f")
-  (let* ((bounds (ar-bounds-of-word-atpt))
-         (beg (car bounds))
-         (end (cdr bounds)))
-    (goto-char end)
-    (insert ")")
-    (goto-char beg)
-    (insert "eval(")))
-
 (defun pst-here ()
   "Kill previous \"pdb.set_trace()\" and insert it at point. "
   (interactive "*")

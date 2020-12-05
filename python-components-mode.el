@@ -369,6 +369,12 @@ When non-nil, return resulting string of `py-execute-...'.
 Imports will use it with nil.
 Default is nil")
 
+(defun py-toggle-py-return-result-p ()
+  "Toggle value of ‘py-return-result-p’"
+  (interactive)
+  (setq py-return-result-p (not py-return-result-p))
+  (when (called-interactively-p) (message "py-return-result-p: %s" py-return-result-p)))
+
 (defcustom py--execute-use-temp-file-p nil
  "Assume execution at a remote machine.
 

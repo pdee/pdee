@@ -3370,7 +3370,7 @@ from __future__ import foo
 
 (ert-deftest py-95-reliability-test-LiHlAP ()
   (py-test-with-temp-buffer
-      "__version__  = \"$Revision: 1.4 $\"\.split()\[1]   #: current file version"
+      "__version__  = \"Bla   #: current file version"
     (goto-char (point-max))
     (py-backward-top-level)
     (should (py--top-level-form-p))))
