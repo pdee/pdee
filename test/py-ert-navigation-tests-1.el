@@ -3370,10 +3370,27 @@ from __future__ import foo
 
 (ert-deftest py-95-reliability-test-LiHlAP ()
   (py-test-with-temp-buffer
-      "__version__  = \"$Revision: #30 $\"\.split()\[1]   #: current file version"
+      "__version__  = \"$Revision: 1.4 $\"\.split()\[1]   #: current file version"
     (goto-char (point-max))
     (py-backward-top-level)
     (should (py--top-level-form-p))))
+
+
+(ert-deftest py-mark-indent-Qd3qoQ ()
+  (py-test-with-temp-buffer-point-min
+      "if __name__ == \"__main__\":
+    main()
+
+try:
+    anzahl = int(args\[1])
+except:
+    print(\"Setze anzahl auf 1\")
+    anzahl = 1
+"
+    (goto-char (point-min))
+    (search-forward "main()")
+    (beginning-of-line)
+    (should (eq 32 (cdr (py-mark-indent))))))
 
 
 
