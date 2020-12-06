@@ -128,7 +128,7 @@
        ))
 
 ;; section has a different end as others
-(setq py-execute-forms
+(defconst py-execute-forms
       (list
        "block"
        "block-or-clause"
@@ -146,7 +146,8 @@
        "region"
        "statement"
        "top-level"
-       ))
+       )
+      "Internally used")
 
 (setq py-bol-forms
       (list
@@ -2087,22 +2088,28 @@ Use backward-statement for ‘top-level’, also bol-forms don't make sense here
   (dolist (ele py-execute-forms)
     (insert (concat "
 \(defun py-" ele))
-    (if (string= ele (or "block" "def" "def-or-class" "class"))
+    (if (member ele (list "block" "block-or-clause" "def" "def-or-class" "class" "top-level"))
 	(insert " (&optional decorators)")
       (insert " ()"))
     (insert (concat "
   \"When called interactively, mark " (capitalize ele) " at point.
 
 When called from a programm, return source-code of " (capitalize ele) " at point, a string."))
-        (if (string= ele (or "block" "def" "def-or-class" "class"))
-	    (insert "\n  Optional arg DECORATORS: include decorators when called at def or class.\"")
+        (if (member ele (list "block" "block-or-clause" "def" "def-or-class" "class" "top-level"))
+	    (insert "\n\nOptional arg DECORATORS: include decorators when called at def or class.
+Also honors setting of ‘py-mark-decorators’\"")
 	  (insert "\""))
 	(insert (concat "
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base \"" ele "\" decorators)
-    (py--thing-at-point \""ele"\" decorators)))
-")))
+      (py--mark-base \"" ele "\""))
+	(when (member ele (list "block" "block-or-clause" "def" "def-or-class" "class" "top-level"))
+	  (insert " (or decorators py-mark-decorators)"))
+	(insert (concat  ")
+    (py--thing-at-point \""ele"\""))
+	(when (member ele (list "block" "block-or-clause" "def" "def-or-class" "class" "top-level"))
+	  (insert " (or decorators py-mark-decorators)"))
+     (insert ")))\n"))
   (insert "\n;; python-components-forms-code.el ends here
 \(provide 'python-components-forms-code)")
 

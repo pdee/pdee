@@ -926,7 +926,9 @@ If nil, default, it will not move from at any reasonable level."
   :group 'python-mode)
 
 (defcustom py-mark-decorators nil
-  "If ‘py-mark-def-or-class’ functions should mark decorators too.  Default is nil."
+  "If ‘py-mark-def-or-class’ functions should mark decorators too.  Default is nil.
+
+Also used by navigation"
   :type 'boolean
   :tag "py-mark-decorators"
   :group 'python-mode)

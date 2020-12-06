@@ -33,20 +33,25 @@
   "When called interactively, mark Block at point.
 
 When called from a programm, return source-code of Block at point, a string.
-  Optional arg DECORATORS: include decorators when called at def or class."
+
+Optional arg DECORATORS: include decorators when called at def or class.
+Also honors setting of ‘py-mark-decorators’"
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "block" decorators)
-    (py--thing-at-point "block" decorators)))
+      (py--mark-base "block" (or decorators py-mark-decorators))
+    (py--thing-at-point "block" (or decorators py-mark-decorators))))
 
-(defun py-block-or-clause ()
+(defun py-block-or-clause (&optional decorators)
   "When called interactively, mark Block-Or-Clause at point.
 
-When called from a programm, return source-code of Block-Or-Clause at point, a string."
+When called from a programm, return source-code of Block-Or-Clause at point, a string.
+
+Optional arg DECORATORS: include decorators when called at def or class.
+Also honors setting of ‘py-mark-decorators’"
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "block-or-clause" decorators)
-    (py--thing-at-point "block-or-clause" decorators)))
+      (py--mark-base "block-or-clause" (or decorators py-mark-decorators))
+    (py--thing-at-point "block-or-clause" (or decorators py-mark-decorators))))
 
 (defun py-buffer ()
   "When called interactively, mark Buffer at point.
@@ -54,17 +59,20 @@ When called from a programm, return source-code of Block-Or-Clause at point, a s
 When called from a programm, return source-code of Buffer at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "buffer" decorators)
-    (py--thing-at-point "buffer" decorators)))
+      (py--mark-base "buffer")
+    (py--thing-at-point "buffer")))
 
-(defun py-class ()
+(defun py-class (&optional decorators)
   "When called interactively, mark Class at point.
 
-When called from a programm, return source-code of Class at point, a string."
+When called from a programm, return source-code of Class at point, a string.
+
+Optional arg DECORATORS: include decorators when called at def or class.
+Also honors setting of ‘py-mark-decorators’"
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "class" decorators)
-    (py--thing-at-point "class" decorators)))
+      (py--mark-base "class" (or decorators py-mark-decorators))
+    (py--thing-at-point "class" (or decorators py-mark-decorators))))
 
 (defun py-clause ()
   "When called interactively, mark Clause at point.
@@ -72,26 +80,32 @@ When called from a programm, return source-code of Class at point, a string."
 When called from a programm, return source-code of Clause at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "clause" decorators)
-    (py--thing-at-point "clause" decorators)))
+      (py--mark-base "clause")
+    (py--thing-at-point "clause")))
 
-(defun py-def ()
+(defun py-def (&optional decorators)
   "When called interactively, mark Def at point.
 
-When called from a programm, return source-code of Def at point, a string."
+When called from a programm, return source-code of Def at point, a string.
+
+Optional arg DECORATORS: include decorators when called at def or class.
+Also honors setting of ‘py-mark-decorators’"
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "def" decorators)
-    (py--thing-at-point "def" decorators)))
+      (py--mark-base "def" (or decorators py-mark-decorators))
+    (py--thing-at-point "def" (or decorators py-mark-decorators))))
 
-(defun py-def-or-class ()
+(defun py-def-or-class (&optional decorators)
   "When called interactively, mark Def-Or-Class at point.
 
-When called from a programm, return source-code of Def-Or-Class at point, a string."
+When called from a programm, return source-code of Def-Or-Class at point, a string.
+
+Optional arg DECORATORS: include decorators when called at def or class.
+Also honors setting of ‘py-mark-decorators’"
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "def-or-class" decorators)
-    (py--thing-at-point "def-or-class" decorators)))
+      (py--mark-base "def-or-class" (or decorators py-mark-decorators))
+    (py--thing-at-point "def-or-class" (or decorators py-mark-decorators))))
 
 (defun py-expression ()
   "When called interactively, mark Expression at point.
@@ -99,8 +113,8 @@ When called from a programm, return source-code of Def-Or-Class at point, a stri
 When called from a programm, return source-code of Expression at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "expression" decorators)
-    (py--thing-at-point "expression" decorators)))
+      (py--mark-base "expression")
+    (py--thing-at-point "expression")))
 
 (defun py-indent ()
   "When called interactively, mark Indent at point.
@@ -108,8 +122,8 @@ When called from a programm, return source-code of Expression at point, a string
 When called from a programm, return source-code of Indent at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "indent" decorators)
-    (py--thing-at-point "indent" decorators)))
+      (py--mark-base "indent")
+    (py--thing-at-point "indent")))
 
 (defun py-line ()
   "When called interactively, mark Line at point.
@@ -117,8 +131,8 @@ When called from a programm, return source-code of Indent at point, a string."
 When called from a programm, return source-code of Line at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "line" decorators)
-    (py--thing-at-point "line" decorators)))
+      (py--mark-base "line")
+    (py--thing-at-point "line")))
 
 (defun py-minor-block ()
   "When called interactively, mark Minor-Block at point.
@@ -126,8 +140,8 @@ When called from a programm, return source-code of Line at point, a string."
 When called from a programm, return source-code of Minor-Block at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "minor-block" decorators)
-    (py--thing-at-point "minor-block" decorators)))
+      (py--mark-base "minor-block")
+    (py--thing-at-point "minor-block")))
 
 (defun py-paragraph ()
   "When called interactively, mark Paragraph at point.
@@ -135,8 +149,8 @@ When called from a programm, return source-code of Minor-Block at point, a strin
 When called from a programm, return source-code of Paragraph at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "paragraph" decorators)
-    (py--thing-at-point "paragraph" decorators)))
+      (py--mark-base "paragraph")
+    (py--thing-at-point "paragraph")))
 
 (defun py-partial-expression ()
   "When called interactively, mark Partial-Expression at point.
@@ -144,8 +158,8 @@ When called from a programm, return source-code of Paragraph at point, a string.
 When called from a programm, return source-code of Partial-Expression at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "partial-expression" decorators)
-    (py--thing-at-point "partial-expression" decorators)))
+      (py--mark-base "partial-expression")
+    (py--thing-at-point "partial-expression")))
 
 (defun py-region ()
   "When called interactively, mark Region at point.
@@ -153,8 +167,8 @@ When called from a programm, return source-code of Partial-Expression at point, 
 When called from a programm, return source-code of Region at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "region" decorators)
-    (py--thing-at-point "region" decorators)))
+      (py--mark-base "region")
+    (py--thing-at-point "region")))
 
 (defun py-statement ()
   "When called interactively, mark Statement at point.
@@ -162,17 +176,20 @@ When called from a programm, return source-code of Region at point, a string."
 When called from a programm, return source-code of Statement at point, a string."
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "statement" decorators)
-    (py--thing-at-point "statement" decorators)))
+      (py--mark-base "statement")
+    (py--thing-at-point "statement")))
 
-(defun py-top-level ()
+(defun py-top-level (&optional decorators)
   "When called interactively, mark Top-Level at point.
 
-When called from a programm, return source-code of Top-Level at point, a string."
+When called from a programm, return source-code of Top-Level at point, a string.
+
+Optional arg DECORATORS: include decorators when called at def or class.
+Also honors setting of ‘py-mark-decorators’"
   (interactive)
   (if (called-interactively-p 'interactive)
-      (py--mark-base "top-level" decorators)
-    (py--thing-at-point "top-level" decorators)))
+      (py--mark-base "top-level" (or decorators py-mark-decorators))
+    (py--thing-at-point "top-level" (or decorators py-mark-decorators))))
 
 ;; python-components-forms-code.el ends here
 (provide 'python-components-forms-code)

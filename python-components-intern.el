@@ -2033,7 +2033,7 @@ Return position."
 Text properties are stripped.
 If PY-MARK-DECORATORS, `def'- and `class'-forms include decorators
 If BOL is t, from beginning-of-line"
-  (interactive) 
+  (interactive)
   (let* ((begform (intern-soft (concat "py-backward-" form)))
          (endform (intern-soft (concat "py-forward-" form)))
          (begcheckform (intern-soft (concat "py--beginning-of-" form "-p")))
@@ -2092,7 +2092,9 @@ If BOL is t, mark from beginning-of-line"
     (unless end (when (< beg (point))
                   (setq end (point))))
     (if (and beg end (<= beg orig) (<= orig end))
-        (cons beg end)
+        (progn
+	  (cons beg end)
+	  (exchange-point-and-mark))
       nil)))
 
 (defun py--mark-base-bol (form &optional mark-decorators)
