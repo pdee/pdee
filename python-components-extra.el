@@ -455,29 +455,6 @@ using that one instead of current buffer's process."
             (run-hooks 'py-shell-first-prompt-hook))))))
   output)
 
-(defun python-shell-package-enable (directory package)
-  "Add DIRECTORY parent to $PYTHONPATH and enable PACKAGE."
-  (interactive
-   (let* ((dir (expand-file-name
-                (read-directory-name
-                 "Package root: "
-                 (file-name-directory
-                  (or (buffer-file-name) default-directory)))))
-          (name (completing-read
-                 "Package: "
-                 (python-util-list-packages
-                  dir py-shell--package-depth))))
-     (list dir name)))
-  (py-shell-send-string
-   (format
-    (concat
-     "import os.path;import sys;"
-     "sys.path.append(os.path.dirname(os.path.dirname('''%s''')));"
-     "__package__ = '''%s''';"
-     "import %s")
-    directory package package)
-   (or (get-buffer-process (current-buffer)) (get-buffer-process (py-shell)))))
-
 (defun py-comint-postoutput-scroll-to-bottom (output)
   "Faster version of `comint-postoutput-scroll-to-bottom'.
 Avoids `recenter' calls until OUTPUT is completely sent."
