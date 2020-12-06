@@ -3392,6 +3392,16 @@ except:
     (beginning-of-line)
     (should (eq 32 (cdr (py-mark-indent))))))
 
+(ert-deftest py-py-block-test-TsUyyc ()
+  (py-test-with-temp-buffer-point-min
+      "def main():
+    if len(sys.argv) == 1:
+        usage()
+"
+    (goto-char (point-min))
+    (search-forward "if")
+    (should (eq 38 (length (py-block))))))
+
 
 
 (provide 'py-ert-navigation-tests-1)

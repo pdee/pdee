@@ -2027,6 +2027,49 @@ Return position."
     (beginning-of-line)
     (point)))
 
+(defun py--thing-at-point (form &optional mark-decorators)
+  "Returns buffer-substring of string-argument FORM as cons.
+
+Text properties are stripped.
+If PY-MARK-DECORATORS, `def'- and `class'-forms include decorators
+If BOL is t, from beginning-of-line"
+  (interactive) 
+  (let* ((begform (intern-soft (concat "py-backward-" form)))
+         (endform (intern-soft (concat "py-forward-" form)))
+         (begcheckform (intern-soft (concat "py--beginning-of-" form "-p")))
+         (orig (point))
+         beg end erg)
+    (setq beg (if
+                  (setq beg (funcall begcheckform))
+                  beg
+                (funcall begform)))
+    (and mark-decorators
+         (and (setq erg (py-backward-decorator))
+              (setq beg erg)))
+    (setq end (funcall endform))
+    (unless end (when (< beg (point))
+                  (setq end (point))))
+    (if (and beg end (<= beg orig) (<= orig end))
+        (buffer-substring-no-properties beg end)
+      nil)))
+
+(defun py--thing-at-point-bol (form &optional mark-decorators)
+  (let* ((begform (intern-soft (concat "py-backward-" form "-bol")))
+         (endform (intern-soft (concat "py-forward-" form "-bol")))
+         (begcheckform (intern-soft (concat "py--beginning-of-" form "-bol-p")))
+         beg end erg)
+    (setq beg (if
+                  (setq beg (funcall begcheckform))
+                  beg
+                (funcall begform)))
+    (when mark-decorators
+      (save-excursion
+        (when (setq erg (py-backward-decorator))
+          (setq beg erg))))
+    (setq end (funcall endform))
+    (unless end (when (< beg (point))
+                  (setq end (point))))
+    (cons beg end)))
 (defun py--mark-base (form &optional mark-decorators)
   "Returns boundaries of FORM, a cons.
 

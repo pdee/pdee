@@ -1485,9 +1485,6 @@
 (ert-deftest py-ert-py-match-paren-functionp-test-eu8e4r ()
   (should (functionp 'py-match-paren)))
 
-(ert-deftest py-ert-eva-functionp-test-0waxxg ()
-  (should (functionp 'eva)))
-
 (ert-deftest py-ert-pst-here-functionp-test-KE7U14 ()
   (should (functionp 'pst-here)))
 

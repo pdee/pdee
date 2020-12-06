@@ -2086,13 +2086,22 @@ Use backward-statement for ‘top-level’, also bol-forms don't make sense here
   (insert arkopf)
   (dolist (ele py-execute-forms)
     (insert (concat "
-\(defun py-" ele " ()
-  \"" (capitalize ele) " at point.
+\(defun py-" ele))
+    (if (string= ele (or "block" "def" "def-or-class" "class"))
+	(insert " (&optional decorators)")
+      (insert " ()"))
+    (insert (concat "
+  \"When called interactively, mark " (capitalize ele) " at point.
 
-Return code of ‘py-" ele "’ at point, a string.\"
+When called from a programm, return source-code of " (capitalize ele) " at point, a string."))
+        (if (string= ele (or "block" "def" "def-or-class" "class"))
+	    (insert "\n  Optional arg DECORATORS: include decorators when called at def or class.\"")
+	  (insert "\""))
+	(insert (concat "
   (interactive)
-  (let ((erg (py--mark-base \"" ele "\")))
-    (py--forms-report-result erg (called-interactively-p 'interactive))))
+  (if (called-interactively-p 'interactive)
+      (py--mark-base \"" ele "\" decorators)
+    (py--thing-at-point \""ele"\" decorators)))
 ")))
   (insert "\n;; python-components-forms-code.el ends here
 \(provide 'python-components-forms-code)")
@@ -3053,7 +3062,7 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
   "Uses ‘py-execute-region-forms’."
   (interactive)
   (set-buffer (get-buffer-create "python-components-execute-region.el"))
-  (switch-to-buffer (current-buffer)) 
+  (switch-to-buffer (current-buffer))
   (erase-buffer)
   (insert ";;; python-components-execute-region.el --- execute-region forms -*- lexical-binding: t; -*-\n")
   (insert arkopf)
