@@ -249,12 +249,7 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (set (make-local-variable 'tab-width) py-indent-offset)
   (set (make-local-variable 'eldoc-documentation-function) 'py-eldoc-function)
-  (and py-load-skeletons-p
-       (py-load-skeletons)
-       (set (make-local-variable 'skeleton-further-elements)
-            '((< '(backward-delete-char-untabify (min py-indent-offset
-                                                      (current-column))))
-              (^ '(- (1+ (current-indentation)))))))
+  (and py-load-skeletons-p (py-load-skeletons))
   (and py-guess-py-install-directory-p (py-set-load-path))
   (and py-autopair-mode
        (load-library "autopair")

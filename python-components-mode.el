@@ -373,7 +373,7 @@ Default is nil")
   "Toggle value of ‘py-return-result-p’"
   (interactive)
   (setq py-return-result-p (not py-return-result-p))
-  (when (called-interactively-p) (message "py-return-result-p: %s" py-return-result-p)))
+  (when (called-interactively-p 'interactive) (message "py-return-result-p: %s" py-return-result-p)))
 
 (defcustom py--execute-use-temp-file-p nil
  "Assume execution at a remote machine.
