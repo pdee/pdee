@@ -736,11 +736,13 @@ optional argument."
 Delete it here"
   (when py-verbose-p (message "(current-buffer): %s" (current-buffer))
 	(switch-to-buffer (current-buffer)))
-  (if python-mode-v5-behavior-p
-      (with-current-buffer buffer
-	(string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
-    (when (< limit (point-max))
-      (string-trim (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max)))))))
+  (cond (python-mode-v5-behavior-p
+	 (with-current-buffer buffer
+	   (string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n")))
+	((and cmd (< limit (point-max)))
+	 (replace-regexp-in-string cmd "" (string-trim (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max))))))
+	(t (when (< limit (point-max))
+	     (string-trim (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max))))))))
 
 (defun py--postprocess (output-buffer origline limit &optional cmd filename)
   "Provide return values, check result for error, manage windows.
@@ -1200,7 +1202,7 @@ See also doku of variable ‘py-master-file’"
       f)))
 
 (defun py--qualified-module-name (file)
-  (interactive "f") 
+  (interactive "f")
   "Find the qualified module name for filename FILE.
 
 Basically, this goes down the directory tree as long as there are __init__.py files there."
