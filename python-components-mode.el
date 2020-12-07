@@ -3963,6 +3963,7 @@ Preserves the `buffer-modified-p' state of the current buffer."
 (require 'python-components-menu)
 (require 'python-components-extra)
 (require 'python-components-map)
+(require 'python-components-font-lock)
 (require 'python-components-switches)
 (require 'python-components-edit)
 (require 'python-components-backward-forms)
