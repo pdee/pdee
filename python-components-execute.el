@@ -1191,23 +1191,27 @@ See also doku of variable ‘py-master-file’"
           (setq py-master-file (match-string-no-properties 2))))))
   (when (called-interactively-p 'any) (message "%s" py-master-file)))
 
-(defun py--qualified-module-name-intern (d f)
-  ""
-  (let* ((dir (file-name-directory d))
-         (initpy (concat dir "__init__.py")))
-    (if (file-exists-p initpy)
-        (let ((d2 (directory-file-name d)))
-          (py--qualified-module-name-intern (file-name-directory d2)
-                   (concat (file-name-nondirectory d2) "." f)))
-      f)))
 
 (defun py--qualified-module-name (file)
-  (interactive "f")
-  "Find the qualified module name for filename FILE.
+  "Return the fully qualified Python module name for FILE.
 
-Basically, this goes down the directory tree as long as there are __init__.py files there."
-  (py--qualified-module-name-intern (file-name-directory file)
-           (file-name-sans-extension (file-name-nondirectory file))))
+FILE is a string.  It may be an absolute or a relative path to
+any file stored inside a Python package directory, although
+typically it would be a (absolute or relative) path to a Python
+source code file stored inside a Python package directory.
+
+This collects all directories names that have a __init__.py
+file in them, starting with the directory of FILE and moving up."
+  (let ((module-name (file-name-sans-extension (file-name-nondirectory file)))
+        (dirname     (file-name-directory (expand-file-name file))))
+    (while (file-exists-p (expand-file-name "__init__.py" dirname))
+      (setq module-name
+            (concat
+             (file-name-nondirectory (directory-file-name dirname))
+             "."
+             module-name))
+      (setq dirname (file-name-directory (directory-file-name dirname))))
+    module-name))
 
 (defun py-execute-import-or-reload (&optional shell)
   "Import the current buffer's file in a Python interpreter.
