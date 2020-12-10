@@ -552,7 +552,8 @@ When interactively called, copy and message it"
    (list (current-buffer)))
   ;; (when (bufferp buffer)
   (ignore-errors (with-current-buffer buffer
-    (let (kill-buffer-query-functions set-buffer-modified-p)
+    (let (kill-buffer-query-functions)
+      (set-buffer-modified-p nil)
       (ignore-errors (kill-process (get-buffer-process buffer)))
       (ignore-errors (kill-buffer buffer))))))
 

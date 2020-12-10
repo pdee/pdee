@@ -2614,6 +2614,11 @@ some logging, etc.
 For normal operation, leave it set to nil, its default.
 Defined with a defvar form to allow testing the loading of new versions.")
 
+(defun py-toggle-py--debug-p ()
+  "Toggle value of ‘py--debug-p’"
+  (interactive)
+  (setq py--debug-p (not py--debug-p))
+  (when (called-interactively-p 'interactive) (message "py--debug-p: %s" py--debug-p)))
 
 (defcustom py-shell-complete-p nil
   "Enable native completion.
@@ -2748,7 +2753,7 @@ Currently-active file is at the head of the list.")
 (defvar py-shell-hook nil
   "Hook called by `py-shell'.")
 
-(defvar python-font-lock-keywords nil)
+;; (defvar python-font-lock-keywords nil)
 
 (defvar py-dotted-expression-syntax-table
   (let ((table (make-syntax-table python-mode-syntax-table)))
@@ -2855,19 +2860,23 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 ;; 'name':
 (defconst py-dict-re "'\\_<\\w+\\_>':")
 
-(defvar py-block-re-raw (list
-		       "async def"
-		       "async for"
-		       "async with"
-		       "class"
-		       "def"
-		       "for"
-		       "if"
-		       "try"
-		       "while"
-		       "with"
-		       )
-  "Used by ‘py-block-re’")
+(defcustom py-block-re-raw
+  (list
+   "async def"
+   "async for"
+   "async with"
+   "class"
+   "def"
+   "for"
+   "if"
+   "try"
+   "while"
+   "with"
+   )
+  "Matches the beginning of a compound statement but not it's clause."
+  :type '(repeat string)
+  :tag "py-block-re-raw"
+  :group 'python-mode)
 
 (defconst py-block-re (concat
 		       ;; "[ \t]*"
@@ -2956,28 +2965,6 @@ Second group grabs the name")
   (concat
    "[ \t]*"
    (regexp-opt  py-block-or-clause-re-raw 'symbols)
-   "[( \t]*.*:?")
-  "See ‘py-block-or-clause-re-raw’, which it reads.")
-
-(defcustom py-block-re-raw
-  (list
-   "async with"
-   "except"
-   "for"
-   "if"
-   "try"
-   "while"
-   "with"
-   )
-  "Matches the beginning of a compound statement but not it's clause."
-  :type '(repeat string)
-  :tag "py-block-re-raw"
-  :group 'python-mode)
-
-(defvar py-block-re
-  (concat
-   "[ \t]*"
-   (regexp-opt  py-block-re-raw 'symbols)
    "[( \t]*.*:?")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
 
@@ -3264,8 +3251,6 @@ to paths in Emacs."
   "Max number of characters from end of buffer to search for stack entry.")
 
 (defvar py-pdbtrack-is-tracking-p nil)
-
-(defvar py-shell--font-lock-buffer nil)
 
 (defvar py--docbeg nil
   "internally used by py--write-edit")

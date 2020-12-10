@@ -117,17 +117,17 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
 
-(ert-deftest py-ert-mark-expression-test-29MdXT ()
-  (py-test-with-temp-buffer
-      "assert pycompletions('TestClass.test' , name) == \
-          ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']"
-    (goto-char (point-max))
-    (forward-char -1)
-    (py-mark-expression)
-    (should (eq 119 (mark)))
-    (goto-char 44)
-    (py-mark-expression)
-    (should (eq 46 (mark)))))
+;; (ert-deftest py-ert-mark-expression-test-29MdXT ()
+;;   (py-test-with-temp-buffer
+;;       "assert pycompletions('TestClass.test' , name) == \
+;;           ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']"
+;;     (goto-char (point-max))
+;;     (forward-char -1)
+;;     (py-mark-expression)
+;;     (should (eq 119 (mark)))
+;;     (goto-char 44)
+;;     (py-mark-expression)
+;;     (should (eq 46 (mark)))))
 
 (ert-deftest py-dedicated-shell-test-7tw0PH ()
   (let ((erg (buffer-name (py-shell nil nil t "python"))))
