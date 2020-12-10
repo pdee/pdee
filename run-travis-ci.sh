@@ -82,7 +82,7 @@ PYCO="$PDIR/completion/pycomplete.el"
 h1() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq py-install-dir \"$PDIR\")" \
 --eval "(setq python-mode-v5-behavior-p t)" \
@@ -97,7 +97,7 @@ h1() {
 h2() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -111,7 +111,7 @@ h2() {
 h3() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -125,7 +125,7 @@ h3() {
 h4() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -139,7 +139,7 @@ h4() {
 h5() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -153,7 +153,7 @@ h5() {
 h6() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -167,7 +167,7 @@ h6() {
 h7() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -181,7 +181,7 @@ h7() {
 h8() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -195,7 +195,7 @@ h8() {
 h9() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -209,7 +209,7 @@ h9() {
 h10() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -223,7 +223,7 @@ h10() {
 h11() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -237,7 +237,7 @@ h11() {
 h12() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -251,7 +251,7 @@ h12() {
 h13() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -265,7 +265,7 @@ h13() {
 h14() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -279,7 +279,7 @@ h14() {
 h15() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -293,7 +293,7 @@ h15() {
 h16() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
@@ -315,7 +315,7 @@ h17() {
 hierv5() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
@@ -341,7 +341,7 @@ hierv5() {
 erst() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(setq py-verbose-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
@@ -360,7 +360,7 @@ erst() {
 zweit() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(setq py-verbose-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
@@ -378,7 +378,7 @@ zweit() {
 extrav5() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(setq py-verbose-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
@@ -392,7 +392,7 @@ extrav5() {
 extra() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(setq py-verbose-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
@@ -420,14 +420,14 @@ $EMACS -Q --batch \
 -l $TEST12 \
 -l $TEST13 \
 -l $TEST14 \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }
 
 hier() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(setq py-verbose-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
@@ -494,6 +494,3 @@ else
     echo "Lade testumgebung \"ENTFERNT\""
     entfernt
 fi
-
-
-

@@ -1,6 +1,6 @@
+=========
 Variables
-
-====================
+=========
 
 py-install-directory
 --------------------
@@ -1208,12 +1208,14 @@ py-shell-prompt-output-regexp
 Regular Expression matching output prompt of python shell.
 It should not contain a caret (^) at the beginning.
 
-py-debug-p
-----------
-When non-nil, keep resp. store information useful for debugging.
+py--debug-p
+-----------
+Activate extra code for analysis and test purpose when non-nil.
 
 Temporary files are not deleted. Other functions might implement
-some logging etc.
+some logging, etc.
+For normal operation, leave it set to nil, its default.
+Defined with a defvar form to allow testing the loading of new versions.
 
 py-section-start
 ----------------
@@ -1276,4 +1278,3 @@ Underscores in word-class like `forward-word' travel the indentifiers.
 Default is t.
 
 See bug report at launchpad, lp:940812
-

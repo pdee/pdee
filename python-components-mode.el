@@ -8,7 +8,7 @@
 
 ;; Package-Requires: ((emacs "24"))
 
-;; Copyright (C) 1992,1993,1994  Tim Peters
+;; Copyright (C) 1992,1993,1994,2020  Tim Peters
 
 ;; Author: 2015-2020 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
@@ -2606,14 +2606,14 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-shell-complete-debug nil
   "For interal use when debugging, stores completions." )
 
-(defcustom py-debug-p nil
-  "When non-nil, keep resp. store information useful for debugging.
+(defvar py--debug-p nil
+  "Activate extra code for analysis and test purpose when non-nil.
 
 Temporary files are not deleted. Other functions might implement
-some logging etc."
-  :type 'boolean
-  :tag "py-debug-p"
-  :group 'python-mode)
+some logging, etc.
+For normal operation, leave it set to nil, its default.
+Defined with a defvar form to allow testing the loading of new versions.")
+
 
 (defcustom py-shell-complete-p nil
   "Enable native completion.
@@ -3840,7 +3840,7 @@ Optional argument END specify end."
 	    (if
 		(re-search-backward py-shell-prompt-regexp nil t 1)
 		(goto-char (match-end 0))
-	      ;; (when py-debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
+	      ;; (when py--debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
 	      (goto-char beg))
 	  (goto-char beg)))
       (while (and (< (point) end)(not (eobp)) (skip-chars-forward "^\n" end))
@@ -3848,7 +3848,7 @@ Optional argument END specify end."
         (unless (or (not (< (point) end)) (eobp)) (forward-char 1)
                 (setq count (+ count (abs (skip-chars-forward "\n" end))))))
       (when (bolp) (setq count (1+ count)))
-      (when (and py-debug-p (called-interactively-p 'any)) (message "%s" count))
+      (when (and py--debug-p (called-interactively-p 'any)) (message "%s" count))
       count)))
 
 (defmacro py-escaped ()
@@ -3932,7 +3932,7 @@ BODY is code to be executed within the temp buffer.  Point is
        (insert ,contents)
        (python-mode)
        (goto-char (point-min))
-       (when py-debug-p
+       (when py--debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
        ,@body)))
@@ -3946,7 +3946,7 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
-       (when py-debug-p
+       (when py--debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
        ,@body)))

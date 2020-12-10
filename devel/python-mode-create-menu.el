@@ -751,14 +751,14 @@ Customize `py-match-paren-key' which key to use. Use `M-x customize-variable' to
 
 	   (\"Debug\"
 
-	    [\"py-debug-p\"
-	     (setq py-debug-p
-		   (not py-debug-p))
+	    [\"py--debug-p\"
+	     (setq py--debug-p
+		   (not py--debug-p))
 	     :help \"When non-nil, keep resp\\. store information useful for debugging\\.
 
 Temporary files are not deleted\\. Other functions might implement
 some logging etc\\. Use `M-x customize-variable' to set it permanently\"
-	     :style toggle :selected py-debug-p]
+	     :style toggle :selected py--debug-p]
 
 	    [\"Pdbtrack do tracking \"
 	     (setq py-pdbtrack-do-tracking-p
@@ -1296,7 +1296,7 @@ Switch to output buffer; ignores `py-switch-buffers-on-execute-p'. \"]\n"))))
   (when py-verbose-p (message "%s" "Initiating the menu"))
   (with-current-buffer (get-buffer-create "python-components-menu.el")
     (erase-buffer)
-    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer))) 
+    (when (called-interactively-p 'any) (switch-to-buffer (current-buffer)))
     (insert py-menu-head)
     (newline)
     (insert "(and (ignore-errors (require 'easymenu) t)

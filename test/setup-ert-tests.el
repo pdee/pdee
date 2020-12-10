@@ -24,10 +24,14 @@
 
 ;; (require 'org)
 
-(defvar py-debug-p nil
-  "Avoid error")
+(defvar py--debug-p nil
+  "Activate extra code for analysis and test purpose when non-nil.
 
-;; (setq py-debug-p t)
+Temporary files are not deleted. Other functions might implement
+some logging, etc.
+For normal operation, leave it set to nil, its default.
+Defined with a defvar form to allow testing the loading of new versions.")
+
 
 (require 'font-lock)
 
@@ -109,7 +113,7 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
-       (when py-debug-p
+       (when py--debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
        ,@body)))
@@ -124,7 +128,7 @@ BODY is code to be executed within the temp buffer.  Point is
        (insert ,contents)
        (python-mode)
        (goto-char (point-min))
-       (when py-debug-p
+       (when py--debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
        ,@body)))
@@ -154,7 +158,7 @@ Preserves the `buffer-modified-p' state of the current buffer."
        (fundamental-mode)
        (python-mode)
        (insert ,teststring)
-       (when py-debug-p (switch-to-buffer test-buffer))
+       (when py--debug-p (switch-to-buffer test-buffer))
        (local-unset-key (kbd "RET"))
        (sit-for 0.1)
        (when (and (boundp 'company-mode) company-mode) (company-abort))

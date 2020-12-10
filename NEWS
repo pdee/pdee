@@ -1,6 +1,12 @@
 Python Mode News
 ================
 
+New Since Version 6.2.4
+-----------------------
+
+- py-debug-p renamed to py--debug-p.  It is now internal and no longer a
+  customizable user-option.
+
 New in version 6.2.4
 ---------------------
 
@@ -47,7 +53,7 @@ New in version 6.2.2
 ---------------------
 
 Edit-commands will reach beginning-of-line if reasonable
-Edit-commands suffixed "-bol" dropped 
+Edit-commands suffixed "-bol" dropped
 
 - Commands
   - py-backward-indent
@@ -135,7 +141,7 @@ New customizables:
 
 - py-python-edit-version, default is ""
   When not empty, fontify according to Python version specified.
-  
+
 - py-pdb-executable, default is nil
   Indicate PATH/TO/pdb.
 
@@ -143,7 +149,7 @@ New customizables:
   If pdb should provide suggestions WRT file and pdb-path.
 
 - py-split-window-on-execute-threshold, default is 3
-  Don't split when max number of displayed windows is reached. 
+  Don't split when max number of displayed windows is reached.
 
 Renamed:
 - py-beginning-of-commented-section --> py-beginning-of-comments
@@ -351,7 +357,7 @@ Dropped booleans:
 `py-pylint-offer-current-p'
 `py-paragraph-fill-docstring-p'
 `py-enforce-output-buffer-p'
-`py-cleanup-temporary', as redundant WRT `py-debug-p'
+`py-cleanup-temporary', as redundant WRT `py--debug-p'
 
 New in version 6.1.3
 ---------------------

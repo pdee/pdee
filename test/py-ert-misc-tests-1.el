@@ -44,7 +44,7 @@
 ;;      (py-execute-buffer-python2)
 ;;      (set-buffer "*Python2*")
 ;;      (goto-char (point-max))
-;;      (sit-for 0.1) 
+;;      (sit-for 0.1)
 ;;      (should (search-backward "run" nil t)))))
 
 (ert-deftest py-ert-keyword-face-lp-1294742-N1cjiI ()
@@ -61,7 +61,7 @@
       "_ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
     (goto-char (point-min))
     (font-lock-fontify-region (point-min)(point-max))
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (when py--debug-p (switch-to-buffer (current-buffer)))
     (should (eq 'py-builtins-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-pseudo-keyword-face-lp-1294742-KgocNc ()
@@ -112,7 +112,7 @@ def baz(self):
 x = {'abc':'def',
          'ghi':'jkl'}
 "
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py--debug-p (switch-to-buffer (current-buffer)))
     (goto-char 24)
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
@@ -166,7 +166,7 @@ x = {'abc':'def',
   (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
   (py-test-with-temp-buffer
       ""
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py--debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python"))
       (py-shell)
       (sit-for 0.1 t)
@@ -186,7 +186,7 @@ x = {'abc':'def',
   (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "*Python2*"))
   (py-test-with-temp-buffer
       ""
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py--debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python2"))
       (py-shell)
       (sit-for 0.1 t)

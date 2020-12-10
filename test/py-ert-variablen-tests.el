@@ -110,7 +110,7 @@
   (should (boundp 'py-custom-temp-directory)))
 
 (ert-deftest py-ert-debug-p-test-ZckRGf ()
-  (should (boundp 'py-debug-p)))
+  (should (boundp 'py--debug-p)))
 
 (ert-deftest py-ert-dedent-keep-relative-column-test-N5uAr8 ()
   (should (boundp 'py-dedent-keep-relative-column)))
@@ -610,7 +610,6 @@
 (ert-deftest py-ert-fast-filter-re-test-pS7Omf ()
   (should (boundp 'py-fast-filter-re)))
 
-
 (ert-deftest py-ert-file-queue-test-Jb0J5c ()
   (should (boundp 'py-file-queue)))
 
@@ -808,4 +807,3 @@
 
 (ert-deftest py-ert-imenu-method-regexp-test-JcEPiY ()
   (should (boundp 'py-imenu-method-regexp)))
-

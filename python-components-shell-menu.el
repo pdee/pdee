@@ -1,8 +1,8 @@
-;; python-components-shell-menu.el --- Provide the Py-Shell mode menu -*- lexical-binding: t; -*- 
+;; python-components-shell-menu.el --- Provide the Py-Shell mode menu -*- lexical-binding: t; -*-
 
 ;; This file not shipped as part of GNU Emacs.
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2016, 2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -1734,14 +1734,14 @@ Customize `py-match-paren-key' which key to use. Use `M-x customize-variable' to
 
 	   ("Debug"
 
-	    ["py-debug-p"
-	     (setq py-debug-p
-		   (not py-debug-p))
+	    ["py--debug-p"
+	     (setq py--debug-p
+		   (not py--debug-p))
 	     :help "When non-nil, keep resp\. store information useful for debugging\.
 
 Temporary files are not deleted\. Other functions might implement
 some logging etc\. Use `M-x customize-variable' to set it permanently"
-	     :style toggle :selected py-debug-p]
+	     :style toggle :selected py--debug-p]
 
 	    ["Pdbtrack do tracking "
 	     (setq py-pdbtrack-do-tracking-p

@@ -1,6 +1,6 @@
 ;;; py-ert-always-split-lp-1361531-tests.el --- Test splitting
 
-;; Copyright (C) 2011-2014  Andreas Röhler
+;; Copyright (C) 2011-2014, 2020  Andreas Röhler
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
@@ -24,7 +24,7 @@
 
 ;;; Code:
 
- 
+
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-python-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python
@@ -35,12 +35,12 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-python-test\")"
 	   (erg1 (progn (py-execute-statement-python-dedicated) py-output-buffer))
 	   (erg2 (progn (py-execute-statement-python-dedicated) py-output-buffer)))
       (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
+      (when py--debug-p (message "(count-windows) %s" (count-windows)))
       (should (< 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
- 
+
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-ipython-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env ipython
@@ -51,12 +51,12 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-ipython-test\")"
 	   (erg1 (progn (py-execute-statement-ipython-dedicated) py-output-buffer))
 	   (erg2 (progn (py-execute-statement-ipython-dedicated) py-output-buffer)))
       (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
+      (when py--debug-p (message "(count-windows) %s" (count-windows)))
       (should (< 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
- 
+
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-jython-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env jython
@@ -67,12 +67,12 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-jython-test\")"
 	   (erg1 (progn (py-execute-statement-jython-dedicated) py-output-buffer))
 	   (erg2 (progn (py-execute-statement-jython-dedicated) py-output-buffer)))
       (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
+      (when py--debug-p (message "(count-windows) %s" (count-windows)))
       (should (< 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
- 
+
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-python3-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python3
@@ -83,7 +83,7 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-python3-test\")"
 	   (erg1 (progn (py-execute-statement-python3-dedicated) py-output-buffer))
 	   (erg2 (progn (py-execute-statement-python3-dedicated) py-output-buffer)))
       (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
+      (when py--debug-p (message "(count-windows) %s" (count-windows)))
       (should (< 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)

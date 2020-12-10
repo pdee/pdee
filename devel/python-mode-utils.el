@@ -25,10 +25,10 @@
 
 ;;; Code:
 
-(defvar components-directory "~/arbeit/emacs-lisp/python-modes/components-python-mode")
-;; (setq  components-directory "~/arbeit/emacs-lisp/python-modes/components-python-mode")
+(defconst components-directory
+  "~/arbeit/emacs-lisp/python-modes/components-python-mode")
 
-(setq py-shells
+(defconst py-shells
   (list
    'ipython
    'ipython2.7
@@ -38,441 +38,484 @@
    'python2
    'python3
    'pypy
-	))
+   ))
 
 (defvar ar-prefix "py-")
 
-(defvar arkopf)
+(defconst py-position-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "comment"
+   "def"
+   "def-or-class"
+   "expression"
+   "except-block"
+   "if-block"
+   "indent"
+   "line"
+   "minor-block"
+   "partial-expression"
+   "paragraph"
+   "section"
+   "statement"
+   "top-level"
+   "try-block"
+   ))
 
-(setq py-position-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "comment"
-       "def"
-       "def-or-class"
-       "expression"
-       "except-block"
-       "if-block"
-       "indent"
-       "line"
-       "minor-block"
-       "partial-expression"
-       "paragraph"
-       "section"
-       "statement"
-       "top-level"
-       "try-block"
-       ))
+;; like positions, but without comment, statement, expression, section,
+;; toplevel, : avoid py--end-base
+(defconst py-beg-end-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def-or-class"
+   "def"
+   "if-block"
+   "elif-block"
+   "else-block"
+   "for-block"
+   "except-block"
+   "try-block"
+   "minor-block"
+   ))
 
-;; like positions, but without comment, statement, expression, section, toplevel, : avoid py--end-base
-(setq py-beg-end-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def-or-class"
-       "def"
-       "if-block"
-       "elif-block"
-       "else-block"
-       "for-block"
-       "except-block"
-       "try-block"
-       "minor-block"
-       ))
+(defconst py-block-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "for-block"
+   "if-block"
+   "minor-block"
+   "try-block"
+   ))
 
-(setq py-block-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "for-block"
-       "if-block"
-       "minor-block"
-       "try-block"
-       ))
-
-(setq py-def-or-class-forms
-      (list
-       "class"
-       "def-or-class"
-       "def"
-       ))
+(defconst py-def-or-class-forms
+  (list
+   "class"
+   "def-or-class"
+   "def"
+   ))
 
 ;; like positions, but without statement and expression, avoid py--end-base
-(setq py-end-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "comment"
-       "def"
-       "def-or-class"
-       "line"
-       "minor-block"
-       "paragraph"
-       "section"
-       "statement"
-       "top-level"
-       ))
+(defconst py-end-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "comment"
+   "def"
+   "def-or-class"
+   "line"
+   "minor-block"
+   "paragraph"
+   "section"
+   "statement"
+   "top-level"
+   ))
 
 ;; section has a different end as others
 (defconst py-execute-forms
-      (list
-       "block"
-       "block-or-clause"
-       "buffer"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "expression"
-       "indent"
-       "line"
-       "minor-block"
-       "paragraph"
-       "partial-expression"
-       "region"
-       "statement"
-       "top-level"
-       )
-      "Internally used")
+  (list
+   "block"
+   "block-or-clause"
+   "buffer"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "expression"
+   "indent"
+   "line"
+   "minor-block"
+   "paragraph"
+   "partial-expression"
+   "region"
+   "statement"
+   "top-level"
+   )
+  "Internally used")
 
-(setq py-bol-forms
-      (list
-       "assignment"
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "for-block"
-       "if-block"
-       "indent"
-       "minor-block"
-       "statement"
-       "try-block"
-       ))
+(defconst py-bol-forms
+  (list
+   "assignment"
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "for-block"
+   "if-block"
+   "indent"
+   "minor-block"
+   "statement"
+   "try-block"
+   ))
 
-(setq py-non-bol-forms
-      (list
-       "comment"
-       "expression"
-       "line"
-       "paragraph"
-       "partial-expression"
-       "section"
-       "top-level"
-       ))
+(defconst py-non-bol-forms
+  (list
+   "comment"
+   "expression"
+   "line"
+   "paragraph"
+   "partial-expression"
+   "section"
+   "top-level"
+   ))
 
-(setq py-extra-execute-forms
-      (list
-       "try-block"
-       "if-block"
-       "for-block"
-       ;; "with-block"
-       ))
+(defconst py-extra-execute-forms
+  (list
+   "try-block"
+   "if-block"
+   "for-block"
+   ;; "with-block"
+   ))
 
 ;; execute + comment
-(setq py-hide-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "comment"
-       "def"
-       "def-or-class"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "expression"
-       "for-block"
-       "if-block"
-       "indent"
-       "line"
-       "minor-block"
-       "paragraph"
-       "partial-expression"
-       "section"
-       "statement"
-       "top-level"
-       ))
+(defconst py-hide-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "comment"
+   "def"
+   "def-or-class"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "expression"
+   "for-block"
+   "if-block"
+   "indent"
+   "line"
+   "minor-block"
+   "paragraph"
+   "partial-expression"
+   "section"
+   "statement"
+   "top-level"
+   ))
 
 ;; comment can't use re-forms
-(setq py-navigate-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "expression"
-       "for-block"
-       "if-block"
-       "indent"
-       "minor-block"
-       "partial-expression"
-       "section"
-       "statement"
-       "top-level"
-       "try-block"
-       ))
+(defconst py-navigate-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "expression"
+   "for-block"
+   "if-block"
+   "indent"
+   "minor-block"
+   "partial-expression"
+   "section"
+   "statement"
+   "top-level"
+   "try-block"
+   ))
 
 ;; like navigate, but not top-level
-(setq py-beginning-of-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "expression"
-       "for-block"
-       "if-block"
-       "indent"
-       "minor-block"
-       "partial-expression"
-       "section"
-       "statement"
-       "try-block"
-       ))
+(defconst py-beginning-of-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "expression"
+   "for-block"
+   "if-block"
+   "indent"
+   "minor-block"
+   "partial-expression"
+   "section"
+   "statement"
+   "try-block"
+   ))
 
-(setq py-backward-def-or-class-forms
-      (list
-       "block"
-       "class"
-       "def"
-       "def-or-class"
-       ))
+(defconst py-backward-def-or-class-forms
+  (list
+   "block"
+   "class"
+   "def"
+   "def-or-class"
+   ))
 
-(setq py-backward-minor-block-forms
-      (list
-       "block-or-clause"
-       "clause"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "for-block"
-       "if-block"
-       "minor-block"
-       "try-block"
-       ))
+(defconst py-backward-minor-block-forms
+  (list
+   "block-or-clause"
+   "clause"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "for-block"
+   "if-block"
+   "minor-block"
+   "try-block"
+   ))
 
 ;; comment, section not suitable here
-(setq py-navigate-test-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "expression"
-       "for-block"
-       "if-block"
-       "minor-block"
-       "partial-expression"
-       "statement"
-       "top-level"
-       "try-block"
-       ))
+(defconst py-navigate-test-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "expression"
+   "for-block"
+   "if-block"
+   "minor-block"
+   "partial-expression"
+   "statement"
+   "top-level"
+   "try-block"
+   ))
 
-(setq py-comment-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "indent"
-       "minor-block"
-       "section"
-       "statement"
-       "top-level"
-       ))
+(defconst py-comment-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "indent"
+   "minor-block"
+   "section"
+   "statement"
+   "top-level"
+   ))
 
 ;; top-level is special
-(setq py-down-forms
-      (list
-       "block"
-       "class"
-       "clause"
-       "block-or-clause"
-       "def"
-       "def-or-class"
-       "minor-block"
-       "statement"
-       ))
+(defconst py-down-forms
+  (list
+   "block"
+   "class"
+   "clause"
+   "block-or-clause"
+   "def"
+   "def-or-class"
+   "minor-block"
+   "statement"
+   ))
 
-(setq py-shift-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "comment"
-       "def"
-       "def-or-class"
-       "indent"
-       "minor-block"
-       "paragraph"
-       "region"
-       "statement"
-       "top-level"))
+(defconst py-shift-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "comment"
+   "def"
+   "def-or-class"
+   "indent"
+   "minor-block"
+   "paragraph"
+   "region"
+   "statement"
+   "top-level"))
 
 ;; top-level, paragraph not part of ‘py-shift-bol-forms’
-(setq py-shift-bol-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "for-block"
-       "if-block"
-       "indent"
-       "minor-block"
-       "statement"
-       "try-block"
-       ))
+(defconst py-shift-bol-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "for-block"
+   "if-block"
+   "indent"
+   "minor-block"
+   "statement"
+   "try-block"
+   ))
 
-(setq py-toggle-form-vars (list "py-nil-docstring-style" "py-onetwo-docstring-style" "py-pep-257-docstring-style" "py-pep-257-nn-docstring-style" "py-symmetric-docstring-style" "py-django-docstring-style" ))
+(defconst py-toggle-form-vars
+  (list
+   "py-nil-docstring-style"
+   "py-onetwo-docstring-style"
+   "py-pep-257-docstring-style"
+   "py-pep-257-nn-docstring-style"
+   "py-symmetric-docstring-style"
+   "py-django-docstring-style" ))
 
-;; (setq py-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
+(defconst py-options
+  (list ""
+        "switch"
+        "no-switch"
+        "dedicated"
+        ;; "dedicated-switch"
+        ))
 
-(setq py-options (list "" "switch" "no-switch" "dedicated"))
-
-(setq py-full-options (list "" "switch" "no-switch" "dedicated" "dedicated-switch"))
+(defconst py-full-options
+  (list ""
+        "switch"
+        "no-switch"
+        "dedicated"
+        "dedicated-switch"))
 
 (defvar py-commands
-  (list "py-python-command" "py-ipython-command" "py-python3-command" "py-python2-command" "py-jython-command")
-  "Python-mode will generate commands opening shells mentioned here. Edit this list \w resp. to your machine.")
+  (list
+   "py-python-command"
+   "py-ipython-command"
+   "py-python3-command"
+   "py-python2-command"
+   "py-jython-command")
+  "Python-mode will generate commands opening shells mentioned
+  here. Edit this list \w resp. to your machine.")
 
-(setq py-core-command-name '("statement" "block" "def" "class" "region" "file"))
+(defconst py-core-command-name
+  '("statement"
+    "block"
+    "def"
+    "class"
+    "region"
+    "file"))
 
-(setq py-bounds-command-names
-      (list
-       "block"
-       "block-or-clause"
-       "buffer"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "else-block"
-       "except-block"
-       "expression"
-       "if-block"
-       "minor-block"
-       "partial-expression"
-       "section"
-       "statement"
-       "top-level"
-       "try-block"
-       ))
+(defconst py-bounds-command-names
+  (list
+   "block"
+   "block-or-clause"
+   "buffer"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "else-block"
+   "except-block"
+   "expression"
+   "if-block"
+   "minor-block"
+   "partial-expression"
+   "section"
+   "statement"
+   "top-level"
+   "try-block"
+   ))
 
 ;; statement needed by py-beginning-bol-command-names
-(setq py-beginning-bol-command-names
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "for-block"
-       "if-block"
-       "indent"
-       "minor-block"
-       "statement"
-       "try-block"
-       ))
+(defconst py-beginning-bol-command-names
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "for-block"
+   "if-block"
+   "indent"
+   "minor-block"
+   "statement"
+   "try-block"
+   ))
 
 ;; backward class/def treated with shorter forms internally
-(setq py-backward-bol-command-names
-      (list
-       "block"
-       "block-or-clause"
-       "clause"
-       "elif-block"
-       "else-block"
-       "except-block"
-       "for-block"
-       "if-block"
-       "minor-block"
-       "try-block"
-       ))
+(defconst py-backward-bol-command-names
+  (list
+   "block"
+   "block-or-clause"
+   "clause"
+   "elif-block"
+   "else-block"
+   "except-block"
+   "for-block"
+   "if-block"
+   "minor-block"
+   "try-block"
+   ))
 
-(setq py-checker-command-names '("clear-flymake-allowed-file-name-masks" "pylint-flymake-mode" "pyflakes-flymake-mode" "pychecker-flymake-mode" "pep8-flymake-mode" "pyflakespep8-flymake-mode" "py-pylint-doku" "py-pyflakes-run" "py-pyflakespep8-run" "py-pyflakespep8-help"))
+(defconst py-checker-command-names
+  '("clear-flymake-allowed-file-name-masks"
+    "pylint-flymake-mode"
+    "pyflakes-flymake-mode"
+    "pychecker-flymake-mode"
+    "pep8-flymake-mode"
+    "pyflakespep8-flymake-mode"
+    "py-pylint-doku"
+    "py-pyflakes-run"
+    "py-pyflakespep8-run"
+    "py-pyflakespep8-help"))
 
-(setq py-fast-execute-forms-names
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "expression"
-       "partial-expression"
-       "section"
-       "statement"
-       "top-level"))
+(defconst py-fast-execute-forms-names
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "expression"
+   "partial-expression"
+   "section"
+   "statement"
+   "top-level"))
 
-(setq py-navigation-forms
-      (list
-       "block"
-       "block-or-clause"
-       "class"
-       "clause"
-       "def"
-       "def-or-class"
-       "elif"
-       "else"
-       "expression"
-       "partial-expression"
-       "section"
-       "try"
-       "except"
-       ))
+(defconst py-navigation-forms
+  (list
+   "block"
+   "block-or-clause"
+   "class"
+   "clause"
+   "def"
+   "def-or-class"
+   "elif"
+   "else"
+   "expression"
+   "partial-expression"
+   "section"
+   "try"
+   "except"
+   ))
 
 ;; "top-level" doesn't make sence WRT bol
-(defvar docstring-styles (list "django" "onetwo" "pep-257" "pep-257-nn" "symmetric")
+(defconst docstring-styles
+  (list
+   "django"
+   "onetwo"
+   "pep-257"
+   "pep-257-nn"
+   "symmetric")
   "Customizable variable ‘py-fill-docstring-style’ provides default value
   used by ‘py-fill-string’, ‘py-fill-paragraph’
 
@@ -530,266 +573,281 @@
 
   Built upon code seen at python.el, thanks Fabian")
 
-(setq py-fast-core
-      (list
-       'block
-       'block-or-clause
-       'class
-       'clause
-       'def
-       'def-or-class
-       'expression
-       'partial-expression
-       'region
-       'statement
-       'strg
-       'top-level))
+(defconst py-fast-core
+  (list
+   'block
+   'block-or-clause
+   'class
+   'clause
+   'def
+   'def-or-class
+   'expression
+   'partial-expression
+   'region
+   'statement
+   'strg
+   'top-level))
 
-(setq py-virtualenv-symbols
-      (list
-       'activate
-       'deactivate
-       'p
-       'workon))
+(defconst py-virtualenv-symbols
+  (list
+   'activate
+   'deactivate
+   'p
+   'workon))
 
-(setq py-fast-forms
-      (list
-       'py--fast-send-string
-       'py-process-region-fast
-       'py-execute-statement-fast
-       'py-execute-block-fast
-       'py-execute-block-or-clause-fast
-       'py-execute-def-fast
-       'py-execute-class-fast
-       'py-execute-def-or-class-fast
-       'py-execute-expression-fast
-       'py-execute-partial-expression-fast
-       'py-execute-top-level-fast
-       'py-execute-clause-fast))
+(defconst py-fast-forms
+  (list
+   'py--fast-send-string
+   'py-process-region-fast
+   'py-execute-statement-fast
+   'py-execute-block-fast
+   'py-execute-block-or-clause-fast
+   'py-execute-def-fast
+   'py-execute-class-fast
+   'py-execute-def-or-class-fast
+   'py-execute-expression-fast
+   'py-execute-partial-expression-fast
+   'py-execute-top-level-fast
+   'py-execute-clause-fast))
 
-(setq py-bol-menu-forms
-      (list
-       'py-backward-block-bol
-       'py-backward-clause-bol
-       'py-backward-block-or-clause-bol
-       'py-backward-def-bol
-       'py-backward-class-bol
-       'py-backward-def-or-class-bol
-       'py-backward-if-block-bol
-       'py-backward-try-block-bol
-       'py-backward-minor-block-bol
-       'py-backward-statement-bol))
+(defconst py-bol-menu-forms
+  (list
+   'py-backward-block-bol
+   'py-backward-clause-bol
+   'py-backward-block-or-clause-bol
+   'py-backward-def-bol
+   'py-backward-class-bol
+   'py-backward-def-or-class-bol
+   'py-backward-if-block-bol
+   'py-backward-try-block-bol
+   'py-backward-minor-block-bol
+   'py-backward-statement-bol))
 
-(defvar py-bol-end-forms
-  (list 'py-forward-block-bol
-	'py-forward-clause-bol
-	'py-forward-block-or-clause-bol
-	'py-forward-def-bol
-	'py-forward-class-bol
-	'py-forward-def-or-class-bol
-	'py-forward-if-block-bol
-	'py-forward-try-block-bol
-	'py-forward-minor-block-bol
-	'py-forward-statement-bol))
+(defconst py-bol-end-forms
+  (list
+   'py-forward-block-bol
+   'py-forward-clause-bol
+   'py-forward-block-or-clause-bol
+   'py-forward-def-bol
+   'py-forward-class-bol
+   'py-forward-def-or-class-bol
+   'py-forward-if-block-bol
+   'py-forward-try-block-bol
+   'py-forward-minor-block-bol
+   'py-forward-statement-bol))
 
-(setq py-bol-copy-forms
-      (list
-       'py-copy-block-bol
-       'py-copy-clause-bol
-       'py-copy-block-or-clause-bol
-       'py-copy-def-bol
-       'py-copy-class-bol
-       'py-copy-def-or-class-bol
-       'py-copy-statement-bol))
+(defconst py-bol-copy-forms
+  (list
+   'py-copy-block-bol
+   'py-copy-clause-bol
+   'py-copy-block-or-clause-bol
+   'py-copy-def-bol
+   'py-copy-class-bol
+   'py-copy-def-or-class-bol
+   'py-copy-statement-bol))
 
-(setq py-other-symbols
-      (list
-       'boolswitch
-       'empty-out-list-backward
-       'kill-buffer-unconditional
-       'remove-overlays-at-point))
+(defconst py-other-symbols
+  (list
+   'boolswitch
+   'empty-out-list-backward
+   'kill-buffer-unconditional
+   'remove-overlays-at-point))
 
-(setq py-pyflakes-pep8-symbols
-      (list
-       'py-pyflakes-pep8-run
-       'py-pyflakes-pep8-help
-       'pyflakes-pep8-flymake-mode))
+(defconst py-pyflakes-pep8-symbols
+  (list
+   'py-pyflakes-pep8-run
+   'py-pyflakes-pep8-help
+   'pyflakes-pep8-flymake-mode))
 
-(setq py-flake8-symbols
-      (list
-       'py-flake8-run
-       'py-flake8-help))
+(defconst py-flake8-symbols
+  (list
+   'py-flake8-run
+   'py-flake8-help))
 
-(setq py-pyflakes-symbols
-      (list
-       'py-pyflakes-run
-       'py-pyflakes-help
-       'pyflakes-flymake-mode))
+(defconst py-pyflakes-symbols
+  (list
+   'py-pyflakes-run
+   'py-pyflakes-help
+   'pyflakes-flymake-mode))
 
-(setq py-pep8-symbols
-      (list
-       'py-pep8-run
-       'py-pep8-help
-       'pep8-flymake-mode))
+(defconst py-pep8-symbols
+  (list
+   'py-pep8-run
+   'py-pep8-help
+   'pep8-flymake-mode))
 
-(setq py-pylint-symbols
-      (list
-       'py-pylint-run
-       'py-pylint-help
-       'pylint-flymake-mode))
+(defconst py-pylint-symbols
+  (list
+   'py-pylint-run
+   'py-pylint-help
+   'pylint-flymake-mode))
 
-(setq py-checks-symbols
-      (list
-       'py-flycheck-mode
-       'py-pychecker-run))
+(defconst py-checks-symbols
+  (list
+   'py-flycheck-mode
+   'py-pychecker-run))
 
-(setq py-debugger-symbols
-      (list
-       'py-execute-statement-pdb
-       'pdb))
+(defconst py-debugger-symbols
+  (list
+   'py-execute-statement-pdb
+   'pdb))
 
-(setq py-help-symbols
-      (list
-       'py-find-definition
-       'py-help-at-point
-       'py-info-lookup-symbol
-       'py-symbol-at-point))
+(defconst py-help-symbols
+  (list
+   'py-find-definition
+   'py-help-at-point
+   'py-info-lookup-symbol
+   'py-symbol-at-point))
 
-(setq py-completion-symbols
-      (list
-       'py-complete
-       'py-indent-or-complete
-       'py-shell-complete
-       ))
+(defconst py-completion-symbols
+  (list
+   'py-complete
+   'py-indent-or-complete
+   'py-shell-complete
+   ))
 
-(setq py-skeletons
-      (list
-       'else-statement
-       'for-statement
-       'if-statement
-       'py-try/except-statement
-       'py-try/finally-statement
-       'while-statement
-       ))
+(defconst py-skeletons
+  (list
+   'else-statement
+   'for-statement
+   'if-statement
+   'py-try/except-statement
+   'py-try/finally-statement
+   'while-statement
+   ))
 
-(setq py-filling-symbols
-      (list
-       'py-docstring-style
-       'py-fill-comment
-       'py-fill-paragraph
-       'py-fill-string
-       'py-fill-string-django
-       'py-fill-string-onetwo
-       'py-fill-string-pep-257
-       'py-fill-string-pep-257-nn
-       'py-fill-string-symmetric
-       ))
+(defconst py-filling-symbols
+  (list
+   'py-docstring-style
+   'py-fill-comment
+   'py-fill-paragraph
+   'py-fill-string
+   'py-fill-string-django
+   'py-fill-string-onetwo
+   'py-fill-string-pep-257
+   'py-fill-string-pep-257-nn
+   'py-fill-string-symmetric
+   ))
 
-(setq py-electric-symbols
-      (list
-       'complete-electric-comma
-       'complete-electric-lparen
-       'electric-backspace
-       'electric-colon
-       'electric-comment
-       'electric-delete
-       'electric-yank
-       'hungry-delete-backwards
-       'hungry-delete-forward
-       ))
+(defconst py-electric-symbols
+  (list
+   'complete-electric-comma
+   'complete-electric-lparen
+   'electric-backspace
+   'electric-colon
+   'electric-comment
+   'electric-delete
+   'electric-yank
+   'hungry-delete-backwards
+   'hungry-delete-forward
+   ))
 
-(setq py-completion-symbols (list
-			     'py-indent-or-complete
-			     'py-shell-complete
-			     'py-complete
-			     ))
-(setq py-skeletons (list
-		    'else-statement
-		    'for-statement
-		    'if-statement
-		    'py-try/except-statement
-		    'py-try/finally-statement
-		    'while-statement
-		    ))
+(defconst py-completion-symbols
+  (list
+   'py-indent-or-complete
+   'py-shell-complete
+   'py-complete
+   ))
 
-(setq py-filling-symbols (list
-			  'py-docstring-style
-			  'py-fill-comment
-			  'py-fill-paragraph
-			  'py-fill-string
-			  'py-fill-string-django
-			  'py-fill-string-onetwo
-			  'py-fill-string-pep-257
-			  'py-fill-string-pep-257-nn
-			  'py-fill-string-symmetric
-			  ))
+(defconst py-skeletons
+  (list
+   'else-statement
+   'for-statement
+   'if-statement
+   'py-try/except-statement
+   'py-try/finally-statement
+   'while-statement
+   ))
 
-(setq py-electric-symbols (list
-			   'complete-electric-comma
-			   'complete-electric-lparen
-			   'electric-backspace
-			   'electric-colon
-			   'electric-comment
-			   'electric-delete
-			   'electric-yank
-			   'hungry-delete-backwards
-			   'hungry-delete-forward
-			   ))
+(defconst py-filling-symbols
+  (list
+   'py-docstring-style
+   'py-fill-comment
+   'py-fill-paragraph
+   'py-fill-string
+   'py-fill-string-django
+   'py-fill-string-onetwo
+   'py-fill-string-pep-257
+   'py-fill-string-pep-257-nn
+   'py-fill-string-symmetric
+   ))
 
-(setq py-other-symbols (list
-			'boolswitch
-			'empty-out-list-backward
-			'kill-buffer-unconditional
-			'remove-overlays-at-point
-			))
+(defconst py-electric-symbols
+  (list
+   'complete-electric-comma
+   'complete-electric-lparen
+   'electric-backspace
+   'electric-colon
+   'electric-comment
+   'electric-delete
+   'electric-yank
+   'hungry-delete-backwards
+   'hungry-delete-forward
+   ))
 
-(setq py-pyflakes-pep8-symbols (list
-			 'py-pyflakes-pep8-run
-			 'py-pyflakes-pep8-help
-			 'pyflakes-pep8-flymake-mode
-			 ))
+(defconst py-other-symbols
+  (list
+   'boolswitch
+   'empty-out-list-backward
+   'kill-buffer-unconditional
+   'remove-overlays-at-point
+   ))
 
-(setq py-flake8-symbols (list
-			 'py-flake8-run
-			 'py-flake8-help
-			 ))
+(defconst py-pyflakes-pep8-symbols
+  (list
+   'py-pyflakes-pep8-run
+   'py-pyflakes-pep8-help
+   'pyflakes-pep8-flymake-mode
+   ))
 
-(setq py-pyflakes-symbols (list
-			 'py-pyflakes-run
-			 'py-pyflakes-help
-			 'pyflakes-flymake-mode
-			 ))
+(defconst py-flake8-symbols
+  (list
+   'py-flake8-run
+   'py-flake8-help
+   ))
 
-(setq py-pep8-symbols (list
-			 'py-pep8-run
-			 'py-pep8-help
-			 'pep8-flymake-mode
-			 ))
+(defconst py-pyflakes-symbols
+  (list
+   'py-pyflakes-run
+   'py-pyflakes-help
+   'pyflakes-flymake-mode
+   ))
 
-(setq py-pylint-symbols (list
-			 'py-pylint-run
-			 'py-pylint-help
-			 'pylint-flymake-mode
-			 ))
+(defconst py-pep8-symbols
+  (list
+   'py-pep8-run
+   'py-pep8-help
+   'pep8-flymake-mode
+   ))
 
-(setq py-checks-symbols (list
-			 'py-flycheck-mode
-			 'py-pychecker-run
-			 ))
+(defconst py-pylint-symbols
+  (list
+   'py-pylint-run
+   'py-pylint-help
+   'pylint-flymake-mode
+   ))
 
-(setq py-debugger-symbols (list
-			   'py-execute-statement-pdb
-			   'pdb
-			   ))
+(defconst py-checks-symbols
+  (list
+   'py-flycheck-mode
+   'py-pychecker-run
+   ))
 
-(setq py-help-symbols (list
-		       'py-find-definition
-		       'py-help-at-point
-		       'py-info-lookup-symbol
-		       'py-symbol-at-point
-		       ))
+(defconst py-debugger-symbols
+  (list
+   'py-execute-statement-pdb
+   'pdb
+   ))
 
-(setq arkopf
+(defconst py-help-symbols
+  (list
+   'py-find-definition
+   'py-help-at-point
+   'py-info-lookup-symbol
+   'py-symbol-at-point
+   ))
+
+(defconst arkopf
       "\n;; Copyright (C) 2015-2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
@@ -1573,9 +1631,22 @@ Return outmost indentation reached.\"
         (delete-region (point) erg))))
   (message "%s" "fertig"))
 
-(setq py-noregexp-forms (list "paragraph" "line" "statement" "expression" "partial-expression"))
+(defconst py-noregexp-forms
+  (list
+   "paragraph"
+   "line"
+   "statement"
+   "expression"
+   "partial-expression"))
 
-(setq py-regexp-forms (list "block" "clause" "block-or-clause" "def" "class" "def-or-class"))
+(defconst py-regexp-forms
+  (list
+   "block"
+   "clause"
+   "block-or-clause"
+   "def"
+   "class"
+   "def-or-class"))
 
 (defun write-toggle-forms (&optional arg)
   "Write toggle-forms according to (car kill-ring) "
@@ -2219,7 +2290,7 @@ Also honors setting of ‘py-mark-decorators’\"")
     (erase-buffer)
     (insert ";;; py-ert-always-split-lp-1361531-tests.el --- Test splitting -*- lexical-binding: t; -*-\n")
     (insert arkopf)
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py--debug-p (switch-to-buffer (current-buffer)))
     (dolist (ele liste)
       (setq elt (prin1-to-string ele))
     (insert (concat "
@@ -2228,14 +2299,14 @@ Also honors setting of ‘py-mark-decorators’\"")
       \"#! /usr/bin/env " elt "
 # -*- coding: utf-8 -*-
 print(\\\"I'm the py-always-split-dedicated-lp-1361531-" elt "-test\\\")\""))
-    (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+    (when py--debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
     (insert (concat "
     (delete-other-windows)
     (let* ((py-split-window-on-execute 'always)
            (erg1 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name))
            (erg2 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name)))
       (sit-for 1 t)
-      (when py-debug-p (message \"(count-windows) %s\" (count-windows)))
+      (when py--debug-p (message \"(count-windows) %s\" (count-windows)))
       (should (< 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
@@ -2253,7 +2324,7 @@ print(\\\"I'm the py-always-split-dedicated-lp-1361531-" elt "-test\\\")\""))
     (erase-buffer)
     (insert ";;; py-ert-just-two-split-lp-1361531-tests.el --- Test splitting -*- lexical-binding: t; -*-\n")
     (insert arkopf)
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py--debug-p (switch-to-buffer (current-buffer)))
     (dolist (ele liste)
       (setq elt (prin1-to-string ele))
     (insert (concat "
@@ -2262,14 +2333,14 @@ print(\\\"I'm the py-always-split-dedicated-lp-1361531-" elt "-test\\\")\""))
       \"#! /usr/bin/env " elt "
 # -*- coding: utf-8 -*-
 print(\\\"I'm the py-just-two-split-dedicated-lp-1361531-" elt "-test\\\")\""))
-    (when py-debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
+    (when py--debug-p (message "py-split-window-on-execute: %s" py-split-window-on-execute))
     (insert (concat "
     (delete-other-windows)
     (let* ((py-split-window-on-execute 'just-two)
            (erg1 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name))
            (erg2 (progn (py-execute-statement-" elt "-dedicated) py-buffer-name)))
       (sit-for 1 t)
-      (when py-debug-p (message \"(count-windows) %s\" (count-windows)))
+      (when py--debug-p (message \"(count-windows) %s\" (count-windows)))
       (should (eq 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
@@ -2303,7 +2374,7 @@ class bar:
             block2
 \"
     (forward-line -3)
-    (when py-debug-p (switch-to-buffer (current-buffer))
+    (when py--debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
     (py-beginning-of-" ele ")
     (should (eq (char-after) "))
@@ -2352,7 +2423,7 @@ class bar:
         except:
             block2
 \"
-    (when py-debug-p (switch-to-buffer (current-buffer))
+    (when py--debug-p (switch-to-buffer (current-buffer))
           (font-lock-fontify-buffer))
     (forward-line -3)
     (py-beginning-of-" ele "-bol)

@@ -2,7 +2,7 @@
 
 ;; Helper functions
 
-;; Copyright (C) 2015-2019 Andreas Röhler
+;; Copyright (C) 2015-2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -1614,7 +1614,7 @@ Remove trailing newline"
   (with-current-buffer buffer
     (with-silent-modifications
       (sit-for py-python3-send-delay)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (when py--debug-p (switch-to-buffer (current-buffer)))
       (delete-region orig (point-max)))))
 
 (defun py-shell--save-temp-file (strg)

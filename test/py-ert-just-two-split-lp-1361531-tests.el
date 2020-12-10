@@ -1,6 +1,6 @@
 ;;; py-ert-just-two-split-lp-1361531-tests.el --- Test splitting
 
-;; Copyright (C) 2011-2014  Andreas Röhler
+;; Copyright (C) 2011-2014, 2020  Andreas Röhler
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
 
@@ -34,7 +34,7 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python2-test\")"
 	   (erg1 (progn (py-execute-statement-python2-dedicated) py-output-buffer))
 	   (erg2 (progn (py-execute-statement-python2-dedicated) py-output-buffer)))
       (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
+      (when py--debug-p (message "(count-windows) %s" (count-windows)))
       (should (eq 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
@@ -50,7 +50,7 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 	   (erg1 (progn (py-execute-statement-python3-dedicated) py-output-buffer))
 	   (erg2 (progn (py-execute-statement-python3-dedicated) py-output-buffer)))
       (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
+      (when py--debug-p (message "(count-windows) %s" (count-windows)))
       (should (eq 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)

@@ -1,6 +1,6 @@
 ;;; python-components-help.el --- help functions -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2016, 2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 
@@ -218,7 +218,7 @@ not inside a defun."
 	(setq inhibit-read-only t)
 	(setq inhibit-point-motion-hooks t)
       (erase-buffer)
-      (when py-debug-p (message "%s" (current-buffer)))
+      (when py--debug-p (message "%s" (current-buffer)))
       (py-send-string cmd nil t)
       (insert py-result)
       )))

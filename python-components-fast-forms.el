@@ -1,6 +1,6 @@
 ;;; python-components-fast-forms.el --- Execute forms at point -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
+;; Copyright (C) 2015-2016, 2020 Andreas Röhler
 
 ;; Author: Andreas Röhler <andreas.roehler@online.de>
 ;; Keywords: languages, convenience
@@ -49,7 +49,7 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 (defun py--fast-send-string-no-output-intern (strg proc limit output-buffer no-output)
   (let (erg)
     (with-current-buffer output-buffer
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (when py--debug-p (switch-to-buffer (current-buffer)))
       ;; (erase-buffer)
       (process-send-string proc strg)
       (or (string-match "\n$" strg)

@@ -1454,7 +1454,7 @@ class bar:
 
 "
     'python-mode
-    py-debug-p
+    py--debug-p
     (goto-char (point-max))
     (skip-chars-backward " \n")
     (forward-char 1)
