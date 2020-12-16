@@ -550,7 +550,6 @@ When interactively called, copy and message it"
   "Kill buffer unconditional, kill buffer-process if existing. "
   (interactive
    (list (current-buffer)))
-  ;; (when (bufferp buffer)
   (ignore-errors (with-current-buffer buffer
     (let (kill-buffer-query-functions)
       (set-buffer-modified-p nil)
@@ -954,8 +953,6 @@ LIEP stores line-end-position at point-of-interest
   (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" py-continuation-offset))
   py-continuation-offset)
 
-(defalias 'pios 'py-indentation-of-statement)
-(defalias 'ios 'py-indentation-of-statement)
 (defun py-indentation-of-statement ()
   "Returns the indenation of the statement at point. "
   (interactive)
