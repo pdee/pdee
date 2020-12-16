@@ -24,14 +24,7 @@
 
 ;; (require 'org)
 
-(defvar py--debug-p nil
-  "Activate extra code for analysis and test purpose when non-nil.
-
-Temporary files are not deleted. Other functions might implement
-some logging, etc.
-For normal operation, leave it set to nil, its default.
-Defined with a defvar form to allow testing the loading of new versions.")
-
+;; (setq py--debug-p t)
 
 (require 'font-lock)
 

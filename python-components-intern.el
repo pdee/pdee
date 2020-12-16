@@ -555,7 +555,7 @@ When interactively called, copy and message it"
     (let (kill-buffer-query-functions)
       (set-buffer-modified-p nil)
       (ignore-errors (kill-process (get-buffer-process buffer)))
-      (ignore-errors (kill-buffer buffer))))))
+      (kill-buffer buffer)))))
 
 (defun py--line-backward-maybe ()
   "Return result of (< 0 (abs (skip-chars-backward \" \\t\\r\\n\\f\"))) "

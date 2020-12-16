@@ -28,8 +28,8 @@
 (ert-deftest py-ert-shell-map-test-zr6lBC ()
   (should (boundp 'py-shell-map)))
 
-(ert-deftest py-ert-eldoc-string-code-test-zOpVTu ()
-  (should (boundp 'py-eldoc-string-code)))
+;; (ert-deftest py-ert-eldoc-string-code-test-zOpVTu ()
+;;   (should (boundp 'py-eldoc-string-code)))
 
 (ert-deftest py-ert-chars-after-test-TNpn9m ()
   (should (boundp 'py-chars-after)))
@@ -577,8 +577,8 @@
 (ert-deftest py-ert-dotted-expression-syntax-table-test-540RcM ()
   (should (boundp 'py-dotted-expression-syntax-table)))
 
-(ert-deftest py-ert-eldoc-setup-code-test-T9HI2I ()
-  (should (boundp 'py-eldoc-setup-code)))
+;; (ert-deftest py-ert-eldoc-setup-code-test-T9HI2I ()
+;;   (should (boundp 'py-eldoc-setup-code)))
 
 (ert-deftest py-ert-encoding-string-re-test-zgodQF ()
   (should (boundp 'py-encoding-string-re)))

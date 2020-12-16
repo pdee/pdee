@@ -1860,8 +1860,8 @@
 (ert-deftest py-ert--python-send-completion-setup-code-functionp-test-2jwfV3 ()
   (should (functionp 'py--python-send-completion-setup-code)))
 
-(ert-deftest py-ert--python-send-eldoc-setup-code-functionp-test-AJBxNT ()
-  (should (functionp 'py--python-send-eldoc-setup-code)))
+;; (ert-deftest py-ert--python-send-eldoc-setup-code-functionp-test-AJBxNT ()
+;;   (should (functionp 'py--python-send-eldoc-setup-code)))
 
 (ert-deftest py-ert--ipython-import-module-completion-functionp-test-q8JhGJ ()
   (should (functionp 'py--ipython-import-module-completion)))

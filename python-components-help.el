@@ -24,9 +24,6 @@
 ;;
 
 ;;; Code:
-(defvar py-eldoc-string-code
-  "__PYDOC_get_help('''%s''')\n"
-  "Python code used to get a string with the documentation of an object.")
 
 ;;  Info-look functionality.
 (require 'info-look)
@@ -192,44 +189,24 @@ not inside a defun."
 (defalias 'py-describe-symbol 'py-help-at-point)
 (defun py--help-at-point-intern (sym orig)
   (let* ((origfile (py--buffer-filename-remote-maybe))
-	 ;; (temp (md5 (buffer-name)))
-	 (buffer-name "*Python-Help*")
 	 (cmd (py-find-imports))
-	 ;; if symbol is defined in current buffer, go to
-	 (erg (progn (goto-char (point-min))
-		     (when
-			 (re-search-forward (concat "^[ \t]*def " sym "(") nil t 1)
-		       (forward-char -2)
-		       (point)))))
-    (if erg
-	(progn (push-mark orig) (push-mark (point))
-	       (when (and (called-interactively-p 'any) py-verbose-p) (message "Jump to previous position with %s" "C-u C-<SPC> C-u C-<SPC>")))
-      (goto-char orig))
-    (setq cmd (concat cmd "\nimport pydoc\n"
-		      ))
+	 (oldbuf (current-buffer))
+	 )
     (when (not py-remove-cwd-from-path)
       (setq cmd (concat cmd "import sys\n"
 			"sys.path.insert(0, '"
 			(file-name-directory origfile) "')\n")))
-    (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
-    (ignore-errors (py-kill-buffer-unconditional buffer-name))
-    (with-temp-buffer-window
-	(set-buffer (get-buffer-create buffer-name))
-	(setq inhibit-read-only t)
-	(setq inhibit-point-motion-hooks t)
-      (erase-buffer)
-      (when py--debug-p (message "%s" (current-buffer)))
-      (py-send-string cmd nil t)
-      (insert py-result)
-      )))
+    ;; (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
+    (py-send-string (concat cmd "help('" sym "')\n") nil t nil orig nil nil nil nil nil nil oldbuf t)
+    (display-buffer oldbuf)))
+    ;; (with-help-window "Hilfe" (insert py-result))))
 
 (defun py-help-at-point ()
   "Print help on symbol at point.
 
 If symbol is defined in current buffer, jump to it's definition"
   (interactive)
-  (let* ((py-cleanup-p t)
-	 (orig (point))
+  (let* ((orig (point))
 	 (beg (and (use-region-p) (region-beginning)))
 	 (end (and (use-region-p) (region-end)))
 	 (symbol
@@ -237,22 +214,29 @@ If symbol is defined in current buffer, jump to it's definition"
 		   (buffer-substring-no-properties beg end))
 	      ;; (thing-at-point 'symbol t)
 	      (py-symbol-at-point))))
+    (and symbol (unless (string= "" symbol)
+		  (py--help-at-point-intern symbol orig))
+	 ;; (py--shell-manage-windows buffer exception-buffer split (or interactivep switch))
+	 )))
+
+
+
     ;; avoid repeated call at identic pos
-    (unless (eq orig (ignore-errors py-last-position))
-      (setq py-last-position orig))
+    ;; (unless (eq orig (ignore-errors py-last-position))
+    ;;   (setq py-last-position orig))
     ;; (unless (member (get-buffer-window "*Python-Help*") (window-list))
     ;;   (window-configuration-to-register py-windows-config-register))
-    (and (looking-back "(" (line-beginning-position))(not (looking-at "\\sw")) (forward-char -1))
-    (if (or (eq (face-at-point) 'font-lock-string-face)(eq (face-at-point) 'font-lock-comment-face))
-	(progn
-	  (py-restore-window-configuration)
-	  (goto-char orig))
-      (if
-	  ;; (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
-	  (not (string= "" symbol))
-	  (py--help-at-point-intern symbol orig)
-	;; (py-restore-window-configuration)
-	))))
+    ;; (and (looking-back "(" (line-beginning-position))(not (looking-at "\\sw")) (forward-char -1))
+    ;; (if (or (eq (face-at-point) 'font-lock-string-face)(eq (face-at-point) 'font-lock-comment-face))
+    ;; 	(progn
+    ;; 	  (py-restore-window-configuration)
+    ;; 	  (goto-char orig))
+    ;;   (if
+    ;; 	  ;; (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
+    ;; 	  (not (string= "" symbol))
+    ;; 	  (py--help-at-point-intern symbol orig)
+    ;; 	;; (py-restore-window-configuration)
+    ;; 	))))
 
 ;;  Documentation functions
 

@@ -152,7 +152,6 @@
 
 (defun all-mode-setting ()
   (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
-  (set (make-local-variable 'eldoc-message-function) 'py-help-at-point)
   )
 
 ;;;###autoload
@@ -197,10 +196,7 @@ See available customizations listed in files variables-python-mode at directory 
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                   py-outline-mode-keywords)
                           "\\|")))
-  (when (>= emacs-major-version 25)
-    (global-eldoc-mode -1)
-    (eldoc-mode py-eldoc-mode-p))
-  (when py-font-lock-defaults-p
+    (when py-font-lock-defaults-p
     (if py-use-font-lock-doc-face-p
 	(set (make-local-variable 'font-lock-defaults)
              '(python-font-lock-keywords nil nil nil nil
@@ -248,7 +244,6 @@ See available customizations listed in files variables-python-mode at directory 
   (set (make-local-variable 'normal-auto-fill-function) 'py-fill-string-or-comment)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (set (make-local-variable 'tab-width) py-indent-offset)
-  (set (make-local-variable 'eldoc-documentation-function) 'py-eldoc-function)
   (and py-load-skeletons-p (py-load-skeletons))
   (and py-guess-py-install-directory-p (py-set-load-path))
   (and py-autopair-mode
@@ -330,8 +325,7 @@ Variables
 `py-shell-fontify-p',
 `py-completion-setup-code',
 `py-shell-completion-string-code',
-`py-python-eldoc-setup-code', `py-python-eldoc-string-code', can
-customize this mode for different Python interpreters.
+can customize this mode for different Python interpreters.
 
 This mode resets `comint-output-filter-functions' locally, so you
 may want to re-add custom functions to it using the

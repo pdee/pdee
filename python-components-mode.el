@@ -121,15 +121,6 @@ avoiding it might speed up things."
   :group 'python-mode
   :safe 'booleanp)
 
-(defcustom py-eldoc-mode-p nil
-  "If eldoc-mode is loaded by python-mode.
-
-Default is nil"
-  :type 'boolean
-  :tag "py-eldoc-mode-p"
-  :group 'python-mode
-  :safe 'booleanp)
-
 (defcustom py-pythonpath ""
   "Define $PYTHONPATH here, if needed.
 
@@ -1880,11 +1871,6 @@ Default /usr/bin/jython"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters.")
 
-(defvar py-cleanup-p nil
-  "Internally used.
-
-Cleanup Python shell when output is used in other places.")
-
 (defcustom py-match-paren-mode nil
   "Non-nil means, cursor will jump to beginning or end of a block.
 This vice versa, to beginning first.
@@ -2327,84 +2313,6 @@ modified such that shells are started within the specified
 virtualenv."
   :type '(choice (const nil) string)
   :tag "py-shell-virtualenv-root"
-  :group 'python-mode)
-
-(defvar py-eldoc-window-configuration nil
-  "Keeps window-configuration when function ‘eldoc-mode’ is called.")
-
-(defvar py-eldoc-setup-code
-  "def __PYDOC_get_help(obj):
-    try:
-        import inspect
-        if hasattr(obj, 'startswith'):
-            obj = eval(obj, globals())
-        doc = inspect.getdoc(obj)
-        if not doc and callable(obj):
-            target = None
-            if inspect.isclass(obj) and hasattr(obj, '__init__'):
-                target = obj.__init__
-                objtype = 'class'
-            else:
-                target = obj
-                objtype = 'def'
-            if target:
-                args = inspect.formatargspec(
-                    *inspect.getargspec(target))
-                name = obj.__name__
-                doc = '{objtype} {name}{args}'.format(
-                    objtype=objtype, name=name, args=args)
-        else:
-            doc = doc.splitlines()[0]
-    except:
-        doc = ''
-    try:
-        exec('print doc')
-    except SyntaxError:
-        print(doc)"
-  "Python code to setup documentation retrieval.")
-
-(defcustom py-python-eldoc-setup-code
-  "def __PYDOC_get_help(obj):
-    try:
-        import inspect
-        try:
-            str_type = basestring
-            argspec_function = inspect.getargspec
-        except NameError:
-            str_type = str
-            argspec_function = inspect.getfullargspec
-        if isinstance(obj, str_type):
-            obj = eval(obj, globals())
-        doc = inspect.getdoc(obj)
-        if not doc and callable(obj):
-            target = None
-            if inspect.isclass(obj) and hasattr(obj, '__init__'):
-                target = obj.__init__
-                objtype = 'class'
-            else:
-                target = obj
-                objtype = 'def'
-            if target:
-                args = inspect.formatargspec(*argspec_function(target))
-                name = obj.__name__
-                doc = '{objtype} {name}{args}'.format(
-                    objtype=objtype, name=name, args=args
-                )
-        else:
-            doc = doc.splitlines()[0]
-    except:
-        doc = ''
-    return doc"
-  "Python code to setup documentation retrieval."
-  :type 'string
-  :tag "py-python-eldoc-setup-code"
-  :group 'python-mode)
-
-(defcustom py-python-eldoc-string-code
-  "__PYDOC_get_help('''%s''')"
-  "Python code used to get a string with the documentation of an object."
-  :type 'string
-  :tag "py-python-eldoc-string-code"
   :group 'python-mode)
 
 (defvar py-shell-completion-native-redirect-buffer
@@ -3477,10 +3385,6 @@ TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
   "For Python see py--python-send-setup-code."
   (py--python-send-setup-code-intern "shell-completion" buffer))
 
-(defun py--python-send-eldoc-setup-code (buffer)
-  "For Python see py--python-send-setup-code."
-  (py--python-send-setup-code-intern "eldoc" buffer))
-
 (defun py--ipython-import-module-completion ()
   "Setup IPython v0.11 or greater.
 
@@ -3994,6 +3898,7 @@ Preserves the `buffer-modified-p' state of the current buffer."
 (require 'python-components-ffap)
 (require 'python-components-shell-menu)
 (require 'python-components-hide-show)
+;; (require 'python-components-eldoc)
 (require 'python-components-foot)
 
 (provide 'python-components-mode)
