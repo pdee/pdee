@@ -471,27 +471,6 @@ Unless DIRECTION is symbol 'forward, go backward first"
       (skip-chars-backward " \t")
       (max comment-column (+ (current-column) (if (bolp) 0 1))))))
 
-;;  make general form below work also in these cases
-;;  (defalias 'py-backward-paragraph 'backward-paragraph)
-(defun py-backward-paragraph ()
-  "Go to beginning of current paragraph.
-
-If already at beginning, go to start of next paragraph upwards"
-  (interactive)
-  (let ((erg (and (backward-paragraph)(point))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
-
-;;  (defalias 'py-end-of-paragraph 'forward-paragraph)
-(defun py-forward-paragraph ()
-    "Go to end of current paragraph.
-
-If already at end, go to end of next paragraph downwards"
-  (interactive)
-  (let ((erg (and (forward-paragraph)(point))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
-
 ;; ;
 (defun py-indent-and-forward (&optional indent)
   "Indent current line according to mode, move one line forward.

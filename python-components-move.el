@@ -25,6 +25,24 @@
 
 ;;; Code:
 
+(defun py-backward-paragraph ()
+  "Go to beginning of current paragraph.
+
+If already at beginning, go to start of next paragraph upwards"
+  (interactive)
+  (let ((erg (and (backward-paragraph)(point))))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+    erg))
+
+(defun py-forward-paragraph ()
+    "Go to end of current paragraph.
+
+If already at end, go to end of next paragraph downwards"
+  (interactive)
+  (let ((erg (and (forward-paragraph)(point))))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
+    erg))
+
 ;; Indentation
 ;; Travel current level of indentation
 (defun py--travel-this-indent-backward (&optional indent)
