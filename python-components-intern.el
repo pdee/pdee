@@ -2,7 +2,6 @@
 
 ;; Helper functions
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages, processes

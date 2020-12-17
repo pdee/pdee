@@ -2717,7 +2717,7 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   \"Return position, if cursor is at the beginning of a ‘" ele "’, nil otherwise.\"\n"))
     (insert (concat "  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-" (ar-block-regexp-name-richten ele) "-re)
+         (looking-at (concat \"\\\\b\" py-"  (ar-block-regexp-name-richten ele) "-re))
          (point))))\n\n")))
   (dolist (ele py-bol-forms)
     (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)

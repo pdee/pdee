@@ -31,49 +31,49 @@
   "Return position, if cursor is at the beginning of a ‘comment’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-comment-re)
+         (looking-at (concat "\\b" py-comment-re))
          (point))))
 
 (defun py--beginning-of-expression-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘expression’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-expression-re)
+         (looking-at (concat "\\b" py-expression-re))
          (point))))
 
 (defun py--beginning-of-line-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘line’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-line-re)
+         (looking-at (concat "\\b" py-line-re))
          (point))))
 
 (defun py--beginning-of-paragraph-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘paragraph’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-paragraph-re)
+         (looking-at (concat "\\b" py-paragraph-re))
          (point))))
 
 (defun py--beginning-of-partial-expression-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘partial-expression’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-partial-expression-re)
+         (looking-at (concat "\\b" py-partial-expression-re))
          (point))))
 
 (defun py--beginning-of-section-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘section’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-section-re)
+         (looking-at (concat "\\b" py-section-re))
          (point))))
 
 (defun py--beginning-of-top-level-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘top-level’, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at py-top-level-re)
+         (looking-at (concat "\\b" py-top-level-re))
          (point))))
 
 (defun py--beginning-of-assignment-p (&optional pps)

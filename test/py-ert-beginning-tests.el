@@ -35,7 +35,7 @@ class bar:
         except:
             block2
 "
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-block)
     (should (eq (char-after) ?f))))
@@ -87,7 +87,7 @@ class bar:
             block2
 "
     (goto-char (point-max))
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def)
     (should (eq (char-after) ?d))))
@@ -261,6 +261,22 @@ class bar:
     (search-backward "ange")
     (should-not (py--beginning-of-expression-p))))
 
+(ert-deftest py-ert-beginning-of-expression-test-OmllRc ()
+  (py-test-with-temp-buffer
+      "# -*- coding: utf-8 -*-
+class bar:
+    def foo ():
+        try:
+            if True:
+                for a in range(anzahl):
+                    pass
+        except:
+            block2
+"
+    (goto-char (point-max))
+    (search-backward "range")
+    (should (py--beginning-of-expression-p))))
+
 (ert-deftest py-ert-beginning-of-partial-expression-test ()
   (py-test-with-temp-buffer
       "# -*- coding: utf-8 -*-
@@ -325,7 +341,7 @@ class bar:
             block2
 "
     (goto-char (point-max))
-    ;; (skip-chars-backward " \t\r\n\f") 
+    ;; (skip-chars-backward " \t\r\n\f")
     (py-backward-block-or-clause-bol)
     (should (looking-at "class"))))
 
@@ -342,7 +358,7 @@ class bar:
             block2
 "
     (goto-char (point-max))
-    (skip-chars-backward " \t\r\n\f") 
+    (skip-chars-backward " \t\r\n\f")
     (py-backward-block-or-clause-bol)
     (should (looking-at " +except"))))
 
@@ -440,7 +456,7 @@ class bar:
             if True:
                 for a in range(anzahl):
                     pass"
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     (py-backward-minor-block-bol)
     (should (looking-at " +for"))))
 
