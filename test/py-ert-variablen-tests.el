@@ -649,9 +649,6 @@
 (ert-deftest py-ert-line-number-offset-test-7FmSNE ()
   (should (boundp 'py-line-number-offset)))
 
-(ert-deftest py-ert-local-versioned-command-test-nIYLuz ()
-  (should (boundp 'py-local-versioned-command)))
-
 (ert-deftest py-ert-match-paren-no-use-syntax-pps-test-NmawLw ()
   (should (boundp 'py-match-paren-no-use-syntax-pps)))
 
