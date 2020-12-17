@@ -84,6 +84,7 @@
 
 (defconst py-block-forms
   (list
+   "assignment"
    "block"
    "block-or-clause"
    "class"

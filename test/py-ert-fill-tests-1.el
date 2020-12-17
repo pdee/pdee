@@ -626,94 +626,6 @@ def main():
       (backward-char)
       (should (eq (char-after) ?f)))))
 
-(ert-deftest py--beginning-of-assignment-p-test-yJqNFd ()
-  (py-test-with-temp-buffer-point-min
-      "afd = \"asdf\""
-    (goto-char (point-min))
-    (search-forward "f")
-    (should-not (py--beginning-of-assignment-p))))
-
-(ert-deftest py--beginning-of-assignment-p-test-nnyBdy ()
-  (py-test-with-temp-buffer-point-min
-      "afd = \"asdf\""
-    (goto-char (point-min))
-    (should (py--beginning-of-assignment-p))))
-
-(ert-deftest py-beginning-of-assignment-test-nnyBdy()
-  (py-test-with-temp-buffer
-      "a, b, c = (1, 2, 3)"
-    (goto-char (point-max))
-    (should (py-beginning-of-assignment))))
-
-(ert-deftest py-end-of-assignment-test-nnyBdy()
-    (py-test-with-temp-buffer-point-min
-	"a, b, c = (1, 2, 3)"
-	(goto-char (point-min))
-      (py-end-of-assignment)
-      (should (eq (char-before) ?\)))))
-
-(ert-deftest py-end-of-assignment-test-wQIiGk ()
-    (py-test-with-temp-buffer-point-min
-	"a, b, c = (1, 2, 3)"
-	(goto-char (point-min))
-	(search-forward "b") 
-      (py-end-of-assignment)
-      (should (eq (char-before) ?\)))))
-
-(ert-deftest py-end-of-assignment-test-2ptHP0()
-    (py-test-with-temp-buffer
-	"a, b, c = (1, 2, 3)
-asdf = []"
-	(search-backward "2") 
-      (py-end-of-assignment)
-      (should (eq (char-before) ?\)))))
-
-(ert-deftest py-backward-assignment-test-nnyBdy()
-  (py-test-with-temp-buffer
-      "print('%(language)s has %(number)03d quote types\.' %
-       {'language': \"Python\", \"number\": 2})"
-    (goto-char (point-max))
-    (should-not (py-backward-assignment))))
-
-(ert-deftest py-backward-assignment-test-nnyBdy()
-  (py-test-with-temp-buffer
-      "a, b, c = (1, 2, 3)"
-    (goto-char (point-max))
-    (should (py-backward-assignment))))
-
-(ert-deftest py-forward-assignment-test-nnyBdy()
-    (py-test-with-temp-buffer-point-min
-	"a, b, c = (1, 2, 3)"
-	(goto-char (point-min))
-      (py-forward-assignment)
-      (should (eq (char-before) ?\)))))
-
-(ert-deftest py-forward-assignment-test-wQIiGk()
-    (py-test-with-temp-buffer-point-min
-	"a, b, c = (1, 2, 3)"
-	(goto-char (point-min))
-	(search-forward "b") 
-      (py-forward-assignment)
-      (should (eq (char-before) ?\)))))
-
-(ert-deftest py-forward-assignment-test-2ptHP0()
-    (py-test-with-temp-buffer
-	"a, b, c = (1, 2, 3)
-asdf = []"
-	(search-backward "2") 
-      (py-forward-assignment)
-      (should (eq (char-before) ?\)))))
-
-(ert-deftest py-forward-assignment-test-2ptHP0()
-    (py-test-with-temp-buffer
-	"a, b, c = (1, 2, 3)
-asdf = []"
-      (goto-char (point-max)) 
-      (py-forward-assignment)
-      (should (eq (char-before) ?\]))))
-
-
-
 (ert-deftest py-ert-fill-comment-test-Byd1i0 ()
   (py-test-with-temp-buffer-point-min
       "class Foo(Bar):
@@ -728,8 +640,6 @@ asdf = []"
     (back-to-indentation)
     (should (eq 8 (current-column)))
     (should (eq 6 (count-lines (point-min) (point))))))
-
-
 
 (ert-deftest py-raw-docstring-test-pep-257-nn-pbqel7 ()
   (py-test-with-temp-buffer-point-min
@@ -746,7 +656,6 @@ More docstring here.
       (forward-line 1)
       (skip-chars-forward " \t\r\n\f")
       (should (eq 4 (current-indentation))))))
-
 
 (ert-deftest py-fill-docstring-pep-257-nn-test-ylBRzi ()
   (py-test-with-temp-buffer
@@ -773,7 +682,6 @@ More docstring here.
     (goto-char (point-min))
     (end-of-line)
     (should (eq (char-before) 92))))
-
 
 (ert-deftest py-fill-singlequoted-string-test-zeKa2U ()
   (py-test-with-temp-buffer
@@ -803,8 +711,6 @@ More docstring here.
     (skip-chars-backward " \t\r\n\f")
     (should (eq (char-before) ?\\))))
 
-
-
 (ert-deftest py-fill-paragraph-LEON2Q ()
   (py-test-with-temp-buffer
       "r\'\'\'aaa
@@ -820,10 +726,6 @@ is a test
     (search-backward "'''")
     (forward-line 1)
     (should-not (eq (char-after) ?\\))))
-
-
-
-
 
 (ert-deftest py-fill-comment-test-MQfKpX ()
   (py-test-with-temp-buffer
@@ -887,7 +789,6 @@ def foo(rho, x):
     (insert " ")
     (py-fill-string-or-comment)
     (should (equal 39 (current-column)))))
-
     
 (provide 'py-ert-fill-tests-1)
 ;;; py-ert-fill-tests-1.el ends here

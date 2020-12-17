@@ -5,7 +5,7 @@
 
 
 ;; URL: https://gitlab.com/python-mode-devs
-;; Keywords: languages, convenience
+;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -30,7 +30,25 @@
 (defun py-forward-region ()
   "Go to the end of current region."
   (interactive)
-  (goto-char (region-end)))
+  (let ((end (region-end)))
+    (when end (goto-char end))))
+
+(defun py-forward-assignment (&optional orig bol)
+  "Go to end of assignment.
+
+Return end of ‘assignment’ if successful, nil otherwise
+Optional ORIG: start position
+Optional BOL: go to beginning of line following end-position"
+  (interactive)
+  (cdr-safe (py--end-base 'py-assignment-re orig bol)))
+
+(defun py-forward-assignment-bol ()
+  "Goto beginning of line following end of ‘assignment’.
+
+Return position reached, if successful, nil otherwise.
+See also ‘py-down-assignment’: down from current definition to next beginning of ‘assignment’ below."
+  (interactive)
+  (py-forward-assignment nil t))
 
 (defun py-forward-block (&optional orig bol)
   "Go to end of block.

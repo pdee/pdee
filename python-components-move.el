@@ -866,37 +866,38 @@ Return position of successful, nil of not started from inside"
           (message "%s" erg))
 	erg))))
 
-(defun py-forward-assignment()
-  "Go to end of assigment at point if inside.
+;; now in python-components-forward-forms.el
+;; (defun py-forward-assignment()
+;;   "Go to end of assigment at point if inside.
 
-Return position of successful, nil of not started from inside
-When called at the end of an assignment, check next form downwards."
-  (interactive)
-  (unless (eobp)
-    (if (eq last-command 'py-backward-assignment)
-	;; assume at start of an assignment
-	(py--forward-assignment-intern)
-      ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time
-      (let* (last
-	     (orig (point))
-	     (beg
-	      (or (py--beginning-of-assignment-p)
-		  (progn
-		    (while (and (setq last (py-backward-statement))
-				(not (looking-at py-assignment-re))
-				;; (not (bolp))
-				))
-		    (and (looking-at py-assignment-re) last))))
-	     erg)
-	(and beg (setq erg (py--forward-assignment-intern)))
-	(when (eq (point) orig)
-	  (while (and (not (eobp)) (re-search-forward py-assignment-re) (setq last (match-beginning 1)) (py-in-string-or-comment-p)))
-	  (when last
-	    (goto-char last)
-	    (setq erg (point))))
-	(when (and py-verbose-p (called-interactively-p 'interactive))
-          (message "%s" erg))
-	erg))))
+;; Return position of successful, nil of not started from inside
+;; When called at the end of an assignment, check next form downwards."
+;;   (interactive)
+;;   (unless (eobp)
+;;     (if (eq last-command 'py-backward-assignment)
+;; 	;; assume at start of an assignment
+;; 	(py--forward-assignment-intern)
+;;       ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time
+;;       (let* (last
+;; 	     (orig (point))
+;; 	     (beg
+;; 	      (or (py--beginning-of-assignment-p)
+;; 		  (progn
+;; 		    (while (and (setq last (py-backward-statement))
+;; 				(not (looking-at py-assignment-re))
+;; 				;; (not (bolp))
+;; 				))
+;; 		    (and (looking-at py-assignment-re) last))))
+;; 	     erg)
+;; 	(and beg (setq erg (py--forward-assignment-intern)))
+;; 	(when (eq (point) orig)
+;; 	  (while (and (not (eobp)) (re-search-forward py-assignment-re) (setq last (match-beginning 1)) (py-in-string-or-comment-p)))
+;; 	  (when last
+;; 	    (goto-char last)
+;; 	    (setq erg (point))))
+;; 	(when (and py-verbose-p (called-interactively-p 'interactive))
+;;           (message "%s" erg))
+;; 	erg))))
 
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

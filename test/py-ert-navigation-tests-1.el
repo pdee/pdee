@@ -3175,6 +3175,16 @@ asdf = []"
     (goto-char (point-max))
     (should (py-backward-assignment))))
 
+(ert-deftest py-backward-assignment-bol-test-ZZ2Txq()
+  (py-test-with-temp-buffer
+      "    zeit = kugel.zeit
+    ausgabe = kugel.ausgabe"
+    (goto-char (point-max))
+    (py-backward-assignment-bol)
+    (should (eq (char-after) 32))
+    (should (eq 23 (point)))
+    ))
+
 (ert-deftest py-forward-assignment-test-nnyBdy()
     (py-test-with-temp-buffer-point-min
 	"a, b, c = (1, 2, 3)"
@@ -3205,6 +3215,25 @@ asdf = []"
       (goto-char (point-max))
       (py-forward-assignment)
       (should (eq (char-before) ?\]))))
+
+(ert-deftest py-forward-assignment-bol-test-ZZ2Txq()
+  (py-test-with-temp-buffer-point-min
+      "    zeit = kugel.zeit
+    ausgabe = kugel.ausgabe"
+    (goto-char (point-min))
+    (py-forward-assignment-bol)
+    (should (eq (char-after) 32))
+    (should (eq 23 (point)))
+    ))
+
+(ert-deftest py-forward-assignment-bol-test-DXM7p5()
+  (py-test-with-temp-buffer-point-min
+      "zeit = kugel.zeit
+ausgabe = kugel.ausgabe"
+    (goto-char (point-min))
+    (py-forward-assignment-bol)
+    (should (eq (char-after) ?a))
+    ))
 
 
 (ert-deftest py-end-of-def-or-class-test-1-YpTSCo ()
