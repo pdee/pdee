@@ -3017,9 +3017,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 (defconst py-windows-config-register 313465889
   "Internal used.")
 
-(defvar py-windows-config nil
-  "Completion stores ‘py-windows-config-register’ here.")
-
 (put 'py-indent-offset 'safe-local-variable 'integerp)
 
 ;; testing

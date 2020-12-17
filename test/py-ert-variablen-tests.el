@@ -769,9 +769,6 @@
 (ert-deftest py-ert-which-bufname-test-Ho4doO ()
   (should (boundp 'py-which-bufname)))
 
-(ert-deftest py-ert-windows-config-test-J8EAoP ()
-  (should (boundp 'py-windows-config)))
-
 (ert-deftest py-ert-XXX-tag-face-test-jO4QpQ ()
   (should (boundp 'py-XXX-tag-face)))
 
