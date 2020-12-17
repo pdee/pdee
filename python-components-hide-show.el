@@ -1,6 +1,5 @@
 ;;; python-components-hide-show.el --- Provide hs-minor-mode forms -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
 
@@ -23,7 +22,6 @@
 ;; directory devel. Edits here might not be persistent.
 
 ;;; Code:
-
 
 ;; (setq hs-block-start-regexp 'py-extended-block-or-clause-re)
 ;; (setq hs-forward-sexp-func 'py-forward-block)
@@ -92,7 +90,7 @@
   (interactive
    (list
     (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
-  (py-show-base 'region beg end))
+  (hs-discard-overlays beg end))
 
 (defun py-hide-block ()
   "Hide block at point."
@@ -204,7 +202,7 @@
   (py-show)
   (py-hide-indent))
 
-(defun py-dynamically-hide-further-indent (&optional arg) 
+(defun py-dynamically-hide-further-indent (&optional arg)
   (interactive "P")
   (if (eq 4  (prefix-numeric-value arg))
       (py-show)
