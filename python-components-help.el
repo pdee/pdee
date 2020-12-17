@@ -1,6 +1,5 @@
 ;;; python-components-help.el --- help functions -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages, processes
@@ -217,32 +216,6 @@ If symbol is defined in current buffer, jump to it's definition"
 		  (py--help-at-point-intern symbol orig))
 	 ;; (py--shell-manage-windows buffer exception-buffer split (or interactivep switch))
 	 )))
-
-
-
-    ;; avoid repeated call at identic pos
-    ;; (unless (eq orig (ignore-errors py-last-position))
-    ;;   (setq py-last-position orig))
-    ;; (unless (member (get-buffer-window "*Python-Help*") (window-list))
-    ;;   (window-configuration-to-register py-windows-config-register))
-    ;; (and (looking-back "(" (line-beginning-position))(not (looking-at "\\sw")) (forward-char -1))
-    ;; (if (or (eq (face-at-point) 'font-lock-string-face)(eq (face-at-point) 'font-lock-comment-face))
-    ;; 	(progn
-    ;; 	  (py-restore-window-configuration)
-    ;; 	  (goto-char orig))
-    ;;   (if
-    ;; 	  ;; (or (< 0 (abs (skip-chars-backward "a-zA-Z0-9_." (line-beginning-position))))(looking-at "\\sw"))
-    ;; 	  (not (string= "" symbol))
-    ;; 	  (py--help-at-point-intern symbol orig)
-    ;; 	;; (py-restore-window-configuration)
-    ;; 	))))
-
-;;  Documentation functions
-
-;;  dump the long form of the mode blurb; does the usual doc escapes,
-;;  plus lines of the form ^[vc]:name\$ to suck variable & command docs
-;;  out of the right places, along with the keys they're on & current
-;;  values
 
 (defun py--dump-help-string (str)
   (with-output-to-temp-buffer "*Help*"

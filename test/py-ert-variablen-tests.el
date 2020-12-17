@@ -565,9 +565,6 @@
 (ert-deftest py-ert-decorators-face-test-PgZisY ()
   (should (boundp 'py-decorators-face)))
 
-(ert-deftest py-ert-default-interpreter-test-NiousV ()
-  (should (boundp 'py-default-interpreter)))
-
 (ert-deftest py-ert-def-class-face-test-ZTNmqS ()
   (should (boundp 'py-def-class-face)))
 

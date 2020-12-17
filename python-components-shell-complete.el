@@ -48,9 +48,6 @@ Takes END"
                   (eq last-command 'choose-completion)
                   (eq last-command 'py-shell-complete))
                  (eq this-command 'self-insert-command))))
-    ;; (set-window-configuration
-    ;;  py-last-window-configuration)
-    ;; (jump-to-register py-windows-config-register)
     (py-restore-window-configuration)
     )
 
@@ -181,7 +178,7 @@ Use `C-q TAB' to insert a literally TAB-character
 In ‘python-mode’ `py-complete-function' is called,
 in (I)Python shell-modes `py-shell-complete'"
   (interactive "*")
-  (window-configuration-to-register py-windows-config-register)
+  (window-configuration-to-register py--windows-config-register)
   ;; (setq py-last-window-configuration
   ;;       (current-window-configuration))
   (cond ((use-region-p)

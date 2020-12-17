@@ -894,7 +894,7 @@ arg MODE: which buffer-mode used in edit-buffer"
 (defun py-prettyprint-assignment ()
   "Prettyprint assignment in ‘python-mode’."
   (interactive "*")
-  (window-configuration-to-register py-windows-config-register)
+  (window-configuration-to-register py--windows-config-register)
   (save-excursion
     (let* ((beg (py-beginning-of-assignment))
 	   (name (py-expression))

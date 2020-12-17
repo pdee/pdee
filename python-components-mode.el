@@ -3012,8 +3012,8 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
      (3 (py--quote-syntax 3) t t)
      (6 (py--quote-syntax 1) t t))))
 
-(defconst py-windows-config-register 313465889
-  "Internal used.")
+(defconst py--windows-config-register 313465889
+  "Internal used by ‘window-configuration-to-register’.")
 
 (put 'py-indent-offset 'safe-local-variable 'integerp)
 

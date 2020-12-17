@@ -70,7 +70,7 @@ completions on the current context."
 
 Use `py-fast-process' "
   (interactive "*")
-  (window-configuration-to-register py-windows-config-register)
+  (window-configuration-to-register py--windows-config-register)
   (setq py-last-window-configuration
   	(current-window-configuration))
   (py-shell-complete shell beg end word t)

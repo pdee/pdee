@@ -459,7 +459,7 @@ Fill according to `py-docstring-style' "
   (interactive "*")
   (save-excursion
     (save-restriction
-      (window-configuration-to-register py-windows-config-register)
+      (window-configuration-to-register py--windows-config-register)
       (let* ((tqs tqs)
 	     (pps (or pps (parse-partial-sexp (point-min) (point))))
 	     (docstring (unless (not py-docstring-style) (py--in-or-behind-or-before-a-docstring pps)))
@@ -497,7 +497,7 @@ Fill according to `py-docstring-style' "
 		 (and beg end (fill-region beg end))
 		 (when (and in-string (not tqs))
 		   (py--continue-lines-region beg end))))))
-      (jump-to-register py-windows-config-register))))
+      (jump-to-register py--windows-config-register))))
 
 (defun py-fill-string-or-comment ()
   "Serve auto-fill-mode"
