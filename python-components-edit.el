@@ -34,13 +34,6 @@
          (sheb (concat "#! " erg)))
     (insert sheb)))
 
-(defun py--beginning-of-expression-p (&optional pps)
-  "Return position, if cursor is at the beginning of a ‘expression’, nil otherwise."
-  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
-    (and (not (or (nth 8 pps)(nth 1 pps)))
-         (looking-at (concat "\\b" py-expression-re))
-         (point))))
-
 (defun py--top-level-form-p ()
   "Return non-nil, if line start with a top level form."
   (save-excursion
@@ -77,7 +70,6 @@ With optional \\[universal-argument] ARG, unconditionally insert an indent of
         (beginning-of-line)
         (delete-horizontal-space)
         (indent-to need))))))
-
 
 (defun py--re-indent-line ()
   "Re-indent the current line."
