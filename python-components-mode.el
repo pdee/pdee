@@ -8,7 +8,6 @@
 
 ;; Package-Requires: ((emacs "24"))
 
-;; Copyright (C) 1992,1993,1994,2020  Tim Peters
 
 ;; Author: 2015-2020 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode

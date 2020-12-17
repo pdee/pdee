@@ -1,8 +1,7 @@
 ;;; python-components-execute-file --- Runs files -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2020 Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify

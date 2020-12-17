@@ -1,8 +1,7 @@
 ;;; py-ert-navigation-tests-1.el --- python-mode navigation tests  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020  Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify

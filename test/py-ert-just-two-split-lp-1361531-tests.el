@@ -1,7 +1,6 @@
 ;;; py-ert-just-two-split-lp-1361531-tests.el --- Test splitting
 
-;; Copyright (C) 2011-2014, 2020  Andreas Röhler
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify

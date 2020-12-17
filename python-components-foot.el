@@ -1,6 +1,6 @@
 ;;; python-components-foot.el --- foot -*- lexical-binding: t; -*-
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages
 

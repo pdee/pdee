@@ -1,8 +1,7 @@
 ;;; py-ert-function-tests.el --- functionp ert tests  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015  Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: lisp
 
 ;; This program is free software; you can redistribute it and/or modify

@@ -1,7 +1,6 @@
 ;;; py-ert-beginning-tests.el --- Just some more tests
 
-;; Copyright (C) 2011-2014  Andreas Röhler
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify

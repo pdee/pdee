@@ -1,8 +1,7 @@
 ;;; py-extra-tests.el --- extra tests                -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2019, 2020  Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify

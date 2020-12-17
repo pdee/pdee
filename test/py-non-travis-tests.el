@@ -1,8 +1,7 @@
 ;;; py-non-travis-tests.el --- non-travis tests
 
-;; Copyright (C) 2015, 2020  Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: lisp
 

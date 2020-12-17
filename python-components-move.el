@@ -1,8 +1,7 @@
 ;;; python-components-move.el --- Functions moving point which need special treatment -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2019 Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages
 

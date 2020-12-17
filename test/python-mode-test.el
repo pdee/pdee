@@ -1,8 +1,7 @@
 ;;; python-mode-test.el --- tests for Emacs python-mode.el
 
-;; Copyright (C) 2011  Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: lisp, languages
 
 ;; This program is free software; you can redistribute it and/or modify

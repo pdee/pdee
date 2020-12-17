@@ -1,7 +1,5 @@
 ;; py-ert-delete-tests.el --- testing python-mode.el -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 Free Software Foundation, Inc.
-;; Copyright (C) 2014-2020 Andreas Röhler, <andreas.roehler@online.de>
 ;; Keywords: languages 
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify

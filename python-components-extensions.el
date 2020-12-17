@@ -1,8 +1,7 @@
 ;;; python-components-extensions.el --- more editing utilities -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2016 Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: lisp
 

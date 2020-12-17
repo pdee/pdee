@@ -1,6 +1,6 @@
 ;;; python-abbrev-propose.el --- initial content for mode-abbrevs
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: abbrev
 

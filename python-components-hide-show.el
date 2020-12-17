@@ -1,8 +1,7 @@
 ;;; python-components-hide-show.el --- Provide hs-minor-mode forms -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2019 Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
 
 ;; This program is free software; you can redistribute it and/or modify
