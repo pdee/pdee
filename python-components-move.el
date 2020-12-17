@@ -816,25 +816,6 @@ Return position if successful"
     (when (and (looking-back py-section-end (line-beginning-position))(< orig (point)))
       (point))))
 
-;; (defun py-forward-paragraph ()
-;;   (interactive)
-;;   (py--end-of-paragraph 'py-paragraph-re))
-
-(defun py-backward-assignment()
-  "Go to backward in buffer to beginning of an assigment.
-
-Return position if successful."
-  (interactive)
-  (let* (last
-	 (erg
-	  (progn
-	    (while (and (setq last (py-backward-statement))
-			(not (looking-at py-assignment-re))))
-	    (and (looking-at py-assignment-re) last))))
-    (when (and py-verbose-p (called-interactively-p 'interactive))
-      (message "%s" erg))
-    erg))
-
 (defun py-beginning-of-assignment()
   "Go to beginning of assigment if inside.
 

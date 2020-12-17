@@ -1,8 +1,9 @@
 ;;; python-components-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*-
 
+;; Copyright (C) 2015-2020 Andreas Röhler
 
-;; URL: https://gitlab.com/python-mode-devs
-;; Keywords: languages, convenience
+;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -42,7 +43,6 @@ Return beginning of form if successful, nil otherwise"
                                                  (setq erg (point))))
     erg))
 
-;;;###autoload
 (defun py-backward-class ()
  "Go to beginning of ‘class’.
 
@@ -55,7 +55,6 @@ Return beginning of form if successful, nil otherwise"
                                                  (setq erg (point))))
     erg))
 
-;;;###autoload
 (defun py-backward-def ()
  "Go to beginning of ‘def’.
 
@@ -68,7 +67,6 @@ Return beginning of form if successful, nil otherwise"
                                                  (setq erg (point))))
     erg))
 
-;;;###autoload
 (defun py-backward-def-or-class ()
  "Go to beginning of ‘def-or-class’.
 
@@ -115,6 +113,16 @@ Return beginning of ‘def-or-class’ if successful, nil otherwise"
   (interactive)
   (and (py-backward-def-or-class)
        (progn (beginning-of-line)(point))))
+
+(defun py-backward-assignment ()
+ "Go to beginning of ‘assignment’.
+
+If already at beginning, go one ‘assignment’ backward.
+Return beginning of form if successful, nil otherwise"
+  (interactive)
+  (let (erg)
+    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-assignment-re))))
+    erg))
 
 (defun py-backward-block-or-clause ()
  "Go to beginning of ‘block-or-clause’.
@@ -205,6 +213,14 @@ Return beginning of form if successful, nil otherwise"
   (let (erg)
     (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-try-re))))
     erg))
+
+(defun py-backward-assignment-bol ()
+  "Go to beginning of ‘assignment’, go to BOL.
+If already at beginning, go one ‘assignment’ backward.
+Return beginning of ‘assignment’ if successful, nil otherwise"
+  (interactive)
+  (and (py-backward-assignment)
+       (progn (beginning-of-line)(point))))
 
 (defun py-backward-block-or-clause-bol ()
   "Go to beginning of ‘block-or-clause’, go to BOL.

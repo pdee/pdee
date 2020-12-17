@@ -3401,7 +3401,23 @@ except:
     (search-forward "if")
     (should (eq 38 (length (py-block))))))
 
+(ert-deftest py-backward-assignment-test-BU1DTH ()
+  (py-test-with-temp-buffer
+      "try:
+    anzahl = int(args[1])
+"
+    (goto-char (point-max))
+    (py-backward-assignment)
+    (should (eq 4 (current-column)))))
 
+(ert-deftest py-backward-assignment-bol-test-BU1DTH ()
+  (py-test-with-temp-buffer
+      "try:
+    anzahl = int(args[1])
+"
+    (goto-char (point-max))
+    (py-backward-assignment-bol)
+    (should (bolp))))
 
 (provide 'py-ert-navigation-tests-1)
 ;;; py-ert-navigation-tests-1.el ends here
