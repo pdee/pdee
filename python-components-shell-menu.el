@@ -1124,11 +1124,7 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
 	    ["Don't enforce default interpreter" force-py-shell-name-p-off
 	     :help "Make execute commands guess interpreter from environment"]
 
-	    ["Enforce local Python shell " py-force-local-shell-on
-	     :help "Locally indicated Python being enforced upon sessions execute commands. "]
-
-	    ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
-	     :help "Restore `py-shell-name' default value and `behaviour'. "])
+	    )
 
 	   ("Execute"
 

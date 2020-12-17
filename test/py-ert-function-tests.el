@@ -1,6 +1,5 @@
 ;;; py-ert-function-tests.el --- functionp ert tests  -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: lisp
 
@@ -439,15 +438,6 @@
 
 (ert-deftest py-ert-send-file-functionp-test-wfhpGF ()
   (should (functionp 'py-send-file)))
-
-(ert-deftest py-ert-toggle-force-local-shell-functionp-test-i6E7Hk ()
-  (should (functionp 'toggle-force-local-shell)))
-
-(ert-deftest py-ert-force-local-shell-on-functionp-test-SY0KS0 ()
-  (should (functionp 'py-force-local-shell-on)))
-
-(ert-deftest py-ert-force-local-shell-off-functionp-test-cxgU3G ()
-  (should (functionp 'py-force-local-shell-off)))
 
 (ert-deftest py-ert-toggle-force-py-shell-name-p-functionp-test-qaMHcn ()
   (should (functionp 'toggle-force-py-shell-name-p)))

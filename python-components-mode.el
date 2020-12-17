@@ -8,7 +8,6 @@
 
 ;; Package-Requires: ((emacs "24"))
 
-
 ;; Author: 2015-2020 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
@@ -2506,9 +2505,6 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
 (defvar hs-hide-comments-when-hiding-all t
   "Defined in hideshow.el, silence compiler warnings here.")
-
-(defvar py-force-local-shell-p nil
-  "Used internally, see `toggle-force-local-shell'.")
 
 (defvar py-shell-complete-debug nil
   "For interal use when debugging, stores completions." )
