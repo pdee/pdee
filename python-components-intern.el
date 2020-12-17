@@ -202,7 +202,6 @@ process buffer for a list of commands.)"
 	 (dedicated (or (eq 4 (prefix-numeric-value argprompt)) dedicated py-dedicated-process-p))
 	 (shell (or shell (py-choose-shell)))
 	 (args (or args (py--provide-command-args shell fast)))
-	 (py-use-local-default (py--determine-local-default))
 	 (buffer-name
 	  (or buffer
 	      (py--choose-buffer-name shell dedicated fast)))

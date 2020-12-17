@@ -2414,12 +2414,6 @@ Syntax or has word syntax and isn't a letter.")
           (modify-syntax-entry ?\_ "_" table))
         table))
 
-(defvar-local py-local-command nil
-  "Returns locally used executable-name.")
-
-(defvar-local py-local-versioned-command nil
-  "Returns locally used executable-name including its version.")
-
 (defvar py-ipython-completion-command-string nil
   "Select command according to IPython version.
 

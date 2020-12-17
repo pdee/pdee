@@ -619,9 +619,6 @@
 (ert-deftest py-ert-flake8-history-test-RNKjr8 ()
   (should (boundp 'py-flake8-history)))
 
-(ert-deftest py-ert-force-local-shell-p-test-5hMr45 ()
-  (should (boundp 'py-force-local-shell-p)))
-
 (ert-deftest py-ert-import-from-face-test-BltII3 ()
   (should (boundp 'py-import-from-face)))
 
@@ -654,9 +651,6 @@
 
 (ert-deftest py-ert-line-number-offset-test-7FmSNE ()
   (should (boundp 'py-line-number-offset)))
-
-(ert-deftest py-ert-local-command-test-JieqaC ()
-  (should (boundp 'py-local-command)))
 
 (ert-deftest py-ert-local-versioned-command-test-nIYLuz ()
   (should (boundp 'py-local-versioned-command)))
