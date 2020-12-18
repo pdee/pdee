@@ -3777,14 +3777,10 @@ Optional argument END specify end."
   :tag "py-default-working-directory"
   :group 'python-mode)
 
-(defun py-empty-line-p (&optional iact)
-  "Return t if cursor is at an empty line, nil otherwise.
-Optional argument INTERACT bla."
-  (interactive "p")
+(defun py-empty-line-p ()
+  "Return t if cursor is at an empty line, nil otherwise."
   (save-excursion
     (beginning-of-line)
-    (when (and iact py-verbose-p)
-      (message "%s" (looking-at py-empty-line-p-chars)))
     (looking-at py-empty-line-p-chars)))
 
 (defun py-toggle-closing-list-dedents-bos (&optional arg)
