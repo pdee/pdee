@@ -986,7 +986,7 @@ Optional ARG indicates a start-position for `parse-partial-sexp'."
     end))
 
 (defun py--in-comment-p ()
-  "Return the beginning of current line's comment, if inside. "
+  "Return the beginning of current line's comment, if inside or at comment-start. "
   (save-restriction
     (widen)
     (let* ((pps (parse-partial-sexp (point-min) (point)))
@@ -1902,7 +1902,7 @@ Returns `t' if point was moved"
           ((not done)
            (end-of-line)))
     (skip-chars-backward " \t" (line-beginning-position))
-    (and (< orig (point))(setq done t)
+    (and (< orig (point))(setq done (point))
          done)))
 
 (defun py-backward-top-level ()

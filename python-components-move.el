@@ -440,14 +440,12 @@ ORIG - consider orignial position or point.
 DONE - transaktional argument
 REPEAT - count and consider repeats"
   (interactive)
-  (switch-to-buffer (current-buffer))
   (unless (eobp)
     (let ((repeat (or (and repeat (1+ repeat)) 0))
 	  (orig (or orig (point)))
 	  erg last
 	  ;; use by scan-lists
 	  forward-sexp-function pps err)
-      ;; (unless done (py--skip-to-comment-or-semicolon done))
       (setq pps (parse-partial-sexp (point-min) (point)))
       ;; (origline (or origline (py-count-lines)))
       (cond
