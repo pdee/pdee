@@ -2083,8 +2083,7 @@ If already at beginning, go one ‘" ele "’ backward."))
     ;;   (insert "\nOptional DECORATOR\n"))
     (insert (concat "
 Return beginning of form if successful, nil otherwise\"\n"))
-    (insert "  (interactive)
-  (let (erg)")
+    (insert "  (interactive)")
     ;; (cond
     ;; 	  ((string-match "def\\|class" ele)
     ;; 	   (insert (concat "
@@ -2093,9 +2092,9 @@ Return beginning of form if successful, nil otherwise\"\n"))
     ;; (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re)))\n")))
     ;;)
     (insert (concat "
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re))))"))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re))))\n"))
     ;; (setq erg (py--backward-regexp 'py-" (ar-block-regexp-name-richten ele) "-re (current-indentation)))"))
-    (insert "\n    erg))\n")))
+    ))
 
 (defun py--insert-backward-minor-block-bol-forms ()
   ;; bol forms

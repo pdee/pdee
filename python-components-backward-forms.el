@@ -1,8 +1,7 @@
 ;;; python-components-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015-2020 Andreas Röhler
 
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -120,9 +119,7 @@ Return beginning of ‘def-or-class’ if successful, nil otherwise"
 If already at beginning, go one ‘assignment’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-assignment-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-assignment-re))))
 
 (defun py-backward-block-or-clause ()
  "Go to beginning of ‘block-or-clause’.
@@ -130,9 +127,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘block-or-clause’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-block-or-clause-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-block-or-clause-re))))
 
 (defun py-backward-clause ()
  "Go to beginning of ‘clause’.
@@ -140,9 +135,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘clause’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-clause-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-clause-re))))
 
 (defun py-backward-elif-block ()
  "Go to beginning of ‘elif-block’.
@@ -150,9 +143,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘elif-block’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-elif-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-elif-re))))
 
 (defun py-backward-else-block ()
  "Go to beginning of ‘else-block’.
@@ -160,9 +151,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘else-block’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-else-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-else-re))))
 
 (defun py-backward-except-block ()
  "Go to beginning of ‘except-block’.
@@ -170,9 +159,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘except-block’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-except-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-except-re))))
 
 (defun py-backward-for-block ()
  "Go to beginning of ‘for-block’.
@@ -180,9 +167,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘for-block’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-for-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-for-re))))
 
 (defun py-backward-if-block ()
  "Go to beginning of ‘if-block’.
@@ -190,9 +175,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘if-block’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-if-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-if-re))))
 
 (defun py-backward-minor-block ()
  "Go to beginning of ‘minor-block’.
@@ -200,9 +183,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘minor-block’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-minor-block-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-minor-block-re))))
 
 (defun py-backward-try-block ()
  "Go to beginning of ‘try-block’.
@@ -210,9 +191,7 @@ Return beginning of form if successful, nil otherwise"
 If already at beginning, go one ‘try-block’ backward.
 Return beginning of form if successful, nil otherwise"
   (interactive)
-  (let (erg)
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-try-re))))
-    erg))
+  (car-safe (cdr-safe (py--go-to-keyword 'py-try-re))))
 
 (defun py-backward-assignment-bol ()
   "Go to beginning of ‘assignment’, go to BOL.
