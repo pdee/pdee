@@ -1,6 +1,5 @@
 ;;; py-extra-tests.el --- extra tests                -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: convenience
 
@@ -142,13 +141,6 @@ finally:
       (switch-to-buffer (current-buffer))
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
-
-(ert-deftest py-ert-exception-name-face-lp-1294742-7hEOh9 ()
-  (py-test-with-temp-buffer
-      "ArithmeticError"
-    (forward-char -1)
-    (font-lock-fontify-region (point-min) (point-max))
-    (should (eq 'py-exception-name-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-execute-block-jython-test-9gQUza ()
   (let ((buffer (py--choose-buffer-name "jython"))
@@ -1356,6 +1348,7 @@ def baz():
     \"\"\"
     return 7
 "
+      ;; (font-lock-fontify-buffer) 
       (goto-char 49)
       (fill-paragraph)
       (search-forward "\"\"\"")

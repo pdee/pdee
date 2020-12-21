@@ -1,26 +1,13 @@
 Python Mode News
 ================
 
-New Since Version 6.2.4
------------------------
-
-- py-debug-p renamed to py--debug-p.  It is now internal and no longer a
-  customizable user-option.
-
 New in version 6.2.4
----------------------
+-----------------------
 
 - <RET> and <C-j> normalized/swapped
 
   <RET> now defaults to ‘py-newline-and-indent’
   <C-j> is set to ‘newline’
-
-
-- column-marker.el removed, its provided by melpa
-
-- py-smart-indentation defaults to nil. Setting it to `t' considered
-  useful if customizing `py-indent-offset' is no option - for example
-  if indentation step is unknown.
 
 - New commands:
   py-prettyprint-assignment
@@ -33,7 +20,16 @@ New in version 6.2.4
   py-toggle-py-verbose-p
   py-execute-buffer-fast
 
-py-show-FORM commands replaced by single ‘py-show’
+  py-show-FORM commands replaced by single ‘py-show’
+
+- py-debug-p renamed to py--debug-p.  It is now internal and no longer a
+  customizable user-option.
+
+- column-marker.el removed, its provided by melpa
+
+- py-smart-indentation defaults to nil. Setting it to `t' considered
+  useful if customizing `py-indent-offset' is no option - for example
+  if indentation step is unknown.
 
 New in version 6.2.3
 ---------------------

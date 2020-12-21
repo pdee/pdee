@@ -898,7 +898,7 @@
     (insert (concat "
   \"Send file to a dedicated" (py--prepare-shell-name ele) " interpreter\"
   (interactive \"fFile: \")
-  (py--execute-base nil nil \"" ele "\" filename nil t t nil t))\n\n")))
+  (py--execute-base nil nil \"" ele "\" filename nil t t t))\n\n")))
   (insert "(provide 'python-components-execute-file)
 ;;; python-components-execute-file.el ends here\n")
   (when (called-interactively-p 'interactive)

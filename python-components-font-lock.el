@@ -38,9 +38,11 @@
         (,(rx symbol-start (or "try" "if") symbol-end) . py-try-if-face)
         ;; functions
         (,(rx symbol-start "def" (1+ space) (group (1+ (or word ?_))))
-         (1 font-lock-function-name-face))
+	 ;; (1 font-lock-function-name-face))
+         (1 py-def-face))
         (,(rx symbol-start "async def" (1+ space) (group (1+ (or word ?_))))
-         (1 font-lock-function-name-face))
+	 ;; (1 font-lock-function-name-face))
+         (1 py-def-face))
         ;; classes
         (,(rx symbol-start (group "class") (1+ space) (group (1+ (or word ?_))))
          (1 py-def-class-face) (2 py-class-name-face))
@@ -94,8 +96,8 @@
 		      "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
 		      "unichr" "unicode" "vars" "xrange" "zip"))
 	   symbol-end) (1 py-builtins-face))
-        ("\\([._[:word:]]+\\)\\(?:\\[[^]]+]\\)?[[:space:]]*\\(?:\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
-         (1 py-variable-name-face nil nil))
+        ;; ("\\([._[:word:]]+\\)\\(?:\\[[^]]+]\\)?[[:space:]]*\\(?:\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
+        ;;  (1 py-variable-name-face nil nil))
 	;; https://emacs.stackexchange.com/questions/55184/
 	;; how-to-highlight-in-different-colors-for-variables-inside-fstring-on-python-mo
 	;;

@@ -69,42 +69,42 @@
 (defun py-execute-file-ipython-dedicated (filename)
   "Send file to a dedicatedIPython interpreter"
   (interactive "fFile: ")
-  (py--execute-base nil nil "ipython" filename nil t t nil t))
+  (py--execute-base nil nil "ipython" filename nil t t t))
 
 (defun py-execute-file-ipython2.7-dedicated (filename)
   "Send file to a dedicatedIPython2.7 interpreter"
   (interactive "fFile: ")
-  (py--execute-base nil nil "ipython2.7" filename nil t t nil t))
+  (py--execute-base nil nil "ipython2.7" filename nil t t t))
 
 (defun py-execute-file-ipython3-dedicated (filename)
   "Send file to a dedicatedIPython3 interpreter"
   (interactive "fFile: ")
-  (py--execute-base nil nil "ipython3" filename nil t t nil t))
+  (py--execute-base nil nil "ipython3" filename nil t t t))
 
 (defun py-execute-file-jython-dedicated (filename)
   "Send file to a dedicatedJython interpreter"
   (interactive "fFile: ")
-  (py--execute-base nil nil "jython" filename nil t t nil t))
+  (py--execute-base nil nil "jython" filename nil t t t))
 
 (defun py-execute-file-python-dedicated (filename)
   "Send file to a dedicatedPython interpreter"
   (interactive "fFile: ")
-  (py--execute-base nil nil "python" filename nil t t nil t))
+  (py--execute-base nil nil "python" filename nil t t t))
 
 (defun py-execute-file-python2-dedicated (filename)
   "Send file to a dedicatedPython2 interpreter"
   (interactive "fFile: ")
-  (py--execute-base nil nil "python2" filename nil t t nil t))
+  (py--execute-base nil nil "python2" filename nil t t t))
 
 (defun py-execute-file-python3-dedicated (filename)
   "Send file to a dedicatedPython3 interpreter"
   (interactive "fFile: ")
-  (py--execute-base nil nil "python3" filename nil t t nil t))
+  (py--execute-base nil nil "python3" filename nil t t t))
 
 (defun py-execute-file-pypy-dedicated (filename)
   "Send file to a dedicatedPyPy interpreter"
   (interactive "fFile: ")
-  (py--execute-base nil nil "pypy" filename nil t t nil t))
+  (py--execute-base nil nil "pypy" filename nil t t t))
 
 (provide 'python-components-execute-file)
 ;;; python-components-execute-file.el ends here

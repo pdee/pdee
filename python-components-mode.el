@@ -2629,6 +2629,8 @@ This variable is set in ‘py-execute-region’ and used in ‘py--jump-to-excep
 
 (defvar py-class-name-face 'py-class-name-face)
 
+(defvar py-def-face 'py-def-face)
+
 (defvar py-exception-name-face 'py-exception-name-face)
 
 (defvar py-import-from-face 'py-import-from-face)
@@ -3250,7 +3252,7 @@ See also `py-object-reference-face'"
   :group 'python-mode)
 
 (defface py-variable-name-face
-  '((t (:inherit default)))
+  '((t (:inherit font-lock-variable-name-face)))
   "Face method decorators."
   :tag "py-variable-name-face"
   :group 'python-mode)
@@ -3294,6 +3296,12 @@ See also `py-object-reference-face'"
 
 (defface py-class-name-face
   '((t (:inherit font-lock-type-face)))
+  "Face for classes."
+  :tag "py-class-name-face"
+  :group 'python-mode)
+
+(defface py-def-face
+  '((t (:inherit font-lock-function-name-face)))
   "Face for classes."
   :tag "py-class-name-face"
   :group 'python-mode)

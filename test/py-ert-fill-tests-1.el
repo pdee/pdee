@@ -523,7 +523,7 @@ import os"
 \'\'\'
         pass"
     (goto-char (point-max))
-    (font-lock-fontify-region (point-min)(point-max))
+    ;; (font-lock-fontify-region (point-min)(point-max))
     (goto-char (point-min))
     (search-forward "'''")
     (py-fill-string nil 'pep-257-nn)
@@ -541,16 +541,6 @@ import os"
     (goto-char (point-min))
     (end-of-line)
     (should (eq (char-before) 92))))
-
-(ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
-  (py-test-with-temp-buffer
-      "range(len(list((1, 2, 3))))"
-    (goto-char (point-max))
-    ;; (goto-char (point-max))
-    (font-lock-fontify-region (point-min) (point-max))
-    (sit-for 0.1)
-    (search-backward "le")
-    (should (face-equal (face-at-point) 'py-builtins-face))))
 
 (ert-deftest py-backward-clause-test-p52Dcj ()
   (py-test-with-temp-buffer
@@ -664,7 +654,7 @@ More docstring here.
 \'\'\'
         pass"
     (goto-char (point-max))
-    (font-lock-fontify-region (point-min)(point-max))
+    ;; (font-lock-fontify-region (point-min)(point-max))
     (goto-char (point-min))
     (search-forward "'''")
     (py-fill-string nil 'pep-257-nn)

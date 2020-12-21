@@ -2773,11 +2773,10 @@ see no sign that the breakpoint was reached.
 def run(statement, globals=None, locals=None):
     Pdb().run(statement, globals, locals)
 "
-    (let (py-font-lock-defaults-p)
-      (goto-char (point-min))
-      (search-forward "return answer")
-      (py-end-of-def-or-class)
-      (should (looking-back "self.run(statement)" (line-beginning-position))))))
+    (goto-char (point-min))
+    (search-forward "return answer")
+    (py-end-of-def-or-class)
+    (should (looking-back "self.run(statement)" (line-beginning-position)))))
 
 (ert-deftest py-forward-def-or-class-test-pB8W4q ()
   (py-test-with-temp-buffer

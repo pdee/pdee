@@ -46,38 +46,6 @@
 ;;      (sit-for 0.1)
 ;;      (should (search-backward "run" nil t)))))
 
-(ert-deftest py-ert-keyword-face-lp-1294742-N1cjiI ()
-  (py-test-with-temp-buffer-point-min
-      " and as assert break continue del elif else except exec finally for global if in is lambda not or pass raise return while with yield"
-    (goto-char (point-min))
-    (font-lock-fontify-region (point-min)(point-max))
-    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
-      (should (eq 'font-lock-keyword-face (get-char-property (point) 'face)))
-      (skip-chars-forward "^ \n"))))
-
-(ert-deftest py-ert-builtins-face-lp-1294742-zvZYG5 ()
-  (py-test-with-temp-buffer-point-min
-      "_ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
-    (goto-char (point-min))
-    (font-lock-fontify-region (point-min)(point-max))
-    ;; (when py--debug-p (switch-to-buffer (current-buffer)))
-    (should (eq 'py-builtins-face (get-char-property (point) 'face)))))
-
-(ert-deftest py-ert-pseudo-keyword-face-lp-1294742-KgocNc ()
-  (py-test-with-temp-buffer-point-min
-      "  Ellipsis True False None  __debug__ NotImplemented"
-    (goto-char (point-min))
-    (font-lock-fontify-region (point-min)(point-max))
-    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
-      (should (eq 'py-pseudo-keyword-face (get-char-property (point) 'face)))
-      (skip-chars-forward "^ \n"))))
-
-(ert-deftest py-ert-object-reference-face-lp-1294742-HCkKIc ()
-  (py-test-with-temp-buffer-point-min
-      "self cls"
-    (goto-char (point-min))
-    (font-lock-fontify-region (point-min) (point-max))
-    (should (eq 'py-object-reference-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-ert-borks-all-lp-1294820-sIKMyz ()
   (py-test-with-temp-buffer-point-min
@@ -336,8 +304,6 @@ GeomSim."
 	""
       (goto-char (point-max))
       (should (string= "pdb" (py--pdb-versioned))))))
-
-
 
 (ert-deftest py-multline-arguments-with-literal-lists-79-test-7NWa5T ()
   (py-test-with-temp-buffer

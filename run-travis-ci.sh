@@ -69,6 +69,7 @@ TEST16=$TESTDIR/py-extra-tests.el
 TEST17=$HOME/emacs/test/lisp/progmodes/python-tests.el
 TEST18=$TESTDIR/translated-python-tests.el
 TEST19=$TESTDIR/py-ert-hide-tests.el
+TEST20=$TESTDIR/py-ert-font-lock-test-1.el
 
 if [ -s $HOME/emacs-20201119/src/emacs ]; then
     EMACS=$HOME/emacs-20201119/src/emacs
@@ -308,6 +309,17 @@ h19() {
 -f ert-run-tests-batch-and-exit
 }
 
+h20() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py--debug-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST20 \
+-f ert-run-tests-batch-and-exit
+}
+
 hierv5() {
     date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
@@ -412,6 +424,7 @@ $EMACS -Q --batch \
 -l $TEST13 \
 -l $TEST14 \
 -l $TEST19 \
+-l $TEST20 \
 --eval "(setq py--debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }
@@ -441,6 +454,7 @@ hier() {
 -l $TEST14 \
 -l $TEST16 \
 -l $TEST19 \
+-l $TEST20 \
 -f ert-run-tests-batch-and-exit
 }
 
@@ -470,9 +484,11 @@ if [ $WERKSTATT -eq 0 ]; then
 	    r) echo "Lade \$TEST15: \"$TEST15\"";h15;;
 	    s) echo "Lade \$TEST16: \"$TEST16\"";h16;;
 	    t) echo "Lade \$TEST19: \"$TEST19\"";h19;;
-	    u) echo "Lade testumgebung \"EXTRA\"";hierv5;;
-	    v) echo "Lade testumgebung \"EXTRA\"";extrav5;;
+	    u) echo "Lade \$TEST20: \"$TEST20\"";h20;;
+	    v) echo "Lade testumgebung \"EXTRA\"";hierv5;;
+	    w) echo "Lade testumgebung \"EXTRA\"";extrav5;;
 	    x) echo "Lade testumgebung \"EXTRA\"";extra;;
+
 	esac
     done
 
