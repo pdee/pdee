@@ -1301,7 +1301,6 @@ Arg REGEXP, a symbol"
 	   (res (setq erg
 		      (and
 		       (py--down-according-to-indent regexp secondvalue (current-indentation))
-		       ;; (py--forward-regexp-keep-indent "^[ \t]*[[:alnum:]_]" (current-indentation))
 		       (py--down-end-form))))
 	   (t (unless (< 0 repeat) (goto-char orig))
 	      (py--forward-regexp (symbol-value regexp))
@@ -1685,7 +1684,7 @@ Return the output."
        (if (and (string-match ".\n+." strg) (string-match "^\*[Ii]" buffer))  ;; IPython or multiline
            (let* ((temp-file-name (py-temp-file-name strg))
 		  (file-name (or (buffer-file-name) temp-file-name)))
-	     (py-send-file file-name proc))
+	     (py-execute-file file-name proc))
 	 (py-shell-send-string strg proc))
        ;; (switch-to-buffer buffer)
        ;; (accept-process-output proc 9)
@@ -1725,7 +1724,7 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 							    ))  ;; multiline
 	     (let* ((temp-file-name (py-temp-file-name strg))
 		    (file-name (or (buffer-file-name) temp-file-name)))
-	       (py-send-file file-name proc)))
+	       (py-execute-file file-name proc)))
 	    (t (with-current-buffer buffer
 		 (comint-send-string proc strg)
 		 (when (or (not (string-match "\n\\'" strg))
@@ -1738,19 +1737,19 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 		       (no-output
 			(and orig (py--cleanup-shell orig buffer))))))))))
 
-(defun py-send-file (file-name process)
-  "Send FILE-NAME to Python PROCESS."
-  (interactive "fFile to send: ")
-  (let* ((proc (or
-		   process (get-buffer-process (py-shell))))
-	 (file-name (expand-file-name file-name)))
-    (py-send-string
-     (format
-      (concat "__pyfile = open('''%s''');"
-	      "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
-	      "__pyfile.close()")
-      file-name file-name)
-     proc)))
+;; (defun py-send-file (file-name process)
+;;   "Send FILE-NAME to Python PROCESS."
+;;   (interactive "fFile to send: ")
+;;   (let* ((proc (or
+;; 		   process (get-buffer-process (py-shell))))
+;; 	 (file-name (expand-file-name file-name)))
+;;     (py-send-string
+;;      (format
+;;       (concat "__pyfile = open('''%s''');"
+;; 	      "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
+;; 	      "__pyfile.close()")
+;;       file-name file-name)
+;;      proc)))
 
 (defun py-which-def-or-class (&optional orig)
   "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.

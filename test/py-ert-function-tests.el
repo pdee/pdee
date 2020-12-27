@@ -436,9 +436,6 @@
 (ert-deftest py-ert-switch-to-python-functionp-test-ItywB0 ()
   (should (functionp 'py-switch-to-python)))
 
-(ert-deftest py-ert-send-file-functionp-test-wfhpGF ()
-  (should (functionp 'py-send-file)))
-
 (ert-deftest py-ert-toggle-force-py-shell-name-p-functionp-test-qaMHcn ()
   (should (functionp 'toggle-force-py-shell-name-p)))
 

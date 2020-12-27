@@ -96,6 +96,7 @@
 		      "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
 		      "unichr" "unicode" "vars" "xrange" "zip"))
 	   symbol-end) (1 py-builtins-face))
+	;; #104, GNU bug 44568 font lock of assignments with type hints
         ;; ("\\([._[:word:]]+\\)\\(?:\\[[^]]+]\\)?[[:space:]]*\\(?:\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
         ;;  (1 py-variable-name-face nil nil))
 	;; https://emacs.stackexchange.com/questions/55184/
@@ -112,7 +113,8 @@
           ;; Post-match form
           (goto-char (match-end 0))
           ;; face for this match
-          (0 font-lock-variable-name-face t)))
+          ;; (0 font-lock-variable-name-face t)))
+	  (0 py-variable-name-face t)))
 	;; assignment
         ;; a, b, c = (1, 2, 3)
         (,(lambda (limit)

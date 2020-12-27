@@ -365,7 +365,7 @@ Bar
       "    print(\"asdf\")"
     (goto-char (point-max))
     (push-mark)
-    (goto-char (point-min)) 
+    (goto-char (point-min))
     (py-indent-region (point-min) (point-max) t)
     (should (eq 0 (current-indentation)))))
 
@@ -527,6 +527,7 @@ import os"
     (goto-char (point-min))
     (search-forward "'''")
     (py-fill-string nil 'pep-257-nn)
+    (sit-for 0.1) 
     (search-forward "'''")
     (should (eq 4 (current-indentation)))))
 
@@ -779,6 +780,6 @@ def foo(rho, x):
     (insert " ")
     (py-fill-string-or-comment)
     (should (equal 39 (current-column)))))
-    
+
 (provide 'py-ert-fill-tests-1)
 ;;; py-ert-fill-tests-1.el ends here

@@ -1013,7 +1013,7 @@ May we get rid of the temporary file?"
   "Fix offline amount, make error point at the correct LINE."
   (insert (make-string (- line (py-count-lines (point-min) (point))) 10)))
 
-(defun py-execute-file (filename)
+(defun py-execute-file (filename &optional proc)
   "When called interactively, user is prompted for FILENAME."
   (interactive "fFilename: ")
   (let (;; postprocess-output-buffer might want origline
@@ -1023,7 +1023,7 @@ May we get rid of the temporary file?"
     (if (file-readable-p filename)
         (if py-store-result-p
             (setq erg (py--execute-file-base (expand-file-name filename) nil nil nil origline))
-          (py--execute-file-base (expand-file-name filename)))
+          (py--execute-file-base (expand-file-name filename) proc))
       (message "%s not readable. %s" filename "Do you have write permissions?"))
     (py--shell-manage-windows py-output-buffer py-exception-buffer nil
                               (or (called-interactively-p 'interactive)))
