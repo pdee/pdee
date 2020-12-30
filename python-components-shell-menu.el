@@ -679,8 +679,8 @@ Go to the initial line of a simple statement.
 For beginning of compound statement use py-beginning-of-block.
 For beginning of clause py-beginning-of-clause."]
 
-	   ["Beginning of top level" py-beginning-of-top-level
-	    :help " `py-beginning-of-top-level'
+	   ["Beginning of top level" py-backward-top-level
+	    :help " `py-backward-top-level'
 Go up to beginning of statments until level of indentation is null.
 
 Returns position if successful, nil otherwise"]
@@ -1567,7 +1567,7 @@ Use `M-x customize-variable' to set it permanently"
 	     :help "When non-nil, keys C-M-a, C-M-e address top-level form.
 
 Beginning- end-of-defun forms use
-commands `py-beginning-of-top-level', `py-end-of-top-level'
+commands `py-backward-top-level', `py-end-of-top-level'
 
 mark-defun marks top-level form at point etc. "
 	     :style toggle :selected py-defun-use-top-level-p]

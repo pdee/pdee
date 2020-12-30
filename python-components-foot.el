@@ -108,7 +108,6 @@
 (defalias 'py-beginning-of-section 'py-backward-section)
 (defalias 'py-beginning-of-statement 'py-backward-statement)
 (defalias 'py-beginning-of-statement-bol 'py-backward-statement-bol)
-(defalias 'py-beginning-of-top-level 'py-backward-top-level)
 (defalias 'py-end-of-block 'py-forward-block)
 (defalias 'py-end-of-block-or-clause 'py-forward-block-or-clause)
 (defalias 'py-end-of-class 'py-forward-class)
