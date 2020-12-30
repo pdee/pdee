@@ -517,13 +517,12 @@ import os"
     (should t)))
 
 (ert-deftest py-fill-docstring-pep-257-nn-test-ylBRzi ()
-  (py-test-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "def usage():
     ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
         pass"
-    (goto-char (point-max))
-    ;; (font-lock-fontify-region (point-min)(point-max))
+    (font-lock-fontify-region (point-min)(point-max))
     (goto-char (point-min))
     (search-forward "'''")
     (py-fill-string nil 'pep-257-nn)

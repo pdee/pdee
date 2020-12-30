@@ -1827,7 +1827,7 @@ Return position if statement found, nil otherwise.\"
 		  (py-backward-statement)
 		  (< orig (point))
 		  (point))))
-	  ((< orig (ignore-errors (and (py-forward-statement) (py-backward-statement))))
+	  ((ignore-errors (< orig (and (py-forward-statement) (py-backward-statement))))
 	   (setq erg (point)))
 	  (t (setq erg (ignore-errors (< orig (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))))
     (when (and py-verbose-p (called-interactively-p 'interactive)) (message \"%s\" erg))
@@ -1836,7 +1836,6 @@ Return position if statement found, nil otherwise.\"
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
-\(defalias 'py-" ele "-up 'py-up-" ele ")
 \(defun py-up-" ele " (&optional indent)
   \"Go to the beginning of next " ele " upwards in buffer according to INDENT.
 Optional INDENT
@@ -1853,7 +1852,6 @@ Return position if " ele " found, nil otherwise.\"
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
-\(defalias 'py-" ele "-down 'py-down-" ele ")
 \(defun py-down-" ele " (&optional indent)
   \"Go to the beginning of next " ele " below in buffer according to INDENT.
 

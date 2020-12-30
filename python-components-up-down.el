@@ -2,7 +2,7 @@
 
 
 ;; URL: https://gitlab.com/python-mode-devs
-;; Keywords: languages, convenience
+;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -52,13 +52,12 @@ Return position if statement found, nil otherwise."
 		  (py-backward-statement)
 		  (< orig (point))
 		  (point))))
-	  ((ignore-errors (< orig (ignore-errors (and (py-forward-statement) (py-backward-statement)))))
+	  ((ignore-errors (< orig (and (py-forward-statement) (py-backward-statement))))
 	   (setq erg (point)))
 	  (t (setq erg (ignore-errors (< orig (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))))
     (when (and py-verbose-p (called-interactively-p 'interactive)) (message "%s" erg))
     erg))
 
-(defalias 'py-block-up 'py-up-block)
 (defun py-up-block (&optional indent)
   "Go to the beginning of next block upwards in buffer according to INDENT.
 Optional INDENT
@@ -66,7 +65,6 @@ Return position if block found, nil otherwise."
   (interactive)
   (py-up-base 'py-block-re indent))
 
-(defalias 'py-class-up 'py-up-class)
 (defun py-up-class (&optional indent)
   "Go to the beginning of next class upwards in buffer according to INDENT.
 Optional INDENT
@@ -74,7 +72,6 @@ Return position if class found, nil otherwise."
   (interactive)
   (py-up-base 'py-class-re indent))
 
-(defalias 'py-clause-up 'py-up-clause)
 (defun py-up-clause (&optional indent)
   "Go to the beginning of next clause upwards in buffer according to INDENT.
 Optional INDENT
@@ -82,7 +79,6 @@ Return position if clause found, nil otherwise."
   (interactive)
   (py-up-base 'py-clause-re indent))
 
-(defalias 'py-block-or-clause-up 'py-up-block-or-clause)
 (defun py-up-block-or-clause (&optional indent)
   "Go to the beginning of next block-or-clause upwards in buffer according to INDENT.
 Optional INDENT
@@ -90,7 +86,6 @@ Return position if block-or-clause found, nil otherwise."
   (interactive)
   (py-up-base 'py-block-or-clause-re indent))
 
-(defalias 'py-def-up 'py-up-def)
 (defun py-up-def (&optional indent)
   "Go to the beginning of next def upwards in buffer according to INDENT.
 Optional INDENT
@@ -98,7 +93,6 @@ Return position if def found, nil otherwise."
   (interactive)
   (py-up-base 'py-def-re indent))
 
-(defalias 'py-def-or-class-up 'py-up-def-or-class)
 (defun py-up-def-or-class (&optional indent)
   "Go to the beginning of next def-or-class upwards in buffer according to INDENT.
 Optional INDENT
@@ -106,7 +100,6 @@ Return position if def-or-class found, nil otherwise."
   (interactive)
   (py-up-base 'py-def-or-class-re indent))
 
-(defalias 'py-minor-block-up 'py-up-minor-block)
 (defun py-up-minor-block (&optional indent)
   "Go to the beginning of next minor-block upwards in buffer according to INDENT.
 Optional INDENT
@@ -114,7 +107,6 @@ Return position if minor-block found, nil otherwise."
   (interactive)
   (py-up-base 'py-minor-block-re indent))
 
-(defalias 'py-block-down 'py-down-block)
 (defun py-down-block (&optional indent)
   "Go to the beginning of next block below in buffer according to INDENT.
 
@@ -123,7 +115,6 @@ Return position if block found, nil otherwise."
   (interactive)
   (py-down-base 'py-block-re  indent))
 
-(defalias 'py-class-down 'py-down-class)
 (defun py-down-class (&optional indent)
   "Go to the beginning of next class below in buffer according to INDENT.
 
@@ -132,7 +123,6 @@ Return position if class found, nil otherwise."
   (interactive)
   (py-down-base 'py-class-re  indent))
 
-(defalias 'py-clause-down 'py-down-clause)
 (defun py-down-clause (&optional indent)
   "Go to the beginning of next clause below in buffer according to INDENT.
 
@@ -141,7 +131,6 @@ Return position if clause found, nil otherwise."
   (interactive)
   (py-down-base 'py-clause-re  indent))
 
-(defalias 'py-block-or-clause-down 'py-down-block-or-clause)
 (defun py-down-block-or-clause (&optional indent)
   "Go to the beginning of next block-or-clause below in buffer according to INDENT.
 
@@ -150,7 +139,6 @@ Return position if block-or-clause found, nil otherwise."
   (interactive)
   (py-down-base 'py-block-or-clause-re  indent))
 
-(defalias 'py-def-down 'py-down-def)
 (defun py-down-def (&optional indent)
   "Go to the beginning of next def below in buffer according to INDENT.
 
@@ -159,7 +147,6 @@ Return position if def found, nil otherwise."
   (interactive)
   (py-down-base 'py-def-re  indent))
 
-(defalias 'py-def-or-class-down 'py-down-def-or-class)
 (defun py-down-def-or-class (&optional indent)
   "Go to the beginning of next def-or-class below in buffer according to INDENT.
 
@@ -168,7 +155,6 @@ Return position if def-or-class found, nil otherwise."
   (interactive)
   (py-down-base 'py-def-or-class-re  indent))
 
-(defalias 'py-minor-block-down 'py-down-minor-block)
 (defun py-down-minor-block (&optional indent)
   "Go to the beginning of next minor-block below in buffer according to INDENT.
 
