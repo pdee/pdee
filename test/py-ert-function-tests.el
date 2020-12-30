@@ -1579,7 +1579,7 @@
 (ert-deftest py-ert-set-command-args-functionp-test-oDb33I ()
   (should (functionp 'py-set-command-args)))
 
-(ert-deftest py-ert---emacs-version-greater-23-functionp-test-AnhhAw ()
+(ert-deftest py-ert-emacs-version-greater-23-functionp-test-AnhhAw ()
   (should (functionp 'py---emacs-version-greater-23)))
 
 (ert-deftest py-ert-symbol-at-point-functionp-test-8YC24j ()

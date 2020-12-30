@@ -22,7 +22,7 @@
 
 ;; borrowed from bug#44568: [PATCH] Fix font lock of assignments with
 ;; type hints in Python
-(ert-deftest py-assignments-with-type-hints-test-QLpglI ()
+(ert-deftest py-assignments-with-type-hints-test-bug44568-QLpglI ()
   (py-test-with-temp-buffer
       "var1: int = 5
 var2: Mapping[int, int] = {10: 1024}
@@ -48,6 +48,40 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
     (search-backward "var")
     (should (face-equal (face-at-point) 'py-variable-name-face))
     ))
+
+;; (ert-deftest py-assignments-with-type-hints-test-bug45341-QLpglI ()
+;;   (py-test-with-temp-buffer
+;;       "[a, b, c] = 1, 2, 3
+;; a, *b, c = range(10)
+;; inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
+;; (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+;; "
+;;     (font-lock-fontify-buffer)
+;;     (goto-char (point-max))
+;;     (search-backward "y")
+;;     (should (eq (face-at-point) 'py-variable-name-face))
+;;     (search-backward "x")
+;;     (should (eq (face-at-point) 'py-variable-name-face))
+;;     (search-backward "a")
+;;     (should (face-equal (face-at-point) 'py-variable-name-face))
+;;     (search-backward "foo" nil nil 2)
+;;     (should (eq (face-at-point) nil))
+;;     (search-backward "c")
+;;     (should (face-equal (face-at-point) 'py-variable-name-face))
+;;     (search-backward "inst")
+;;     (should (face-equal (face-at-point) 'py-variable-name-face))
+;;     (search-backward "inst")
+;;     (should (face-equal (face-at-point) 'py-variable-name-face))
+;;     (search-backward "inst")
+;;     (should (face-equal (face-at-point) 'py-variable-name-face))
+;;     (search-backward "range")
+;;     (should (eq (face-at-point) nil))
+;;     (search-backward "b")
+;;     (should (face-equal (face-at-point) 'py-variable-name-face))
+;;     (search-backward "b")
+;;     (should (face-equal (face-at-point) 'py-variable-name-face))
+;;     ))
+
 
 (ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
   (py-test-with-temp-buffer
