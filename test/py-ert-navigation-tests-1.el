@@ -3376,7 +3376,7 @@ from __future__ import foo
     (goto-char (point-min))
     (py-end-of-def-or-class)
     (should-not (nth 3 (parse-partial-sexp (point-min) (point))))
-    (should (eq (char-before) ?o))))
+    (should (eobp))))
 
 (ert-deftest py-backward-indent-tWBEjf ()
   (py-test-with-temp-buffer
@@ -3446,6 +3446,52 @@ except:
     (goto-char (point-max))
     (py-backward-assignment-bol)
     (should (bolp))))
+
+(ert-deftest py-forward-def-or-class-test-3JzvVW ()
+  (py-test-with-temp-buffer-point-min
+      "class kugel(object):
+    pass
+
+    def pylauf(self):
+        return treffer
+#        print(\"len(spiel): %s \" % len(spiel))
+
+zeit = kugel\.zeit
+ausgabe = kugel\.ausgabe
+spiel = kugel\.spiel
+
+# with file(\"roulette-\" + zeit + \"\.csv\", 'w') as datei:
+#     for i in range(anzahl):
+#         klauf\.pylauf()
+#         datei\.write(str(spiel\[i]) + \" \")
+
+#     datei\.write(\"treffer\; schwarz\; gruen\; rot\; pair\; impair\; passe\; manque\; spiel\")
+#     pri
+
+''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+'''
+
+asd = 'asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf'
+
+afd = \"asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf\"
+
+a, b, c = (1, 2, 3)
+a = b = c = 5
+foo: int = 1
+
+weight = 23
+print(\"\\nFinal Weight: {}\"\.format(weight))
+
+print(\"%(language)s has %(number)03d quote types\.\" %
+       {'language': \"Python\", \"number\": 2})
+
+def example3():
+    list(map(lambda tpl: print(f\"{tpl\[0]} {tpl\[1]}\"), enumerate(\[\"yellow\",\"blue\",\"red\"])))"
+    (goto-char (point-min))
+    (search-forward "return treffer")
+    (py-forward-def-or-class)
+    (should (looking-back "red\"])))" (line-beginning-position)))
+    ))
 
 (provide 'py-ert-navigation-tests-1)
 ;;; py-ert-navigation-tests-1.el ends here

@@ -119,10 +119,10 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
-       (goto-char (point-min))
        (when py--debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
+       (goto-char (point-min))
        ,@body)))
 
 ;; from jit-lock.el

@@ -19,7 +19,7 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
 
@@ -376,6 +376,7 @@ except:
         klauf.pylauf()
         "
     (goto-char(point-max))
+    (skip-chars-backward " \t\r\n\f")
     (py-narrow-to-block)
     (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
