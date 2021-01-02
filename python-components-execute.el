@@ -867,6 +867,37 @@ Optional FAST RETURN"
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch))))
 
+(defun py--python-send-setup-code-intern (name buffer)
+  "Send setup code to BUFFER according to NAME, a string."
+  (save-excursion
+    (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))
+	  py-return-result-p py-store-result-p)
+      (unless (file-readable-p setup-file)
+	(with-temp-buffer
+	  (insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
+	  (write-file setup-file)))
+      (py--execute-file-base setup-file (get-buffer-process buffer) nil buffer nil t)
+      ;; (when py-verbose-p (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buffer)))))
+      )))
+
+(defun py--python-send-completion-setup-code (buffer)
+  "For Python see py--python-send-setup-code.
+Argument BUFFER the buffer completion code is sent to."
+  (py--python-send-setup-code-intern "shell-completion" buffer))
+
+
+(defun py--ipython-import-module-completion ()
+  "Setup IPython v0.11 or greater.
+
+Used by `py-ipython-module-completion-string'"
+  (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-ipython-module-completion.py")))
+    (unless (file-readable-p setup-file)
+      (with-temp-buffer
+	(insert py-ipython-module-completion-code)
+	(write-file setup-file)))
+    (py--execute-file-base setup-file nil nil (current-buffer) nil t)))
+
+
 ;; (defmacro py--execute-prepare (form shell dedicated switch beg end file fast proc wholebuf split)
 ;;   "Used by python-components-extended-executes ."
 ;;   (declare  (debug t))

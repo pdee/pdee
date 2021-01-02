@@ -32,7 +32,7 @@ Default is t")
 (defvar py-menu nil
   "Make a dynamically bound variable ‘py-menu’.")
 
-(defvar python-mode-map nil)
+
 (setq python-mode-map
       (let ((map (make-sparse-keymap)))
         ;; electric keys

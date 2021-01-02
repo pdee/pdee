@@ -745,9 +745,6 @@
 (ert-deftest py-ert-temp-directory-test-bEfOTH ()
   (should (boundp 'py-temp-directory)))
 
-(ert-deftest py-ert-this-abbrevs-changed-test-ZuRf2I ()
-  (should (boundp 'py-this-abbrevs-changed)))
-
 (ert-deftest py-ert-traceback-line-re-test-zCXm7J ()
   (should (boundp 'py-traceback-line-re)))
 

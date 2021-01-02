@@ -3490,7 +3490,7 @@ def example3():
     (goto-char (point-min))
     (search-forward "return treffer")
     (py-forward-def-or-class)
-    (should (looking-back "red\"])))" (line-beginning-position)))
+    (should (looking-back "red\"\]\)\)\)" (line-beginning-position)))
     ))
 
 (provide 'py-ert-navigation-tests-1)

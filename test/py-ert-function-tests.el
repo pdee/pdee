@@ -277,9 +277,6 @@
 (ert-deftest py-ert-forward-line-functionp-test-4Idhro ()
   (should (functionp 'py-forward-line)))
 
-(ert-deftest py-ert-go-to-backward-comment-functionp-test-mAH87Z ()
-  (should (functionp 'py-go-to-beginning-of-comment)))
-
 (ert-deftest py-ert--go-to-keyword-functionp-test-iE10QB ()
   (should (functionp 'py--go-to-keyword)))
 
@@ -522,9 +519,6 @@
 
 (ert-deftest py-ert--configured-shell-functionp-test-Wyo7B2 ()
   (should (functionp 'py--configured-shell)))
-
-(ert-deftest py-ert--start-fast-process-functionp-test-KczuMG ()
-  (should (functionp 'py--start-fast-process)))
 
 (ert-deftest py-ert-shell-functionp-test-OQlBTk ()
   (should (functionp 'py-shell)))
@@ -1546,26 +1540,17 @@
 (ert-deftest py-ert-version-functionp-test-GSzT9S ()
   (should (functionp 'py-version)))
 
-(ert-deftest py-ert-history-input-filter-functionp-test-8kMpaI ()
-  (should (functionp 'py-history-input-filter)))
-
 (ert-deftest py-ert-load-file-functionp-test-6jBlYv ()
   (should (functionp 'py-load-file)))
 
 (ert-deftest py-ert-proc-functionp-test-y8qUIj ()
   (should (functionp 'py-proc)))
 
-(ert-deftest py-ert--shell-simple-send-functionp-test-k3Gtu7 ()
-  (should (functionp 'py--shell-simple-send)))
-
 (ert-deftest py-ert-guess-pdb-path-functionp-test-WQvRcV ()
   (should (functionp 'py-guess-pdb-path)))
 
 (ert-deftest py-ert-toggle-local-default-use-functionp-test-imh2VI ()
   (should (functionp 'py-toggle-local-default-use)))
-
-(ert-deftest py-ert--input-filter-functionp-test-Cyn0Cw ()
-  (should (functionp 'py--input-filter)))
 
 (ert-deftest py-ert--set-auto-fill-values-functionp-test-EnQdgk ()
   (should (functionp 'py--set-auto-fill-values)))
@@ -1897,9 +1882,6 @@
 ;; (ert-deftest py-ert-machine-separator-char-functionp-test-SYYdgm ()
 ;;   (should (functionp 'py-machine-separator-char)))
 
-(ert-deftest py-ert-pps-emacs-version-functionp-test-euApSc ()
-  (should (functionp 'pps-emacs-version)))
-
 (ert-deftest py-ert-in-string-or-comment-p-functionp-test-SyBtr3 ()
   (should (functionp 'py-in-string-or-comment-p)))
 
@@ -1929,9 +1911,6 @@
 
 (ert-deftest py-ert-forward-comment-functionp-test-E1mKtF ()
   (should (functionp 'py-forward-comment)))
-
-(ert-deftest py-ert-beginning-of-comment-functionp-test-cPkEKv ()
-  (should (functionp 'py-beginning-of-comment)))
 
 (ert-deftest py-ert--uncomment-intern-functionp-test-W6YXYl ()
   (should (functionp 'py--uncomment-intern)))

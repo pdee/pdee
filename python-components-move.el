@@ -1,6 +1,5 @@
 ;;; python-components-move.el --- Functions moving point which need special treatment -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages
@@ -316,230 +315,6 @@ If already at ‘end-of-line’ and not at EOB, go to end of next line."
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
-;;  Statement
-(defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat maxindent)
-  "Go to the initial line of a simple statement.
-
-For beginning of compound statement use ‘py-backward-block’.
-For beginning of clause ‘py-backward-clause’.
-
-`ignore-in-string-p' allows moves inside a docstring, used when
-computing indents
-ORIG - consider orignial position or point.
-DONE - transaktional argument
-LIMIT - honor limit
-IGNORE-IN-STRING-P - also much inside a string
-REPEAT - count and consider repeats
-Optional MAXINDENT: don't stop if indentation is larger"
-  (interactive)
-  (save-restriction
-    (unless (bobp)
-      (let* ((repeat (or (and repeat (1+ repeat)) 0))
-	     (orig (or orig (point)))
-             (pps (parse-partial-sexp (or limit (point-min))(point)))
-             (done done)
-             erg)
-	;; lp:1382788
-	(unless done
-	  (and (< 0 (abs (skip-chars-backward " \t\r\n\f")))
- 	       (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
-        (cond
-	 ((< py-max-specpdl-size repeat)
-	  (error "Py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
-         ((and (bolp) (eolp))
-          (skip-chars-backward " \t\r\n\f")
-          (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ;; inside string
-         ((and (nth 3 pps) (not ignore-in-string-p))
-	  (setq done t)
-	  (goto-char (nth 8 pps))
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ((nth 4 pps)
-	  (while (ignore-errors (goto-char (nth 8 pps)))
-	    (skip-chars-backward " \t\r\n\f")
-	    (setq pps (parse-partial-sexp (line-beginning-position) (point))))
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-         ((nth 1 pps)
-          (goto-char (1- (nth 1 pps)))
-	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation) (point)))
-	    (setq done t))
-          (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-         ((py-preceding-line-backslashed-p)
-          (forward-line -1)
-          (back-to-indentation)
-          (setq done t)
-          (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ;; at raw-string
-	 ;; (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
-	 ((and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
-	  (forward-char -1)
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ;; BOL or at space before comment
-         ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
-          (forward-comment -1)
-          (while (and (not (bobp)) (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
-            (forward-comment -1))
-          (unless (bobp)
-            (py-backward-statement orig done limit ignore-in-string-p repeat maxindent)))
-	 ;; at inline comment
-         ((looking-at "[ \t]*#")
-	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation) (point)))
-	    (setq done t))
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ;; at beginning of string
-	 ((looking-at py-string-delim-re)
-	  (when (< 0 (abs (skip-chars-backward " \t\r\n\f")))
-	    (setq done t))
-	  (back-to-indentation)
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ;; after end of statement
-	 ((and (not done) (eq (char-before) ?\;))
-	  (skip-chars-backward ";")
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ;; travel until indentation or semicolon
-	 ((and (not done) (py--skip-to-semicolon-backward))
-	  (unless (and maxindent (< maxindent (current-indentation)))
-	    (setq done t))
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ;; at current indent
-	 ((and (not done) (not (eq 0 (skip-chars-backward " \t\r\n\f"))))
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ((and maxindent (< maxindent (current-indentation)))
-	  (forward-line -1)
-	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent)))
-	;; return nil when before comment
-	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
-	  (when (< (point) orig)(setq erg (point))))
-	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-	erg))))
-
-(defun py-backward-statement-bol ()
-  "Goto beginning of line where statement start.
-Returns position reached, if successful, nil otherwise.
-
-See also `py-up-statement': up from current definition to next beginning of statement above."
-  (interactive)
-  (let* ((orig (point))
-         erg)
-    (unless (bobp)
-      (cond ((bolp)
-	     (and (py-backward-statement orig)
-		  (progn (beginning-of-line)
-			 (setq erg (point)))))
-	    (t (setq erg
-		     (and
-		      (py-backward-statement)
-		      (progn (beginning-of-line) (point)))))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
-
-(defun py-forward-statement (&optional orig done repeat)
-  "Go to the last char of current statement.
-
-ORIG - consider orignial position or point.
-DONE - transaktional argument
-REPEAT - count and consider repeats"
-  (interactive)
-  (unless (eobp)
-    (let ((repeat (or (and repeat (1+ repeat)) 0))
-	  (orig (or orig (point)))
-	  erg last
-	  ;; use by scan-lists
-	  forward-sexp-function pps err)
-      (setq pps (parse-partial-sexp (point-min) (point)))
-      ;; (origline (or origline (py-count-lines)))
-      (cond
-       ;; which-function-mode, lp:1235375
-       ((< py-max-specpdl-size repeat)
-	(error "py-forward-statement reached loops max. If no error, customize `py-max-specpdl-size'"))
-       ;; list
-       ((nth 1 pps)
-	(if (<= orig (point))
-	    (progn
-	      (setq orig (point))
-	      ;; do not go back at a possible unclosed list
-	      (goto-char (nth 1 pps))
-	      (if
-		  (ignore-errors (forward-list))
-		  (progn
-		    (when (looking-at ":[ \t]*$")
-		      (forward-char 1))
-		    (setq done t)
-		    (skip-chars-forward "^#" (line-end-position))
-		    (skip-chars-backward " \t\r\n\f" (line-beginning-position))
-		    (py-forward-statement orig done repeat))
-		(setq err (py--record-list-error pps))
-		(goto-char orig)))))
-       ;; in comment
-       ((and comment-start (looking-at (concat " *" comment-start)))
-	(goto-char (match-end 0))
-	(py-forward-statement orig done repeat))
-       ((nth 4 pps)
-	(py--end-of-comment-intern (point))
-	(py--skip-to-comment-or-semicolon done)
-	(while (and (eq (char-before (point)) ?\\)
-		    (py-escaped) (setq last (point)))
-	  (forward-line 1) (end-of-line))
-	(and last (goto-char last)
-	     (forward-line 1)
-	     (back-to-indentation))
-	(py-forward-statement orig done repeat))
-       ;; string
-       ((looking-at py-string-delim-re)
-	(goto-char (match-end 0))
-	(py-forward-statement orig done repeat))
-       ((nth 3 pps)
-	(when (py-end-of-string)
-	  (end-of-line)
-	  (skip-chars-forward " \t\r\n\f")
-	  (setq pps (parse-partial-sexp (point-min) (point)))
-	  (unless (and done (not (or (nth 1 pps) (nth 8 pps))) (eolp)) (py-forward-statement orig done repeat))))
-       ((py-current-line-backslashed-p)
-	(end-of-line)
-	(skip-chars-backward " \t\r\n\f" (line-beginning-position))
-	(while (and (eq (char-before (point)) ?\\)
-		    (py-escaped))
-	  (forward-line 1)
-	  (end-of-line)
-	  (skip-chars-backward " \t\r\n\f" (line-beginning-position)))
-	(unless (eobp)
-	  (py-forward-statement orig done repeat)))
-       ((eq orig (point))
-	(if (eolp)
-	    (skip-chars-forward " \t\r\n\f#'\"")
-	  (end-of-line)
-	  (skip-chars-backward " \t\r\n\f" orig))
-	;; point at orig due to a trailing whitespace
-	(and (eq (point) orig) (skip-chars-forward " \t\r\n\f"))
-	(setq done t)
-	(py-forward-statement orig done repeat))
-       ((eq (current-indentation) (current-column))
-	(py--skip-to-comment-or-semicolon done)
-	(setq pps (parse-partial-sexp orig (point)))
-	(if (nth 1 pps)
-	    (py-forward-statement orig done repeat)
-	  (unless done
-	    (py-forward-statement orig done repeat))))
-       ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon done))
-	(py-forward-statement orig done repeat)))
-      (unless
-	  (or
-	   (eq (point) orig)
-	   (member (char-before) (list 10 32 9 ?#)))
-	(setq erg (point)))
-      (if (and py-verbose-p err)
-	  (py--message-error err)
-	(and py-verbose-p (called-interactively-p 'any) (message "%s" erg)))
-      erg)))
-
-(defun py-forward-statement-bol ()
-  "Go to the ‘beginning-of-line’ following current statement."
-  (interactive)
-  (let ((erg (py-forward-statement)))
-    (setq erg (py--beginning-of-line-form))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
-
 ;;  Decorator
 (defun py-backward-decorator ()
   "Go to the beginning of a decorator.
@@ -578,47 +353,12 @@ Returns position if succesful"
         (goto-char orig)
         (end-of-line)
         (skip-chars-backward " \t\r\n\f")
-        (when (ignore-errors (goto-char (py-in-list-p)))
+        (when (ignore-errors (goto-char (py-list-beginning-position)))
           (forward-list))
         (when (< orig (point))
           (setq erg (point))))
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
-
-(defun py-backward-comment (&optional pos)
-  "Got to beginning of a commented section.
-
-Start from POS if specified"
-  (interactive)
-  (let ((erg pos)
-	last)
-    (when erg (goto-char erg))
-    (while (and (not (bobp)) (setq erg (py-in-comment-p)))
-      (when (< erg (point))
-	(goto-char erg)
-	(setq last (point)))
-      (skip-chars-backward " \t\r\n\f"))
-    (when last (goto-char last))
-    last))
-
-(defun py-go-to-beginning-of-comment ()
-  "Go to the beginning of current line's comment, if any.
-
-From a programm use macro `py-backward-comment' instead"
-  (interactive)
-  (let ((erg (py-backward-comment)))
-    (when (and py-verbose-p (called-interactively-p 'any))
-      (message "%s" erg))))
-
-(defun py--up-decorators-maybe (indent)
-  (let ((last (point)))
-    (while (and (not (bobp))
-		(py-backward-statement)
-		(eq (current-indentation) indent)
-		(if (looking-at py-decorator-re)
-		    (progn (setq last (point)) nil)
-		  t)))
-    (goto-char last)))
 
 (defun py--go-to-keyword (regexp &optional maxindent condition ignoreindent)
   "Expects being called from beginning of a statement.
@@ -659,42 +399,6 @@ Optional IGNOREINDENT: find next keyword at any indentation"
        (t (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue))))
       (when erg (setq erg (cons (current-indentation) erg)))
       (list (car erg) (cdr erg) (py--end-base-determine-secondvalue regexp)))))
-
-(defun py-leave-comment-or-string-backward ()
-  "If inside a comment or string, leave it backward."
-  (interactive)
-  (let ((pps
-         (if (featurep 'xemacs)
-             (parse-partial-sexp (point-min) (point))
-           (parse-partial-sexp (point-min) (point)))))
-    (when (nth 8 pps)
-      (goto-char (1- (nth 8 pps))))))
-
-(defun py-beginning-of-list-pps (&optional iact last ppstart orig done)
-  "Go to the beginning of a list.
-
-IACT - if called interactively
-LAST - was last match.
-Optional PPSTART indicates a start-position for `parse-partial-sexp'.
-ORIG - consider orignial position or point.
-DONE - transaktional argument
-Return beginning position, nil if not inside."
-  (interactive "p")
-  (let* ((orig (or orig (point)))
-         (ppstart (or ppstart (re-search-backward "^[a-zA-Z]" nil t 1) (point-min)))
-         erg)
-    (unless done (goto-char orig))
-    (setq done t)
-    (if
-        (setq erg (nth 1 (if (featurep 'xemacs)
-                             (parse-partial-sexp ppstart (point))
-                           (parse-partial-sexp (point-min) (point)))))
-        (progn
-          (setq last erg)
-          (goto-char erg)
-          (py-beginning-of-list-pps iact last ppstart orig done))
-      (when iact (message "%s" last))
-      last)))
 
 (defun py-forward-into-nomenclature (&optional arg iact)
   "Move forward to end of a nomenclature symbol.

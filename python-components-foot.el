@@ -96,7 +96,6 @@
 (defalias 'py-beginning-of-class-bol 'py-backward-class-bol)
 (defalias 'py-beginning-of-clause 'py-backward-clause)
 (defalias 'py-beginning-of-clause-bol 'py-backward-clause-bol)
-(defalias 'py-beginning-of-comment 'py-backward-comment)
 (defalias 'py-beginning-of-declarations 'py-backward-declarations)
 (defalias 'py-beginning-of-decorator 'py-backward-decorator)
 (defalias 'py-beginning-of-decorator-bol 'py-backward-decorator)
@@ -365,6 +364,58 @@ may want to re-add custom functions to it using the
       (progn
 	(py-shell-font-lock-turn-on))
     (py-shell-font-lock-turn-off)))
+
+(make-obsolete 'jpython-mode 'jython-mode nil)
+
+;; (push "*Python*"  same-window-buffer-names)
+;; (push "*IPython*"  same-window-buffer-names)
+
+;; Python Macro File
+(unless (member '("\\.py\\'" . python-mode) auto-mode-alist)
+  (push (cons "\\.py\\'"  'python-mode)  auto-mode-alist))
+
+(unless (member '("\\.pym\\'" . python-mode) auto-mode-alist)
+  (push (cons "\\.pym\\'"  'python-mode)  auto-mode-alist))
+
+(unless (member '("\\.pyc\\'" . python-mode)  auto-mode-alist)
+  (push (cons "\\.pyc\\'"  'python-mode)  auto-mode-alist))
+
+;; Pyrex Source
+(unless (member '("\\.pyx\\'" . python-mode)  auto-mode-alist)
+  (push (cons "\\.pyx\\'"  'python-mode) auto-mode-alist))
+
+;; Python Optimized Code
+(unless (member '("\\.pyo\\'" . python-mode)  auto-mode-alist)
+  (push (cons "\\.pyo\\'"  'python-mode) auto-mode-alist))
+
+;; Pyrex Definition File
+(unless (member '("\\.pxd\\'" . python-mode)  auto-mode-alist)
+  (push (cons "\\.pxd\\'"  'python-mode) auto-mode-alist))
+
+;; Python Repository
+(unless (member '("\\.pyr\\'" . python-mode)  auto-mode-alist)
+  (push (cons "\\.pyr\\'"  'python-mode)  auto-mode-alist))
+
+;; Python Stub file
+;; https://www.python.org/dev/peps/pep-0484/#stub-files
+(unless (member '("\\.pyi\\'" . python-mode)  auto-mode-alist)
+  (push (cons "\\.pyi\\'"  'python-mode)  auto-mode-alist))
+
+;; Python Path Configuration
+(unless (member '("\\.pth\\'" . python-mode)  auto-mode-alist)
+  (push (cons "\\.pth\\'"  'python-mode)  auto-mode-alist))
+
+;; Python Wheels
+(unless (member '("\\.whl\\'" . python-mode)  auto-mode-alist)
+  (push (cons "\\.whl\\'"  'python-mode)  auto-mode-alist))
+
+(unless (member '("!#[          ]*/.*[jp]ython[0-9.]*" . python-mode) magic-mode-alist)
+  (push '("!#[ \\t]*/.*[jp]ython[0-9.]*" . python-mode) magic-mode-alist))
+
+;;  lp:1355458, what about using `magic-mode-alist'?
+
+(defalias 'py-hungry-delete-forward 'c-hungry-delete-forward)
+(defalias 'py-hungry-delete-backwards 'c-hungry-delete-backwards)
 
 ;;;
 (provide 'python-components-foot)

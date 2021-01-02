@@ -1,6 +1,5 @@
 ;;; python-components-edit.el --- Some more Python edit utilities  -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages, processes
@@ -463,63 +462,6 @@ Unless DIRECTION is symbol 'forward, go backward first"
       (max comment-column (+ (current-column) (if (bolp) 0 1))))))
 
 ;; ;
-(defun py-indent-and-forward (&optional indent)
-  "Indent current line according to mode, move one line forward.
-
-If optional INDENT is given, use it"
-  (interactive "*")
-  (beginning-of-line)
-  (when (member (char-after) (list 32 9 10 12 13)) (delete-region (point) (progn (skip-chars-forward " \t\r\n\f")(point))))
-  (indent-to (or indent (py-compute-indentation)))
-  (if (eobp)
-      (newline-and-indent)
-    (forward-line 1))
-  (back-to-indentation))
-
-(defun py--indent-line-by-line (beg end)
-  "Indent every line until end to max reasonable extend.
-
-Starts from second line of region specified
-BEG END deliver the boundaries of region to work within"
-  (goto-char beg)
-  (py-indent-and-forward)
-  ;; (forward-line 1)
-  (while (< (line-end-position) end)
-    (if (py-empty-line-p)
-	(forward-line 1)
-      (py-indent-and-forward)))
-  (unless (py-empty-line-p) (py-indent-and-forward)))
-
-(defun py-indent-region (&optional beg end no-check)
-  "Reindent a region delimited by BEG END.
-
-In case first line accepts an indent, keep the remaining
-lines relative.
-Otherwise lines in region get outmost indent,
-same with optional argument
-
-In order to shift a chunk of code, where the first line is okay, start with second line.
-
-Optional BEG: used by tests
-Optional END: used by tests
-Optional NO-CHECK: used by tests
-"
-  (interactive "*")
-  (or no-check (use-region-p) (error "Don't see an active region"))
-  (let ((end (copy-marker (or end (region-end)))))
-    (goto-char (or beg (region-beginning)))
-    (beginning-of-line)
-    (setq beg (point))
-    (skip-chars-forward " \t\r\n\f")
-    (py--indent-line-by-line beg end)))
-
-(defun py--beginning-of-buffer-position ()
-  "Provided for abstract reasons."
-  (point-min))
-
-(defun py--end-of-buffer-position ()
-  "Provided for abstract reasons."
-  (point-max))
 
 ;;  Declarations start
 (defun py--bounds-of-declarations ()

@@ -122,11 +122,7 @@ Used with ‘eval-after-load’."
 ;;  (eval-after-load "info-look" '(python-after-info-look))
 
 ;; ;
-(defun py--warn-tmp-files-left ()
-  "Detect and warn about file of form \"py11046IoE\" in py-temp-directory."
-  (let ((erg1 (file-readable-p (concat py-temp-directory py-separator-char (car (directory-files  py-temp-directory nil "py[[:alnum:]]+$"))))))
-    (when erg1
-      (message "py--warn-tmp-files-left: %s ?" (concat py-temp-directory py-separator-char (car (directory-files  py-temp-directory nil "py[[:alnum:]]*$")))))))
+
 
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.
@@ -973,26 +969,6 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
 
 ;;  from string-strip.el --- Strip CHARS from STRING
 
-(defvar py-chars-before " \t\n\r\f"
-  "Used by ‘py--string-strip’.")
-
-(defvar py-chars-after " \t\n\r\f"
-    "Used by ‘py--string-strip’.")
-
-;;  (setq strip-chars-before  "[ \t\r\n]*")
-(defun py--string-strip (str &optional chars-before chars-after)
-  "Return a copy of STR, CHARS removed.
-‘CHARS-BEFORE’ and ‘CHARS-AFTER’ default is \"[ \t\r\n]*\",
-i.e. spaces, tabs, carriage returns, newlines and newpages."
-  (let ((s-c-b (or chars-before
-                   py-chars-before))
-        (s-c-a (or chars-after
-                   py-chars-after))
-        (erg str))
-    (setq erg (replace-regexp-in-string  s-c-b "" erg))
-    (setq erg (replace-regexp-in-string  s-c-a "" erg))
-    erg))
-
 (defun py-nesting-level (&optional pps)
   "Accepts the output of ‘parse-partial-sexp’ - PPS."
   (interactive)
@@ -1013,30 +989,33 @@ Takes NAME COMMAND"
     (unless (executable-find name)
       (when py-verbose-p (message "Don't see %s. Use ‘easy_install’ %s? " name name))))
   (if (py--buffer-filename-remote-maybe)
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
+      (let* ((temp-file (if (functionp 'flymake-proc-init-create-temp-buffer-copy)
+			    (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
+			  (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
+			  ))
              (local-file (file-relative-name
                           temp-file
                           (file-name-directory (py--buffer-filename-remote-maybe)))))
-        (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-allowed-file-name-masks)
+	(if (boundp 'flymake-proc-allowed-file-name-masks)
+            (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-proc-allowed-file-name-masks)
+	  (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-allowed-file-name-masks))
         (list command (list local-file)))
     (message "%s" "flymake needs a ‘file-name’. Please save before calling.")))
 
-(defun py-flycheck-mode (&optional arg)
-  "Toggle ‘flycheck-mode’.
+(eval-after-load  "flycheck-mode.el"
+  (defun py-flycheck-mode (&optional arg)
+    "Toggle ‘flycheck-mode’.
 
 With negative ARG switch off ‘flycheck-mode’
 See menu \"Tools/Syntax Checking\""
-  (interactive "p")
-  (setq arg (or arg (if flycheck-mode 0 1)))
-  (if (featurep 'flycheck)
-      (if (< arg 0)
-	  ;; switch off
-	  (flycheck-mode 0)
-	(when (and py-verbose-p (called-interactively-p 'any)) (message "flycheck-mode: %s" flycheck-mode))
-	(flycheck-mode 1)
-	(when (and py-verbose-p (called-interactively-p 'any)) (message "flycheck-mode: %s" flycheck-mode)))
-    (error "Can't find flycheck - see README.org")))
+    (interactive "p")
+    (setq arg (or arg (if flycheck-mode 0 1)))
+    (if (< arg 0)
+	;; switch off
+	(flycheck-mode 0)
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "flycheck-mode: %s" flycheck-mode))
+      (flycheck-mode 1)
+      (when (and py-verbose-p (called-interactively-p 'any)) (message "flycheck-mode: %s" flycheck-mode)))))
 
 (defun pylint-flymake-mode ()
   "Toggle ‘pylint’ ‘flymake-mode’."
