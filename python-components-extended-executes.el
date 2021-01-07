@@ -24,6 +24,28 @@
 
 ;;; Code:
 
+(defun py--execute-prepare (form shell &optional dedicated switch beg end filename fast proc wholebuf split)
+  "Update some vars."
+  (save-excursion
+    (let* ((form (prin1-to-string form))
+           (origline (py-count-lines))
+	   (fast
+	    (or fast py-fast-process-p))
+	   (py-exception-buffer (current-buffer))
+           (beg (unless filename
+                  (prog1
+                      (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
+
+                          (funcall (intern-soft (concat "py-backward-" form)))
+                          (push-mark)))))
+           (end (unless filename
+                  (or end (save-excursion (funcall (intern-soft (concat "py-forward-" form))))))))
+      ;; (setq py-buffer-name nil)
+      (if filename
+            (if (file-readable-p filename)
+                (py--execute-file-base (expand-file-name filename) nil nil nil origline)
+              (message "%s not readable. %s" filename "Do you have write permissions?"))
+        (py--execute-base beg end shell filename proc wholebuf fast dedicated split switch)))))
 
 (defun py-execute-block (&optional shell dedicated fast split switch proc)
   "Send block at point to  interpreter."

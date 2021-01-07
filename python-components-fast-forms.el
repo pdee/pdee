@@ -56,8 +56,9 @@ It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to t
 	  (goto-char (point-max))
 	  )
       (cond (no-output
+	     (delete-region (field-beginning) (field-end))
 	     ;; (erase-buffer)
-	     (delete-region (point-min) (line-beginning-position))
+	     ;; (delete-region (point-min) (line-beginning-position))
 	     )
 	    (t
 	     (if

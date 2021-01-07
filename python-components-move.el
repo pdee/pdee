@@ -315,90 +315,9 @@ If already at ‘end-of-line’ and not at EOB, go to end of next line."
       (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
-;;  Decorator
-(defun py-backward-decorator ()
-  "Go to the beginning of a decorator.
 
-Returns position if succesful"
-  (interactive)
-  (let ((orig (point)))
-    (unless (bobp) (forward-line -1)
-	    (back-to-indentation)
-	    (while (and (progn (looking-at "@\\w+")(not (looking-at "\\w+")))
-			(not
-			 ;; (py-empty-line-p)
-			 (member (char-after) (list 9 10)))
-			(not (bobp))(forward-line -1))
-	      (back-to-indentation))
-	    (or (and (looking-at "@\\w+") (match-beginning 0))
-		(goto-char orig)))))
 
-(defun py-forward-decorator ()
-  "Go to the end of a decorator.
 
-Returns position if succesful"
-  (interactive)
-  (let ((orig (point)) erg)
-    (unless (looking-at "@\\w+")
-      (setq erg (py-backward-decorator)))
-    (when erg
-      (if
-          (re-search-forward py-def-or-class-re nil t)
-          (progn
-            (back-to-indentation)
-            (skip-chars-backward " \t\r\n\f")
-            (py-leave-comment-or-string-backward)
-            (skip-chars-backward " \t\r\n\f")
-            (setq erg (point)))
-        (goto-char orig)
-        (end-of-line)
-        (skip-chars-backward " \t\r\n\f")
-        (when (ignore-errors (goto-char (py-list-beginning-position)))
-          (forward-list))
-        (when (< orig (point))
-          (setq erg (point))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
-
-(defun py--go-to-keyword (regexp &optional maxindent condition ignoreindent)
-  "Expects being called from beginning of a statement.
-
-Argument REGEXP: a symbol.
-
-Return a list, whose car is indentation, cdr position.
-
-Keyword detected from REGEXP
-Honor MAXINDENT if provided
-Optional IGNOREINDENT: find next keyword at any indentation"
-  (unless (bobp)
-    ;;    (when (py-empty-line-p) (skip-chars-backward " \t\r\n\f"))
-    (let* ((orig (point))
-	   (condition
-	    (or condition '<))
-	   ;; py-clause-re would not match block
-	   (regexp (if (eq regexp 'py-clause-re) 'py-extended-block-or-clause-re regexp))
-	   (regexpvalue (symbol-value regexp))
-	   (maxindent
-	    (if ignoreindent
-		;; just a big value
-		9999
-	      (or maxindent
-		  (if
-		      (or (looking-at regexpvalue) (eq 0 (current-indentation)))
-		      (current-indentation)
-		    (abs
-		     (- (current-indentation) py-indent-offset))))))
-	   erg)
-      (unless (py-beginning-of-statement-p)
-	(py-backward-statement))
-      (cond
-       ((looking-at (concat (symbol-value regexp)))
-	(if (eq (point) orig)
-	    (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue))
-	  (setq erg (point))))
-       (t (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue))))
-      (when erg (setq erg (cons (current-indentation) erg)))
-      (list (car erg) (cdr erg) (py--end-base-determine-secondvalue regexp)))))
 
 (defun py-forward-into-nomenclature (&optional arg iact)
   "Move forward to end of a nomenclature symbol.

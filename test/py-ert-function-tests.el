@@ -367,9 +367,6 @@
 (ert-deftest py-ert--end-of-for-block-bol-p-functionp-test-yyf13r ()
   (should (functionp 'py--end-of-for-block-bol-p)))
 
-(ert-deftest py-ert--end-of-statement-bol-p-functionp-test-ktTgd4 ()
-  (should (functionp 'py--end-of-statement-bol-p)))
-
 (ert-deftest py-ert--fast-completion-get-completions-functionp-test-uAfhjG ()
   (should (functionp 'py--fast-completion-get-completions)))
 
@@ -426,9 +423,6 @@
 
 (ert-deftest py-ert-restore-window-configuration-functionp-test-eyA5qG ()
   (should (functionp 'py-restore-window-configuration)))
-
-(ert-deftest py-ert-shell-execute-string-now-functionp-test-imefxl ()
-  (should (functionp 'py-shell-execute-string-now)))
 
 (ert-deftest py-ert-switch-to-python-functionp-test-ItywB0 ()
   (should (functionp 'py-switch-to-python)))
@@ -858,9 +852,6 @@
 
 (ert-deftest py-ert-output-filter-functionp-test-sxXoId ()
   (should (functionp 'py-output-filter)))
-
-(ert-deftest py-ert-send-string-functionp-test-8KgAFU ()
-  (should (functionp 'py-send-string)))
 
 (ert-deftest py-ert-copy-statement-functionp-test-ik7wzB ()
   (should (functionp 'py-copy-statement)))
@@ -1600,11 +1591,8 @@
 (ert-deftest py-ert-in-string-p-functionp-test-QLUbjh ()
   (should (functionp 'py-in-string-p)))
 
-(ert-deftest py-ert-in-statement-p-functionp-test-IfHrG5 ()
-  (should (functionp 'py-in-statement-p)))
-
-(ert-deftest py-ert-beginning-of-top-level-p-functionp-test-CqtW4T ()
-  (should (functionp 'py-backward-top-level-p)))
+(ert-deftest py-ert-backward-top-level-functionp-test-CqtW4T ()
+  (should (functionp 'py-backward-top-level)))
 
 (ert-deftest py-ert--beginning-of-line-p-functionp-test-cDLgpI ()
   (should (functionp 'py--beginning-of-line-p)))

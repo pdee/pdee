@@ -23,8 +23,14 @@
 # This script tests functions from python-mode.el.
 
 # Code:
+EMACS25=$HOME/emacs-25.3/src/emacs-25.3.1
+#  emacs26=~$HOME/emacs-20180529/src/emacs-27.0.50.1
+EMACS26=$HOME/emacs-26.3/src/emacs-26.3.1
+EMACS27=$HOME/emacs-27.0.91/src/emacs-27.0.91.1
+EMACS28=$HOME/emacs-20201230/src/emacs-28.0.50.1
+# system Emacs
+EMACS=emacs
 
-emacs27=~$HOME/emacs-20180529/src/emacs-27.0.50.1
 ARSUBR=~/werkstatt/thingatpt-utils-core/ar-subr.el
 PYTHON=~/emacs-20180529/lisp/progmodes/python.el
 PDIR=$PWD
@@ -71,11 +77,11 @@ TEST18=$TESTDIR/translated-python-tests.el
 TEST19=$TESTDIR/py-ert-hide-tests.el
 TEST20=$TESTDIR/py-ert-font-lock-test-1.el
 
-if [ -s $HOME/emacs-20201119/src/emacs ]; then
-    EMACS=$HOME/emacs-20201119/src/emacs
-else
-    EMACS=emacs
-fi
+# if [ -s $HOME/emacs-20201119/src/emacs ]; then
+#     EMACS=$HOME/emacs-20201119/src/emacs
+# else
+#     EMACS=emacs
+# fi
 
 echo "\$EMACS: $EMACS"
 
@@ -458,8 +464,125 @@ hier() {
 -f ert-run-tests-batch-and-exit
 }
 
+
+hier25() {
+    date; time -p $EMACS -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py--debug-p nil)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
+-l $TEST1 \
+-l $TEST2 \
+-l $TEST3 \
+-l $TEST4 \
+-l $TEST5 \
+-l $TEST6 \
+-l $TEST7 \
+-l $TEST8 \
+-l $TEST9 \
+-l $TEST10 \
+-l $TEST11 \
+-l $TEST12 \
+-l $TEST13 \
+-l $TEST14 \
+-l $TEST16 \
+-l $TEST19 \
+-l $TEST20 \
+-f ert-run-tests-batch-and-exit
+}
+
+hier26() {
+    date; time -p $EMACS26 -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py--debug-p nil)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
+-l $TEST1 \
+-l $TEST2 \
+-l $TEST3 \
+-l $TEST4 \
+-l $TEST5 \
+-l $TEST6 \
+-l $TEST7 \
+-l $TEST8 \
+-l $TEST9 \
+-l $TEST10 \
+-l $TEST11 \
+-l $TEST12 \
+-l $TEST13 \
+-l $TEST14 \
+-l $TEST16 \
+-l $TEST19 \
+-l $TEST20 \
+-f ert-run-tests-batch-and-exit
+}
+
+hier27() {
+    date; time -p $EMACS27 -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py--debug-p nil)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
+-l $TEST1 \
+-l $TEST2 \
+-l $TEST3 \
+-l $TEST4 \
+-l $TEST5 \
+-l $TEST6 \
+-l $TEST7 \
+-l $TEST8 \
+-l $TEST9 \
+-l $TEST10 \
+-l $TEST11 \
+-l $TEST12 \
+-l $TEST13 \
+-l $TEST14 \
+-l $TEST16 \
+-l $TEST19 \
+-l $TEST20 \
+-f ert-run-tests-batch-and-exit
+}
+
+hier28() {
+    date; time -p $EMACS28 -Q --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py--debug-p nil)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
+--eval "(add-to-list 'load-path \"$PDIR/\")" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
+-l $TEST1 \
+-l $TEST2 \
+-l $TEST3 \
+-l $TEST4 \
+-l $TEST5 \
+-l $TEST6 \
+-l $TEST7 \
+-l $TEST8 \
+-l $TEST9 \
+-l $TEST10 \
+-l $TEST11 \
+-l $TEST12 \
+-l $TEST13 \
+-l $TEST14 \
+-l $TEST16 \
+-l $TEST19 \
+-l $TEST20 \
+-f ert-run-tests-batch-and-exit
+}
+
 if [ $WERKSTATT -eq 0 ]; then
-    while getopts 123456789abcehijkpqrstuvx option
+    while getopts 123456789abcdefghijkmpqrstuvx option
     do
         case $option in
 	    1) echo "Lade \$TEST1: \"$TEST1\"";h1;;
@@ -474,11 +597,15 @@ if [ $WERKSTATT -eq 0 ]; then
 	    a) echo "Lade erst"; erst;;
 	    b) echo "Lade zweit"; zweit;;
 	    c) echo "Running python-tests.el";h17;;
+	    d) echo "Running python-tests.el";hier25;;
 	    e) echo "Lade testumgebung \"ENTFERNT\""; entfernt;;
+	    f) echo "Running python-tests.el";hier26;;
+	    g) echo "Running python-tests.el";hier27;;
             h) echo "Lade testumgebung \"HIER1\"";hier;;
 	    i) echo "Lade \$TEST10: \"$TEST10\"";h10;;
 	    j) echo "Lade \$TEST11: \"$TEST11\"";h11;;
 	    k) echo "Lade \$TEST12: \"$TEST12\"";h12;;
+	    m) echo "Lade \$TEST12: \"$TEST12\"";hier28;;
 	    p) echo "Lade \$TEST13: \"$TEST13\"";h13;;
 	    q) echo "Lade \$TEST14: \"$TEST14\"";h14;;
 	    r) echo "Lade \$TEST15: \"$TEST15\"";h15;;

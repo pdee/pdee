@@ -1,6 +1,5 @@
 ;;; setup-ert-tests.el --- Provide needed forms -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: lisp
 
@@ -25,7 +24,13 @@
 
 ;; (setq py--debug-p t)
 
+(if (file-readable-p "../python-components-mode.el")
+    (load "../python-components-mode.el" nil t)
+  (when (file-readable-p "../python-mode.el")
+    (load "../python-mode.el")))
+
 (require 'font-lock)
+
 
 (unless (functionp 'ar-syntax-class-atpt)
   (defun ar-syntax-class-atpt (&optional pos)
@@ -118,11 +123,11 @@ BODY is code to be executed within the temp buffer.  Point is
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
+       (goto-char (point-min))
        (python-mode)
        (when py--debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
-       (goto-char (point-min))
        ,@body)))
 
 ;; from jit-lock.el
@@ -133,36 +138,6 @@ Preserves the `buffer-modified-p' state of the current buffer."
   `(let ((inhibit-point-motion-hooks t))
      (with-silent-modifications
        ,@body)))
-
-(defmacro py-bug-tests-intern (testname arg teststring)
-  "Just interally. "
-  (declare (debug (edebug-form-spec t)))
-  `(let ((debug-on-error t)
-         (enable-local-variables :all)
-         py-load-pymacs-p
-         py-start-run-py-shell
-         proc
-         py-fontify-shell-buffer-p
-  	 (test-buffer (get-buffer-create (replace-regexp-in-string "\\\\" "" (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname))))))
-     (with-current-buffer test-buffer
-       (delete-other-windows)
-       (erase-buffer)
-       (fundamental-mode)
-       (python-mode)
-       (insert ,teststring)
-       (when py--debug-p (switch-to-buffer test-buffer))
-       (local-unset-key (kbd "RET"))
-       (sit-for 0.1)
-       (when (and (boundp 'company-mode) company-mode) (company-abort))
-       (funcall ,testname ,arg)
-       (message "%s" (replace-regexp-in-string "\\\\" "" (concat (replace-regexp-in-string "-base$" "-test" (prin1-to-string ,testname)) " passed")))
-       ;; (unless (< 1 arg)
-       (unless (eq 2 arg)
-  	 (set-buffer-modified-p 'nil)
-  	 (and (get-buffer-process test-buffer)
-  	      (set-process-query-on-exit-flag (get-buffer-process test-buffer) nil)
-  	      (kill-process (get-buffer-process test-buffer)))
-  	 (kill-buffer test-buffer)))))
 
 (provide 'setup-ert-tests)
 ;; setup-ert-tests.el ends here

@@ -105,8 +105,6 @@
 (defalias 'py-beginning-of-minor-block 'py-backward-minor-block)
 (defalias 'py-beginning-of-partial-expression 'py-backward-partial-expression)
 (defalias 'py-beginning-of-section 'py-backward-section)
-(defalias 'py-beginning-of-statement 'py-backward-statement)
-(defalias 'py-beginning-of-statement-bol 'py-backward-statement-bol)
 (defalias 'py-end-of-block 'py-forward-block)
 (defalias 'py-end-of-block-or-clause 'py-forward-block-or-clause)
 (defalias 'py-end-of-class 'py-forward-class)
@@ -123,6 +121,7 @@
 (defalias 'py-end-of-top-level 'py-forward-top-level)
 (defalias 'py-next-statement 'py-forward-statement)
 (defalias 'py-markup-region-as-section 'py-sectionize-region)
+(defalias 'py-send-string 'py-execute-string)
 (defalias 'py-up 'py-up-block)
 (defalias 'py-count-indentation 'py-compute-indentation)
 
@@ -419,5 +418,5 @@ may want to re-add custom functions to it using the
 
 ;;;
 (provide 'python-components-foot)
-(provide 'python-mode)
+
 ;;; python-components-foot.el ends here

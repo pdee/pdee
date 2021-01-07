@@ -277,7 +277,7 @@ See lp:1066489 "
       (delete-region (point) (progn (skip-chars-forward " \t\r\n\f")(point)))
       (goto-char beg)
       (forward-char 1)
-      (skip-syntax-forward "^\|")
+      (skip-syntax-forward "^|")
       (skip-chars-backward "\"'rRuU")
       ;; (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
 )))
@@ -367,7 +367,7 @@ See lp:1066489 "
 
 (defun py--fill-docstring (justify style docstring orig py-current-indent &optional beg end)
   ;; Delete spaces after/before string fence
-  (py--string-fence-delete-spaces docstring)
+  (py--string-fence-delete-spaces beg)
   (let* ((thisbeg (copy-marker (or beg docstring)))
          (thisend (copy-marker
 		   (or end
@@ -393,7 +393,8 @@ See lp:1066489 "
 			  (or (member (char-after) (list ?\" ?\'))
 			      (member (char-before) (list ?\" ?\'))))
       (py--fill-docstring-last-line thisend beg end multi-line-p))
-    (fill-region beg end justify t t)
+    ;; py-fill-docstring-pep-257-nn-test-ylBRzi
+    ;; (fill-region beg end justify t t)
     (py--fill-docstring-base thisbeg thisend style multi-line-p beg end py-current-indent orig)))
 
 (defun py-fill-string (&optional justify style docstring pps)

@@ -72,7 +72,9 @@ More docstring here.
       (fill-paragraph)
       (forward-line 1)
       (skip-chars-forward " \t\r\n\f")
-      (should (eq 4 (current-indentation))))))
+      (should (eq 4 (current-indentation)))
+      (search-forward "'''")
+ )))
 
 (ert-deftest py-ert-backward-indent-test-hJv5Sb-qSF0Qa ()
   (py-test-with-temp-buffer
@@ -526,7 +528,7 @@ import os"
     (goto-char (point-min))
     (search-forward "'''")
     (py-fill-string nil 'pep-257-nn)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (search-forward "'''")
     (should (eq 4 (current-indentation)))))
 

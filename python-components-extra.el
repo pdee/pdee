@@ -21,14 +21,6 @@
 
 ;;; Code:
 
-;; Stuff merged/adapted from python.el
-(defun py-info-encoding ()
-  "Return encoding for file.
-Try `py-info-encoding-from-cookie', if none is found then
-default to utf-8."
-  (or (py-info-encoding-from-cookie)
-      'utf-8))
-
 (defun py-util-comint-last-prompt ()
   "Return comint last prompt overlay start and end.
 This is for compatibility with Emacs < 24.4."
@@ -60,153 +52,6 @@ banner and the initial prompt are received separately."
         (when (looking-back
                regexp (car (py-util-comint-last-prompt)))
           (throw 'found t))))))
-
-(defmacro py-shell--add-to-path-with-priority (pathvar paths)
-  "Modify PATHVAR and ensure PATHS are added only once at beginning."
-  `(dolist (path (reverse ,paths))
-     (cl-delete path ,pathvar :test #'string=)
-     (cl-pushnew path ,pathvar :test #'string=)))
-
-(defun py-shell-calculate-pythonpath ()
-  "Calculate the PYTHONPATH using `py-shell-extra-pythonpaths'."
-  (let ((pythonpath
-         (split-string
-          (or (getenv "PYTHONPATH") "") path-separator 'omit)))
-    (py-shell--add-to-path-with-priority
-     pythonpath py-shell-extra-pythonpaths)
-    (mapconcat 'identity pythonpath path-separator)))
-
-(defun py-shell-calculate-process-environment ()
-  "Calculate `process-environment' or `tramp-remote-process-environment'.
-Prepends `py-shell-process-environment', sets extra
-pythonpaths from `py-shell-extra-pythonpaths' and sets a few
-virtualenv related vars.  If `default-directory' points to a
-remote host, the returned value is intended for
-`tramp-remote-process-environment'."
-  (let* ((remote-p (file-remote-p default-directory))
-         (process-environment (if remote-p
-                                  tramp-remote-process-environment
-                                process-environment))
-         (virtualenv (when py-shell-virtualenv-root
-                       (directory-file-name py-shell-virtualenv-root))))
-    (dolist (env py-shell-process-environment)
-      (pcase-let ((`(,key ,value) (split-string env "=")))
-        (setenv key value)))
-    (when py-shell-unbuffered
-      (setenv "PYTHONUNBUFFERED" "1"))
-    (when py-shell-extra-pythonpaths
-      (setenv "PYTHONPATH" (py-shell-calculate-pythonpath)))
-    (if (not virtualenv)
-        process-environment
-      (setenv "PYTHONHOME" nil)
-      (setenv "VIRTUAL_ENV" virtualenv))
-    process-environment))
-
-(defun py-shell-calculate-exec-path ()
-  "Calculate `exec-path'.
-Prepends `py-shell-exec-path' and adds the binary directory
-for virtualenv if `py-shell-virtualenv-root' is set - this
-will use the python interpreter from inside the virtualenv when
-starting the shell.  If `default-directory' points to a remote host,
-the returned value appends `py-shell-remote-exec-path' instead
-of `exec-path'."
-  (let ((new-path (copy-sequence
-                   (if (file-remote-p default-directory)
-                       py-shell-remote-exec-path
-                     exec-path)))
-
-        ;; Windows and POSIX systems use different venv directory structures
-        (virtualenv-bin-dir (if (eq system-type 'windows-nt) "Scripts" "bin")))
-    (py-shell--add-to-path-with-priority
-     new-path py-shell-exec-path)
-    (if (not py-shell-virtualenv-root)
-        new-path
-      (py-shell--add-to-path-with-priority
-       new-path
-       (list (expand-file-name virtualenv-bin-dir py-shell-virtualenv-root)))
-      new-path)))
-
-(defun py-shell-tramp-refresh-remote-path (vec paths)
-  "Update VEC's remote-path giving PATHS priority."
-  (let ((remote-path (tramp-get-connection-property vec "remote-path" nil)))
-    (when remote-path
-      (py-shell--add-to-path-with-priority remote-path paths)
-      (tramp-set-connection-property vec "remote-path" remote-path)
-      (tramp-set-remote-path vec))))
-
-(defun py-shell-tramp-refresh-process-environment (vec env)
-  "Update VEC's process environment with ENV."
-  ;; Stolen from `tramp-open-connection-setup-interactive-shell'.
-  (let ((env (append (when (fboundp 'tramp-get-remote-locale)
-                       ;; Emacs<24.4 compat.
-                       (list (tramp-get-remote-locale vec)))
-		     (copy-sequence env)))
-        (tramp-end-of-heredoc
-         (if (boundp 'tramp-end-of-heredoc)
-             tramp-end-of-heredoc
-           (md5 tramp-end-of-output)))
-	unset vars item)
-    (while env
-      (setq item (split-string (car env) "=" 'omit))
-      (setcdr item (mapconcat 'identity (cdr item) "="))
-      (if (and (stringp (cdr item)) (not (string-equal (cdr item) "")))
-	  (push (format "%s %s" (car item) (cdr item)) vars)
-	(push (car item) unset))
-      (setq env (cdr env)))
-    (when vars
-      (tramp-send-command
-       vec
-       (format "while read var val; do export $var=$val; done <<'%s'\n%s\n%s"
-	       tramp-end-of-heredoc
-	       (mapconcat 'identity vars "\n")
-	       tramp-end-of-heredoc)
-       t))
-    (when unset
-      (tramp-send-command
-       vec (format "unset %s" (mapconcat 'identity unset " ")) t))))
-
-(defmacro py-shell-with-environment (&rest body)
-  "Modify shell environment during execution of BODY.
-Temporarily sets `process-environment' and `exec-path' during
-execution of body.  If `default-directory' points to a remote
-machine then modifies `tramp-remote-process-environment' and
-`py-shell-remote-exec-path' instead."
-  (declare (indent 0) (debug (body)))
-  (let ((vec (make-symbol "vec")))
-    `(progn
-       (let* ((,vec
-               (when (file-remote-p default-directory)
-                 (ignore-errors
-                   (tramp-dissect-file-name default-directory 'noexpand))))
-              (process-environment
-               (if ,vec
-                   process-environment
-                 (py-shell-calculate-process-environment)))
-              (exec-path
-               (if ,vec
-                   exec-path
-                 (py-shell-calculate-exec-path)))
-              (tramp-remote-process-environment
-               (if ,vec
-                   (py-shell-calculate-process-environment)
-                 tramp-remote-process-environment)))
-         (when (tramp-get-connection-process ,vec)
-           ;; For already existing connections, the new exec path must
-           ;; be re-set, otherwise it won't take effect.  One example
-           ;; of such case is when remote dir-locals are read and
-           ;; *then* subprocesses are triggered within the same
-           ;; connection.
-           (py-shell-tramp-refresh-remote-path
-            ,vec (py-shell-calculate-exec-path))
-           ;; The `tramp-remote-process-environment' variable is only
-           ;; effective when the started process is an interactive
-           ;; shell, otherwise (like in the case of processes started
-           ;; with `process-file') the environment is not changed.
-           ;; This makes environment modifications effective
-           ;; unconditionally.
-           (py-shell-tramp-refresh-process-environment
-            ,vec tramp-remote-process-environment))
-         ,(macroexp-progn body)))))
 
 (defun py-shell-prompt-detect ()
   "Detect prompts for the current interpreter.
@@ -387,7 +232,7 @@ completion."
   (with-current-buffer (process-buffer process)
     (let ((completions
            (ignore-errors
-	     (string-trim
+	     (py--string-trim
 	      (py-send-string-no-output
 	       (format
 		(concat py-completion-setup-code
@@ -624,34 +469,6 @@ With argument MSG show activation/deactivation message."
         (py-shell-font-lock-turn-on msg)
       (py-shell-font-lock-turn-off msg))
     py-shell-fontify-p))
-
-(defun py-info-encoding-from-cookie ()
-  "Detect current buffer's encoding from its coding cookie.
-Returns the encoding as a symbol."
-  (let ((first-two-lines
-         (save-excursion
-           (save-restriction
-             (widen)
-             (goto-char (point-min))
-             (forward-line 2)
-             (buffer-substring-no-properties
-              (point)
-              (point-min))))))
-    (when (string-match 
-	   ;; (py-rx coding-cookie)
-	   "^#[[:space:]]*\\(?:coding[:=][[:space:]]*\\(?1:\\(?:[[:word:]]\\|-\\)+\\)\\|-\\*-[[:space:]]*coding:[[:space:]]*\\(?1:\\(?:[[:word:]]\\|-\\)+\\)[[:space:]]*-\\*-\\|vim:[[:space:]]*set[[:space:]]+fileencoding[[:space:]]*=[[:space:]]*\\(?1:\\(?:[[:word:]]\\|-\\)+\\)[[:space:]]*:\\)"
-	   first-two-lines)
-      (intern (match-string-no-properties 1 first-two-lines)))))
-
-(unless (functionp 'file-local-name)
-  (defun file-local-name (file)
-    "Return the local name component of FILE.
-This function removes from FILE the specification of the remote host
-and the method of accessing the host, leaving only the part that
-identifies FILE locally on the remote system.
-The returned file name can be used directly as argument of
-`process-file', `start-file-process', or `shell-command'."
-    (or (file-remote-p file 'localname) file)))
 
 (provide 'python-components-extra)
 ;;; python-components-extra.el ends here

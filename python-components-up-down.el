@@ -25,39 +25,6 @@
 ;;; Code:
 
 
-(defun py-up-statement ()
-  "go to the beginning of next statement upwards in buffer.
-
-Return position if statement found, nil otherwise."
-  (interactive)
-  (let (erg)
-    (if (py--beginning-of-statement-p)
-	(setq erg (py-backward-statement))
-      (setq erg (and (py-backward-statement) (py-backward-statement))))
-    (when (and py-verbose-p (called-interactively-p 'interactive)) (message "%s" erg))
-    erg))
-
-(defun py-down-statement ()
-  "Go to the beginning of next statement downwards in buffer.
-
-Corresponds to backward-up-list in Elisp
-Return position if statement found, nil otherwise."
-  (interactive)
-  (let* ((orig (point))
-	 erg)
-    (cond ((py--end-of-statement-p)
-	   (setq erg
-		 (and
-		  (py-forward-statement)
-		  (py-backward-statement)
-		  (< orig (point))
-		  (point))))
-	  ((ignore-errors (< orig (and (py-forward-statement) (py-backward-statement))))
-	   (setq erg (point)))
-	  (t (setq erg (ignore-errors (< orig (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))))
-    (when (and py-verbose-p (called-interactively-p 'interactive)) (message "%s" erg))
-    erg))
-
 (defun py-up-block (&optional indent)
   "Go to the beginning of next block upwards in buffer according to INDENT.
 Optional INDENT

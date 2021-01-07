@@ -214,15 +214,6 @@
       (when (eq orig (point))
         orig))))
 
-(defun py--end-of-statement-bol-p ()
-  "Return position, if cursor is at ‘beginning-of-line’ at the end of a statement, nil otherwise."
-  (let ((orig (point)))
-    (save-excursion
-      (py-backward-statement-bol)
-      (py-forward-statement-bol)
-      (when (eq orig (point))
-        orig))))
-
 (defun py--end-of-try-block-bol-p ()
   "Return position, if cursor is at ‘beginning-of-line’ at the end of a try-block, nil otherwise."
   (let ((orig (point)))
@@ -355,15 +346,6 @@
     (save-excursion
       (py-backward-minor-block)
       (py-forward-minor-block)
-      (when (eq orig (point))
-        orig))))
-
-(defun py--end-of-statement-p ()
-  "Return position, if cursor is at the end of a statement, nil otherwise."
-  (let ((orig (point)))
-    (save-excursion
-      (py-backward-statement)
-      (py-forward-statement)
       (when (eq orig (point))
         orig))))
 

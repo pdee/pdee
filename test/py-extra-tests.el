@@ -76,7 +76,7 @@ os.write"
     (sit-for 0.1)
     (set-buffer py-output-buffer)
     (goto-char (point-max))
-    (switch-to-buffer (current-buffer))
+    (when py--debug-p (switch-to-buffer (current-buffer)))
     (when py--debug-p (message "%s" (current-buffer)))
     (goto-char comint-last-output-start)
     (should (string-match "write" (buffer-substring-no-properties (point) (point-max))))))
@@ -224,11 +224,11 @@ finally:
     (when py--debug-p (message "py-ert-fast-complete-1, current-buffer: %s" (current-buffer)))
     (should (search-backward "ect"))))
 
-(ert-deftest py-send-string-text-dtOWbA1 ()
+(ert-deftest py-execute-string-text-dtOWbA1 ()
   (py-test-with-temp-buffer
       ""
     (let (erg)
-      (setq erg (py-send-string "print(\"foo\")" nil t))
+      (setq erg (py-execute-string "print(\"foo\")" nil t))
       (should (string= erg "foo"))
       (should (string= py-result "foo")))))
 

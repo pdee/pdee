@@ -991,31 +991,16 @@ Takes NAME COMMAND"
   (if (py--buffer-filename-remote-maybe)
       (let* ((temp-file (if (functionp 'flymake-proc-init-create-temp-buffer-copy)
 			    (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
-			  (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
+			  (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
 			  ))
              (local-file (file-relative-name
                           temp-file
                           (file-name-directory (py--buffer-filename-remote-maybe)))))
 	(if (boundp 'flymake-proc-allowed-file-name-masks)
             (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-proc-allowed-file-name-masks)
-	  (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-allowed-file-name-masks))
+	  (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-proc-allowed-file-name-masks))
         (list command (list local-file)))
     (message "%s" "flymake needs a ‘file-name’. Please save before calling.")))
-
-(eval-after-load  "flycheck-mode.el"
-  (defun py-flycheck-mode (&optional arg)
-    "Toggle ‘flycheck-mode’.
-
-With negative ARG switch off ‘flycheck-mode’
-See menu \"Tools/Syntax Checking\""
-    (interactive "p")
-    (setq arg (or arg (if flycheck-mode 0 1)))
-    (if (< arg 0)
-	;; switch off
-	(flycheck-mode 0)
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "flycheck-mode: %s" flycheck-mode))
-      (flycheck-mode 1)
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "flycheck-mode: %s" flycheck-mode)))))
 
 (defun pylint-flymake-mode ()
   "Toggle ‘pylint’ ‘flymake-mode’."

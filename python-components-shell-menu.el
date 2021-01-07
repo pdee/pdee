@@ -672,8 +672,8 @@ Returns beginning of if-block if successful, nil otherwise"]
 	   ["Beginning of partial expression" py-beginning-of-partial-expression
 	    :help " `py-beginning-of-partial-expression'"]
 
-	   ["Beginning of statement" py-beginning-of-statement
-	    :help " `py-beginning-of-statement'
+	   ["Beginning of statement" py-backward-statement
+	    :help " `py-backward-statement'
 Go to the initial line of a simple statement.
 
 For beginning of compound statement use py-beginning-of-block.
@@ -859,8 +859,8 @@ Returns beginning of if-block if successful, nil otherwise"]
 	    ["Beginning of partial expression bol" py-beginning-of-partial-expression-bol
 	     :help " `py-beginning-of-partial-expression-bol'"]
 
-	    ["Beginning of statement bol" py-beginning-of-statement-bol
-	     :help " `py-beginning-of-statement-bol'
+	    ["Beginning of statement bol" py-backward-statement-bol
+	     :help " `py-backward-statement-bol'
 Goto beginning of line where statement starts.
   Returns position reached, if successful, nil otherwise.
 

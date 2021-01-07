@@ -2,8 +2,7 @@
 
 ;; This file not shipped as part of GNU Emacs.
 
-;; Copyright (C) 2015-2016 Andreas Röhler
-;; Author: Andreas Röhler <andreas.roehler@online.de>
+;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages, processes, python, oop
 
@@ -296,10 +295,7 @@ Copy statement at point."]
 
 	["Copy top level" py-copy-top-level
 	 :help " `py-copy-top-level'
-Copy top-level at point."]
-
-	["Copy try block" py-copy-try-block
-	 :help " `py-copy-try-block'"])
+Copy top-level at point."])
        ("Kill"
 	["Kill block" py-kill-block
 	 :help " `py-kill-block'
@@ -498,155 +494,157 @@ Comments statement at point."]
 Comments top-level at point."]))
       ("Move"
        ("Backward"
-	["Backward block" py-backward-block
-	 :help " `py-backward-block'
-Go to beginning of ‘block’."]
-
-	["Backward block or clause" py-backward-block-or-clause
-	 :help " `py-backward-block-or-clause'
-Go to beginning of ‘block-or-clause’."]
-
-	["Backward class" py-backward-class
-	 :help " `py-backward-class'
-Go to beginning of class."]
-
-	["Backward clause" py-backward-clause
-	 :help " `py-backward-clause'
-Go to beginning of ‘clause’."]
-
-	["Backward def" py-backward-def
-	 :help " `py-backward-def'
-Go to beginning of def."]
 
 	["Backward def or class" py-backward-def-or-class
 	 :help " `py-backward-def-or-class'
 Go to beginning of def-or-class."]
 
-	["Backward elif block" py-backward-elif-block
-	 :help " `py-backward-elif-block'
-Go to beginning of ‘elif-block’."]
+	["Backward class" py-backward-class
+	 :help " `py-backward-class'
+Go to beginning of class."]
 
-	["Backward else block" py-backward-else-block
-	 :help " `py-backward-else-block'
-Go to beginning of ‘else-block’."]
+	["Backward def" py-backward-def
+	 :help " `py-backward-def'
+Go to beginning of def."]
 
-	["Backward except block" py-backward-except-block
-	 :help " `py-backward-except-block'
-Go to beginning of ‘except-block’."]
-
-	["Backward expression" py-backward-expression
-	 :help " `py-backward-expression'
-Go to the beginning of a python expression."]
-
-	["Backward for block" py-backward-for-block
-	 :help " `py-backward-for-block'
-Go to beginning of ‘for-block’."]
-
-	["Backward if block" py-backward-if-block
-	 :help " `py-backward-if-block'
-Go to beginning of ‘if-block’."]
-
-	["Backward indent" py-backward-indent
-	 :help " `py-backward-indent'
-Go to the beginning of a section of equal indent."]
-
-	["Backward minor block" py-backward-minor-block
-	 :help " `py-backward-minor-block'
-Go to beginning of ‘minor-block’."]
-
-	["Backward partial expression" py-backward-partial-expression
-	 :help " `py-backward-partial-expression'"]
-
-	["Backward section" py-backward-section
-	 :help " `py-backward-section'
-Go to next section start upward in buffer."]
+	["Backward block" py-backward-block
+	 :help " `py-backward-block'
+Go to beginning of ‘block’."]
 
 	["Backward statement" py-backward-statement
 	 :help " `py-backward-statement'
 Go to the initial line of a simple statement."]
 
+	["Backward indent" py-backward-indent
+	 :help " `py-backward-indent'
+Go to the beginning of a section of equal indent."]
+
 	["Backward top level" py-backward-top-level
 	 :help " `py-backward-top-level'
 Go up to beginning of statments until level of indentation is null."]
 
-	["Backward try block" py-backward-try-block
-	 :help " `py-backward-try-block'
-Go to beginning of ‘try-block’."])
-       ("Forward"
-	["Forward block" py-forward-block
-	 :help " `py-forward-block'
-Go to end of block."]
+	("Other"
+	 ["Backward section" py-backward-section
+	  :help " `py-backward-section'
+Go to next section start upward in buffer."]
 
-	["Forward block or clause" py-forward-block-or-clause
-	 :help " `py-forward-block-or-clause'
-Go to end of block-or-clause."]
+	 ["Backward expression" py-backward-expression
+	  :help " `py-backward-expression'"]
+
+	 ["Backward partial expression" py-backward-partial-expression
+	  :help " `py-backward-partial-expression'"]
+
+	 ["Backward assignment" py-backward-assignment
+	  :help " `py-backward-assignment'"]
+
+	 ["Backward block or clause" py-backward-block-or-clause
+	  :help " `py-backward-block-or-clause'
+Go to beginning of ‘block-or-clause’."]
+
+	 ["Backward clause" py-backward-clause
+	  :help " `py-backward-clause'
+Go to beginning of ‘clause’."]
+
+	 ["Backward elif block" py-backward-elif-block
+	  :help " `py-backward-elif-block'
+Go to beginning of ‘elif-block’."]
+
+	 ["Backward else block" py-backward-else-block
+	  :help " `py-backward-else-block'
+Go to beginning of ‘else-block’."]
+
+	 ["Backward except block" py-backward-except-block
+	  :help " `py-backward-except-block'
+Go to beginning of ‘except-block’."]
+
+	 ["Backward if block" py-backward-if-block
+	  :help " `py-backward-if-block'
+Go to beginning of ‘if-block’."]
+
+	 ["Backward minor block" py-backward-minor-block
+	  :help " `py-backward-minor-block'
+Go to beginning of ‘minor-block’."]
+
+	 ["Backward try block" py-backward-try-block
+	  :help " `py-backward-try-block'
+Go to beginning of ‘try-block’."]))
+       ("Forward"
+	["Forward def or class" py-forward-def-or-class
+	 :help " `py-forward-def-or-class'
+Go to end of def-or-class."]
 
 	["Forward class" py-forward-class
 	 :help " `py-forward-class'
 Go to end of class."]
 
-	["Forward clause" py-forward-clause
-	 :help " `py-forward-clause'
-Go to end of clause."]
-
 	["Forward def" py-forward-def
 	 :help " `py-forward-def'
 Go to end of def."]
 
-	["Forward def or class" py-forward-def-or-class
-	 :help " `py-forward-def-or-class'
-Go to end of def-or-class."]
-
-	["Forward elif block" py-forward-elif-block
-	 :help " `py-forward-elif-block'
-Go to end of elif-block."]
-
-	["Forward else block" py-forward-else-block
-	 :help " `py-forward-else-block'
-Go to end of else-block."]
-
-	["Forward except block" py-forward-except-block
-	 :help " `py-forward-except-block'
-Go to end of except-block."]
-
-	["Forward expression" py-forward-expression
-	 :help " `py-forward-expression'
-Go to the end of a compound python expression."]
-
-	["Forward for block" py-forward-for-block
-	 :help " `py-forward-for-block'
-Go to end of for-block."]
-
-	["Forward if block" py-forward-if-block
-	 :help " `py-forward-if-block'
-Go to end of if-block."]
-
-	["Forward indent" py-forward-indent
-	 :help " `py-forward-indent'
-Go to the end of a section of equal indentation."]
-
-	["Forward minor block" py-forward-minor-block
-	 :help " `py-forward-minor-block'
-Go to end of minor-block."]
-
-	["Forward partial expression" py-forward-partial-expression
-	 :help " `py-forward-partial-expression'"]
-
-	["Forward section" py-forward-section
-	 :help " `py-forward-section'
-Go to next section end downward in buffer."]
+	["Forward block" py-forward-block
+	 :help " `py-forward-block'
+Go to end of block."]
 
 	["Forward statement" py-forward-statement
 	 :help " `py-forward-statement'
 Go to the last char of current statement."]
 
+	["Forward indent" py-forward-indent
+	 :help " `py-forward-indent'
+Go to the end of a section of equal indentation."]
+
 	["Forward top level" py-forward-top-level
 	 :help " `py-forward-top-level'
 Go to end of top-level form at point."]
 
-	["Forward try block" py-forward-try-block
-	 :help " `py-forward-try-block'
-Go to end of try-block."])
+	("Other"
+	 ["Forward section" py-forward-section
+	  :help " `py-forward-section'
+Go to next section end downward in buffer."]
+
+	 ["Forward expression" py-forward-expression
+	  :help " `py-forward-expression'"]
+
+	 ["Forward partial expression" py-forward-partial-expression
+	  :help " `py-forward-partial-expression'"]
+
+	 ["Forward assignment" py-forward-assignment
+	  :help " `py-forward-assignment'"]
+
+	 ["Forward block or clause" py-forward-block-or-clause
+	  :help " `py-forward-block-or-clause'
+Go to end of block-or-clause."]
+
+	 ["Forward clause" py-forward-clause
+	  :help " `py-forward-clause'
+Go to end of clause."]
+
+	 ["Forward for block" py-forward-for-block
+	 :help " `py-forward-for-block'
+Go to end of for-block."]
+
+	 ["Forward elif block" py-forward-elif-block
+	  :help " `py-forward-elif-block'
+Go to end of elif-block."]
+
+	 ["Forward else block" py-forward-else-block
+	  :help " `py-forward-else-block'
+Go to end of else-block."]
+
+	 ["Forward except block" py-forward-except-block
+	  :help " `py-forward-except-block'
+Go to end of except-block."]
+
+	 ["Forward if block" py-forward-if-block
+	  :help " `py-forward-if-block'
+Go to end of if-block."]
+
+	 ["Forward minor block" py-forward-minor-block
+	  :help " `py-forward-minor-block'
+Go to end of minor-block."]
+	 ["Forward try block" py-forward-try-block
+	  :help " `py-forward-try-block'
+Go to end of try-block."]))
        ("BOL-forms"
 	("Backward"
 	 ["Backward block bol" py-backward-block-bol
@@ -927,54 +925,54 @@ Send statement at point to IPython interpreter."]
 	 ["Execute top level ipython" py-execute-top-level-ipython
 	  :help " `py-execute-top-level-ipython'
 Send top-level at point to IPython interpreter."])
-	("IPython2\.7"
-	 ["Execute block ipython2\.7" py-execute-block-ipython2\.7
-	  :help " `py-execute-block-ipython2\.7'"]
+	("IPython2"
+	 ["Execute block ipython2" py-execute-block-ipython2
+	  :help " `py-execute-block-ipython2'"]
 
-	 ["Execute block or clause ipython2\.7" py-execute-block-or-clause-ipython2\.7
-	  :help " `py-execute-block-or-clause-ipython2\.7'"]
+	 ["Execute block or clause ipython2" py-execute-block-or-clause-ipython2
+	  :help " `py-execute-block-or-clause-ipython2'"]
 
-	 ["Execute buffer ipython2\.7" py-execute-buffer-ipython2\.7
-	  :help " `py-execute-buffer-ipython2\.7'"]
+	 ["Execute buffer ipython2" py-execute-buffer-ipython2
+	  :help " `py-execute-buffer-ipython2'"]
 
-	 ["Execute class ipython2\.7" py-execute-class-ipython2\.7
-	  :help " `py-execute-class-ipython2\.7'"]
+	 ["Execute class ipython2" py-execute-class-ipython2
+	  :help " `py-execute-class-ipython2'"]
 
-	 ["Execute clause ipython2\.7" py-execute-clause-ipython2\.7
-	  :help " `py-execute-clause-ipython2\.7'"]
+	 ["Execute clause ipython2" py-execute-clause-ipython2
+	  :help " `py-execute-clause-ipython2'"]
 
-	 ["Execute def ipython2\.7" py-execute-def-ipython2\.7
-	  :help " `py-execute-def-ipython2\.7'"]
+	 ["Execute def ipython2" py-execute-def-ipython2
+	  :help " `py-execute-def-ipython2'"]
 
-	 ["Execute def or class ipython2\.7" py-execute-def-or-class-ipython2\.7
-	  :help " `py-execute-def-or-class-ipython2\.7'"]
+	 ["Execute def or class ipython2" py-execute-def-or-class-ipython2
+	  :help " `py-execute-def-or-class-ipython2'"]
 
-	 ["Execute expression ipython2\.7" py-execute-expression-ipython2\.7
-	  :help " `py-execute-expression-ipython2\.7'"]
+	 ["Execute expression ipython2" py-execute-expression-ipython2
+	  :help " `py-execute-expression-ipython2'"]
 
-	 ["Execute indent ipython2\.7" py-execute-indent-ipython2\.7
-	  :help " `py-execute-indent-ipython2\.7'"]
+	 ["Execute indent ipython2" py-execute-indent-ipython2
+	  :help " `py-execute-indent-ipython2'"]
 
-	 ["Execute line ipython2\.7" py-execute-line-ipython2\.7
-	  :help " `py-execute-line-ipython2\.7'"]
+	 ["Execute line ipython2" py-execute-line-ipython2
+	  :help " `py-execute-line-ipython2'"]
 
-	 ["Execute minor block ipython2\.7" py-execute-minor-block-ipython2\.7
-	  :help " `py-execute-minor-block-ipython2\.7'"]
+	 ["Execute minor block ipython2" py-execute-minor-block-ipython2
+	  :help " `py-execute-minor-block-ipython2'"]
 
-	 ["Execute paragraph ipython2\.7" py-execute-paragraph-ipython2\.7
-	  :help " `py-execute-paragraph-ipython2\.7'"]
+	 ["Execute paragraph ipython2" py-execute-paragraph-ipython2
+	  :help " `py-execute-paragraph-ipython2'"]
 
-	 ["Execute partial expression ipython2\.7" py-execute-partial-expression-ipython2\.7
-	  :help " `py-execute-partial-expression-ipython2\.7'"]
+	 ["Execute partial expression ipython2" py-execute-partial-expression-ipython2
+	  :help " `py-execute-partial-expression-ipython2'"]
 
-	 ["Execute region ipython2\.7" py-execute-region-ipython2\.7
-	  :help " `py-execute-region-ipython2\.7'"]
+	 ["Execute region ipython2" py-execute-region-ipython2
+	  :help " `py-execute-region-ipython2'"]
 
-	 ["Execute statement ipython2\.7" py-execute-statement-ipython2\.7
-	  :help " `py-execute-statement-ipython2\.7'"]
+	 ["Execute statement ipython2" py-execute-statement-ipython2
+	  :help " `py-execute-statement-ipython2'"]
 
-	 ["Execute top level ipython2\.7" py-execute-top-level-ipython2\.7
-	  :help " `py-execute-top-level-ipython2\.7'"])
+	 ["Execute top level ipython2" py-execute-top-level-ipython2
+	  :help " `py-execute-top-level-ipython2'"])
 	("IPython3"
 	 ["Execute block ipython3" py-execute-block-ipython3
 	  :help " `py-execute-block-ipython3'
@@ -1305,21 +1303,9 @@ Send top-level at point to Python3 interpreter."])
 	 :help " `py-hide-block'
 Hide block at point."]
 
-	["Hide block or clause" py-hide-block-or-clause
-	 :help " `py-hide-block-or-clause'
-Hide block-or-clause at point."]
-
-	["Hide class" py-hide-class
-	 :help " `py-hide-class'
-Hide class at point."]
-
-	["Hide clause" py-hide-clause
-	 :help " `py-hide-clause'
-Hide clause at point."]
-
-	["Hide comment" py-hide-comment
-	 :help " `py-hide-comment'
-Hide comment at point."]
+	["Hide top level" py-hide-top-level
+	 :help " `py-hide-top-level'
+Hide top-level at point."]
 
 	["Hide def" py-hide-def
 	 :help " `py-hide-def'
@@ -1329,43 +1315,59 @@ Hide def at point."]
 	 :help " `py-hide-def-or-class'
 Hide def-or-class at point."]
 
-	["Hide elif block" py-hide-elif-block
-	 :help " `py-hide-elif-block'
-Hide elif-block at point."]
+	["Hide statement" py-hide-statement
+	 :help " `py-hide-statement'
+Hide statement at point."]
 
-	["Hide else block" py-hide-else-block
-	 :help " `py-hide-else-block'
-Hide else-block at point."]
+	["Hide class" py-hide-class
+	 :help " `py-hide-class'
+Hide class at point."]
 
-	["Hide except block" py-hide-except-block
-	 :help " `py-hide-except-block'
-Hide except-block at point."]
+	["Hide clause" py-hide-clause
+	 :help " `py-hide-clause'
+Hide clause at point."]
 
-	["Hide expression" py-hide-expression
-	 :help " `py-hide-expression'
-Hide expression at point."]
+	["Hide block or clause" py-hide-block-or-clause
+	 :help " `py-hide-block-or-clause'
+Hide block-or-clause at point."]
 
-	["Hide for block" py-hide-for-block
-	 :help " `py-hide-for-block'
-Hide for-block at point."]
-
-	["Hide if block" py-hide-if-block
-	 :help " `py-hide-if-block'
-Hide if-block at point."]
+	["Hide comment" py-hide-comment
+	 :help " `py-hide-comment'
+Hide comment at point."]
 
 	["Hide indent" py-hide-indent
 	 :help " `py-hide-indent'
 Hide indent at point."]
 
+	["Hide expression" py-hide-expression
+	 :help " `py-hide-expression'
+Hide expression at point."]
+
 	["Hide line" py-hide-line
 	 :help " `py-hide-line'
 Hide line at point."]
 
-	["Hide minor block" py-hide-minor-block
-	 :help " `py-hide-minor-block'
-Hide minor-block at point."]
+	["Hide for-block" py-hide-for-block
+	 :help " `py-hide-for-block'
+Hide for-block at point."]
 
-	["Hide minor block" py-hide-minor-block
+	["Hide if-block" py-hide-if-block
+	 :help " `py-hide-if-block'
+Hide if-block at point."]
+
+	["Hide elif-block" py-hide-elif-block
+	 :help " `py-hide-elif-block'
+Hide elif-block at point."]
+
+	["Hide else-block" py-hide-else-block
+	 :help " `py-hide-else-block'
+Hide else-block at point."]
+
+	["Hide except-block" py-hide-except-block
+	 :help " `py-hide-except-block'
+Hide except-block at point."]
+
+	["Hide minor-block" py-hide-minor-block
 	 :help " `py-hide-minor-block'
 Hide minor-block at point."]
 
@@ -1379,103 +1381,15 @@ Hide partial-expression at point."]
 
 	["Hide section" py-hide-section
 	 :help " `py-hide-section'
-Hide section at point."]
-
-	["Hide statement" py-hide-statement
-	 :help " `py-hide-statement'
-Hide statement at point."]
-
-	["Hide top level" py-hide-top-level
-	 :help " `py-hide-top-level'
-Hide top-level at point."])
+Hide section at point."])
        ("Show"
-	["Show block" py-show-block
-	 :help " `py-show-block'
-Show block at point."]
+	["Show all" py-show-all
+	 :help " `py-show-all'
+Show all in buffer."]
 
-	["Show block or clause" py-show-block-or-clause
-	 :help " `py-show-block-or-clause'
-Show block-or-clause at point."]
-
-	["Show class" py-show-class
-	 :help " `py-show-class'
-Show class at point."]
-
-	["Show clause" py-show-clause
-	 :help " `py-show-clause'
-Show clause at point."]
-
-	["Show comment" py-show-comment
-	 :help " `py-show-comment'
-Show comment at point."]
-
-	["Show def" py-show-def
-	 :help " `py-show-def'
-Show def at point."]
-
-	["Show def or class" py-show-def-or-class
-	 :help " `py-show-def-or-class'
-Show def-or-class at point."]
-
-	["Show elif block" py-show-elif-block
-	 :help " `py-show-elif-block'
-Show elif-block at point."]
-
-	["Show else block" py-show-else-block
-	 :help " `py-show-else-block'
-Show else-block at point."]
-
-	["Show except block" py-show-except-block
-	 :help " `py-show-except-block'
-Show except-block at point."]
-
-	["Show expression" py-show-expression
-	 :help " `py-show-expression'
-Show expression at point."]
-
-	["Show for block" py-show-for-block
-	 :help " `py-show-for-block'
-Show for-block at point."]
-
-	["Show if block" py-show-if-block
-	 :help " `py-show-if-block'
-Show if-block at point."]
-
-	["Show indent" py-show-indent
-	 :help " `py-show-indent'
-Show indent at point."]
-
-	["Show line" py-show-line
-	 :help " `py-show-line'
-Show line at point."]
-
-	["Show minor block" py-show-minor-block
-	 :help " `py-show-minor-block'
-Show minor-block at point."]
-
-	["Show minor block" py-show-minor-block
-	 :help " `py-show-minor-block'
-Show minor-block at point."]
-
-	["Show paragraph" py-show-paragraph
-	 :help " `py-show-paragraph'
-Show paragraph at point."]
-
-	["Show partial expression" py-show-partial-expression
-	 :help " `py-show-partial-expression'
-Show partial-expression at point."]
-
-	["Show section" py-show-section
-	 :help " `py-show-section'
-Show section at point."]
-
-	["Show statement" py-show-statement
-	 :help " `py-show-statement'
-Show statement at point."]
-
-	["Show top level" py-show-top-level
-	 :help " `py-show-top-level'
-Show top-level at point."]))
+	["Show" py-show
+	 :help " `py-show'
+Show hidden code at point."]))
       ("Fast process"
        ["Execute block fast" py-execute-block-fast
 	:help " `py-execute-block-fast'
@@ -1566,10 +1480,6 @@ Execute statement running pdb."]
 	:help " `pdb'
 Run pdb on program FILE in buffer ‘*gud-FILE*’."])
       ("Checks"
-       ["Flycheck mode" py-flycheck-mode
-	:help " `py-flycheck-mode'
-Toggle ‘flycheck-mode’."]
-
        ["Pychecker run" py-pychecker-run
 	:help " `py-pychecker-run'
 *Run pychecker (default on the file currently visited)."]
@@ -1673,12 +1583,7 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
 
 	 ["Don't enforce default interpreter" force-py-shell-name-p-off
 	  :help "Make execute commands guess interpreter from environment"]
-
-	 ["Enforce local Python shell " py-force-local-shell-on
-	  :help "Locally indicated Python being enforced upon sessions execute commands. "]
-
-	 ["Remove local Python shell enforcement, restore default" py-force-local-shell-off
-	  :help "Restore `py-shell-name' default value and `behaviour'. "])
+	 )
 
 	("Execute"
 
@@ -1892,8 +1797,7 @@ It will be lined up under the first character of
 
 my_list = \[
     1, 2, 3,
-    4, 5, 6,
-]
+    4, 5, 6,]
 
 Use `M-x customize-variable' to set it permanently"
 	   :style toggle :selected py-closing-list-dedents-bos]
@@ -1998,31 +1902,6 @@ Default is `t'. See lp:1100892 Use `M-x customize-variable' to set it permanentl
 		 (not py-dedent-keep-relative-column))
 	   :help "If point should follow dedent or kind of electric move to end of line. Default is t - keep relative position. Use `M-x customize-variable' to set it permanently"
 	   :style toggle :selected py-dedent-keep-relative-column]
-
-	  ["Indent paren spanned multilines "
-	   (setq py-indent-paren-spanned-multilines-p
-		 (not py-indent-paren-spanned-multilines-p))
-	   :help "If non-nil, indents elements of list a value of `py-indent-offset' to first element:
-
-def foo():
-    if (foo &&
-            baz):
-        bar()
-
-Default lines up with first element:
-
-def foo():
-    if (foo &&
-        baz):
-        bar()
-Use `M-x customize-variable' to set it permanently"
-	   :style toggle :selected py-indent-paren-spanned-multilines-p]
-
-	  ["Indent honors multiline listing"
-	   (setq py-indent-honors-multiline-listing
-		 (not py-indent-honors-multiline-listing))
-	   :help "If `t', indents to 1\+ column of opening delimiter. If `nil', indent adds one level to the beginning of statement. Default is `nil'. Use `M-x customize-variable' to set it permanently"
-	   :style toggle :selected py-indent-honors-multiline-listing]
 
 	  ["Indent comment "
 	   (setq py-indent-comments
@@ -2283,14 +2162,14 @@ Customize `py-match-paren-key' which key to use. Use `M-x customize-variable' to
 
 	("Debug"
 
-	 ["py-debug-p"
-	  (setq py-debug-p
-		(not py-debug-p))
+	 ["py--debug-p"
+	  (setq py--debug-p
+		(not py--debug-p))
 	  :help "When non-nil, keep resp\. store information useful for debugging\.
 
 Temporary files are not deleted\. Other functions might implement
 some logging etc\. Use `M-x customize-variable' to set it permanently"
-	  :style toggle :selected py-debug-p]
+	  :style toggle :selected py--debug-p]
 
 	 ["Pdbtrack do tracking "
 	  (setq py-pdbtrack-do-tracking-p
@@ -2410,6 +2289,13 @@ See original source: http://pymacs.progiciels-bpi.caUse `M-x customize-variable'
 
 Default is nil. Use `M-x customize-variable' to set it permanently"
 	  :style toggle :selected py-verbose-p]
+	 ;; ["No session mode "
+	 ;; 	  (setq py-no-session-p
+	 ;; 		(not py-no-session-p))
+	 ;; 	  :help "If shell should be in session-mode.
+
+	 ;; Default is nil. Use `M-x customize-variable' to set it permanently"
+	 ;; 	  :style toggle :selected py-no-session-p]
 
 	 ["Empty comment line separates paragraph "
 	  (setq py-empty-comment-line-separates-paragraph-p
@@ -2498,32 +2384,32 @@ Delete the preceding character or all preceding whitespace"]
 	 :help " `py-hungry-delete-forward'
 Delete the following character or all following whitespace"])
        ("Filling"
-	["Py docstring style" py-py-docstring-style
-	 :help " `py-py-docstring-style'"]
+	["Py docstring style" py-docstring-style
+	 :help " `py-docstring-style'"]
 
-	["Py fill comment" py-py-fill-comment
-	 :help " `py-py-fill-comment'"]
+	["Py fill comment" py-fill-comment
+	 :help " `py-fill-comment'"]
 
-	["Py fill paragraph" py-py-fill-paragraph
-	 :help " `py-py-fill-paragraph'"]
+	["Py fill paragraph" py-fill-paragraph
+	 :help " `py-fill-paragraph'"]
 
-	["Py fill string" py-py-fill-string
-	 :help " `py-py-fill-string'"]
+	["Py fill string" py-fill-string
+	 :help " `py-fill-string'"]
 
-	["Py fill string django" py-py-fill-string-django
-	 :help " `py-py-fill-string-django'"]
+	["Py fill string django" py-fill-string-django
+	 :help " `py-fill-string-django'"]
 
-	["Py fill string onetwo" py-py-fill-string-onetwo
-	 :help " `py-py-fill-string-onetwo'"]
+	["Py fill string onetwo" py-fill-string-onetwo
+	 :help " `py-fill-string-onetwo'"]
 
-	["Py fill string pep 257" py-py-fill-string-pep-257
-	 :help " `py-py-fill-string-pep-257'"]
+	["Py fill string pep 257" py-fill-string-pep-257
+	 :help " `py-fill-string-pep-257'"]
 
-	["Py fill string pep 257 nn" py-py-fill-string-pep-257-nn
-	 :help " `py-py-fill-string-pep-257-nn'"]
+	["Py fill string pep 257 nn" py-fill-string-pep-257-nn
+	 :help " `py-fill-string-pep-257-nn'"]
 
-	["Py fill string symmetric" py-py-fill-string-symmetric
-	 :help " `py-py-fill-string-symmetric'"])
+	["Py fill string symmetric" py-fill-string-symmetric
+	 :help " `py-fill-string-symmetric'"])
        ("Abbrevs"	   :help "see also `py-add-abbrev'"
 	:filter (lambda (&rest junk)
 		  (abbrev-table-menu python-mode-abbrev-table)))
@@ -2532,14 +2418,14 @@ Delete the following character or all following whitespace"])
 	:help " `py-add-abbrev'
 Defines python-mode specific abbrev for last expressions before point."]
        ("Completion"
-	["Py indent or complete" py-py-indent-or-complete
-	 :help " `py-py-indent-or-complete'"]
+	["Py indent or complete" py-indent-or-complete
+	 :help " `py-indent-or-complete'"]
 
-	["Py shell complete" py-py-shell-complete
-	 :help " `py-py-shell-complete'"]
+	["Py shell complete" py-shell-complete
+	 :help " `py-shell-complete'"]
 
-	["Py complete" py-py-complete
-	 :help " `py-py-complete'"])
+	["Py complete" py-complete
+	 :help " `py-complete'"])
 
        ["Find function" py-find-function
 	:help " `py-find-function'

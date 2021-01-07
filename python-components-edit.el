@@ -368,83 +368,8 @@ If IACT is provided, message result"
   (py-indent-tabs-mode (- (abs arg))(called-interactively-p 'any)))
 
 ;;  Guess indent offset
-(defun py-guessed-sanity-check (guessed)
-  (and (>= guessed 2)(<= guessed 8)(eq 0 (% guessed 2))))
 
-(defun py--guess-indent-final (indents)
-  "Calculate and do sanity-check.
 
-Expects INDENTS, a cons"
-  (let* ((first (car indents))
-         (second (cadr indents))
-         (erg (if (and first second)
-                  (if (< second first)
-                      (- first second)
-                    (- second first))
-                (default-value 'py-indent-offset))))
-    (setq erg (and (py-guessed-sanity-check erg) erg))
-    erg))
-
-(defun py--guess-indent-forward ()
-  "Called when moving to end of a form and `py-smart-indentation' is on."
-  (let* ((first (if
-                    (py--beginning-of-statement-p)
-                    (current-indentation)
-                  (progn
-                    (py-forward-statement)
-                    (py-backward-statement)
-                    (current-indentation))))
-         (second (if (or (looking-at py-extended-block-or-clause-re)(eq 0 first))
-                     (progn
-                       (py-forward-statement)
-                       (py-forward-statement)
-                       (py-backward-statement)
-                       (current-indentation))
-                   ;; when not starting from block, look above
-                   (while (and (re-search-backward py-extended-block-or-clause-re nil 'movet 1)
-                               (or (>= (current-indentation) first)
-                                   (nth 8 (parse-partial-sexp (point-min) (point))))))
-                   (current-indentation))))
-    (list first second)))
-
-(defun py--guess-indent-backward ()
-  "Called when moving to beginning of a form and `py-smart-indentation' is on."
-  (let* ((cui (current-indentation))
-         (indent (if (< 0 cui) cui 999))
-         (pos (progn (while (and (re-search-backward py-extended-block-or-clause-re nil 'move 1)
-                                 (or (>= (current-indentation) indent)
-                                     (nth 8 (parse-partial-sexp (point-min) (point))))))
-                     (unless (bobp) (point))))
-         (first (and pos (current-indentation)))
-         (second (and pos (py-forward-statement) (py-forward-statement) (py-backward-statement)(current-indentation))))
-    (list first second)))
-
-(defun py-guess-indent-offset (&optional direction)
-  "Guess `py-indent-offset'.
-
-Set local value of `py-indent-offset', return it
-
-Might change local value of `py-indent-offset' only when called
-downwards from beginning of block followed by a statement.
-Otherwise ‘default-value’ is returned.
-Unless DIRECTION is symbol 'forward, go backward first"
-  (interactive)
-  (save-excursion
-    (let* ((indents
-            (cond (direction
-                   (if (eq 'forward direction)
-                       (py--guess-indent-forward)
-                     (py--guess-indent-backward)))
-                  ;; guess some usable indent is above current position
-                  ((eq 0 (current-indentation))
-                   (py--guess-indent-forward))
-                  (t (py--guess-indent-backward))))
-           (erg (py--guess-indent-final indents)))
-      (if erg (setq py-indent-offset erg)
-        (setq py-indent-offset
-              (default-value 'py-indent-offset)))
-      (when (called-interactively-p 'any) (message "%s" py-indent-offset))
-      py-indent-offset)))
 
 (defun py--comment-indent-function ()
   "Python version of `comment-indent-function'."
@@ -755,7 +680,7 @@ Returns the string inserted."
   (interactive)
   (goto-char (point-min))
   (while (re-search-forward "[\"']" nil t 1)
-    (or (py-escaped)
+    (or (py-escaped-p)
 	(replace-match (concat "\\\\" (match-string-no-properties 0)))))
   (jump-to-register py--edit-register)
   ;; (py-restore-window-configuration)
