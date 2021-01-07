@@ -1,5 +1,4 @@
-;;; python-components-down.el -- Searching downwards in buffer -*- lexical-binding: t; -*- 
-
+;;; python-components-down.el -- Searching downwards in buffer -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
@@ -23,7 +22,6 @@
 ;; directory devel. Edits here might not be persistent.
 
 ;;; Code:
-
 
 (defun py-down-block (&optional indent)
   "Go to the beginning of next block downwards in buffer according to INDENT.

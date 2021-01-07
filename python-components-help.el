@@ -191,7 +191,7 @@ not inside a defun."
 			"sys.path.insert(0, '"
 			(file-name-directory origfile) "')\n")))
     ;; (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
-    (py-send-string (concat cmd "help('" sym "')\n") nil t nil orig nil nil nil nil nil nil oldbuf t)
+    (py-execute-string (concat cmd "help('" sym "')\n") nil t nil orig nil nil nil nil nil nil oldbuf t)
     (display-buffer oldbuf)))
     ;; (with-help-window "Hilfe" (insert py-result))))
 
@@ -537,8 +537,8 @@ local bindings to py-newline-and-indent."))
 (defalias 'py-find-function 'py-find-definition)
 (defun py--find-definition-question-type (symbol imports)
   (let (erg)
-    (cond ((setq erg (py-send-string (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
-	  (t (setq erg (py-send-string (concat imports "import inspect;inspect.getmodule(\"" symbol "\")")))))
+    (cond ((setq erg (py-execute-string (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
+	  (t (setq erg (py-execute-string (concat imports "import inspect;inspect.getmodule(\"" symbol "\")")))))
     erg))
 
 (defun py-find-definition (&optional symbol)

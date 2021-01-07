@@ -131,9 +131,6 @@ interpreter."
   (interactive "P")
   (py-shell argprompt nil t))
 
-
-
-
 (defun py-kill-shell-unconditional (&optional shell)
   "With optional argument SHELL.
 
@@ -190,14 +187,6 @@ Receives a ‘buffer-name’ as argument"
       (error "Abort: ‘py-use-local-default’ is set to t but ‘py-shell-local-path’ is empty. Maybe call ‘py-toggle-local-default-use’"))))
 
 
-(defun py-shell-get-process (&optional argprompt args dedicated shell buffer)
-  "Get appropriate Python process for current buffer and return it.
-
-Optional ARGPROMPT DEDICATED SHELL BUFFER"
-  (interactive)
-  (or (and buffer (get-buffer-process buffer))
-      (get-buffer-process (current-buffer))
-      (get-buffer-process (py-shell argprompt args dedicated shell buffer))))
 
 (defun py-switch-to-shell ()
   "Switch to Python process buffer."
@@ -216,7 +205,7 @@ Optional ARGPROMPT DEDICATED SHELL BUFFER"
   (let* ((proc (get-buffer-process (current-buffer)))
 	 erg)
     (if proc
-	(setq erg (py-send-string (concat "import os\;os.getcwd()") proc nil t))
+	(setq erg (py-execute-string (concat "import os\;os.getcwd()") proc nil t))
       (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.getcwd())\"")))))
     (when (called-interactively-p 'interactive)
       (message "CWD: %s" erg))
@@ -230,9 +219,9 @@ when given, to value of ‘py-default-working-directory’ otherwise"
   (let* ((proc (get-buffer-process (current-buffer)))
 	 (dir (or directory py-default-working-directory))
 	 erg)
-    ;; (py-send-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
+    ;; (py-execute-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
     (py-execute-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
-    (setq erg (py-send-string "os.getcwd()" proc nil t))
+    (setq erg (py-execute-string "os.getcwd()" proc nil t))
     (when (called-interactively-p 'interactive)
       (message "CWD changed to: %s" erg))
     erg))
@@ -241,7 +230,7 @@ when given, to value of ‘py-default-working-directory’ otherwise"
   (let ((strg (concat "import os\;os.chdir(\"" dir "\")")))
     (if fast
 	(py-fast-send-string strg proc procbuf t t)
-      (py-send-string strg proc nil t))))
+      (py-execute-string strg proc nil t))))
 ;; (comint-send-string proc (concat "import os;os.chdir(\"" dir "\")\n")))
 
 (defun py--update-execute-directory (proc procbuf execute-directory fast)
@@ -254,49 +243,6 @@ when given, to value of ‘py-default-working-directory’ otherwise"
   "Delete TEMPBUF and TEMPFILE."
   (unless py--debug-p
     (when tempfile (py-delete-temporary tempfile tempbuf))))
-
-(defun py-shell-send-file (file-name &optional process temp-file-name
-                                     delete)
-  "Send FILE-NAME to Python PROCESS.
-
-If TEMP-FILE-NAME is passed then that file is used for processing
-instead, while internally the shell will continue to use
-FILE-NAME.  If TEMP-FILE-NAME and DELETE are non-nil, then
-TEMP-FILE-NAME is deleted after evaluation is performed.  When
-optional argument."
-  (interactive
-   (list
-    (read-file-name "File to send: ")))
-  (let* ((proc (or process (py-shell-get-process)))
-         (encoding (with-temp-buffer
-                     (insert-file-contents
-                      (or temp-file-name file-name))
-                     (py-info-encoding)))
-         (file-name (expand-file-name (file-local-name file-name)))
-         (temp-file-name (when temp-file-name
-                           (expand-file-name
-                            (file-local-name temp-file-name)))))
-    (py-shell-send-string
-     (format
-      (concat
-       "import codecs, os;"
-       "__pyfile = codecs.open('''%s''', encoding='''%s''');"
-       "__code = __pyfile.read().encode('''%s''');"
-       "__pyfile.close();"
-       (when (and delete temp-file-name)
-         (format "os.remove('''%s''');" temp-file-name))
-       "exec(compile(__code, '''%s''', 'exec'));")
-      (or temp-file-name file-name) encoding encoding file-name)
-     proc)))
-
-;; (defun py-execute-region (&optional beg end shell dedicated fast split switch proc)
-;;   "Send region at point to  interpreter."
-;;   (interactive "r")
-;;   (let ((beg (or beg (region-beginning)))
-;; 	(end (or end (region-end))))
-;;     (if (and beg end)
-;;     (py--execute-base beg end shell dedicated fast split switch proc)
-;;     (error "py-execute-region: Don't any region"))))
 
 (defun py--python-send-setup-code-intern (name buffer)
   "Send setup code to BUFFER according to NAME, a string."
@@ -327,8 +273,6 @@ Used by `py-ipython-module-completion-string'"
 	(write-file setup-file)))
     (py--execute-file-base setup-file nil nil (current-buffer) nil t)))
 
-
-
 (defun py-delete-temporary (&optional file filebuf)
   (when (file-readable-p file)
     (delete-file file))
@@ -340,24 +284,6 @@ Used by `py-ipython-module-completion-string'"
 (defun py--insert-offset-lines (line)
   "Fix offline amount, make error point at the correct LINE."
   (insert (make-string (- line (py-count-lines (point-min) (point))) 10)))
-
-(defun py-execute-file (filename &optional proc)
-  "When called interactively, user is prompted for FILENAME."
-  (interactive "fFilename: ")
-  (let (;; postprocess-output-buffer might want origline
-        (origline 1)
-        (py-exception-buffer filename)
-        erg)
-    (if (file-readable-p filename)
-        (if py-store-result-p
-            (setq erg (py--execute-file-base (expand-file-name filename) nil nil nil origline))
-          (py--execute-file-base (expand-file-name filename) proc))
-      (message "%s not readable. %s" filename "Do you have write permissions?"))
-    (py--shell-manage-windows py-output-buffer py-exception-buffer nil
-                              (or (called-interactively-p 'interactive)))
-    erg))
-
-
 
 (defun py-execute-string-dedicated (&optional strg shell switch fast)
   "Send the argument STRG to an unique Python interpreter.
@@ -406,10 +332,6 @@ See also ‘py-execute-region’."
       (indent-rigidly
        beg end
        (if (eq (current-bidi-paragraph-direction) 'right-to-left) 1 -1))))
-
-
-
-
 
 (defun py--qualified-module-name (file)
   "Return the fully qualified Python module name for FILE.
@@ -482,132 +404,7 @@ This may be preferable to ‘\\[py-execute-buffer]’ because:
                                   (py-which-execute-file-command file))))
       (py-execute-buffer))))
 
-;;  Fixme: Try to define the function or class within the relevant
-;;  module, not just at top level.
-(defun py-execute-defun ()
-  "Send the current defun (class or method) to the Python process."
-  (interactive)
-  (save-excursion (py-execute-region (progn (beginning-of-defun) (point))
-                                     (progn (end-of-defun) (point)))))
 
-(defun py-process-file (filename &optional output-buffer error-buffer)
-  "Process \"python FILENAME\".
-
-Optional OUTPUT-BUFFER and ERROR-BUFFER might be given."
-  (interactive "fDatei:")
-  (let ((coding-system-for-read 'utf-8)
-        (coding-system-for-write 'utf-8)
-        (output-buffer (or output-buffer (make-temp-name "py-process-file-output")))
-        (pcmd (py-choose-shell)))
-    (unless (buffer-live-p output-buffer)
-      (set-buffer (get-buffer-create output-buffer)))
-    (shell-command (concat pcmd " " filename) output-buffer error-buffer)
-    (when py-switch-buffers-on-execute-p (switch-to-buffer output-buffer))))
-
-(defvar py-last-exeption-buffer nil
-  "Internal use only - when ‘py-up-exception’ is called.
-
-In source-buffer, this will deliver the exception-buffer again.")
-
-(defun py-remove-overlays-at-point ()
-  "Remove overlays as set when ‘py-highlight-error-source-p’ is non-nil."
-  (interactive "*")
-  (delete-overlay (car (overlays-at (point)))))
-
-(defun py-mouseto-exception (event)
-  "Jump to the code which caused the Python exception at EVENT.
-EVENT is usually a mouse click."
-  (interactive "e")
-  (cond
-   ((fboundp 'event-point)
-    ;; XEmacs
-    (let* ((point (event-point event))
-           (buffer (event-buffer event))
-           (e (and point buffer (extent-at point buffer 'py-exc-info)))
-           (info (and e (extent-property e 'py-exc-info))))
-      (message "Event point: %d, info: %s" point info)
-      (and info
-           (py--jump-to-exception (car info) nil (cdr info)))))))
-
-(defun py-goto-exception (&optional file line)
-  "Go to FILE and LINE indicated by the traceback."
-  (interactive)
-  (let ((file file)
-        (line line))
-    (unless (and file line)
-      (save-excursion
-        (beginning-of-line)
-        (if (looking-at py-traceback-line-re)
-            (setq file (substring-no-properties (match-string 1))
-                  line (string-to-number (match-string 2))))))
-    (if (not file)
-        (error "Not on a traceback line"))
-    (find-file file)
-    (goto-char (point-min))
-    (forward-line (1- line))))
-
-(defun py--find-next-exception (start buffer searchdir errwhere)
-  "Find the next Python exception and jump to the code that caused it.
-START is the buffer position in BUFFER from which to begin searching
-for an exception.  SEARCHDIR is a function, either
-‘re-search-backward’ or ‘re-search-forward’ indicating the direction
-to search.  ERRWHERE is used in an error message if the limit (top or
-bottom) of the trackback stack is encountered."
-  (let (file line)
-    (save-excursion
-      (with-current-buffer buffer
-	(goto-char (py--point start))
-	(if (funcall searchdir py-traceback-line-re nil t)
-	    (setq file (match-string 1)
-		  line (string-to-number (match-string 2))))))
-    (if (and file line)
-        (py-goto-exception file line)
-      (error "%s of traceback" errwhere))))
-
-(defun py-down-exception (&optional bottom)
-  "Go to the next line down in the traceback.
-With \\[univeral-argument] (programmatically, optional argument
-BOTTOM), jump to the bottom (innermost) exception in the exception
-stack."
-  (interactive "P")
-  (let* ((buffer py-output-buffer))
-    (if bottom
-        (py--find-next-exception 'eob buffer 're-search-backward "Bottom")
-      (py--find-next-exception 'eol buffer 're-search-forward "Bottom"))))
-
-(defun py-up-exception (&optional top)
-  "Go to the previous line up in the traceback.
-With \\[universal-argument] (programmatically, optional argument TOP)
-jump to the top (outermost) exception in the exception stack."
-  (interactive "P")
-  (let* ((buffer py-output-buffer))
-    (if top
-        (py--find-next-exception 'bob buffer 're-search-forward "Top")
-      (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
-;; ;
-;;  obsolete by py--fetch-result
-;;  followed by py--fetch-error
-;;  still used by py--execute-ge24.3
-
-
-(defun py--find-next-exception-prepare (direction start)
-  "According to DIRECTION and START setup exception regexps.
-
-Depends from kind of Python shell."
-  (let* ((name (get-process (substring (buffer-name (current-buffer)) 1 -1)))
-         (buffer (cond (name (buffer-name (current-buffer)))
-                       ((buffer-live-p (get-buffer py-output-buffer))
-                        py-output-buffer)
-                       (py-last-exeption-buffer (buffer-name py-last-exeption-buffer))
-                       (t (error "Don't see exeption buffer")))))
-    (when buffer (set-buffer (get-buffer buffer)))
-    (if (eq direction 'up)
-        (if (string= start "TOP")
-            (py--find-next-exception 'bob buffer 're-search-forward "Top")
-          (py--find-next-exception 'bol buffer 're-search-backward "Top"))
-      (if (string= start "BOTTOM")
-          (py--find-next-exception 'eob buffer 're-search-backward "Bottom")
-        (py--find-next-exception 'eol buffer 're-search-forward "Bottom")))))
 
 (defalias 'ipython-send-and-indent 'py-execute-line-ipython)
 (defalias 'py-execute-region-in-shell 'py-execute-region)

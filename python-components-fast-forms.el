@@ -1,6 +1,5 @@
 ;;; python-components-fast-forms.el --- Execute forms at point -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
 
@@ -25,64 +24,6 @@
 ;;; Code:
 
 ;; Process forms fast
-
-(defun py-fast-process (&optional buffer)
-  "Connect am (I)Python process suitable for large output.
-
-Output buffer displays \"Fast\"  by default
-It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907"
-  (interactive)
-  (let ((this-buffer
-         (set-buffer (or (and buffer (get-buffer-create buffer))
-                         (get-buffer-create py-shell-name)))))
-    (let ((proc (start-process py-shell-name this-buffer py-shell-name)))
-      (with-current-buffer this-buffer
-        (erase-buffer))
-      proc)))
-
-(defun py-fast-send-string (strg  &optional proc output-buffer result no-output argprompt args dedicated shell exception-buffer)
-  (interactive
-   (list (read-string "Python command: ")))
-  (py-send-string strg proc result no-output nil output-buffer t argprompt args dedicated shell exception-buffer))
-
-(defun py--fast-send-string-no-output-intern (strg proc limit output-buffer no-output)
-  (let (erg)
-    (with-current-buffer output-buffer
-      (when py--debug-p (switch-to-buffer (current-buffer)))
-      ;; (erase-buffer)
-      (process-send-string proc strg)
-      (or (string-match "\n$" strg)
-	  (process-send-string proc "\n")
-	  (goto-char (point-max))
-	  )
-      (cond (no-output
-	     (delete-region (field-beginning) (field-end))
-	     ;; (erase-buffer)
-	     ;; (delete-region (point-min) (line-beginning-position))
-	     )
-	    (t
-	     (if
-		 (setq erg (py--fetch-result output-buffer limit strg))
-		 (setq py-result (py--filter-result erg))
-	       (dotimes (_ 3) (unless (setq erg (py--fetch-result output-buffer limit))(sit-for 1 t)))
-	       (or (py--fetch-result output-buffer limit))
-	       (error "py-fast-send-string: py--fetch-result: no result")))))))
-
-(defun py--fast-send-string-no-output (strg  &optional proc output-buffer result)
-  (py-fast-send-string strg proc output-buffer result t))
-
-(defun py--send-to-fast-process (strg proc output-buffer result)
-  "Called inside of ‘py--execute-base-intern’.
-
-Optional STRG PROC OUTPUT-BUFFER RETURN"
-  (let ((output-buffer (or output-buffer (process-buffer proc)))
-	(inhibit-read-only t))
-    ;; (switch-to-buffer (current-buffer))
-    (with-current-buffer output-buffer
-      ;; (erase-buffer)
-      (py-fast-send-string strg
-			   proc
-			   output-buffer result))))
 
 (defun py-execute-buffer-fast (&optional shell dedicated split switch proc)
   "Send accessible part of buffer to a Python interpreter.

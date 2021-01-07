@@ -193,7 +193,7 @@ See available customizations listed in files variables-python-mode at directory 
                           (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
                                   py-outline-mode-keywords)
                           "\\|")))
-    (when py-font-lock-defaults-p
+  (when py-font-lock-defaults-p
     (if py-use-font-lock-doc-face-p
 	(set (make-local-variable 'font-lock-defaults)
              '(python-font-lock-keywords nil nil nil nil
@@ -289,7 +289,9 @@ See available customizations listed in files variables-python-mode at directory 
   (if py-auto-fill-mode
       (add-hook 'python-mode-hook 'py--run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py--run-auto-fill-timer))
-
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (setq imenu-create-index-function py--imenu-create-index-function)))
   ;; caused insert-file-contents error lp:1293172
   ;;  (add-hook 'after-change-functions 'py--after-change-function nil t)
   (if py-defun-use-top-level-p

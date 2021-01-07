@@ -569,20 +569,7 @@ Store deleted statements in ‘kill-ring’"
       (kill-new (buffer-substring-no-properties beg end))
       (delete-region beg end))))
 
-(defun py--join-words-wrapping (words separator prefix line-length)
-  (let ((lines ())
-        (current-line prefix))
-    (while words
-      (let* ((word (car words))
-             (maybe-line (concat current-line word separator)))
-        (if (> (length maybe-line) line-length)
-            (setq lines (cons (substring current-line 0 -1) lines)
-                  current-line (concat prefix word separator " "))
-          (setq current-line (concat maybe-line " "))))
-      (setq words (cdr words)))
-    (setq lines (cons (substring
-                       current-line 0 (- 0 (length separator) 1)) lines))
-    (mapconcat 'identity (nreverse lines) "\n")))
+
 
 (defun py-insert-super ()
   "Insert a function \"super()\" from current environment.

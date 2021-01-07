@@ -102,7 +102,7 @@ Interal used. Takes INPUT COMPLETION"
 
 Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   (when imports
-    (py-send-string imports process nil t))
+    (py-execute-string imports process nil t))
   (sit-for 0.1 t)
   (let* ((completion
 	  (py--shell-completion-get-completions

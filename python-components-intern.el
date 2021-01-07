@@ -28,7 +28,6 @@
 
 ;;  Utility stuff
 
-
 (defun py--computer-closing-inner-list ()
   "Compute indentation according to py-closing-list-dedents-bos."
   (if py-closing-list-dedents-bos
@@ -153,11 +152,6 @@ Choices are:
         (if py-closing-list-dedents-bos
             (- (current-indentation) py-indent-offset)
           (current-indentation))))))
-
-
-
-
-
 
 (defun py-compute-indentation (&optional iact orig origline closing line nesting repeat indent-offset liep)
   "Compute Python indentation.
@@ -381,9 +375,7 @@ LIEP stores line-end-position at point-of-interest
 			 (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep))
 			(t (current-indentation))))
             (when py-verbose-p (message "%s" indent))
-            indent)))))) 
-
-
+            indent))))))
 
 (defun py--uncomment-intern (beg end)
   (uncomment-region beg end)
@@ -434,18 +426,6 @@ module-qualified names."
   (interactive "f")
   (py--execute-file-base file-name (get-buffer-process (get-buffer (py-shell)))))
 
-(defun py-proc (&optional argprompt)
-  "Return the current Python process.
-
-Start a new process if necessary. "
-  (interactive "P")
-  (let ((erg
-         (cond ((comint-check-proc (current-buffer))
-                (get-buffer-process (buffer-name (current-buffer))))
-               (t (py-shell argprompt)))))
-    ;; (when (called-interactively-p 'any) (message "%S" erg))
-    erg))
-
 ;;  Hooks
 ;;  arrange to kill temp files when Emacs exists
 
@@ -478,43 +458,6 @@ Start a new process if necessary. "
                #'(lambda () (interactive) (beep))))
            (where-is-internal 'self-insert-command)))
 
-
-
-
-;;  FixMe: for unknown reasons this is not done by mode
-;; (if (file-readable-p abbrev-file-name)
-;;     (add-hook 'python-mode-hook
-;;               (lambda ()
-;;                 (setq py-this-abbrevs-changed abbrevs-changed)
-;;                 (load abbrev-file-name nil t)
-;;                 (setq abbrevs-changed py-this-abbrevs-changed)))
-;;   (message "Warning: %s" "no abbrev-file found, customize `abbrev-file-name' in order to make mode-specific abbrevs work. "))
-
-;; ;
-;; (push (list
-;;               'python-mode
-;;               ;; start regex
-;;               (concat (if py-hide-show-hide-docstrings
-;;                           "^\\s-*\"\"\"\\|" "")
-;;                       (mapconcat 'identity
-;;                                  (mapcar #'(lambda (x) (concat "^\\s-*" x "\\_>"))
-;;                                          py-hide-show-keywords)
-;;                                  "\\|"))
-;;               ;; end regex
-;;               nil
-;;               ;; comment-start regex
-;;               "#"
-;;               ;; forward-sexp function
-;;               (lambda ()
-;;                 (py-forward-block-or-clause))
-;;               nil) hs-special-modes-alist)
-
-;; ;
-
-
-
-
-
 (defun py--set-auto-fill-values ()
   "Internal use by `py--run-auto-fill-timer'"
   (let ((pps (parse-partial-sexp (point-min) (point))))
@@ -535,12 +478,7 @@ Start a new process if necessary. "
 
 ;;  unconditional Hooks
 ;;  (orgstruct-mode 1)
-(add-hook 'python-mode-hook
-          (lambda ()
-            (setq imenu-create-index-function py--imenu-create-index-function)
-            (setq indent-tabs-mode py-indent-tabs-mode)))
 
-(remove-hook 'python-mode-hook 'python-setup-brm)
 
 (defun py-complete-auto ()
   "Auto-complete function using py-complete. "
@@ -561,15 +499,6 @@ Start a new process if necessary. "
               (setq py-auto-completion-mode-p nil
                     py-auto-completion-buffer nil)
               (cancel-timer py--auto-complete-timer)))))))
-
-
-
-
-
-
-
-
-
 
 ;;  End-of- p
 
@@ -617,8 +546,6 @@ For stricter sense specify regexp. "
   "Return `t' if the statement opens a functions or class definition, nil otherwise. "
   (py--statement-opens-base py-def-or-class-re))
 
-
-
 (defun py--down-top-level (&optional regexp)
   "Go to the end of a top-level form.
 
@@ -633,20 +560,10 @@ When already at end, go to EOB."
   (beginning-of-line)
   (and (looking-at regexp) (point)))
 
-
-
-
-
 (defun py--end-of-paragraph (regexp)
   (let* ((regexp (if (symbolp regexp) (symbol-value regexp)
                    regexp)))
     (while (and (not (eobp)) (re-search-forward regexp nil 'move 1) (nth 8 (parse-partial-sexp (point-min) (point)))))))
-
-
-
-
-
-
 
 (defun py--look-downward-for-beginning (regexp)
   "When above any beginning of FORM, search downward. "
@@ -716,6 +633,20 @@ See customizable variables `py-current-defun-show' and `py-current-defun-delay'.
         (when iact (message (prin1-to-string erg)))
         erg))))
 
+(defun py--join-words-wrapping (words separator prefix line-length)
+  (let ((lines ())
+        (current-line prefix))
+    (while words
+      (let* ((word (car words))
+             (maybe-line (concat current-line word separator)))
+        (if (> (length maybe-line) line-length)
+            (setq lines (cons (substring current-line 0 -1) lines)
+                  current-line (concat prefix word separator " "))
+          (setq current-line (concat maybe-line " "))))
+      (setq words (cdr words)))
+    (setq lines (cons (substring current-line 0 (- 0 (length separator) 1)) lines))
+    (mapconcat 'identity (nreverse lines) "\n")))
+
 (defun py-sort-imports ()
   "Sort multiline imports.
 
@@ -766,7 +697,6 @@ is preferable for that. ")
 
 ;;  Utilities
 
-
 (defun py-install-local-shells (&optional local)
   "Builds Python-shell commands from executable found in LOCAL.
 
@@ -809,8 +739,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
     (if (file-readable-p (concat py-install-directory "/" py-extensions))
         (find-file (concat py-install-directory "/" py-extensions)))))
 
-
-
 (defun py--until-found (search-string liste)
   "Search liste for search-string until found. "
   (let ((liste liste) element)
@@ -825,7 +753,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
           (setq element (cdr element))))
       element)))
 
-
 (defun py--report-end-marker (process)
   ;; (message "py--report-end-marker in %s" (current-buffer))
   (if (derived-mode-p 'comint-mode)
@@ -839,127 +766,6 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
       (progn
 	(dotimes (_ 3) (when (not (markerp (process-mark process)))(sit-for 1 t)))
 	(process-mark process)))))
-
-(defun py--filter-result (strg)
-  "Set ‘py-result’ according to ‘py-fast-filter-re’.
-
-Remove trailing newline"
-  (py--string-trim
-   (replace-regexp-in-string
-    py-fast-filter-re
-    ""
-    (ansi-color-filter-apply strg))))
-
-(defun py--cleanup-shell (orig buffer)
-  (with-current-buffer buffer
-    (with-silent-modifications
-      (sit-for py-python3-send-delay)
-      (when py--debug-p (switch-to-buffer (current-buffer)))
-      (delete-region orig (point-max)))))
-
-(defun py-shell--save-temp-file (strg)
-  (let* ((temporary-file-directory
-          (if (file-remote-p default-directory)
-              (concat (file-remote-p default-directory) "/tmp")
-            temporary-file-directory))
-         (temp-file-name (make-temp-file "py"))
-         (coding-system-for-write (py-info-encoding)))
-    (with-temp-file temp-file-name
-      (insert strg)
-      (delete-trailing-whitespace))
-    temp-file-name))
-
-(defun py-shell-send-string (strg &optional process)
-  "Send STRING to Python PROCESS.
-
-Uses ‘comint-send-string’."
-  (interactive
-   (list (read-string "Python command: ") nil t))
-  (let ((process (or process (py-shell-get-process))))
-    (if (string-match ".\n+." strg)   ;Multiline.
-        (let* ((temp-file-name (py-shell--save-temp-file strg))
-               (file-name (or (buffer-file-name) temp-file-name)))
-          (py-shell-send-file file-name process temp-file-name t))
-      (comint-send-string process strg)
-      (when (or (not (string-match "\n\\'" strg))
-                (string-match "\n[ \t].*\n?\\'" strg))
-        (comint-send-string process "\n")))))
-
-(defun py-shell-output-filter (strg)
-  "Filter used in `py-shell-send-string-no-output' to grab output.
-STRING is the output received to this point from the process.
-This filter saves received output from the process in
-`py-shell-output-filter-buffer' and stops receiving it after
-detecting a prompt at the end of the buffer."
-  (let ((py-shell--prompt-calculated-output-regexp
-	 (or py-shell--prompt-calculated-output-regexp (py-shell-prompt-set-calculated-regexps))))
-    (setq
-     strg (ansi-color-filter-apply strg)
-     py-shell-output-filter-buffer
-     (concat py-shell-output-filter-buffer strg))
-    (when (py-shell-comint-end-of-output-p
-	   py-shell-output-filter-buffer)
-      ;; Output ends when `py-shell-output-filter-buffer' contains
-      ;; the prompt attached at the end of it.
-      (setq py-shell-output-filter-in-progress nil
-	    py-shell-output-filter-buffer
-	    (substring py-shell-output-filter-buffer
-		       0 (match-beginning 0)))
-      (when (string-match
-	     py-shell--prompt-calculated-output-regexp
-	     py-shell-output-filter-buffer)
-	;; Some shells, like IPython might append a prompt before the
-	;; output, clean that.
-	(setq py-shell-output-filter-buffer
-	      (substring py-shell-output-filter-buffer (match-end 0)))))
-    ""))
-
-(defun py-send-string-no-output (strg &optional process buffer-name)
-  "Send STRING to PROCESS and inhibit output.
-
-Return the output."
-  (let* ((proc (or process (py-shell-get-process)))
-	 (buffer (or buffer-name (if proc (buffer-name (process-buffer proc)) (py-shell))))
-         (comint-preoutput-filter-functions
-          '(py-shell-output-filter))
-         (py-shell-output-filter-in-progress t)
-         (inhibit-quit t)
-	 (delay (py--which-delay-process-dependent buffer)))
-    (or
-     (with-local-quit
-       (if (and (string-match ".\n+." strg) (string-match "^\*[Ii]" buffer))  ;; IPython or multiline
-           (let* ((temp-file-name (py-temp-file-name strg))
-		  (file-name (or (buffer-file-name) temp-file-name)))
-	     (py-execute-file file-name proc))
-	 (py-shell-send-string strg proc))
-       ;; (switch-to-buffer buffer)
-       ;; (accept-process-output proc 9)
-       (while py-shell-output-filter-in-progress
-         ;; `py-shell-output-filter' takes care of setting
-         ;; `py-shell-output-filter-in-progress' to NIL after it
-         ;; detects end of output.
-         (accept-process-output proc delay))
-       (prog1
-           py-shell-output-filter-buffer
-         (setq py-shell-output-filter-buffer nil)))
-     (with-current-buffer (process-buffer proc)
-       (comint-interrupt-subjob)))))
-
-
-
-;; (defun py-send-file (file-name process)
-;;   "Send FILE-NAME to Python PROCESS."
-;;   (interactive "fFile to send: ")
-;;   (let* ((proc (or
-;; 		   process (get-buffer-process (py-shell))))
-;; 	 (file-name (expand-file-name file-name)))
-;;     (py-send-string
-;;      (format
-;;       (concat "__pyfile = open('''%s''');"
-;; 	      "exec(compile(__pyfile.read(), '''%s''', 'exec'));"
-;; 	      "__pyfile.close()")
-;;       file-name file-name)
-;;      proc)))
 
 (defun py-which-def-or-class (&optional orig)
   "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.
@@ -1395,10 +1201,6 @@ Use current region unless optional args BEG END are delivered."
     (indent-to-column cui)
     cui))
 
-
-
-
-
 (defun py--backward-regexp-fast (regexp)
   "Search backward next regexp not in string or comment.
 
@@ -1411,9 +1213,6 @@ Return and move to match-beginning if successful"
               (nth 8 (parse-partial-sexp (point-min) (point)))))
       (unless (nth 8 (parse-partial-sexp (point-min) (point)))
         last))))
-
-
-
 
 (defun py-indent-and-forward (&optional indent)
   "Indent current line according to mode, move one line forward.

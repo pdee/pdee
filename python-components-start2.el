@@ -66,94 +66,6 @@
 
 ;;; Code:
 
-(defun py--end-base (regexp &optional orig bol repeat)
-  "Used internal by functions going to the end FORM.
-
-Returns the indentation of FORM-start
-Arg REGEXP, a symbol"
-  (unless (eobp)
-    (let (;; not looking for an assignment
-	  (use-regexp (member regexp (list 'py-def-re 'py-class-re 'py-def-or-class-re)))
-	  (orig (or orig (point))))
-      (unless (eobp)
-	(unless (py-beginning-of-statement-p)
-	  (py-backward-statement))
-	(let* (;; when at block-start, be specific
-	       (regexp (py--refine-regexp-maybe regexp))
-               (regexpvalue (symbol-value regexp))
-               ;; (regexp (or regexp (symbol-value 'py-extended-block-or-clause-re)))
-	       (repeat (if repeat (1+ repeat) 0))
-	       (indent (if
-			   (looking-at regexpvalue)
-			   (if (bolp) 0
-			     (abs
-			      (- (current-indentation) py-indent-offset)))
-			 (current-indentation)))
-	       ;; when at block-start, be specific
-	       ;; return current-indentation, position and possibly needed clause-regexps (secondvalue)
-	       (res
-		(cond
-		 ((and (py-beginning-of-statement-p)
-		       ;; (eq 0 (current-column))
-		       (or (looking-at regexpvalue)
-			   (and (member regexp (list 'py-def-re 'py-def-or-class-re 'py-class-re))
-				(looking-at py-decorator-re)
-				(py-down-def-or-class (current-indentation)))
-			   (and (member regexp (list 'py-minor-block-re 'py-if-re 'py-for-re 'py-try-re))
-				(looking-at py-minor-clause-re))))
-		  (list (current-indentation) (point) (py--end-base-determine-secondvalue regexp)))
-		 ((looking-at regexpvalue)
-		  (list (current-indentation) (point) (py--end-base-determine-secondvalue regexp)))
-		 ((eq 0 (current-indentation))
-		  (py--down-according-to-indent regexp nil 0 use-regexp))
-		 ;; look upward
-		 (t (py--go-to-keyword regexp))))
-	       (secondvalue (ignore-errors (nth 2 res)))
-	       erg)
-	  ;; (py-for-block-p (looking-at py-for-re))
-	  (setq indent (or (and res (car-safe res)) indent))
-	  (cond
-	   (res (setq erg
-		      (and
-		       (py--down-according-to-indent regexp secondvalue (current-indentation))
-		       ;; (if (>= indent (current-indentation))
-		       (py--down-end-form)
-		       ;; (py--end-base regexp orig bol repeat)
-		       ;; )
-		       )))
-	   (t (unless (< 0 repeat) (goto-char orig))
-	      (py--forward-regexp (symbol-value regexp))
-	      (beginning-of-line)
-	      (setq erg (and
-			 (py--down-according-to-indent regexp secondvalue (current-indentation) t)
-			 (py--down-end-form)))))
-	  (cond ((< orig (point))
-		 (setq erg (point))
-		 (progn
-		   (and erg bol (setq erg (py--beginning-of-line-form)))
-		   (and erg (cons (current-indentation) erg))))
-		((eq (point) orig)
-		 (unless (eobp)
-		   (cond
-		    ((and (< repeat 1)
-			  (or
-			   ;; looking next indent as part of body
-			   (py--down-according-to-indent regexp secondvalue
-							 indent
-							 ;; if expected indent is 0,
-							 ;; search for new start,
-							 ;; search for regexp only
-							 (eq 0 indent))
-			   (and
-			    ;; next block-start downwards, reduce expected indent maybe
-			    (setq indent (or (and (< 0 indent) (- indent py-indent-offset)) indent))
-			    (py--down-according-to-indent regexp secondvalue
-							  indent t))))
-		     (py--end-base regexp orig bol (1+ repeat))))))
-		((< (point) orig)
-		 (goto-char orig)
-		 (when (py--down-according-to-indent regexp secondvalue nil t)
-		   (py--end-base regexp (point) bol (1+ repeat))))))))))
 
 (defun py--fix-start (strg)
   "Internal use by py-execute... functions.
@@ -184,43 +96,58 @@ Avoid empty lines at the beginning."
 	(newline 1))
       (buffer-substring-no-properties 1 (point-max)))))
 
-(defun py-execute-string (strg &optional process result no-output orig output-buffer fast argprompt args dedicated shell exception-buffer split switch internal)
-  "Evaluate STRG in Python PROCESS.
 
-With optional Arg PROCESS send to process.
-With optional Arg RESULT store result in var ‘py-result’, also return it.
-With optional Arg NO-OUTPUT don't display any output
-With optional Arg ORIG deliver original position.
-With optional Arg OUTPUT-BUFFER specify output-buffer"
-  (interactive "sPython command: ")
+
+
+
+(defun py-fast-send-string (strg  &optional proc output-buffer result no-output argprompt args dedicated shell exception-buffer)
+  (interactive
+   (list (read-string "Python command: ")))
+  (py-execute-string strg proc result no-output nil output-buffer t argprompt args dedicated shell exception-buffer))
+
+(defun py--fast-send-string-no-output (strg  &optional proc output-buffer result)
+  (py-fast-send-string strg proc output-buffer result t))
+
+(defun py--send-to-fast-process (strg proc output-buffer result)
+  "Called inside of ‘py--execute-base-intern’.
+
+Optional STRG PROC OUTPUT-BUFFER RETURN"
+  (let ((output-buffer (or output-buffer (process-buffer proc)))
+	(inhibit-read-only t))
+    ;; (switch-to-buffer (current-buffer))
+    (with-current-buffer output-buffer
+      ;; (erase-buffer)
+      (py-fast-send-string strg
+			   proc
+			   output-buffer result))))
+
+(defun py--point (position)
+  "Returns the value of point at certain commonly referenced POSITIONs.
+POSITION can be one of the following symbols:
+
+  bol -- beginning of line
+  eol -- end of line
+  bod -- beginning of def or class
+  eod -- end of def or class
+  bob -- beginning of buffer
+  eob -- end of buffer
+  boi -- back to indentation
+  bos -- beginning of statement
+
+This function does not modify point or mark."
   (save-excursion
-    (let* ((buffer (or output-buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell argprompt args dedicated shell output-buffer fast exception-buffer split switch internal)))))
-	   (proc (or process (get-buffer-process buffer)))
-	   ;; nil nil nil nil (buffer-name buffer))))
-	   (orig (or orig (point)))
-   	   (limit (ignore-errors (marker-position (process-mark proc)))))
-      (cond ((and no-output fast)
-	     (py--fast-send-string-no-output-intern strg proc limit buffer no-output))
-	    (no-output
-	     (py-send-string-no-output strg proc))
-	    ((and (string-match ".\n+." strg) (string-match "^[Ii]"
-							    ;; (buffer-name buffer)
-							    buffer
-							    ))  ;; multiline
-	     (let* ((temp-file-name (py-temp-file-name strg))
-		    (file-name (or (buffer-file-name) temp-file-name)))
-	       (py-execute-file file-name proc)))
-	    (t (with-current-buffer buffer
-		 (comint-send-string proc strg)
-		 (when (or (not (string-match "\n\\'" strg))
-			   (string-match "\n[ \t].*\n?\\'" strg))
-		   (comint-send-string proc "\n"))
-		 (sit-for py-python-send-delay)
-		 (cond (result
-			(setq py-result
-			      (py--fetch-result buffer limit strg)))
-		       (no-output
-			(and orig (py--cleanup-shell orig buffer))))))))))
+    (progn
+      (cond
+       ((eq position 'bol) (beginning-of-line))
+       ((eq position 'eol) (end-of-line))
+       ((eq position 'bod) (py-backward-def-or-class))
+       ((eq position 'eod) (py-forward-def-or-class))
+       ;; Kind of funny, I know, but useful for py-up-exception.
+       ((eq position 'bob) (goto-char (point-min)))
+       ((eq position 'eob) (goto-char (point-max)))
+       ((eq position 'boi) (back-to-indentation))
+       ((eq position 'bos) (py-backward-statement))
+       (t (error "Unknown buffer position requested: %s" position))))))
 
 (provide 'python-components-start2)
 ;;; python-components-start2.el ends here

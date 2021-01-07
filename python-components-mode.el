@@ -67,26 +67,27 @@
 ;;; Code:
 
 (require 'python-components-start1)
+(require 'python-components-extra)
 (require 'python-components-shift-forms)
 (require 'python-components-down)
+(require 'python-components-start-Zf98zM)
 (require 'python-components-backward-forms)
-(require 'python-components-start2)
 (require 'python-components-forward-forms)
+(require 'python-components-start2)
 (require 'python-components-start3)
 (require 'python-components-up)
 (require 'python-components-beginning-position-forms)
 (require 'python-components-move)
-
 (require 'python-components-booleans-beginning-forms)
+(require 'python-components-extended-executes)
+(require 'python-components-execute)
+(require 'python-components-intern)
+
 (require 'python-components-menu)
-(require 'python-components-extra)
 (require 'python-components-map)
 (require 'python-components-font-lock)
 (require 'python-components-switches)
 (require 'python-components-edit)
-(require 'python-components-extended-executes)
-(require 'python-components-execute)
-
 (require 'python-components-kill-forms)
 (require 'python-components-mark-forms)
 (require 'python-components-copy-forms)
@@ -113,7 +114,7 @@
 (require 'python-components-fast-forms)
 (require 'python-components-auto-fill)
 (require 'python-components-fast-complete)
-(require 'python-components-intern)
+
 (require 'python-components-named-shells)
 (require 'python-components-close-forms)
 (require 'python-components-section-forms)

@@ -661,9 +661,6 @@
 (ert-deftest py-ert-execute-region-jython-no-switch-functionp-test-CUk24s ()
   (should (functionp 'py-execute-region-jython-no-switch)))
 
-(ert-deftest py-ert-execute-defun-functionp-test-A701Ea ()
-  (should (functionp 'py-execute-defun)))
-
 (ert-deftest py-ert-process-file-functionp-test-kv2RaS ()
   (should (functionp 'py-process-file)))
 
