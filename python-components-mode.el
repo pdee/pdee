@@ -125,6 +125,6 @@
 ;; (require 'python-components-eldoc)
 (require 'python-components-foot)
 
-(provide 'python-components-mode)
+;; (provide 'python-components-mode)
 (provide 'python-mode)
 ;;; python-components-mode.el ends here
