@@ -92,7 +92,7 @@
 (require 'python-components-mark-forms)
 (require 'python-components-copy-forms)
 (require 'python-components-delete-forms)
-(require 'python-components-send)
+;; (require 'python-components-send)
 (require 'python-components-shell-complete)
 (require 'python-components-pdbtrack)
 (require 'python-components-pdb)

@@ -52,7 +52,7 @@ or may be omitted (it is usually omitted).  "
     (let ((orig (point))
           proposal exp name)
       (while (< 0 arg)
-        (py-beginning-of-partial-expression)
+        (py-backward-partial-expression)
         (when (looking-at "[[:alpha:]]")
           (setq proposal (concat (downcase (match-string-no-properties 0)) proposal)))
         (setq arg (1- arg)))

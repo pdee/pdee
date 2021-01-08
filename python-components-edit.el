@@ -753,7 +753,7 @@ arg MODE: which buffer-mode used in edit-buffer"
     (let* ((beg (py-beginning-of-assignment))
 	   (name (py-expression))
 	   (end (py-end-of-assignment))
-	   (proc-buf (python nil nil "Fast Intern Utility Re-Use")))
+	   (proc-buf (py-shell nil nil "Fast Intern Utility Re-Use")))
       (py--prettyprint-assignment-intern beg end name proc-buf)))
   (py-restore-window-configuration))
 

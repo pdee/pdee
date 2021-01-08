@@ -251,7 +251,7 @@
   (should (functionp 'py-forward-partial-expression)))
 
 (ert-deftest py-ert-beginning-of-line-functionp-test-q4Klqv ()
-  (should (functionp 'py-beginning-of-line)))
+  (should (functionp 'py-backward-line)))
 
 (ert-deftest py-ert-end-of-line-functionp-test-6rtLn7 ()
   (should (functionp 'py-end-of-line)))
@@ -296,7 +296,7 @@
   (should (functionp 'py--travel-current-indent)))
 
 (ert-deftest py-ert-beginning-of-block-current-column-functionp-test-GUj4Ff ()
-  (should (functionp 'py-beginning-of-block-current-column)))
+  (should (functionp 'py-backward-block-current-column)))
 
 (ert-deftest py-ert--end-of-block-p-functionp-test-kJGLdR ()
   (should (functionp 'py--end-of-block-p)))
@@ -841,12 +841,6 @@
 (ert-deftest py-ert-minor-block-functionp-test-QxDmIP ()
   (should (functionp 'py-minor-block)))
 
-(ert-deftest py-ert-output-buffer-filter-functionp-test-gLkOIw ()
-  (should (functionp 'py-output-buffer-filter)))
-
-(ert-deftest py-ert-output-filter-functionp-test-sxXoId ()
-  (should (functionp 'py-output-filter)))
-
 (ert-deftest py-ert-copy-statement-functionp-test-ik7wzB ()
   (should (functionp 'py-copy-statement)))
 
@@ -1261,13 +1255,11 @@
 (ert-deftest py-ert-autopair-mode-off-functionp-test-cpfpem ()
   (should (functionp 'py-autopair-mode-off)))
 
-
 (ert-deftest py-ert-switch-buffers-on-execute-p-on-functionp-test-2hUpEV ()
   (should (functionp 'py-switch-buffers-on-execute-p-on)))
 
 (ert-deftest py-ert-switch-buffers-on-execute-p-off-functionp-test-ikuTiI ()
   (should (functionp 'py-switch-buffers-on-execute-p-off)))
-
 
 (ert-deftest py-ert-split-window-on-execute-on-functionp-test-MbK0pg ()
   (should (functionp 'py-split-window-on-execute-on)))
@@ -1275,13 +1267,11 @@
 (ert-deftest py-ert-split-window-on-execute-off-functionp-test-Co4jS1 ()
   (should (functionp 'py-split-window-on-execute-off)))
 
-
 (ert-deftest py-ert-fontify-shell-buffer-p-on-functionp-test-O8aUEy ()
   (should (functionp 'py-fontify-shell-buffer-p-on)))
 
 (ert-deftest py-ert-fontify-shell-buffer-p-off-functionp-test-yijvZj ()
   (should (functionp 'py-fontify-shell-buffer-p-off)))
-
 
 (ert-deftest py-ert-jump-on-exception-on-functionp-test-iqoFl8 ()
   (should (functionp 'py-jump-on-exception-on)))

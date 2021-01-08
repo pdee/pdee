@@ -395,7 +395,7 @@ Takes a list, INDENT and ORIG position."
       (when (< orig last)
         last))))
 
-(defun py-beginning-of-block-current-column ()
+(defun py-backward-block-current-column ()
 "Reach next beginning of block upwards which start at current column.
 
 Return position"

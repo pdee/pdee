@@ -624,8 +624,8 @@ Returns beginning of def if successful, nil otherwise
 
 When `py-mark-decorators' is non-nil, decorators are considered too."]
 
-	   ["Beginning of def or class" py-beginning-of-def-or-class
-	    :help " `py-beginning-of-def-or-class'
+	   ["Beginning of def or class" py-backward-def-or-class
+	    :help " `py-backward-def-or-class'
 Go to beginning def-or-class, skip whitespace at BOL.
 
 Returns beginning of def-or-class if successful, nil otherwise
@@ -669,8 +669,8 @@ Go to beginning if-block, skip whitespace at BOL.
 
 Returns beginning of if-block if successful, nil otherwise"]
 
-	   ["Beginning of partial expression" py-beginning-of-partial-expression
-	    :help " `py-beginning-of-partial-expression'"]
+	   ["Beginning of partial expression" py-backward-partial-expression
+	    :help " `py-backward-partial-expression'"]
 
 	   ["Beginning of statement" py-backward-statement
 	    :help " `py-backward-statement'
@@ -821,8 +821,8 @@ Returns beginning of def if successful, nil otherwise
 
 When `py-mark-decorators' is non-nil, decorators are considered too."]
 
-	    ["Beginning of def or class bol" py-beginning-of-def-or-class-bol
-	     :help " `py-beginning-of-def-or-class-bol'
+	    ["Beginning of def or class bol" py-backward-def-or-class-bol
+	     :help " `py-backward-def-or-class-bol'
 Go to beginning def-or-class, go to BOL.
 
 Returns beginning of def-or-class if successful, nil otherwise
@@ -856,8 +856,8 @@ Go to beginning if-block, go to BOL.
 
 Returns beginning of if-block if successful, nil otherwise"]
 
-	    ["Beginning of partial expression bol" py-beginning-of-partial-expression-bol
-	     :help " `py-beginning-of-partial-expression-bol'"]
+	    ["Beginning of partial expression bol" py-backward-partial-expression-bol
+	     :help " `py-backward-partial-expression-bol'"]
 
 	    ["Beginning of statement bol" py-backward-statement-bol
 	     :help " `py-backward-statement-bol'

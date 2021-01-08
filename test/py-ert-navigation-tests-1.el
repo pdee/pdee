@@ -1554,14 +1554,14 @@ if __name__ == \"__main__\":
     (py-backward-block)
     (should (eq (current-column) 8))))
 
-(ert-deftest py-beginning-of-block-test-GccKh6 ()
+(ert-deftest py-backward-block-test-GccKh6 ()
   (py-test-with-temp-buffer
       "if False:
     print(\"Nein\")
 else:
     print(\"Ja\")"
     (goto-char(point-max))
-    (py-beginning-of-block)
+    (py-backward-block)
     (should (eq (char-after) ?i))))
 
 (ert-deftest py-forward-def-or-class-test-C3L8jg ()
@@ -3132,11 +3132,11 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (goto-char (point-min))
     (should (py--beginning-of-assignment-p))))
 
-(ert-deftest py-beginning-of-assignment-test-nnyBdy()
+(ert-deftest py-backward-assignment-test-nnyBdy()
   (py-test-with-temp-buffer
       "a, b, c = (1, 2, 3)"
     (goto-char (point-max))
-    (should (py-beginning-of-assignment))))
+    (should (py-backward-assignment))))
 
 (ert-deftest py-end-of-assignment-test-nnyBdy()
     (py-test-with-temp-buffer-point-min

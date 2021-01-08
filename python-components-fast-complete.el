@@ -65,7 +65,7 @@ completions on the current context."
     (py--python-send-completion-setup-code buffer)
     (py--fast--do-completion-at-point proc imports word code buffer)))
 
-(defun py-fast-complete (&optional shell beg end word)
+(defun py-fast-complete (&optional shell word imports)
   "Complete word before point, if any.
 
 Use `py-fast-process' "
@@ -73,7 +73,7 @@ Use `py-fast-process' "
   (window-configuration-to-register py--windows-config-register)
   (setq py-last-window-configuration
   	(current-window-configuration))
-  (py-shell-complete shell beg end word t)
+  (py--fast-complete-base shell word imports)
   )
 
 (provide 'python-components-fast-complete)

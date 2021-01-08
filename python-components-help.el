@@ -164,7 +164,7 @@ not inside a defun."
         (goto-char (line-end-position))
         (forward-comment -9999)
         (setq min-indent (current-indentation))
-        (while (py-beginning-of-def-or-class)
+        (while (py-backward-def-or-class)
           (when (or (< (current-indentation) min-indent)
                     first-run)
             (setq first-run nil)
@@ -452,8 +452,8 @@ the block structure:
 \\[py-previous-statement]\t move to statement preceding point
 \\[py-next-statement]\t move to statement following point
 \\[py-goto-block-up]\t move up to start of current block
-\\[py-beginning-of-def-or-class]\t move to start of def
-\\[universal-argument] \\[py-beginning-of-def-or-class]\t move to start of class
+\\[py-backward-def-or-class]\t move to start of def
+\\[universal-argument] \\[py-backward-def-or-class]\t move to start of class
 \\[py-end-of-def-or-class]\t move to end of def
 \\[universal-argument] \\[py-end-of-def-or-class]\t move to end of class
 
@@ -468,7 +468,7 @@ Or do \\[py-previous-statement] with a huge prefix argument.
 %c:py-previous-statement
 %c:py-next-statement
 %c:py-goto-block-up
-%c:py-beginning-of-def-or-class
+%c:py-backward-def-or-class
 %c:py-end-of-def-or-class
 
 @LITTLE-KNOWN EMACS COMMANDS PARTICULARLY USEFUL IN PYTHON MODE
@@ -576,48 +576,7 @@ Interactively, prompt for SYMBOL."
       (with-help-window (help-buffer)
 	(princ (py--find-definition-question-type symbol imports))))))
 
-(defun py-find-imports ()
-  "Find top-level imports.
 
-Returns imports"
-  (interactive)
-  (let (imports erg)
-    (save-excursion
-      (if (eq major-mode 'comint-mode)
-	  (progn
-	    (re-search-backward comint-prompt-regexp nil t 1)
-	    (goto-char (match-end 0))
-	    (while (re-search-forward
-		    "import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
-	      (setq imports
-		    (concat
-		     imports
-		     (replace-regexp-in-string
-		      "[\\]\r?\n?\s*" ""
-		      (buffer-substring-no-properties (match-beginning 0) (point))) ";")))
-	    (when (ignore-errors (string-match ";" imports))
-	      (setq imports (split-string imports ";" t))
-	      (dolist (ele imports)
-		(and (string-match "import" ele)
-		     (if erg
-			 (setq erg (concat erg ";" ele))
-		       (setq erg ele)))
-		(setq imports erg))))
-	(goto-char (point-min))
-	(while (re-search-forward
-		"^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
-	  (unless (py--end-of-statement-p)
-	    (py-forward-statement))
-	  (setq imports
-		(concat
-		 imports
-		 (replace-regexp-in-string
-		  "[\\]\r*\n*\s*" ""
-		  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
-    ;; (and imports
-    ;; (setq imports (replace-regexp-in-string ";$" "" imports)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" imports))
-    imports))
 
 (defun py-update-imports ()
   "Return imports.

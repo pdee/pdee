@@ -629,7 +629,7 @@ def foo():
 "
     (goto-char (point-max))
     (let ((py-mark-decorators t))
-      (py-beginning-of-def-or-class)
+      (py-backward-def-or-class)
       (should (bobp)))))
 
 (ert-deftest py-ert-multiple-decorators-test-2-D9kV8N ()
@@ -641,7 +641,7 @@ def foo():
 "
     (goto-char (point-max))
     (let* (py-mark-decorators
-           (erg (py-beginning-of-def-or-class)))
+           (erg (py-backward-def-or-class)))
       (should (eq 13 erg)))))
 
 (ert-deftest py-ert-multiple-decorators-test-1-KyE0zL ()
@@ -653,7 +653,7 @@ def foo():
 "
     (goto-char (point-max))
     (let ((py-mark-decorators t))
-      (py-beginning-of-def-or-class)
+      (py-backward-def-or-class)
       (should (bobp)))))
 
 (ert-deftest py-ert-multiple-decorators-test-2-D9kV8N ()
@@ -665,7 +665,7 @@ def foo():
 "
     (goto-char (point-max))
     (let* (py-mark-decorators
-           (erg (py-beginning-of-def-or-class)))
+           (erg (py-backward-def-or-class)))
       (should (eq 13 erg)))))
 
 (ert-deftest py-ert-async-backward-block-test-OdiTDQ ()

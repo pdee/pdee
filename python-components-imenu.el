@@ -176,7 +176,7 @@ of the first definition found."
                 (buffer-substring-no-properties (match-beginning cur-paren)
                                                 (match-end cur-paren))))
         (save-match-data
-          (py-beginning-of-def-or-class))
+          (py-backward-def-or-class))
         (beginning-of-line)
         (setq cur-indent (current-indentation)))
       ;; HACK: want to go to the next correct definition location.  We

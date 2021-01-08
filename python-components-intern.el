@@ -1222,5 +1222,48 @@ Optional NO-CHECK: used by tests
     (skip-chars-forward " \t\r\n\f")
     (py--indent-line-by-line beg end)))
 
+(defun py-find-imports ()
+  "Find top-level imports.
+
+Returns imports"
+  (interactive)
+  (let (imports erg)
+    (save-excursion
+      (if (eq major-mode 'comint-mode)
+	  (progn
+	    (re-search-backward comint-prompt-regexp nil t 1)
+	    (goto-char (match-end 0))
+	    (while (re-search-forward
+		    "import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
+	      (setq imports
+		    (concat
+		     imports
+		     (replace-regexp-in-string
+		      "[\\]\r?\n?\s*" ""
+		      (buffer-substring-no-properties (match-beginning 0) (point))) ";")))
+	    (when (ignore-errors (string-match ";" imports))
+	      (setq imports (split-string imports ";" t))
+	      (dolist (ele imports)
+		(and (string-match "import" ele)
+		     (if erg
+			 (setq erg (concat erg ";" ele))
+		       (setq erg ele)))
+		(setq imports erg))))
+	(goto-char (point-min))
+	(while (re-search-forward
+		"^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
+	  (unless (py--end-of-statement-p)
+	    (py-forward-statement))
+	  (setq imports
+		(concat
+		 imports
+		 (replace-regexp-in-string
+		  "[\\]\r*\n*\s*" ""
+		  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
+    ;; (and imports
+    ;; (setq imports (replace-regexp-in-string ";$" "" imports)))
+    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" imports))
+    imports))
+
 (provide 'python-components-intern)
  ;;;  python-components-intern.el ends here
