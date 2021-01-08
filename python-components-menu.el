@@ -1743,7 +1743,7 @@ Use `M-x customize-variable' to set it permanently"
 	 ["Use current dir when execute"
 	  (setq py-use-current-dir-when-execute-p
 		(not py-use-current-dir-when-execute-p))
-	  :help " `toggle-py-use-current-dir-when-execute-p'
+	  :help " `py-toggle-use-current-dir-when-execute-p'
 
 Use `M-x customize-variable' to set it permanently"
 	  :style toggle :selected py-use-current-dir-when-execute-p]
@@ -1935,7 +1935,7 @@ Default is nil. Use `M-x customize-variable' to set it permanently"
 
 Use `M-x customize-variable' to set it permanently"
 
-	   ["Toggle py-smart-indentation" toggle-py-smart-indentation
+	   ["Toggle py-smart-indentation" py-toggle-smart-indentation
 	    :help "Toggles py-smart-indentation
 
 Use `M-x customize-variable' to set it permanently"]
@@ -2244,8 +2244,8 @@ See also `py-execute-directory'Use `M-x customize-variable' to set it permanentl
 	 ("Underscore word syntax"
 	  :help "Toggle `py-underscore-word-syntax-p'"
 
-	  ["Toggle underscore word syntax" toggle-py-underscore-word-syntax-p
-	   :help " `toggle-py-underscore-word-syntax-p'
+	  ["Toggle underscore word syntax" py-toggle-underscore-word-syntax-p
+	   :help " `py-toggle-underscore-word-syntax-p'
 
 If `py-underscore-word-syntax-p' should be on or off.
 

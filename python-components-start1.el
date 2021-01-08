@@ -1681,13 +1681,13 @@ See also `py-keep-windows-configuration'"
   :tag "py-split-window-on-execute"
   :group 'python-mode)
 
-(defun py-toggle-py-split-window-on-execute ()
-  "Toggle between customized value and nil."
-  (interactive)
-  (setq py-split-window-on-execute (not py-split-window-on-execute))
-  (when (called-interactively-p 'interactive)
-    (message "py-split-window-on-execute: %s" py-split-window-on-execute)
-    py-split-window-on-execute))
+;; (defun py-toggle-py-split-window-on-execute ()
+;;   "Toggle between customized value and nil."
+;;   (interactive)
+;;   (setq py-split-window-on-execute (not py-split-window-on-execute))
+;;   (when (called-interactively-p 'interactive)
+;;     (message "py-split-window-on-execute: %s" py-split-window-on-execute)
+;;     py-split-window-on-execute))
 
 (defcustom py-split-window-on-execute-threshold 3
   "Maximal number of displayed windows.
@@ -2452,7 +2452,7 @@ or ‘py-shell--prompt-calculated-output-regexp’ are set
 If underscore chars should be of ‘syntax-class’ `word', not of `symbol'.
 Underscores in word-class makes `forward-word'.
 Travels the indentifiers. Default is t.
-See also command `toggle-py-underscore-word-syntax-p'")
+See also command `py-toggle-underscore-word-syntax-p'")
 
 (defvar py-autofill-timer nil)
 (defvar py-fill-column-orig fill-column)

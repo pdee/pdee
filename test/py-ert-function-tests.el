@@ -427,9 +427,6 @@
 (ert-deftest py-ert-switch-to-python-functionp-test-ItywB0 ()
   (should (functionp 'py-switch-to-python)))
 
-(ert-deftest py-ert-toggle-force-py-shell-name-p-functionp-test-qaMHcn ()
-  (should (functionp 'toggle-force-py-shell-name-p)))
-
 (ert-deftest py-ert-force-py-shell-name-p-on-functionp-test-yud7j3 ()
   (should (functionp 'force-py-shell-name-p-on)))
 
@@ -1264,8 +1261,6 @@
 (ert-deftest py-ert-autopair-mode-off-functionp-test-cpfpem ()
   (should (functionp 'py-autopair-mode-off)))
 
-(ert-deftest py-ert-toggle-py-switch-buffers-on-execute-p-functionp-test-u616X8 ()
-  (should (functionp 'toggle-py-switch-buffers-on-execute-p)))
 
 (ert-deftest py-ert-switch-buffers-on-execute-p-on-functionp-test-2hUpEV ()
   (should (functionp 'py-switch-buffers-on-execute-p-on)))
@@ -1273,8 +1268,6 @@
 (ert-deftest py-ert-switch-buffers-on-execute-p-off-functionp-test-ikuTiI ()
   (should (functionp 'py-switch-buffers-on-execute-p-off)))
 
-(ert-deftest py-ert-toggle-py-split-window-on-execute-functionp-test-sPUjYu ()
-  (should (functionp 'toggle-py-split-window-on-execute)))
 
 (ert-deftest py-ert-split-window-on-execute-on-functionp-test-MbK0pg ()
   (should (functionp 'py-split-window-on-execute-on)))
@@ -1282,8 +1275,6 @@
 (ert-deftest py-ert-split-window-on-execute-off-functionp-test-Co4jS1 ()
   (should (functionp 'py-split-window-on-execute-off)))
 
-(ert-deftest py-ert-toggle-py-fontify-shell-buffer-p-functionp-test-uqkIiN ()
-  (should (functionp 'toggle-py-fontify-shell-buffer-p)))
 
 (ert-deftest py-ert-fontify-shell-buffer-p-on-functionp-test-O8aUEy ()
   (should (functionp 'py-fontify-shell-buffer-p-on)))
@@ -1291,17 +1282,6 @@
 (ert-deftest py-ert-fontify-shell-buffer-p-off-functionp-test-yijvZj ()
   (should (functionp 'py-fontify-shell-buffer-p-off)))
 
-(ert-deftest py-ert-toggle-python-mode-v5-behavior-p-functionp-test-KerZk5 ()
-  (should (functionp 'toggle-python-mode-v5-behavior-p)))
-
-(ert-deftest py-ert-python-mode-v5-behavior-p-on-functionp-test-m0aVDQ ()
-  (should (functionp 'python-mode-v5-behavior-p-on)))
-
-(ert-deftest py-ert-python-mode-v5-behavior-p-off-functionp-test-GacrVB ()
-  (should (functionp 'python-mode-v5-behavior-p-off)))
-
-(ert-deftest py-ert-toggle-py-jump-on-exception-functionp-test-UTWsan ()
-  (should (functionp 'toggle-py-jump-on-exception)))
 
 (ert-deftest py-ert-jump-on-exception-on-functionp-test-iqoFl8 ()
   (should (functionp 'py-jump-on-exception-on)))
@@ -1309,26 +1289,17 @@
 (ert-deftest py-ert-jump-on-exception-off-functionp-test-C4mwuT ()
   (should (functionp 'py-jump-on-exception-off)))
 
-(ert-deftest py-ert-toggle-py-use-current-dir-when-execute-p-functionp-test-aOScBE ()
-  (should (functionp 'toggle-py-use-current-dir-when-execute-p)))
-
 (ert-deftest py-ert-use-current-dir-when-execute-p-on-functionp-test-OA44Gp ()
   (should (functionp 'py-use-current-dir-when-execute-p-on)))
 
 (ert-deftest py-ert-use-current-dir-when-execute-p-off-functionp-test-OSeJMa ()
   (should (functionp 'py-use-current-dir-when-execute-p-off)))
 
-(ert-deftest py-ert-toggle-py-electric-comment-p-functionp-test-kv7AOV ()
-  (should (functionp 'toggle-py-electric-comment-p)))
-
 (ert-deftest py-ert-electric-comment-p-on-functionp-test-wLrwRG ()
   (should (functionp 'py-electric-comment-p-on)))
 
 (ert-deftest py-ert-electric-comment-p-off-functionp-test-4EG3Qr ()
   (should (functionp 'py-electric-comment-p-off)))
-
-(ert-deftest py-ert-toggle-py-underscore-word-syntax-p-functionp-test-EhY6Rc ()
-  (should (functionp 'toggle-py-underscore-word-syntax-p)))
 
 (ert-deftest py-ert-underscore-word-syntax-p-on-functionp-test-6N2HPX ()
   (should (functionp 'py-underscore-word-syntax-p-on)))
@@ -2103,6 +2074,38 @@
 
 (ert-deftest py-ert-end-of-class-functionp-test-84ohyQ ()
   (should (functionp 'py-forward-class)))
+
+(ert-deftest py-ert-py-toggle-smart-indentation-functionp-test ()   (should (functionp 'py-toggle-smart-indentation)))
+(ert-deftest py-ert-py-smart-indentation-on-functionp-test ()   (should (functionp 'py-smart-indentation-on)))
+(ert-deftest py-ert-py-smart-indentation-off-functionp-test ()   (should (functionp 'py-smart-indentation-off)))
+(ert-deftest py-ert-py-toggle-sexp-function-functionp-test ()   (should (functionp 'py-toggle-sexp-function)))
+(ert-deftest py-ert-py-toggle-autopair-mode-functionp-test ()   (should (functionp 'py-toggle-autopair-mode)))
+(ert-deftest py-ert-py-autopair-mode-on-functionp-test ()   (should (functionp 'py-autopair-mode-on)))
+(ert-deftest py-ert-py-autopair-mode-off-functionp-test ()   (should (functionp 'py-autopair-mode-off)))
+(ert-deftest py-ert-py-toggle-switch-buffers-on-execute-p-functionp-test ()   (should (functionp 'py-toggle-switch-buffers-on-execute-p)))
+(ert-deftest py-ert-py-switch-buffers-on-execute-p-on-functionp-test ()   (should (functionp 'py-switch-buffers-on-execute-p-on)))
+(ert-deftest py-ert-py-switch-buffers-on-execute-p-off-functionp-test ()   (should (functionp 'py-switch-buffers-on-execute-p-off)))
+(ert-deftest py-ert-py-toggle-split-window-on-execute-functionp-test ()   (should (functionp 'py-toggle-split-window-on-execute)))
+(ert-deftest py-ert-py-split-window-on-execute-on-functionp-test ()   (should (functionp 'py-split-window-on-execute-on)))
+(ert-deftest py-ert-py-split-window-on-execute-off-functionp-test ()   (should (functionp 'py-split-window-on-execute-off)))
+(ert-deftest py-ert-py-toggle-fontify-shell-buffer-p-functionp-test ()   (should (functionp 'py-toggle-fontify-shell-buffer-p)))
+(ert-deftest py-ert-py-fontify-shell-buffer-p-on-functionp-test ()   (should (functionp 'py-fontify-shell-buffer-p-on)))
+(ert-deftest py-ert-py-fontify-shell-buffer-p-off-functionp-test ()   (should (functionp 'py-fontify-shell-buffer-p-off)))
+(ert-deftest py-ert-py-toggle-python-mode-v5-behavior-p-functionp-test ()   (should (functionp 'py-toggle-python-mode-v5-behavior-p)))
+(ert-deftest py-ert-py-python-mode-v5-behavior-p-on-functionp-test ()   (should (functionp 'py-python-mode-v5-behavior-p-on)))
+(ert-deftest py-ert-py-python-mode-v5-behavior-p-off-functionp-test ()   (should (functionp 'py-python-mode-v5-behavior-p-off)))
+(ert-deftest py-ert-py-toggle-jump-on-exception-functionp-test ()   (should (functionp 'py-toggle-jump-on-exception)))
+(ert-deftest py-ert-py-jump-on-exception-on-functionp-test ()   (should (functionp 'py-jump-on-exception-on)))
+(ert-deftest py-ert-py-jump-on-exception-off-functionp-test ()   (should (functionp 'py-jump-on-exception-off)))
+(ert-deftest py-ert-py-toggle-use-current-dir-when-execute-p-functionp-test ()   (should (functionp 'py-toggle-use-current-dir-when-execute-p)))
+(ert-deftest py-ert-py-use-current-dir-when-execute-p-on-functionp-test ()   (should (functionp 'py-use-current-dir-when-execute-p-on)))
+(ert-deftest py-ert-py-use-current-dir-when-execute-p-off-functionp-test ()   (should (functionp 'py-use-current-dir-when-execute-p-off)))
+(ert-deftest py-ert-py-toggle-electric-comment-p-functionp-test ()   (should (functionp 'py-toggle-electric-comment-p)))
+(ert-deftest py-ert-py-electric-comment-p-on-functionp-test ()   (should (functionp 'py-electric-comment-p-on)))
+(ert-deftest py-ert-py-electric-comment-p-off-functionp-test ()   (should (functionp 'py-electric-comment-p-off)))
+(ert-deftest py-ert-py-toggle-underscore-word-syntax-p-functionp-test ()   (should (functionp 'py-toggle-underscore-word-syntax-p)))
+(ert-deftest py-ert-py-underscore-word-syntax-p-on-functionp-test ()   (should (functionp 'py-underscore-word-syntax-p-on)))
+(ert-deftest py-ert-py-underscore-word-syntax-p-off-functionp-test ()   (should (functionp 'py-underscore-word-syntax-p-off)))
 
 (provide 'py-ert-function-tests)
 ;;; py-ert-function-tests.el ends here

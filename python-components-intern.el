@@ -877,49 +877,7 @@ These would interfere when inserting forms heading a block"
        (set-buffer-modified-p 'nil)
        (kill-buffer (current-buffer)))))
 
-(defun py-backward-top-level ()
-  "Go up to beginning of statments until level of indentation is null.
 
-Returns position if successful, nil otherwise "
-  (interactive)
-  (let (erg done)
-    (unless (bobp)
-      (while (and (not done)(not (bobp))
-                  (setq erg (re-search-backward "^[[:alpha:]_'\"]" nil t 1)))
-        (if
-            (nth 8 (parse-partial-sexp (point-min) (point)))
-            (setq erg nil)
-          (setq done t)))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
-
-;; might be slow due to repeated calls of ‘py-down-statement’
-(defun py-forward-top-level ()
-  "Go to end of top-level form at point.
-
-Returns position if successful, nil otherwise"
-  (interactive)
-  (let ((orig (point))
-        erg)
-    (unless (eobp)
-      (unless (py--beginning-of-statement-p)
-        (py-backward-statement))
-      (unless (eq 0 (current-column))
-        (py-backward-top-level))
-      (cond ((looking-at py-def-re)
-             (setq erg (py-forward-def)))
-            ((looking-at py-class-re)
-             (setq erg (py-forward-class)))
-            ((looking-at py-block-re)
-             (setq erg (py-forward-block)))
-            (t (setq erg (py-forward-statement))))
-      (unless (< orig (point))
-        (while (and (not (eobp)) (py-down-statement)(< 0 (current-indentation))))
-        (if (looking-at py-block-re)
-            (setq erg (py-forward-block))
-          (setq erg (py-forward-statement))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
 
 (defun py-down-top-level ()
   "Go to beginning of next top-level form downward.

@@ -201,7 +201,7 @@ ignore dedenting rules for block closing statements
 An optional \\[universal-argument] followed by a numeric argument
 neither 1 nor 4 will switch off `py-smart-indentation' for this execution.
 This permits to correct allowed but unwanted indents. Similar to
-`toggle-py-smart-indentation' resp. `py-smart-indentation-off' followed by TAB.
+`py-toggle-smart-indentation' resp. `py-smart-indentation-off' followed by TAB.
 
 This function is normally used by `indent-line-function' resp.
 \\[indent-for-tab-command].
