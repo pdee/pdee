@@ -56,7 +56,7 @@ completions on the current context."
 
 (defun py--fast-complete-base (shell word imports)
   (let* (py-split-window-on-execute py-switch-buffers-on-execute-p
-	 (shell (or shell "python"))
+	 (shell (or shell py-shell-name))
 	 (buffer (py-shell nil nil nil shell nil t))
  	 (proc (get-buffer-process buffer))
 	 (code (if (string-match "[Ii][Pp]ython*" shell)
@@ -73,7 +73,8 @@ Use `py-fast-process' "
   (window-configuration-to-register py--windows-config-register)
   (setq py-last-window-configuration
   	(current-window-configuration))
-  (py--fast-complete-base shell word imports)
+  (py-shell-complete shell nil nil word 1)
+  (py-restore-window-configuration)
   )
 
 (provide 'python-components-fast-complete)

@@ -102,7 +102,7 @@ Interal used. Takes INPUT COMPLETION"
 
 Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   (when imports
-    (py-execute-string imports process nil t))
+    (py-send-string imports process nil t))
   (sit-for 0.1 t)
   (let* ((completion
 	  (py--shell-completion-get-completions
@@ -126,7 +126,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 		 py-shell-module-completion-code)))
     (py--shell-do-completion-at-point proc imports word buffer code)))
 
-(defun py-shell-complete (&optional shell beg end word)
+(defun py-shell-complete (&optional shell beg end word fast)
   (interactive)
   (let* ((exception-buffer (current-buffer))
 	 (pps (parse-partial-sexp
@@ -158,7 +158,8 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p erg)
-    (cond ((and in-string filenames)
+    (cond (fast (py--fast-complete-base shell word imports))
+	  ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))

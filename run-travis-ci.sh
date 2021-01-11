@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Author: Andreas Röhler <andreas.roehler@online.de>
+# Author: https://gitlab.com/groups/python-mode-devs
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -88,13 +88,12 @@ echo "\$EMACS: $EMACS"
 PYCO="$PDIR/completion/pycomplete.el"
 
 h1() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq py-install-dir \"$PDIR\")" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST1 \
@@ -102,12 +101,11 @@ h1() {
 }
 
 h2() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST2 \
@@ -115,12 +113,11 @@ h2() {
 }
 
 h3() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST3 \
@@ -128,12 +125,11 @@ h3() {
 }
 
 h4() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST4 \
@@ -141,12 +137,11 @@ h4() {
 }
 
 h5() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST5 \
@@ -154,12 +149,11 @@ h5() {
 }
 
 h6() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST6 \
@@ -167,12 +161,11 @@ h6() {
 }
 
 h7() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST7 \
@@ -180,12 +173,11 @@ h7() {
 }
 
 h8() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST8 \
@@ -193,12 +185,11 @@ h8() {
 }
 
 h9() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST9 \
@@ -206,12 +197,11 @@ h9() {
 }
 
 h10() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST10 \
@@ -219,12 +209,11 @@ h10() {
 }
 
 h11() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST11 \
@@ -232,12 +221,11 @@ h11() {
 }
 
 h12() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST12 \
@@ -245,12 +233,11 @@ h12() {
 }
 
 h13() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST13 \
@@ -258,12 +245,11 @@ h13() {
 }
 
 h14() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST14 \
@@ -271,12 +257,11 @@ h14() {
 }
 
 h15() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST15 \
@@ -284,12 +269,11 @@ h15() {
 }
 
 h16() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST16 \
@@ -297,7 +281,7 @@ h16() {
 }
 
 h17() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 -l /home/speck/emacs-20200406/lisp/progmodes/python.el \
 -l $TEST17 \
@@ -305,10 +289,9 @@ h17() {
 }
 
 h19() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST19 \
@@ -316,10 +299,9 @@ h19() {
 }
 
 h20() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST20 \
@@ -327,11 +309,10 @@ h20() {
 }
 
 hierv5() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST1 \
@@ -352,11 +333,10 @@ hierv5() {
 
 
 erst() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -370,11 +350,10 @@ erst() {
 }
 
 zweit() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -387,11 +366,10 @@ zweit() {
 }
 
 extrav5() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -400,11 +378,10 @@ extrav5() {
 }
 
 extra() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -413,9 +390,8 @@ extra() {
 }
 
 entfernt() {
-$EMACS -Q --batch \
+$EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -436,11 +412,10 @@ $EMACS -Q --batch \
 }
 
 hier() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -466,11 +441,10 @@ hier() {
 
 
 hier25() {
-    date; time -p $EMACS -Q --batch \
+    date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -495,11 +469,10 @@ hier25() {
 }
 
 hier26() {
-    date; time -p $EMACS26 -Q --batch \
+    date; time -p $EMACS26 -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -524,11 +497,10 @@ hier26() {
 }
 
 hier27() {
-    date; time -p $EMACS27 -Q --batch \
+    date; time -p $EMACS27 -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -553,11 +525,10 @@ hier27() {
 }
 
 hier28() {
-    date; time -p $EMACS28 -Q --batch \
+    date; time -p $EMACS28 -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py--debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$PDIR/\")" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \

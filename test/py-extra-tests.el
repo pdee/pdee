@@ -1299,6 +1299,7 @@ by the
       "def foo:
     pass\n\npri"
     (goto-char (point-max))
+    (skip-chars-backward " \t\r\n\f")
     (py-indent-or-complete)
     (should (looking-back "print.?" (line-beginning-position)))))
 
@@ -1348,7 +1349,7 @@ def baz():
     \"\"\"
     return 7
 "
-      ;; (font-lock-fontify-buffer) 
+      ;; (font-lock-fontify-buffer)
       (goto-char 49)
       (fill-paragraph)
       (search-forward "\"\"\"")

@@ -1,7 +1,5 @@
 ;;; python-components-pdb.el --- pdb help functions -*- lexical-binding: t; -*-
 
-;; Author: https://gitlab.com/groups/python-mode-devs
-
 ;; Keywords: languages, processes
 
 ;; This program is free software; you can redistribute it and/or modify

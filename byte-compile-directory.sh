@@ -1,7 +1,7 @@
 #!/bin/bash
  # -- byte-compile Emacs Lisp files delivered with python-mode.el
 
-# Author: Andreas Röhler <andreas.roehler@online.de>
+# Author: 2015-2021 https://gitlab.com/groups/python-mode-devs"
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

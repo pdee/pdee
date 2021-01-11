@@ -8,7 +8,7 @@
 
 ;; Package-Requires: ((emacs "24"))
 
-;; Author: 2015-2020 https://gitlab.com/groups/python-mode-devs
+;; Author: 2015-2021 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
 ;;         1992-1994 Tim Peters
@@ -684,7 +684,6 @@ Default is  nil."
   :type 'boolean
   :tag "py-auto-complete-p"
   :group 'python-mode)
-(make-variable-buffer-local 'py-auto-complete-p)
 
 (defcustom py-tab-shifts-region-p nil
   "If t, TAB will indent/cycle the region, not just the current line.
@@ -4931,10 +4930,13 @@ Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source b
       (setq py-error (buffer-substring-no-properties (point) (point-max))))
         py-error))
 
+(defvar py-debug-p nil
+  "Intenally used for development purposes.")
+
 (defun py--fetch-result (buffer limit &optional cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
-  (when py-verbose-p (message "(current-buffer): %s" (current-buffer))
+  (when py-debug-p (message "(current-buffer): %s" (current-buffer))
 	(switch-to-buffer (current-buffer)))
   (cond (python-mode-v5-behavior-p
 	 (with-current-buffer buffer
@@ -5078,7 +5080,7 @@ Remove trailing newline"
       (delete-trailing-whitespace))
     temp-file-name))
 
-(defun py-shell-get-process (&optional argprompt args dedicated shell buffer)
+(defun py--get-process (&optional argprompt args dedicated shell buffer)
   "Get appropriate Python process for current buffer and return it.
 
 Optional ARGPROMPT DEDICATED SHELL BUFFER"
@@ -5099,7 +5101,7 @@ optional argument."
   (interactive
    (list
     (read-file-name "File to send: ")))
-  (let* ((proc (or process (py-shell-get-process)))
+  (let* ((proc (or process (py--get-process)))
          (encoding (with-temp-buffer
                      (insert-file-contents
                       (or temp-file-name file-name))
@@ -5127,7 +5129,7 @@ optional argument."
 Uses ‘comint-send-string’."
   (interactive
    (list (read-string "Python command: ") nil t))
-  (let ((process (or process (py-shell-get-process))))
+  (let ((process (or process (py--get-process))))
     (if (string-match ".\n+." strg)   ;Multiline.
         (let* ((temp-file-name (py-shell--save-temp-file strg))
                (file-name (or (buffer-file-name) temp-file-name)))
@@ -5672,7 +5674,7 @@ detecting a prompt at the end of the buffer."
 (defun py--fast-send-string-no-output-intern (strg proc limit output-buffer no-output)
   (let (erg)
     (with-current-buffer output-buffer
-      (when py--debug-p (switch-to-buffer (current-buffer)))
+      ;; (when py--debug-p (switch-to-buffer (current-buffer)))
       ;; (erase-buffer)
       (process-send-string proc strg)
       (or (string-match "\n$" strg)
@@ -5693,7 +5695,7 @@ detecting a prompt at the end of the buffer."
 	       (error "py--fast-send-string-no-output-intern: py--fetch-result: no result")))))))
 
 (defun py-execute-string (strg &optional process result no-output orig output-buffer fast argprompt args dedicated shell exception-buffer split switch internal)
-  "Evaluate STRG in Python PROCESS.
+   "Evaluate STRG in Python PROCESS.
 
 With optional Arg PROCESS send to process.
 With optional Arg RESULT store result in var ‘py-result’, also return it.
@@ -5940,7 +5942,7 @@ Return nil."
   "Send STRING to PROCESS and inhibit output.
 
 Return the output."
-  (let* ((proc (or process (py-shell-get-process)))
+  (let* ((proc (or process (py--get-process)))
 	 (buffer (or buffer-name (if proc (buffer-name (process-buffer proc)) (py-shell))))
          (comint-preoutput-filter-functions
           '(py-shell-output-filter))
@@ -5966,6 +5968,194 @@ Return the output."
          (setq py-shell-output-filter-buffer nil)))
      (with-current-buffer (process-buffer proc)
        (comint-interrupt-subjob)))))
+
+(defun py--leave-backward-string-list-and-comment-maybe (pps)
+  (while (or (and (nth 8 pps) (goto-char (nth 8 pps)))
+             (and (nth 1 pps) (goto-char (nth 1 pps)))
+             (and (nth 4 pps) (goto-char (nth 4 pps))))
+    ;; (back-to-indentation)
+    (when (or (looking-at comment-start)(member (char-after) (list ?\" ?')))
+      (skip-chars-backward " \t\r\n\f"))
+    (setq pps (parse-partial-sexp (point-min) (point)))))
+
+(defun py-set-ipython-completion-command-string (shell)
+  "Set and return ‘py-ipython-completion-command-string’ according to SHELL."
+  (interactive)
+  (let* ((ipython-version (py-ipython--which-version shell)))
+    (if (string-match "[0-9]" ipython-version)
+        (setq py-ipython-completion-command-string
+              (cond ((string-match "^[^0].+" ipython-version)
+		     py-ipython0.11-completion-command-string)
+                    ((string-match "^0.1[1-3]" ipython-version)
+                     py-ipython0.11-completion-command-string)
+                    ((string= "^0.10" ipython-version)
+                     py-ipython0.10-completion-command-string)))
+      (error ipython-version))))
+
+(defun py-ipython--module-completion-import (proc)
+  "Import module-completion according to PROC."
+  (interactive)
+  (let ((ipython-version (shell-command-to-string (concat py-shell-name " -V"))))
+    (when (and (string-match "^[0-9]" ipython-version)
+               (string-match "^[^0].+" ipython-version))
+      (process-send-string proc "from IPython.core.completerlib import module_completion"))))
+
+(defun py--compose-buffer-name-initials (liste)
+  (let (erg)
+    (dolist (ele liste)
+      (unless (string= "" ele)
+	(setq erg (concat erg (char-to-string (aref ele 0))))))
+    erg))
+
+(defun py--remove-home-directory-from-list (liste)
+  "Prepare for compose-buffer-name-initials according to LISTE."
+  (let ((case-fold-search t)
+	(liste liste)
+	erg)
+    (if (listp (setq erg (split-string (expand-file-name "~") "\/")))
+	erg
+      (setq erg (split-string (expand-file-name "~") "\\\\")))
+     (while erg
+      (when (member (car erg) liste)
+	(setq liste (cdr (member (car erg) liste))))
+      (setq erg (cdr erg)))
+    (butlast liste)))
+
+(defun py--prepare-shell-name (erg)
+  "Provide a readable shell name by capitalizing etc."
+  (cond ((string-match "^ipython" erg)
+	 (replace-regexp-in-string "ipython" "IPython" erg))
+	((string-match "^jython" erg)
+	 (replace-regexp-in-string "jython" "Jython" erg))
+	((string-match "^python" erg)
+	 (replace-regexp-in-string "python" "Python" erg))
+	((string-match "^python2" erg)
+	 (replace-regexp-in-string "python2" "Python2" erg))
+	((string-match "^python3" erg)
+	 (replace-regexp-in-string "python3" "Python3" erg))
+	((string-match "^pypy" erg)
+	 (replace-regexp-in-string "pypy" "PyPy" erg))
+	(t erg)))
+
+(defun py--choose-buffer-name (&optional name dedicated fast-process)
+  "Return an appropriate NAME to display in modeline.
+
+Optional DEDICATED FAST-PROCESS
+SEPCHAR is the file-path separator of your system."
+  (let* ((name-first (or name py-shell-name))
+	 (erg (when name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
+	 (fast-process (or fast-process py-fast-process-p))
+	 prefix)
+    (when (string-match "^py-" erg)
+      (setq erg (nth 1 (split-string erg "-"))))
+    ;; remove home-directory from prefix to display
+    (unless py-modeline-acronym-display-home-p
+      (save-match-data
+	(let ((case-fold-search t))
+	  (when (string-match (concat ".*" (expand-file-name "~")) erg)
+	    (setq erg (replace-regexp-in-string (concat "^" (expand-file-name "~")) "" erg))))))
+    (if (or (and (setq prefix (split-string erg "\\\\"))
+		 (< 1 (length prefix)))
+	    (and (setq prefix (split-string erg "\/"))
+		 (< 1 (length prefix))))
+	(progn
+	  ;; exect something like default py-shell-name
+	  (setq erg (car (last prefix)))
+	  (unless py-modeline-acronym-display-home-p
+	    ;; home-directory may still inside
+	    (setq prefix (py--remove-home-directory-from-list prefix))
+	    (setq prefix (py--compose-buffer-name-initials prefix))))
+      (setq erg (or erg py-shell-name))
+      (setq prefix nil))
+    (when fast-process (setq erg (concat erg " Fast")))
+    (setq erg
+          (py--prepare-shell-name erg))
+    (when (or dedicated py-dedicated-process-p)
+      (setq erg (make-temp-name (concat erg "-"))))
+    (cond ((and prefix (string-match "^\*" erg))
+           (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
+          (prefix
+           (setq erg (concat "*" prefix " " erg "*")))
+          (t (unless (string-match "^\*" erg) (setq erg (concat "*" erg "*")))))
+    erg))
+
+(defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch internal)
+  "Connect process to BUFFER.
+
+Start an interpreter according to ‘py-shell-name’ or SHELL.
+
+Optional ARGPROMPT: with \\[universal-argument] start in a new
+dedicated shell.
+
+Optional ARGS: Specify other than default command args.
+
+Optional DEDICATED: start in a new dedicated shell.
+Optional string SHELL overrides default ‘py-shell-name’.
+Optional string BUFFER allows a name, the Python process is connected to
+Optional FAST: no fontification in process-buffer.
+Optional EXCEPTION-BUFFER: point to error.
+Optional SPLIT: see var ‘py-split-window-on-execute’
+Optional SWITCH: see var ‘py-switch-buffers-on-execute-p’
+Optional INTERNAL shell will be invisible for users
+
+Reusing existing processes: For a given buffer and same values,
+if a process is already running for it, it will do nothing.
+
+Runs the hook `py-shell-mode-hook' after
+`comint-mode-hook' is run.  (Type \\[describe-mode] in the
+process buffer for a list of commands.)"
+  (interactive "p")
+  (let* ((interactivep (and argprompt (eq 1 (prefix-numeric-value argprompt))))
+	 (fast (unless (eq major-mode 'org-mode)
+		 (or fast py-fast-process-p)))
+	 (dedicated (or (eq 4 (prefix-numeric-value argprompt)) dedicated py-dedicated-process-p))
+	 (shell (or shell (py-choose-shell)))
+	 (args (or args (py--provide-command-args shell fast)))
+	 (buffer-name
+	  (or buffer
+	      (py--choose-buffer-name shell dedicated fast)))
+	 (proc (get-buffer-process buffer-name))
+	 (done nil)
+	 (delay nil)
+	 (buffer
+	  (or
+	   (and (ignore-errors (process-buffer proc))
+		(save-excursion (with-current-buffer (process-buffer proc)
+				  ;; point might not be left there
+				  (goto-char (point-max))
+				  (push-mark)
+				  (setq done t)
+				  (process-buffer proc))))
+	   (save-excursion
+	     (py-shell-with-environment
+	       (if fast
+		   (process-buffer (apply 'start-process shell buffer-name shell args))
+		 (apply #'make-comint-in-buffer shell buffer-name
+			shell nil args))))))
+	 ;; (py-shell-prompt-detect-p (or (string-match "^\*IP" buffer) py-shell-prompt-detect-p))
+	 )
+    (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p py-output-buffer buffer)))
+    (unless done
+      (with-current-buffer buffer
+	(setq delay (py--which-delay-process-dependent buffer-name))
+	(unless fast
+	  (when interactivep
+	    (cond ((string-match "^.I" buffer-name)
+		   (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
+		  ((string-match "^.+3" buffer-name)
+		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
+	  (setq py-modeline-display (py--update-lighter buffer-name))
+	  (sit-for delay t))))
+    (if (setq proc (get-buffer-process buffer))
+	(progn
+	  (with-current-buffer buffer
+	    (unless fast (py-shell-mode))
+	    (and internal (set-process-query-on-exit-flag proc nil)))
+	  (when (or interactivep
+		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
+	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
+	  buffer)
+      (error (concat "py-shell:" (py--fetch-error py-output-buffer))))))
 
 (provide 'python-components-start1)
 ;;; python-components-start1.el ends here

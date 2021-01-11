@@ -269,7 +269,7 @@ See available customizations listed in files variables-python-mode at directory 
   (cond
    (py-complete-function
     (add-hook 'completion-at-point-functions
-              py-complete-function nil 'local))
+              py-complete-function))
    (py-load-pymacs-p
     (add-hook 'completion-at-point-functions
               'py-complete-completion-at-point nil 'local))

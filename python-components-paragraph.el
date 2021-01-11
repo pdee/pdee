@@ -1,7 +1,7 @@
 ;;; python-components-paragraph.el --- filling -*- lexical-binding: t; -*-
 
 ;; Original Author: Fabián E. Gallina <fabian@anue.biz>
-;; Maintainer: Andreas Röhler <andreas.roehler@online.de>
+;; Maintainer https://gitlab.com/groups/python-mode-devs 
 
 ;; Keywords: languages
 

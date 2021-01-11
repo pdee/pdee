@@ -514,8 +514,8 @@
 (ert-deftest py-ert-shell-functionp-test-OQlBTk ()
   (should (functionp 'py-shell)))
 
-(ert-deftest py-ert-shell-get-process-functionp-test-0OqP1Y ()
-  (should (functionp 'py-shell-get-process)))
+(ert-deftest py-ert-get-process-functionp-test-0OqP1Y ()
+  (should (functionp 'py--get-process)))
 
 (ert-deftest py-ert-switch-to-shell-functionp-test-I9gy6C ()
   (should (functionp 'py-switch-to-shell)))
