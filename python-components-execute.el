@@ -254,7 +254,6 @@ when given, to value of ‘py-default-working-directory’ otherwise"
 	  (insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
 	  (write-file setup-file)))
       (py--execute-file-base setup-file (get-buffer-process buffer) nil buffer)
-      ;; (when py-verbose-p (message "%s" (concat name " setup-code sent to " (process-name (get-buffer-process buffer)))))
       )))
 
 (defun py--python-send-completion-setup-code (buffer)

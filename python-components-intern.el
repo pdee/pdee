@@ -479,7 +479,6 @@ module-qualified names."
 ;;  unconditional Hooks
 ;;  (orgstruct-mode 1)
 
-
 (defun py-complete-auto ()
   "Auto-complete function using py-complete. "
   ;; disable company
@@ -510,7 +509,6 @@ in stricter or wider sense.
 For stricter sense specify regexp. "
   (let* ((regexp (or regexp py-block-or-clause-re))
          (erg (py--statement-opens-base regexp)))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py--statement-opens-base (regexp)
@@ -523,7 +521,6 @@ For stricter sense specify regexp. "
       (when (and
              (<= (line-beginning-position) orig)(looking-back "^[ \t]*" (line-beginning-position))(looking-at regexp))
         (setq erg (point))))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py--statement-opens-clause-p ()
@@ -607,10 +604,9 @@ If succesful return position. "
                    (< orig (point)))
               (setq erg (point))
             (goto-char orig))))
-      (when (called-interactively-p 'any) (message "%s" erg))
       erg)))
 
-(defun py-current-defun (&optional iact)
+(defun py-current-defun ()
   "Go to the outermost method or class definition in current scope.
 
 Python value for `add-log-current-defun-function'.
@@ -618,7 +614,7 @@ This tells add-log.el how to find the current function/method/variable.
 Returns name of class or methods definition, if found, nil otherwise.
 
 See customizable variables `py-current-defun-show' and `py-current-defun-delay'."
-  (interactive "p")
+  (interactive)
   (save-restriction
     (widen)
     (save-excursion
@@ -630,7 +626,6 @@ See customizable variables `py-current-defun-show' and `py-current-defun-delay'.
           (push-mark (point) t t) (skip-chars-forward "^ (")
           (exchange-point-and-mark)
           (sit-for py-current-defun-delay t))
-        (when iact (message (prin1-to-string erg)))
         erg))))
 
 (defun py--join-words-wrapping (words separator prefix line-length)
@@ -835,7 +830,6 @@ Used by variable `which-func-functions' "
           (setq erg (car erg)))
       (setq erg "???"))
     (goto-char orig)
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py--fetch-first-python-buffer ()
@@ -877,8 +871,6 @@ These would interfere when inserting forms heading a block"
        (set-buffer-modified-p 'nil)
        (kill-buffer (current-buffer)))))
 
-
-
 (defun py-down-top-level ()
   "Go to beginning of next top-level form downward.
 
@@ -893,7 +885,6 @@ Returns position if successful, nil otherwise"
     (when (and (not (eobp)) (< orig (point)))
       (goto-char (match-beginning 0))
         (setq erg (point)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-top-level-bol ()
@@ -939,7 +930,6 @@ Returns position if successful, nil otherwise"
                 (setq erg (point)))))
     (unless erg
       (goto-char orig))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py--thing-at-point (form &optional mark-decorators)
@@ -1058,7 +1048,6 @@ If no further element at same level, go one level up."
                            (py-backward-same-level-intern (current-indentation))
                          (back-to-indentation)
                          (py-backward-same-level))))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-forward-same-level ()
@@ -1073,7 +1062,6 @@ If no further element at same level, go one level up."
     (unless (py-beginning-of-statement-p)
       (py-backward-statement))
     (setq erg (py-down (current-indentation)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py--end-of-buffer-p ()

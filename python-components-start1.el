@@ -614,7 +614,7 @@ Give some hints, if not."
   "Internally used.  May store result from Python process.")
 
 (defvar py-error nil
-  "Internally used.  Takes the error-messages from Python process.")
+  "Takes the error-messages from Python process.")
 
 (defvar py-python-completions "*Python Completions*"
   "Buffer name for Python-shell completions, internally used.")
@@ -4600,7 +4600,6 @@ Returns position if succesful"
           (forward-list))
         (when (< orig (point))
           (setq erg (point))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 (defun py-beginning-of-list-pps (&optional iact last ppstart orig done)
@@ -4626,7 +4625,6 @@ Return beginning position, nil if not inside."
           (setq last erg)
           (goto-char erg)
           (py-beginning-of-list-pps iact last ppstart orig done))
-      (when iact (message "%s" last))
       last)))
 
 (defun py-end-of-string (&optional beginning-of-string-position)
@@ -4648,7 +4646,6 @@ Return beginning position, nil if not inside."
             (goto-char orig)))
 
       (error (concat "py-end-of-string: don't see end-of-string at " (buffer-name (current-buffer)) "at pos " (point))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py--record-list-error (pps)
@@ -4987,7 +4984,8 @@ See also doku of variable ‘py-master-file’"
         (when
             (re-search-forward (concat "^\\( *# py-master-file: *\\)\"\\([^ \t]+\\)\" *$") nil t 1)
           (setq py-master-file (match-string-no-properties 2))))))
-  (when (called-interactively-p 'any) (message "%s" py-master-file)))
+  ;; (when (called-interactively-p 'any) (message "%s" py-master-file))
+  )
 
 (defun py-ipython--which-version (shell)
   "Returns IPython version as string"
@@ -5743,7 +5741,6 @@ Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 ‘kill-output-from-shell’ does The Right Thing.
 Returns position where output starts."
-  ;; (message "(current-buffer) %s" (current-buffer))
   (let* ((buffer (or procbuf (and proc (process-buffer proc)) (py-shell nil nil nil nil nil fast)))
 	 (proc (or proc (get-buffer-process buffer)))
 	 (limit (marker-position (process-mark proc)))

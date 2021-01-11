@@ -5,7 +5,7 @@
 
 
 ;; URL: https://gitlab.com/python-mode-devs
-;; Keywords: languages, convenience
+;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,9 +35,7 @@ Set indent level to that of beginning of function definition.
 
 If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
   (interactive "*")
-  (let ((erg (py--close-intern 'py-block-re)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (py--close-intern 'py-block-re))
 
 (defun py-close-class ()
   "Close class at point.
@@ -46,9 +44,25 @@ Set indent level to that of beginning of function definition.
 
 If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
   (interactive "*")
-  (let ((erg (py--close-intern 'py-class-re)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (py--close-intern 'py-class-re))
+
+(defun py-close-clause ()
+  "Close clause at point.
+
+Set indent level to that of beginning of function definition.
+
+If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+  (interactive "*")
+  (py--close-intern 'py-clause-re))
+
+(defun py-close-block-or-clause ()
+  "Close block-or-clause at point.
+
+Set indent level to that of beginning of function definition.
+
+If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+  (interactive "*")
+  (py--close-intern 'py-block-or-clause-re))
 
 (defun py-close-def ()
   "Close def at point.
@@ -57,9 +71,7 @@ Set indent level to that of beginning of function definition.
 
 If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
   (interactive "*")
-  (let ((erg (py--close-intern 'py-def-re)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (py--close-intern 'py-def-re))
 
 (defun py-close-def-or-class ()
   "Close def-or-class at point.
@@ -68,9 +80,7 @@ Set indent level to that of beginning of function definition.
 
 If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
   (interactive "*")
-  (let ((erg (py--close-intern 'py-def-or-class-re)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (py--close-intern 'py-def-or-class-re))
 
 (defun py-close-minor-block ()
   "Close minor-block at point.
@@ -79,9 +89,7 @@ Set indent level to that of beginning of function definition.
 
 If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
   (interactive "*")
-  (let ((erg (py--close-intern 'py-minor-block-re)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (py--close-intern 'py-minor-block-re))
 
 (defun py-close-statement ()
   "Close statement at point.
@@ -90,9 +98,7 @@ Set indent level to that of beginning of function definition.
 
 If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
   (interactive "*")
-  (let ((erg (py--close-intern 'py-statement-re)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (py--close-intern 'py-statement-re))
 
 (provide 'python-components-close-forms)
 ;;; python-components-close-forms.el ends here

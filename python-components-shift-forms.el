@@ -2,7 +2,7 @@
 
 
 ;; URL: https://gitlab.com/python-mode-devs
-;; Keywords: languages, convenience
+;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -34,9 +34,7 @@ Optional COUNT: COUNT times ‘py-indent-offset’
 Optional START: region beginning
 Optional END: region end"
   (interactive "p")
-  (let ((erg (py--shift-intern (- count) start end)))
-    (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
-    erg))
+  (py--shift-intern (- count) start end))
 
 (defun py-shift-right (&optional count beg end)
   "Indent region according to ‘py-indent-offset’ by COUNT times.
@@ -47,9 +45,7 @@ Optional COUNT: COUNT times ‘py-indent-offset’
 Optional BEG: region beginning
 Optional END: region end"
   (interactive "p")
-  (let ((erg (py--shift-intern count beg end)))
-    (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
-    erg))
+  (py--shift-intern count beg end))
 
 (defun py--shift-intern (count &optional start end)
   (save-excursion
@@ -105,9 +101,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "block" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "block" (or arg py-indent-offset)))
 
 (defun py-shift-block-left (&optional arg)
   "Dedent block by COUNT spaces.
@@ -117,9 +111,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "block" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "block" (- (or arg py-indent-offset))))
 
 (defun py-shift-block-or-clause-right (&optional arg)
   "Indent block-or-clause by COUNT spaces.
@@ -129,9 +121,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "block-or-clause" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "block-or-clause" (or arg py-indent-offset)))
 
 (defun py-shift-block-or-clause-left (&optional arg)
   "Dedent block-or-clause by COUNT spaces.
@@ -141,9 +131,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "block-or-clause" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "block-or-clause" (- (or arg py-indent-offset))))
 
 (defun py-shift-class-right (&optional arg)
   "Indent class by COUNT spaces.
@@ -153,9 +141,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "class" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "class" (or arg py-indent-offset)))
 
 (defun py-shift-class-left (&optional arg)
   "Dedent class by COUNT spaces.
@@ -165,9 +151,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "class" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "class" (- (or arg py-indent-offset))))
 
 (defun py-shift-clause-right (&optional arg)
   "Indent clause by COUNT spaces.
@@ -177,9 +161,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "clause" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "clause" (or arg py-indent-offset)))
 
 (defun py-shift-clause-left (&optional arg)
   "Dedent clause by COUNT spaces.
@@ -189,9 +171,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "clause" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "clause" (- (or arg py-indent-offset))))
 
 (defun py-shift-comment-right (&optional arg)
   "Indent comment by COUNT spaces.
@@ -201,9 +181,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "comment" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "comment" (or arg py-indent-offset)))
 
 (defun py-shift-comment-left (&optional arg)
   "Dedent comment by COUNT spaces.
@@ -213,9 +191,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "comment" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "comment" (- (or arg py-indent-offset))))
 
 (defun py-shift-def-right (&optional arg)
   "Indent def by COUNT spaces.
@@ -225,9 +201,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "def" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "def" (or arg py-indent-offset)))
 
 (defun py-shift-def-left (&optional arg)
   "Dedent def by COUNT spaces.
@@ -237,9 +211,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "def" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "def" (- (or arg py-indent-offset))))
 
 (defun py-shift-def-or-class-right (&optional arg)
   "Indent def-or-class by COUNT spaces.
@@ -249,9 +221,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "def-or-class" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "def-or-class" (or arg py-indent-offset)))
 
 (defun py-shift-def-or-class-left (&optional arg)
   "Dedent def-or-class by COUNT spaces.
@@ -261,9 +231,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "def-or-class" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "def-or-class" (- (or arg py-indent-offset))))
 
 (defun py-shift-indent-right (&optional arg)
   "Indent indent by COUNT spaces.
@@ -273,9 +241,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "indent" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "indent" (or arg py-indent-offset)))
 
 (defun py-shift-indent-left (&optional arg)
   "Dedent indent by COUNT spaces.
@@ -285,9 +251,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "indent" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "indent" (- (or arg py-indent-offset))))
 
 (defun py-shift-minor-block-right (&optional arg)
   "Indent minor-block by COUNT spaces.
@@ -297,9 +261,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "minor-block" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "minor-block" (or arg py-indent-offset)))
 
 (defun py-shift-minor-block-left (&optional arg)
   "Dedent minor-block by COUNT spaces.
@@ -309,9 +271,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "minor-block" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "minor-block" (- (or arg py-indent-offset))))
 
 (defun py-shift-paragraph-right (&optional arg)
   "Indent paragraph by COUNT spaces.
@@ -321,9 +281,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "paragraph" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "paragraph" (or arg py-indent-offset)))
 
 (defun py-shift-paragraph-left (&optional arg)
   "Dedent paragraph by COUNT spaces.
@@ -333,9 +291,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "paragraph" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "paragraph" (- (or arg py-indent-offset))))
 
 (defun py-shift-region-right (&optional arg)
   "Indent region by COUNT spaces.
@@ -345,9 +301,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "region" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "region" (or arg py-indent-offset)))
 
 (defun py-shift-region-left (&optional arg)
   "Dedent region by COUNT spaces.
@@ -357,9 +311,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "region" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "region" (- (or arg py-indent-offset))))
 
 (defun py-shift-statement-right (&optional arg)
   "Indent statement by COUNT spaces.
@@ -369,9 +321,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "statement" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "statement" (or arg py-indent-offset)))
 
 (defun py-shift-statement-left (&optional arg)
   "Dedent statement by COUNT spaces.
@@ -381,9 +331,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "statement" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "statement" (- (or arg py-indent-offset))))
 
 (defun py-shift-top-level-right (&optional arg)
   "Indent top-level by COUNT spaces.
@@ -393,9 +341,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "top-level" (or arg py-indent-offset))))
-        (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "top-level" (or arg py-indent-offset)))
 
 (defun py-shift-top-level-left (&optional arg)
   "Dedent top-level by COUNT spaces.
@@ -405,9 +351,7 @@ use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
-  (let ((erg (py--shift-forms-base "top-level" (- (or arg py-indent-offset)))))
-    (when (called-interactively-p 'any) (message "%s" erg))
-    erg))
+  (py--shift-forms-base "top-level" (- (or arg py-indent-offset))))
 
 (provide 'python-components-shift-forms)
 ;;; python-components-shift-forms.el ends here

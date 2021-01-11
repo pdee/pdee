@@ -162,7 +162,6 @@ Returns position if successful, nil otherwise "
             (nth 8 (parse-partial-sexp (point-min) (point)))
             (setq erg nil)
           (setq done t)))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 ;; might be slow due to repeated calls of ‘py-down-statement’
@@ -190,7 +189,6 @@ Returns position if successful, nil otherwise"
         (if (looking-at py-block-re)
             (setq erg (py-forward-block))
           (setq erg (py-forward-statement))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 (provide 'python-components-start2)
