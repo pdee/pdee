@@ -458,6 +458,32 @@ module-qualified names."
                #'(lambda () (interactive) (beep))))
            (where-is-internal 'self-insert-command)))
 
+
+(defvar py-auto-fill-mode-orig (auto-fill-mode)
+  "Store the original state of auto-fill-mode. ")
+
+;; py-fill-column-orig  already defined
+(defun py-comment-auto-fill (&optional arg) 
+  "Toggles comment-auto-fill mode"
+  (interactive "P")
+  (if (or (and arg (< 0 (prefix-numeric-value arg))) (and (boundp 'py-comment-auto-fill)(not py-comment-auto-fill)))
+      (progn
+        (set (make-local-variable 'py-comment-auto-fill-p) t)
+        (setq fill-column comment-fill-column)
+        (auto-fill-mode 1))
+    (set (make-local-variable 'py-comment-auto-fill-p) nil)
+;;    (set (make-local-variable 'py-comment-auto-fill-only-comments) nil)
+    ;; (setq fill-column fill-column-orig)
+    (auto-fill-mode -1)))
+
+(defun py-comment-auto-fill-on ()
+  (interactive)
+  (py-comment-auto-fill 1))
+
+(defun py-comment-auto-fill-off ()
+  (interactive)
+  (py-comment-auto-fill -1))
+
 (defun py--set-auto-fill-values ()
   "Internal use by `py--run-auto-fill-timer'"
   (let ((pps (parse-partial-sexp (point-min) (point))))
@@ -898,7 +924,6 @@ Returns position successful, nil otherwise"
       (forward-line 1)
       (beginning-of-line)
       (setq erg (point)))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
     erg))
 
 (defun py-down (&optional indent)

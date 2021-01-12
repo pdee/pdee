@@ -256,7 +256,6 @@ If `py-tab-indents-region-p' is t and first TAB doesn't shift
 		 outmost
 		 ;; (py-compute-indentation orig)
 		 )))
-    (when (and (called-interactively-p 'any) py-verbose-p) (message "py-indent-line, need: %s" need))
     ;; if at outmost
     ;; and not (eq this-command last-command), need remains nil
     (when need
@@ -265,7 +264,6 @@ If `py-tab-indents-region-p' is t and first TAB doesn't shift
 		      py-tab-indents-region-p)
 	   (not (eq (point) orig))
 	   (exchange-point-and-mark))
-      (when (and (called-interactively-p 'any) py-verbose-p)(message "%s" (current-indentation)))
       (current-indentation))))
 
 (defun py--delete-trailing-whitespace (orig)
@@ -313,22 +311,16 @@ When indent is set back manually, this is honoured in following lines."
 		(t
 		 (fixup-whitespace)
 		 (indent-to-column (py-compute-indentation)))))
-    (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
     erg))
 
-(defalias 'py-newline-and-close-block 'py-newline-and-dedent)
 (defun py-newline-and-dedent ()
   "Add a newline and indent to one level below current.
 Returns column."
   (interactive "*")
-  (let ((cui (current-indentation))
-        erg)
+  (let ((cui (current-indentation)))
     (newline 1)
     (when (< 0 cui)
-      (setq erg (- (py-compute-indentation) py-indent-offset))
-      (indent-to-column erg))
-    (when (and (called-interactively-p 'any) py-verbose-p) (message "%s" erg))
-    erg))
+      (indent-to (- (py-compute-indentation) py-indent-offset)))))
 
 (defun py-toggle-indent-tabs-mode ()
   "Toggle `indent-tabs-mode'.
@@ -341,7 +333,7 @@ Returns value of `indent-tabs-mode' switched to."
   (when (and py-verbose-p (called-interactively-p 'any)) (message "indent-tabs-mode %s  py-indent-offset %s" indent-tabs-mode py-indent-offset))
   indent-tabs-mode)
 
-(defun py-indent-tabs-mode (arg &optional iact)
+(defun py-indent-tabs-mode (arg)
   "With positive ARG switch `indent-tabs-mode' on.
 
 With negative ARG switch `indent-tabs-mode' off.
@@ -354,22 +346,20 @@ If IACT is provided, message result"
         (setq indent-tabs-mode t)
         (setq tab-width py-indent-offset))
     (setq indent-tabs-mode nil))
-  (when (and py-verbose-p (or iact (called-interactively-p 'any))) (message "indent-tabs-mode %s   py-indent-offset %s" indent-tabs-mode py-indent-offset))
+  (when (and py-verbose-p (called-interactively-p 'any)) (message "indent-tabs-mode %s   py-indent-offset %s" indent-tabs-mode py-indent-offset))
   indent-tabs-mode)
 
 (defun py-indent-tabs-mode-on (arg)
   "Switch `indent-tabs-mode' according to ARG."
   (interactive "p")
-  (py-indent-tabs-mode (abs arg)(called-interactively-p 'any)))
+  (py-indent-tabs-mode (abs arg)))
 
 (defun py-indent-tabs-mode-off (arg)
   "Switch `indent-tabs-mode' according to ARG."
   (interactive "p")
-  (py-indent-tabs-mode (- (abs arg))(called-interactively-p 'any)))
+  (py-indent-tabs-mode (- (abs arg))))
 
 ;;  Guess indent offset
-
-
 
 (defun py--comment-indent-function ()
   "Python version of `comment-indent-function'."
@@ -425,9 +415,7 @@ See also ‘py--bounds-of-statements’"
       (goto-char beg)
       (if (and beg end)
           (progn
-            (when (called-interactively-p 'any) (message "%s %s" beg end))
             (cons beg end))
-        (when (called-interactively-p 'any) (message "%s" nil))
         nil))))
 
 (defun py-backward-declarations ()
@@ -436,7 +424,6 @@ See also ‘py--bounds-of-statements’"
   (let* ((bounds (py--bounds-of-declarations))
          (erg (car bounds)))
     (when erg (goto-char erg))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-declarations ()
@@ -445,10 +432,8 @@ See also ‘py--bounds-of-statements’"
   (let* ((bounds (py--bounds-of-declarations))
          (erg (cdr bounds)))
     (when erg (goto-char erg))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defalias 'py-copy-declarations 'py-declarations)
 (defun py-declarations ()
   "Forms in current level,which don't open blocks or start with a keyword.
 
@@ -520,7 +505,6 @@ Indented same level, which don't open blocks."
           (progn
             (when (called-interactively-p 'any) (message "%s %s" beg end))
             (cons beg end))
-        (when (called-interactively-p 'any) (message "%s" nil))
         nil))))
 
 (defun py-backward-statements ()
@@ -529,7 +513,6 @@ Indented same level, which don't open blocks."
   (let* ((bounds (py--bounds-of-statements))
          (erg (car bounds)))
     (when erg (goto-char erg))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-statements ()
@@ -538,10 +521,8 @@ Indented same level, which don't open blocks."
   (let* ((bounds (py--bounds-of-statements))
          (erg (cdr bounds)))
     (when erg (goto-char erg))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
-(defalias 'py-copy-statements 'py-statements)
 (defun py-statements ()
   "Copy and mark simple statements in current level which don't open blocks.
 
@@ -568,8 +549,6 @@ Store deleted statements in ‘kill-ring’"
     (when (and beg end)
       (kill-new (buffer-substring-no-properties beg end))
       (delete-region beg end))))
-
-
 
 (defun py-insert-super ()
   "Insert a function \"super()\" from current environment.
@@ -736,10 +715,6 @@ arg MODE: which buffer-mode used in edit-buffer"
     ;; do pretty-print
     ;; print(json.dumps(neudict4, indent=4))
     (setq erg (py-fast-send-string (concat "print(json.dumps("name", indent=5))") proc buffer t))
-    ;; (message "%s" erg)
-    ;; (py-edit--intern "PPrint" 'python-mode beg end)
-    ;; (message "%s" (current-buffer))
-    ;; (switch-to-buffer (current-buffer))
     (goto-char beg)
     (skip-chars-forward "^{")
     (delete-region (point) (progn (forward-sexp) (point)))

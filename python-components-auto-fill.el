@@ -34,31 +34,5 @@
 
 ;;; Code:
 
-(defvar py-auto-fill-mode-orig (auto-fill-mode)
-  "Store the original state of auto-fill-mode. ")
-
-;; py-fill-column-orig  already defined
-
-(defun py-comment-auto-fill (&optional arg) 
-  "Toggles comment-auto-fill mode"
-  (interactive "P")
-  (if (or (and arg (< 0 (prefix-numeric-value arg))) (and (boundp 'py-comment-auto-fill)(not py-comment-auto-fill)))
-      (progn
-        (set (make-local-variable 'py-comment-auto-fill-p) t)
-        (setq fill-column comment-fill-column)
-        (auto-fill-mode 1))
-    (set (make-local-variable 'py-comment-auto-fill-p) nil)
-;;    (set (make-local-variable 'py-comment-auto-fill-only-comments) nil)
-    ;; (setq fill-column fill-column-orig)
-    (auto-fill-mode -1)))
-
-(defun py-comment-auto-fill-on ()
-  (interactive)
-  (py-comment-auto-fill 1))
-
-(defun py-comment-auto-fill-off ()
-  (interactive)
-  (py-comment-auto-fill -1))
-
 (provide 'python-components-auto-fill)
 ;;; python-components-auto-fill.el ends here

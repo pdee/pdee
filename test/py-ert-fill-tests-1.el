@@ -73,7 +73,8 @@ More docstring here.
       (forward-line 1)
       (skip-chars-forward " \t\r\n\f")
       (should (eq 4 (current-indentation)))
-      (search-forward "'''")
+      (search-forward "\"\"\"")
+      (should (eq 4 (current-indentation)))
  )))
 
 (ert-deftest py-ert-backward-indent-test-hJv5Sb-qSF0Qa ()

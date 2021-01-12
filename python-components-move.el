@@ -28,18 +28,14 @@
 
 If already at beginning, go to start of next paragraph upwards"
   (interactive)
-  (let ((erg (and (backward-paragraph)(point))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (backward-paragraph)(point))
 
 (defun py-forward-paragraph ()
     "Go to end of current paragraph.
 
 If already at end, go to end of next paragraph downwards"
   (interactive)
-  (let ((erg (and (forward-paragraph)(point))))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (and (forward-paragraph)(point)))
 
 ;; Indentation
 ;; Travel current level of indentation
@@ -66,7 +62,6 @@ Returns final position when called from inside section, nil otherwise"
     (let (erg)
       (setq erg (py--travel-this-indent-backward))
       (when erg (goto-char erg))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 (defun py--travel-this-indent-backward-bol (indent)
@@ -90,7 +85,6 @@ Returns final position when called from inside section, nil otherwise"
     (let ((indent (when (eq (current-indentation) (current-column)) (current-column)))
 	  erg)
       (setq erg (py--travel-this-indent-backward-bol indent))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 (defun py--travel-this-indent-forward (indent)
@@ -138,8 +132,7 @@ Returns final position when called from inside section, nil otherwise"
       	(save-excursion
       	  (setq indent (and (py-backward-statement)(current-indentation))))
 	(setq erg (py--travel-this-indent-forward indent))
-	(unless (eobp) (forward-line 1) (beginning-of-line) (setq erg (point)))
-	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg)))
+	(unless (eobp) (forward-line 1) (beginning-of-line) (setq erg (point))))
       erg)))
 
 (defun py-backward-expression (&optional orig done repeat)
@@ -184,7 +177,6 @@ REPEAT - count and consider repeats"
 	  (py-backward-expression orig done repeat))))
       (unless (or (eq (point) orig)(and (bobp)(eolp)))
 	(setq erg (point)))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 (defun py-forward-expression (&optional orig done repeat)
@@ -246,7 +238,6 @@ REPEAT - count and consider repeats"
 	  (forward-char 1)))
 	(unless (or (eq (point) orig)(and (eobp) (bolp)))
 	  (setq erg (point)))
-	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	erg))))
 
 (defun py-backward-partial-expression ()
@@ -268,7 +259,6 @@ REPEAT - count and consider repeats"
       (unless
 	  (and (bobp) (member (char-after) (list ?\ ?\t ?\r ?\n ?\f)))
 	(setq erg (point))))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-partial-expression ()
@@ -281,7 +271,6 @@ REPEAT - count and consider repeats"
      (looking-at "[\[{(]")
      (goto-char (scan-sexps (point) 1)))
     (setq erg (point))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 ;; Partial- or Minor Expression
@@ -298,7 +287,6 @@ If already at ‘beginning-of-line’ and not at BOB, go to beginning of previou
                  (forward-line -1)
                  (progn (beginning-of-line)(point)))
              (progn (beginning-of-line)(point)))))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
       erg)))
 
 (defun py-forward-line ()
@@ -307,19 +295,12 @@ If already at ‘beginning-of-line’ and not at BOB, go to beginning of previou
 If already at ‘end-of-line’ and not at EOB, go to end of next line."
   (interactive)
   (unless (eobp)
-    (let ((orig (point))
-	  erg)
+    (let ((orig (point)))
       (when (eolp) (forward-line 1))
       (end-of-line)
-      (when (< orig (point))(setq erg (point)))
-      (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-      erg)))
+      (when (< orig (point))(point)))))
 
-
-
-
-
-(defun py-forward-into-nomenclature (&optional arg iact)
+(defun py-forward-into-nomenclature (&optional arg)
   "Move forward to end of a nomenclature symbol.
 
 With \\[universal-argument] (programmatically, optional argument ARG), do it that many times.
@@ -366,7 +347,6 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
       (if (and (< orig (point)) (not (eobp)))
           (setq erg (point))
         (setq erg nil)))
-    (when (and py-verbose-p (or iact (called-interactively-p 'any))) (message "%s" erg))
     erg))
 
 (defun py-backward-into-nomenclature (&optional arg)
@@ -378,7 +358,7 @@ forward.
 A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
   (setq arg (or arg 1))
-  (py-forward-into-nomenclature (- arg) arg))
+  (py-forward-into-nomenclature (- arg)))
 
 (defun py--travel-current-indent (indent &optional orig)
   "Move down until clause is closed, i.e. current indentation is reached.
@@ -407,7 +387,6 @@ Return position"
   (while (and (not (bobp))(re-search-backward (concat "^" str py-block-keywords) nil t)(or (nth 8 (setq pps (parse-partial-sexp (point-min) (point)))) (nth 1 pps))))
   (back-to-indentation)
   (and (< (point) orig)(setq erg (point)))
-  (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
   erg))
 
 (defun py-backward-section ()
@@ -451,8 +430,6 @@ Return position of successful, nil of not started from inside."
 			    ;; (not (bolp))
 			    ))
 		(and (looking-at py-assignment-re) last)))))
-    (when (and py-verbose-p (called-interactively-p 'interactive))
-      (message "%s" erg))
     erg))
 
 (defun py--forward-assignment-intern ()
@@ -483,8 +460,6 @@ Return position of successful, nil of not started from inside"
 		    (and (looking-at py-assignment-re) last))))
 	     erg)
 	(and beg (setq erg (py--forward-assignment-intern)))
-	(when (and py-verbose-p (called-interactively-p 'interactive))
-          (message "%s" erg))
 	erg))))
 
 ;; now in python-components-forward-forms.el

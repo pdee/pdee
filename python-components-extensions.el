@@ -1,6 +1,5 @@
 ;;; python-components-extensions.el --- more editing utilities -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: lisp
@@ -44,7 +43,6 @@ With \\[universal argument] just indent.
               (delete-region (line-beginning-position) (line-end-position)))))))
     (back-to-indentation)
     (when (or (eq 4 (prefix-numeric-value arg)) (< orig (point))) (setq erg (current-column)))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-dedent-forward-line (&optional arg)
@@ -80,58 +78,47 @@ Affected by `py-dedent-keep-relative-column'. "
     (when (< (point) orig)
       (setq erg (current-column)))
     (when py-dedent-keep-relative-column (goto-char orig))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-class-at-point ()
-  "Return class definition as string.
-
-With interactive call, send it to the message buffer too. "
+  "Return class definition as string. "
   (interactive)
   (save-excursion
     (let* ((beg (py-backward-class))
 	   (end (py-forward-class))
 	   (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
-      (when (called-interactively-p 'any) (message "%s" res))
-      res)))
-
-(defun py-function-at-point ()
-  "Return functions definition as string.
-
-With interactive call, send it to the message buffer too. "
-  (interactive)
-  (save-excursion
-    (let* ((beg (py-backward-function))
-	   (end (py-forward-function))
-	   (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
-      (when (called-interactively-p 'any) (message "%s" res))
       res)))
 
 (defun py-backward-function ()
-  "Jump to the beginning of defun. Returns point. "
+  "Jump to the beginning of defun.
+
+Returns position. "
   (interactive "p")
-  (let ((pos (py-backward-def-or-class)))
-    (when (called-interactively-p 'any) (message "%s" pos))
-    pos))
+  (py-backward-def-or-class))
 
 (defun py-forward-function ()
-  "Jump to the end of function. "
+  "Jump to the end of function.
+
+Returns position."
   (interactive "p")
-  (let ((pos (py-forward-def-or-class)))
-    (when (called-interactively-p 'any) (message "%s" pos))
-    pos))
+  (py-forward-def-or-class))
+
+(defun py-function-at-point ()
+  "Return functions definition as string. "
+  (interactive)
+  (save-excursion
+    (let* ((beg (py-backward-function))
+	   (end (py-forward-function)))
+      (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end)))))
 
 ;; Functions for marking regions
 
 (defun py-line-at-point ()
-  "Return line as string.
-  With interactive call, send it to the message buffer too. "
+  "Return line as string. "
   (interactive)
   (let* ((beg (line-beginning-position))
-	 (end (line-end-position))
-	 (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
-    (when (called-interactively-p 'any) (message "%s" res))
-    res))
+	 (end (line-end-position)))
+    (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
 
 (defun py-match-paren-mode (&optional arg)
   "py-match-paren-mode nil oder t"
@@ -255,19 +242,16 @@ Matches lists, but also block, statement, string and comment. "
 (unless (functionp 'in-string-p)
   (defun in-string-p (&optional pos)
     (interactive)
-    (let* ((orig (or pos (point)))
-           (erg
-            (save-excursion
-              (save-restriction
-                (widen)
-                (beginning-of-defun)
-                (numberp
-                 (progn
-                   (if (featurep 'xemacs)
-                       (nth 3 (parse-partial-sexp (point) orig)
-                            (nth 3 (parse-partial-sexp (point-min) (point)))))))))))
-      (when (called-interactively-p 'any) (message "%s" erg))
-      erg)))
+    (let ((orig (or pos (point))))
+      (save-excursion
+        (save-restriction
+          (widen)
+          (beginning-of-defun)
+          (numberp
+           (progn
+             (if (featurep 'xemacs)
+                 (nth 3 (parse-partial-sexp (point) orig)
+                      (nth 3 (parse-partial-sexp (point-min) (point))))))))))))
 
 (defun py-documentation (w)
   "Launch PyDOC on the Word at Point"

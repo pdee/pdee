@@ -3592,8 +3592,7 @@ REPEAT - count and consider repeats"
 	   (member (char-before) (list 10 32 9 ?#)))
 	(setq erg (point)))
       (if (and py-verbose-p err)
-	  (py--message-error err)
-	(and py-verbose-p (called-interactively-p 'any) (message "%s" erg)))
+	  (py--message-error err))
       erg)))
 
 (defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat maxindent)
@@ -3689,7 +3688,6 @@ Optional MAXINDENT: don't stop if indentation is larger"
 	;; return nil when before comment
 	(unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
 	  (when (< (point) orig)(setq erg (point))))
-	(when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
 	erg))))
 
 (defun py-backward-statement-bol ()
@@ -3709,16 +3707,13 @@ See also `py-up-statement': up from current definition to next beginning of stat
 		     (and
 		      (py-backward-statement)
 		      (progn (beginning-of-line) (point)))))))
-    (when (called-interactively-p 'any) (message "%s" erg))
     erg))
 
 (defun py-forward-statement-bol ()
   "Go to the ‘beginning-of-line’ following current statement."
   (interactive)
-  (let ((erg (py-forward-statement)))
-    (setq erg (py--beginning-of-line-form))
-    (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" erg))
-    erg))
+  (py-forward-statement)
+  (py--beginning-of-line-form))
 
 (defun py-beginning-of-statement-p ()
   (interactive)
@@ -3733,12 +3728,9 @@ See also `py-up-statement': up from current definition to next beginning of stat
 
 Return position if statement found, nil otherwise."
   (interactive)
-  (let (erg)
-    (if (py--beginning-of-statement-p)
-	(setq erg (py-backward-statement))
-      (setq erg (and (py-backward-statement) (py-backward-statement))))
-    (when (and py-verbose-p (called-interactively-p 'interactive)) (message "%s" erg))
-    erg))
+  (if (py--beginning-of-statement-p)
+      (py-backward-statement)
+    (progn (and (py-backward-statement) (py-backward-statement)))))
 
 (defun py--end-of-statement-p ()
   "Return position, if cursor is at the end of a statement, nil otherwise."
@@ -3755,20 +3747,18 @@ Return position if statement found, nil otherwise."
 Corresponds to backward-up-list in Elisp
 Return position if statement found, nil otherwise."
   (interactive)
-  (let* ((orig (point))
-	 erg)
+  (let* ((orig (point)))
     (cond ((py--end-of-statement-p)
-	   (setq erg
-		 (and
-		  (py-forward-statement)
-		  (py-backward-statement)
-		  (< orig (point))
-		  (point))))
+	   (progn
+	     (and
+	      (py-forward-statement)
+	      (py-backward-statement)
+	      (< orig (point))
+	      (point))))
 	  ((ignore-errors (< orig (and (py-forward-statement) (py-backward-statement))))
-	   (setq erg (point)))
-	  (t (setq erg (ignore-errors (< orig (and (py-forward-statement) (py-forward-statement)(py-backward-statement)))))))
-    (when (and py-verbose-p (called-interactively-p 'interactive)) (message "%s" erg))
-    erg))
+	   (point))
+	  ((ignore-errors (< orig (and (py-forward-statement) (py-forward-statement)(py-backward-statement))))
+	     (point)))))
 
 (defun py--backward-regexp (regexp &optional indent condition orig regexpvalue)
   "Search backward next regexp not in string or comment.

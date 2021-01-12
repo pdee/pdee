@@ -208,8 +208,6 @@ Returns column reached."
      (t
       (delete-char (- 1))))
     (setq erg (current-column))
-    (when (and (called-interactively-p 'any) py-verbose-p)
-      (message "%s" erg))
     erg))
 
 ;; TODO: PRouleau: the key binding in python-mode-map for command only works
@@ -256,18 +254,11 @@ Pass ARG to the command `yank'."
    (t
     (yank arg))))
 
-;; TODO: PRouleau.  Should this not be renamed without the -p suffix?
-;;       My understanding of the convention was that the suffix is used for
-;;       the predicate function.  This is toggling the feature, and no a
-;;       predicate without side effect.
-(defun py-toggle-py-electric-colon-active-p ()
+(defun py-toggle-py-electric-colon-active ()
   "Toggle use of electric colon for Python code."
   (interactive)
   (setq py-electric-colon-active-p (not py-electric-colon-active-p))
-  (when (and py-verbose-p
-	     ;; (called-interactively-p 'interactive)
-	     )
-    (message "py-electric-colon-active-p: %s" py-electric-colon-active-p)))
+  (when (and py-verbose-p (called-interactively-p 'interactive)) (message "py-electric-colon-active-p: %s" py-electric-colon-active-p)))
 
 ;; TODO: PRouleau: It might be beneficial to have toggle commands for all
 ;;       the electric behaviours, not just the electric colon.

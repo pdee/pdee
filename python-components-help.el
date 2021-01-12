@@ -123,7 +123,6 @@ Used with ‘eval-after-load’."
 
 ;; ;
 
-
 (defun py-fetch-docu ()
   "Lookup in current buffer for the doku for the symbol at point.
 
@@ -576,21 +575,15 @@ Interactively, prompt for SYMBOL."
       (with-help-window (help-buffer)
 	(princ (py--find-definition-question-type symbol imports))))))
 
-
-
 (defun py-update-imports ()
   "Return imports.
 
 Imports done are displayed in message buffer."
   (interactive)
   (save-excursion
-    (let (
-          (orig (point))
+    (let ((orig (point))
           (erg (py-find-imports)))
       (goto-char orig)
-      ;; (when (called-interactively-p 'any)
-      ;;   (switch-to-buffer (current-buffer))
-      ;;   (message "%s" erg))
       erg)))
 
 ;;  Code-Checker

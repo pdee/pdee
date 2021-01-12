@@ -1,7 +1,7 @@
 ;;; python-components-paragraph.el --- filling -*- lexical-binding: t; -*-
 
 ;; Original Author: Fabián E. Gallina <fabian@anue.biz>
-;; Maintainer https://gitlab.com/groups/python-mode-devs 
+;; Maintainer https://gitlab.com/groups/python-mode-devs
 
 ;; Keywords: languages
 
@@ -302,6 +302,19 @@ See lp:1066489 "
   (py-indent-line nil t)
   (goto-char orig))
 
+(defun py--fill-docstring-last-line (thisend beg end multi-line-p)
+  (widen)
+  ;; (narrow-to-region thisbeg thisend)
+  (goto-char thisend)
+  (skip-chars-backward "\"'")
+  (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
+  ;; (narrow-to-region beg end)
+  (fill-region beg end)
+  (setq multi-line-p (string-match "\n" (buffer-substring-no-properties beg end)))
+  (when multi-line-p
+    ;; adjust the region to fill according to style
+    (goto-char end)))
+
 (defun py--fill-docstring-base (thisbeg thisend style multi-line-p beg end py-current-indent orig)
   ;; (widen)
   ;; fill-paragraph causes wrong indent, lp:1397936
@@ -339,18 +352,7 @@ See lp:1066489 "
       (unless (py-empty-line-p) (newline 1)))
     (py--fill-fix-end thisend orig delimiters-style)))
 
-(defun py--fill-docstring-last-line (thisend beg end multi-line-p)
-  (widen)
-  ;; (narrow-to-region thisbeg thisend)
-  (goto-char thisend)
-  (skip-chars-backward "\"'")
-  (delete-region (point) (progn (skip-chars-backward " \t\r\n\f")(point)))
-  ;; (narrow-to-region beg end)
-  (fill-region beg end)
-  (setq multi-line-p (string-match "\n" (buffer-substring-no-properties beg end)))
-  (when multi-line-p
-    ;; adjust the region to fill according to style
-    (goto-char end)))
+
 
 (defun py--fill-docstring-first-line (beg end)
   "Refill first line after newline maybe. "
@@ -461,8 +463,7 @@ Fill according to `py-docstring-style' "
   (save-excursion
     (save-restriction
       (window-configuration-to-register py--windows-config-register)
-      (let* ((tqs tqs)
-	     (pps (or pps (parse-partial-sexp (point-min) (point))))
+      (let* ((pps (or pps (parse-partial-sexp (point-min) (point))))
 	     (docstring (unless (not py-docstring-style) (py--in-or-behind-or-before-a-docstring pps)))
 	     (fill-column py-comment-fill-column)
 	     (in-string (nth 3 pps)))
