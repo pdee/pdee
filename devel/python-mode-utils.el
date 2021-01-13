@@ -1154,7 +1154,8 @@
 	(unless (string= "" elt)
 	  (concat "-" elt))
 	(unless (string= pyo "")(concat "-" pyo))))))))
-	(defun write-unified-extended-execute-forms ()
+
+(defun write-unified-extended-execute-forms ()
   "Write ‘py-execute-statement, ...’ etc.
 
 Include default forms "

@@ -1,4 +1,4 @@
-;; Extended executes --- more execute forms
+;; Extended executes --- more execute forms -*- lexical-binding: t; -*-
 
 
 ;; URL: https://gitlab.com/python-mode-devs
