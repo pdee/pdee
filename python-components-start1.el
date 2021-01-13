@@ -3496,6 +3496,23 @@ TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
      (and (eq (char-before (point)) ?\\ )
           (py-escaped-p))))
 
+(defun py--skip-to-comment-or-semicolon (done)
+  "Returns position if comment or semicolon found. "
+  (let ((orig (point)))
+    (cond ((and done (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
+                (member (char-after) (list ?# ?\;)))
+           (when (eq ?\; (char-after))
+             (skip-chars-forward ";" (line-end-position))))
+          ((and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
+                (member (char-after) (list ?# ?\;)))
+           (when (eq ?\; (char-after))
+             (skip-chars-forward ";" (line-end-position))))
+          ((not done)
+           (end-of-line)))
+    (skip-chars-backward " \t" (line-beginning-position))
+    (and (< orig (point))(setq done (point))
+         done)))
+
 ;;  Statement
 (defun py-forward-statement (&optional orig done repeat)
   "Go to the last char of current statement.
@@ -4256,23 +4273,6 @@ Returns position reached if successful"
   (and (eq pos (point)) (prog1 (forward-line 1) (back-to-indentation))
        (while (member (char-after) (list  (string-to-char comment-start) 10))(forward-line 1)(back-to-indentation))))
 
-(defun py--skip-to-comment-or-semicolon (done)
-  "Returns position if comment or semicolon found. "
-  (let ((orig (point)))
-    (cond ((and done (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-                (member (char-after) (list ?# ?\;)))
-           (when (eq ?\; (char-after))
-             (skip-chars-forward ";" (line-end-position))))
-          ((and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-                (member (char-after) (list ?# ?\;)))
-           (when (eq ?\; (char-after))
-             (skip-chars-forward ";" (line-end-position))))
-          ((not done)
-           (end-of-line)))
-    (skip-chars-backward " \t" (line-beginning-position))
-    (and (< orig (point))(setq done (point))
-         done)))
-
 (defun py--beginning-of-line-form ()
   "Internal use: Go to beginning of line following end of form.
 
@@ -4918,7 +4918,7 @@ Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source b
         py-error))
 
 (defvar py-debug-p nil
-  "Intenally used for development purposes.")
+  "Used for development purposes.")
 
 (defun py--fetch-result (buffer limit &optional cmd)
   "CMD: some shells echo the command in output-buffer
