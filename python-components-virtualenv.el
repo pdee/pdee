@@ -31,8 +31,6 @@
     (setq virtualenv-workon-home (getenv "WORKON_HOME"))
   (setq virtualenv-workon-home "~/.virtualenvs"))
 
-(setq virtualenv-name nil)
-
 ;;TODO: Move to a generic UTILITY or TOOL package
 (defun virtualenv-filter (predicate sequence)
   "Return a list of each SEQUENCE element for which the PREDICATE is non-nil.
