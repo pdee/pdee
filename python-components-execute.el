@@ -33,7 +33,6 @@ With EOB-P, go to end of buffer."
     (goto-char (point-max))))
 
 ;;  Split-Windows-On-Execute forms
-(defalias 'toggle-py-split-windows-on-execute 'py-toggle-split-windows-on-execute)
 (defun py-toggle-split-windows-on-execute (&optional arg)
   "If ‘py-split-window-on-execute’ should be on or off.
 
@@ -53,7 +52,7 @@ optional ARG
 Returns value of ‘py-split-window-on-execute’."
   (interactive "p")
   (let ((arg (or arg 1)))
-    (toggle-py-split-windows-on-execute arg))
+    (py-toggle-split-windows-on-execute arg))
   (when (called-interactively-p 'any) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   py-split-window-on-execute)
 
@@ -62,14 +61,12 @@ Returns value of ‘py-split-window-on-execute’."
 
 Returns value of ‘py-split-window-on-execute’."
   (interactive)
-  (toggle-py-split-windows-on-execute -1)
+  (py-toggle-split-windows-on-execute -1)
   (when (called-interactively-p 'any) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
   py-split-window-on-execute)
 
 ;;  Shell-Switch-Buffers-On-Execute forms
-(defalias 'py-toggle-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
-(defalias 'toggle-py-shell-switch-buffers-on-execute 'py-toggle-shell-switch-buffers-on-execute)
-(defun py-toggle-shell-switch-buffers-on-execute (&optional arg)
+(defun py-toggle-switch-buffers-on-execute (&optional arg)
   "If ‘py-switch-buffers-on-execute-p’ according to ARG.
 
   Returns value of ‘py-switch-buffers-on-execute-p’ switched to."
@@ -81,22 +78,22 @@ Returns value of ‘py-split-window-on-execute’."
     (when (called-interactively-p 'any) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
     py-switch-buffers-on-execute-p))
 
-(defun py-shell-switch-buffers-on-execute-on (&optional arg)
+(defun py-switch-buffers-on-execute-on (&optional arg)
   "Make sure, ‘py-switch-buffers-on-execute-p’ according to ARG.
 
 Returns value of ‘py-switch-buffers-on-execute-p’."
   (interactive "p")
   (let ((arg (or arg 1)))
-    (toggle-py-shell-switch-buffers-on-execute arg))
+    (py-toggle-switch-buffers-on-execute arg))
   (when (called-interactively-p 'any) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
-(defun py-shell-switch-buffers-on-execute-off ()
+(defun py-switch-buffers-on-execute-off ()
   "Make sure, ‘py-switch-buffers-on-execute-p’ is off.
 
 Returns value of ‘py-switch-buffers-on-execute-p’."
   (interactive)
-  (toggle-py-shell-switch-buffers-on-execute -1)
+  (py-toggle-switch-buffers-on-execute -1)
   (when (called-interactively-p 'any) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
   py-switch-buffers-on-execute-p)
 
@@ -185,8 +182,6 @@ Receives a ‘buffer-name’ as argument"
       (expand-file-name py-shell-local-path)
     (when py-use-local-default
       (error "Abort: ‘py-use-local-default’ is set to t but ‘py-shell-local-path’ is empty. Maybe call ‘py-toggle-local-default-use’"))))
-
-
 
 (defun py-switch-to-shell ()
   "Switch to Python process buffer."
@@ -402,14 +397,6 @@ This may be preferable to ‘\\[py-execute-buffer]’ because:
                                   ;; (format "execfile(r'%s')\n" file)
                                   (py-which-execute-file-command file))))
       (py-execute-buffer))))
-
-
-
-(defalias 'ipython-send-and-indent 'py-execute-line-ipython)
-(defalias 'py-execute-region-in-shell 'py-execute-region)
-(defalias 'py-ipython-shell-command-on-region 'py-execute-region-ipython)
-(defalias 'py-send-region-ipython 'py-execute-region-ipython)
-(defalias 'py-send-region 'py-execute-region)
 
 (provide 'python-components-execute);
 ;;;  python-components-execute.el ends here

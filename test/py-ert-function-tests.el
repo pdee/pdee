@@ -244,22 +244,22 @@
 (ert-deftest py-ert-forward-expression-functionp-test-uqW5jF ()
   (should (functionp 'py-forward-expression)))
 
-(ert-deftest py-ert-beginning-of-partial-expression-functionp-test-6Btcph ()
+(ert-deftest py-ert-backward-partial-expression-functionp-test-6Btcph ()
   (should (functionp 'py-backward-partial-expression)))
 
 (ert-deftest py-ert-forward-partial-expression-functionp-test-czVnqT ()
   (should (functionp 'py-forward-partial-expression)))
 
-(ert-deftest py-ert-beginning-of-line-functionp-test-q4Klqv ()
+(ert-deftest py-ert-backward-line-functionp-test-q4Klqv ()
   (should (functionp 'py-backward-line)))
 
-(ert-deftest py-ert-end-of-line-functionp-test-6rtLn7 ()
-  (should (functionp 'py-end-of-line)))
+(ert-deftest py-ert-forward-line-functionp-test-6rtLn7 ()
+  (should (functionp 'py-forward-line)))
 
 (ert-deftest py-ert-backward-statement-functionp-test-Q1S0lJ ()
   (should (functionp 'py-backward-statement)))
 
-(ert-deftest py-ert-beginning-of-statement-bol-functionp-test-K2HFhl ()
+(ert-deftest py-ert-backward-statement-bol-functionp-test-K2HFhl ()
   (should (functionp 'py-backward-statement-bol)))
 
 (ert-deftest py-ert-end-of-statement-functionp-test-yeWNbX ()
@@ -295,7 +295,7 @@
 (ert-deftest py-ert--travel-current-indent-functionp-test-CYDb4D ()
   (should (functionp 'py--travel-current-indent)))
 
-(ert-deftest py-ert-beginning-of-block-current-column-functionp-test-GUj4Ff ()
+(ert-deftest py-ert-backward-block-current-column-functionp-test-GUj4Ff ()
   (should (functionp 'py-backward-block-current-column)))
 
 (ert-deftest py-ert--end-of-block-p-functionp-test-kJGLdR ()
@@ -388,8 +388,8 @@
 (ert-deftest py-ert-fast-send-string-functionp-test-MdJlrH ()
   (should (functionp 'py-fast-send-string)))
 
-(ert-deftest py-ert-process-region-fast-functionp-test-ANrTPm ()
-  (should (functionp 'py-process-region-fast)))
+(ert-deftest py-ert-execute-region-fast-functionp-test-ANrTPm ()
+  (should (functionp 'py-execute-region-fast)))
 
 (ert-deftest py-ert-execute-statement-fast-functionp-test-sHN6b2 ()
   (should (functionp 'py-execute-statement-fast)))
@@ -442,14 +442,14 @@
 (ert-deftest py-ert-split-windows-on-execute-off-functionp-test-gd12kL ()
   (should (functionp 'py-split-windows-on-execute-off)))
 
-(ert-deftest py-ert-toggle-shell-switch-buffers-on-execute-functionp-test-gjxnfr ()
-  (should (functionp 'py-toggle-shell-switch-buffers-on-execute)))
+(ert-deftest py-ert-toggle-switch-buffers-on-execute-functionp-test-gjxnfr ()
+  (should (functionp 'py-toggle-switch-buffers-on-execute)))
 
-(ert-deftest py-ert-shell-switch-buffers-on-execute-on-functionp-test-WO9P86 ()
-  (should (functionp 'py-shell-switch-buffers-on-execute-on)))
+(ert-deftest py-ert-switch-buffers-on-execute-on-functionp-test-WO9P86 ()
+  (should (functionp 'py-switch-buffers-on-execute-on)))
 
-(ert-deftest py-ert-shell-switch-buffers-on-execute-off-functionp-test-uA6R1M ()
-  (should (functionp 'py-shell-switch-buffers-on-execute-off)))
+(ert-deftest py-ert-switch-buffers-on-execute-off-functionp-test-uA6R1M ()
+  (should (functionp 'py-switch-buffers-on-execute-off)))
 
 (ert-deftest py-ert-guess-default-python-functionp-test-kpWDRs ()
   (should (functionp 'py-guess-default-python)))
@@ -1303,7 +1303,7 @@
 (ert-deftest py-ert-backward-clause-functionp-test-KYsoBe ()
   (should (functionp 'py-backward-clause)))
 
-(ert-deftest py-ert-beginning-of-block-or-clause-functionp-test-m0a9C0 ()
+(ert-deftest py-ert-backward-block-or-clause-functionp-test-m0a9C0 ()
   (should (functionp 'py-backward-block-or-clause)))
 
 (ert-deftest py-ert-backward-def-functionp-test-i4cmFM ()
@@ -1312,22 +1312,22 @@
 (ert-deftest py-ert-backward-class-functionp-test-wnqXFy ()
   (should (functionp 'py-backward-class)))
 
-(ert-deftest py-ert-beginning-of-def-or-class-functionp-test-8kMTCk ()
+(ert-deftest py-ert-backward-def-or-class-functionp-test-8kMTCk ()
   (should (functionp 'py-backward-def-or-class)))
 
-(ert-deftest py-ert-beginning-of-if-block-functionp-test-67k6x6 ()
+(ert-deftest py-ert-backward-if-block-functionp-test-67k6x6 ()
   (should (functionp 'py-backward-if-block)))
 
-(ert-deftest py-ert-beginning-of-try-block-functionp-test-mypJqS ()
+(ert-deftest py-ert-backward-try-block-functionp-test-mypJqS ()
   (should (functionp 'py-backward-try-block)))
 
-(ert-deftest py-ert-beginning-of-minor-block-functionp-test-wzg9gE ()
+(ert-deftest py-ert-backward-minor-block-functionp-test-wzg9gE ()
   (should (functionp 'py-backward-minor-block)))
 
-(ert-deftest py-ert-beginning-of-for-block-functionp-test-6Njj8p ()
+(ert-deftest py-ert-backward-for-block-functionp-test-6Njj8p ()
   (should (functionp 'py-backward-for-block)))
 
-(ert-deftest py-ert-beginning-of-except-block-functionp-test-WabjXb ()
+(ert-deftest py-ert-backward-except-block-functionp-test-WabjXb ()
   (should (functionp 'py-backward-except-block)))
 
 (ert-deftest py-ert-backward-block-bol-functionp-test-C2g5JX ()

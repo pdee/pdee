@@ -774,8 +774,8 @@ Default is nil."
   :type '(choice
 
           (const :tag "default" nil)
-          (const :tag "py-end-of-partial-expression" py-end-of-partial-expression)
-          (const :tag "py-end-of-expression" py-end-of-expression))
+          (const :tag "py-forward-partial-expression" py-forward-partial-expression)
+          (const :tag "py-forward-expression" py-forward-expression))
   :tag "py-sexp-function"
   :group 'python-mode)
 
@@ -783,7 +783,7 @@ Default is nil."
   "If a newline is inserted, when line after block isn't empty.
 
 Default is non-nil.
-When non-nil, `py-end-of-def' and related will work faster"
+When non-nil, `py-forward-def' and related will work faster"
   :type 'boolean
   :tag "py-close-provides-newline"
   :group 'python-mode)
@@ -991,7 +991,7 @@ Also used by navigation"
 Default is nil.
 
 beginning-of defun, ‘end-of-defun’ forms use
-commands `py-backward-top-level', `py-end-of-top-level'
+commands `py-backward-top-level', `py-forward-top-level'
 
 ‘mark-defun’ marks function ‘top-level’ form at point etc."
 
@@ -5753,7 +5753,6 @@ Returns position where output starts."
     (and (setq val (get-register py--windows-config-register))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
 	 (jump-to-register py--windows-config-register))))
 
-(defalias 'py-toggle-split-window-on-execute-function 'py-toggle-split-window-function)
 (defun py-toggle-split-window-function ()
   "If window is splitted vertically or horizontally.
 

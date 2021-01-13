@@ -1457,7 +1457,7 @@ class bar:
     (goto-char (point-max))
     (skip-chars-backward " \n")
     (forward-char 1)
-    (py-end-of-def-or-class)
+    (py-forward-def-or-class)
     (should (eobp))))
 
 (ert-deftest py-ert-end-of-def-or-class-test-2-ctMmXA ()
@@ -1469,7 +1469,7 @@ class bar:
         pass"
     (goto-char (point-min))
     (search-forward "pass")
-    (py-end-of-def-or-class)
+    (py-forward-def-or-class)
     (should (eobp))))
 
 (ert-deftest py-ert-section-backward-test-f5QRWB ()
@@ -2775,7 +2775,7 @@ def run(statement, globals=None, locals=None):
 "
     (goto-char (point-min))
     (search-forward "return answer")
-    (py-end-of-def-or-class)
+    (py-forward-def-or-class)
     (should (looking-back "self.run(statement)" (line-beginning-position)))))
 
 (ert-deftest py-forward-def-or-class-test-pB8W4q ()
@@ -3138,27 +3138,27 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (goto-char (point-max))
     (should (py-backward-assignment))))
 
-(ert-deftest py-end-of-assignment-test-nnyBdy()
+(ert-deftest py-forward-assignment-test-nnyBdy()
     (py-test-with-temp-buffer-point-min
 	"a, b, c = (1, 2, 3)"
 	(goto-char (point-min))
-      (py-end-of-assignment)
+      (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
-(ert-deftest py-end-of-assignment-test-wQIiGk ()
+(ert-deftest py-forward-assignment-test-wQIiGk ()
     (py-test-with-temp-buffer-point-min
 	"a, b, c = (1, 2, 3)"
 	(goto-char (point-min))
 	(search-forward "b")
-      (py-end-of-assignment)
+      (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
-(ert-deftest py-end-of-assignment-test-2ptHP0()
+(ert-deftest py-forward-assignment-test-2ptHP0()
     (py-test-with-temp-buffer
 	"a, b, c = (1, 2, 3)
 asdf = []"
 	(search-backward "2")
-      (py-end-of-assignment)
+      (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
 (ert-deftest py-backward-assignment-test-nnyBdy()
@@ -3235,7 +3235,7 @@ ausgabe = kugel.ausgabe"
     ))
 
 
-(ert-deftest py-end-of-def-or-class-test-1-YpTSCo ()
+(ert-deftest py-forward-def-or-class-test-1-YpTSCo ()
   (py-test-with-temp-buffer
       "class foo:
     \"\"\"asdf\"\"\"
@@ -3250,7 +3250,7 @@ ausgabe = kugel.ausgabe"
     (goto-char (point-max))
     (search-backward "@asdf")
     (end-of-line)
-    (py-end-of-def-or-class)
+    (py-forward-def-or-class)
     (should (looking-back "pass"))))
 
 (ert-deftest py-down-statement-test-1-zsvwPG ()
@@ -3374,7 +3374,7 @@ asdf asfsd afd
 from __future__ import foo
 "
     (goto-char (point-min))
-    (py-end-of-def-or-class)
+    (py-forward-def-or-class)
     (should-not (nth 3 (parse-partial-sexp (point-min) (point))))
     (should (eobp))))
 

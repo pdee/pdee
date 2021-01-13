@@ -453,8 +453,8 @@ the block structure:
 \\[py-goto-block-up]\t move up to start of current block
 \\[py-backward-def-or-class]\t move to start of def
 \\[universal-argument] \\[py-backward-def-or-class]\t move to start of class
-\\[py-end-of-def-or-class]\t move to end of def
-\\[universal-argument] \\[py-end-of-def-or-class]\t move to end of class
+\\[py-forward-def-or-class]\t move to end of def
+\\[universal-argument] \\[py-forward-def-or-class]\t move to end of class
 
 The first two move to one statement beyond the statement that contains
 point.  A numeric prefix argument tells them to move that many
@@ -468,7 +468,7 @@ Or do \\[py-previous-statement] with a huge prefix argument.
 %c:py-next-statement
 %c:py-goto-block-up
 %c:py-backward-def-or-class
-%c:py-end-of-def-or-class
+%c:py-forward-def-or-class
 
 @LITTLE-KNOWN EMACS COMMANDS PARTICULARLY USEFUL IN PYTHON MODE
 

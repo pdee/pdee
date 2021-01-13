@@ -36,7 +36,6 @@ Optional PROC: select an already running process for executing"
   (interactive)
   (py-execute-buffer shell dedicated t split switch proc))
 
-(defalias 'py-process-region-fast 'py-execute-region-fast)
 (defun py-execute-region-fast (beg end &optional shell dedicated split switch proc)
   "Send region to a Python interpreter.
 

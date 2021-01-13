@@ -15,10 +15,6 @@
 
 ;;; Code:
 
-(defalias 'py-script-complete 'py-shell-complete)
-(defalias 'py-python2-shell-complete 'py-shell-complete)
-(defalias 'py-python3-shell-complete 'py-shell-complete)
-
 (defun py--shell-completion-get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
@@ -52,8 +48,6 @@ Takes END"
     )
 
   (goto-char end))
-
-(defalias 'ipython-complete 'py-shell-complete)
 
 (defun py--shell-insert-completion-maybe (completion input)
   (cond ((eq completion t)

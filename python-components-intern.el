@@ -463,7 +463,7 @@ module-qualified names."
   "Store the original state of auto-fill-mode. ")
 
 ;; py-fill-column-orig  already defined
-(defun py-comment-auto-fill (&optional arg) 
+(defun py-comment-auto-fill (&optional arg)
   "Toggles comment-auto-fill mode"
   (interactive "P")
   (if (or (and arg (< 0 (prefix-numeric-value arg))) (and (boundp 'py-comment-auto-fill)(not py-comment-auto-fill)))
@@ -1000,6 +1000,7 @@ If BOL is t, from beginning-of-line"
     (unless end (when (< beg (point))
                   (setq end (point))))
     (cons beg end)))
+
 (defun py--mark-base (form &optional mark-decorators)
   "Returns boundaries of FORM, a cons.
 

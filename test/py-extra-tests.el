@@ -1053,7 +1053,7 @@ class EmacsFrameThemeManager(datatypes.Singleton, metaclass=cldef.metaClass):
                 textFormat % (archiveFile.name, timeStr, theme.sexpr))
 "
     (goto-char 25548)
-    (py-end-of-def-or-class)
+    (py-forward-def-or-class)
     (should (eq 26242 (point)))))
 
 (ert-deftest py-execute-region-ipython-test-1-1gyFLs ()

@@ -692,62 +692,62 @@ Go to beginning try-block, skip whitespace at BOL.
 Returns beginning of try-block if successful, nil otherwise"]
            )
           ("Forward"
-	   ["End of block" py-end-of-block
-	    :help " `py-end-of-block'
+	   ["End of block" py-forward-block
+	    :help " `py-forward-block'
 Go to end of block.
 
 Returns end of block if successful, nil otherwise"]
 
-	   ["End of block or clause" py-end-of-block-or-clause
-	    :help " `py-end-of-block-or-clause'
+	   ["End of block or clause" py-forward-block-or-clause
+	    :help " `py-forward-block-or-clause'
 Go to end of block-or-clause.
 
 Returns end of block-or-clause if successful, nil otherwise"]
 
-	   ["End of class" py-end-of-class
-	    :help " `py-end-of-class'
+	   ["End of class" py-forward-class
+	    :help " `py-forward-class'
 Go to end of class.
 
 Returns end of class if successful, nil otherwise"]
 
-	   ["End of clause" py-end-of-clause
-	    :help " `py-end-of-clause'
+	   ["End of clause" py-forward-clause
+	    :help " `py-forward-clause'
 Go to end of clause.
 
 Returns end of clause if successful, nil otherwise"]
 
-	   ["End of def" py-end-of-def
-	    :help " `py-end-of-def'
+	   ["End of def" py-forward-def
+	    :help " `py-forward-def'
 Go to end of def.
 
 Returns end of def if successful, nil otherwise"]
 
-	   ["End of def or class" py-end-of-def-or-class
-	    :help " `py-end-of-def-or-class'
+	   ["End of def or class" py-forward-def-or-class
+	    :help " `py-forward-def-or-class'
 Go to end of def-or-class.
 
 Returns end of def-or-class if successful, nil otherwise"]
 
-	   ["End of elif block" py-end-of-elif-block
-	    :help " `py-end-of-elif-block'
+	   ["End of elif block" py-forward-elif-block
+	    :help " `py-forward-elif-block'
 Go to end of elif-block.
 
 Returns end of elif-block if successful, nil otherwise"]
 
-	   ["End of else block" py-end-of-else-block
-	    :help " `py-end-of-else-block'
+	   ["End of else block" py-forward-else-block
+	    :help " `py-forward-else-block'
 Go to end of else-block.
 
 Returns end of else-block if successful, nil otherwise"]
 
-	   ["End of except block" py-end-of-except-block
-	    :help " `py-end-of-except-block'
+	   ["End of except block" py-forward-except-block
+	    :help " `py-forward-except-block'
 Go to end of except-block.
 
 Returns end of except-block if successful, nil otherwise"]
 
-	   ["End of expression" py-end-of-expression
-	    :help " `py-end-of-expression'
+	   ["End of expression" py-forward-expression
+	    :help " `py-forward-expression'
 Go to the end of a compound python expression.
 
 With numeric ARG do it that many times.
@@ -758,29 +758,29 @@ Expression here is conceived as the syntactical component of a statement in Pyth
 
 Operators however are left aside resp. limit py-expression designed for edit-purposes."]
 
-	   ["End of if block" py-end-of-if-block
-	    :help " `py-end-of-if-block'
+	   ["End of if block" py-forward-if-block
+	    :help " `py-forward-if-block'
 Go to end of if-block.
 
 Returns end of if-block if successful, nil otherwise"]
 
-	   ["End of partial expression" py-end-of-partial-expression
-	    :help " `py-end-of-partial-expression'"]
+	   ["End of partial expression" py-forward-partial-expression
+	    :help " `py-forward-partial-expression'"]
 
-	   ["End of statement" py-end-of-statement
-	    :help " `py-end-of-statement'
+	   ["End of statement" py-forward-statement
+	    :help " `py-forward-statement'
 Go to the last char of current statement.
 
 Optional argument REPEAT, the number of loops done already, is checked for py-max-specpdl-size error. Avoid eternal loops due to missing string delimters etc."]
 
-	   ["End of top level" py-end-of-top-level
-	    :help " `py-end-of-top-level'
+	   ["End of top level" py-forward-top-level
+	    :help " `py-forward-top-level'
 Go to end of top-level form at point.
 
 Returns position if successful, nil otherwise"]
 
-	   ["End of try block" py-end-of-try-block
-	    :help " `py-end-of-try-block'
+	   ["End of try block" py-forward-try-block
+	    :help " `py-forward-try-block'
 Go to end of try-block.
 
 Returns end of try-block if successful, nil otherwise"]
@@ -873,94 +873,94 @@ Go to beginning try-block, go to BOL.
 Returns beginning of try-block if successful, nil otherwise"]
             )
            ("Forward"
-	    ["End of block bol" py-end-of-block-bol
-	     :help " `py-end-of-block-bol'
+	    ["End of block bol" py-forward-block-bol
+	     :help " `py-forward-block-bol'
 Goto beginning of line following end of block.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-block': down from current definition to next beginning of block below."]
 
-	    ["End of block or clause bol" py-end-of-block-or-clause-bol
-	     :help " `py-end-of-block-or-clause-bol'
+	    ["End of block or clause bol" py-forward-block-or-clause-bol
+	     :help " `py-forward-block-or-clause-bol'
 Goto beginning of line following end of block-or-clause.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-block-or-clause': down from current definition to next beginning of block-or-clause below."]
 
-	    ["End of class bol" py-end-of-class-bol
-	     :help " `py-end-of-class-bol'
+	    ["End of class bol" py-forward-class-bol
+	     :help " `py-forward-class-bol'
 Goto beginning of line following end of class.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-class': down from current definition to next beginning of class below."]
 
-	    ["End of clause bol" py-end-of-clause-bol
-	     :help " `py-end-of-clause-bol'
+	    ["End of clause bol" py-forward-clause-bol
+	     :help " `py-forward-clause-bol'
 Goto beginning of line following end of clause.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-clause': down from current definition to next beginning of clause below."]
 
-	    ["End of def bol" py-end-of-def-bol
-	     :help " `py-end-of-def-bol'
+	    ["End of def bol" py-forward-def-bol
+	     :help " `py-forward-def-bol'
 Goto beginning of line following end of def.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-def': down from current definition to next beginning of def below."]
 
-	    ["End of def or class bol" py-end-of-def-or-class-bol
-	     :help " `py-end-of-def-or-class-bol'
+	    ["End of def or class bol" py-forward-def-or-class-bol
+	     :help " `py-forward-def-or-class-bol'
 Goto beginning of line following end of def-or-class.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-def-or-class': down from current definition to next beginning of def-or-class below."]
 
-	    ["End of elif block bol" py-end-of-elif-block-bol
-	     :help " `py-end-of-elif-block-bol'
+	    ["End of elif block bol" py-forward-elif-block-bol
+	     :help " `py-forward-elif-block-bol'
 Goto beginning of line following end of elif-block.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-elif-block': down from current definition to next beginning of elif-block below."]
 
-	    ["End of else block bol" py-end-of-else-block-bol
-	     :help " `py-end-of-else-block-bol'
+	    ["End of else block bol" py-forward-else-block-bol
+	     :help " `py-forward-else-block-bol'
 Goto beginning of line following end of else-block.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-else-block': down from current definition to next beginning of else-block below."]
 
-	    ["End of except block bol" py-end-of-except-block-bol
-	     :help " `py-end-of-except-block-bol'
+	    ["End of except block bol" py-forward-except-block-bol
+	     :help " `py-forward-except-block-bol'
 Goto beginning of line following end of except-block.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-except-block': down from current definition to next beginning of except-block below."]
 
-	    ["End of expression bol" py-end-of-expression-bol
-	     :help " `py-end-of-expression-bol'"]
+	    ["End of expression bol" py-forward-expression-bol
+	     :help " `py-forward-expression-bol'"]
 
-	    ["End of if block bol" py-end-of-if-block-bol
-	     :help " `py-end-of-if-block-bol'
+	    ["End of if block bol" py-forward-if-block-bol
+	     :help " `py-forward-if-block-bol'
 Goto beginning of line following end of if-block.
   Returns position reached, if successful, nil otherwise.
 
 See also `py-down-if-block': down from current definition to next beginning of if-block below."]
 
-	    ["End of partial expression bol" py-end-of-partial-expression-bol
-	     :help " `py-end-of-partial-expression-bol'"]
+	    ["End of partial expression bol" py-forward-partial-expression-bol
+	     :help " `py-forward-partial-expression-bol'"]
 
-	    ["End of statement bol" py-end-of-statement-bol
-	     :help " `py-end-of-statement-bol'
+	    ["End of statement bol" py-forward-statement-bol
+	     :help " `py-forward-statement-bol'
 Go to the beginning-of-line following current statement."]
 
-	    ["End of top level bol" py-end-of-top-level-bol
-	     :help " `py-end-of-top-level-bol'
+	    ["End of top level bol" py-forward-top-level-bol
+	     :help " `py-forward-top-level-bol'
 Go to end of top-level form at point, stop at next beginning-of-line.
 
 Returns position successful, nil otherwise"]
 
-	    ["End of try block bol" py-end-of-try-block-bol
-	     :help " `py-end-of-try-block-bol'
+	    ["End of try block bol" py-forward-try-block-bol
+	     :help " `py-forward-try-block-bol'
 Goto beginning of line following end of try-block.
   Returns position reached, if successful, nil otherwise.
 
@@ -1567,7 +1567,7 @@ Use `M-x customize-variable' to set it permanently"
 	     :help "When non-nil, keys C-M-a, C-M-e address top-level form.
 
 Beginning- end-of-defun forms use
-commands `py-backward-top-level', `py-end-of-top-level'
+commands `py-backward-top-level', `py-forward-top-level'
 
 mark-defun marks top-level form at point etc. "
 	     :style toggle :selected py-defun-use-top-level-p]
