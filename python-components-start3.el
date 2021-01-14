@@ -395,7 +395,7 @@ Optional FAST RETURN"
   "Update optional variables START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
   (setq py-error nil)
   (when py--debug-p (message "py--execute-base: (current-buffer): %s" (current-buffer)))
-  (when (or fast py-fast-process-p) (ignore-errors (py-kill-buffer-unconditional py-output-buffer)))
+  ;; (when (or fast py-fast-process-p) (ignore-errors (py-kill-buffer-unconditional py-output-buffer)))
   (let* ((orig (point))
 	 (fast (or fast py-fast-process-p))
 	 (exception-buffer (current-buffer))

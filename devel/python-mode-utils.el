@@ -887,17 +887,24 @@
   (dolist (elt py-shells)
     (setq ele (format "%s" elt))
     (insert (concat "(defun py-execute-file-" ele " (filename)"))
-    (insert (concat "
+    (insert
+     (concat "
   \"Send file to " (py--prepare-shell-name ele) " interpreter\"
   (interactive \"fFile: \")
-  (py--execute-base nil nil \"" ele "\" filename))\n\n")))
+  (let ((interactivep (called-interactively-p 'interactive))
+	(buffer (py-shell nil nil nil \"" ele "\" nil t nil py-split-window-on-execute py-switch-buffers-on-execute-p)))
+    (py--execute-file-base filename (get-buffer-process buffer) nil buffer nil t interactivep)))\n\n")
+     ))
   (dolist (elt py-shells)
     (setq ele (format "%s" elt))
     (insert (concat "(defun py-execute-file-" ele "-dedicated (filename)"))
     (insert (concat "
   \"Send file to a dedicated" (py--prepare-shell-name ele) " interpreter\"
   (interactive \"fFile: \")
-  (py--execute-base nil nil \"" ele "\" filename nil t t t))\n\n")))
+  (let ((interactivep (called-interactively-p 'interactive))
+        (buffer (py-shell nil nil t \"" ele "\" nil t nil py-split-window-on-execute py-switch-buffers-on-execute-p)))
+    (py--execute-file-base filename (get-buffer-process buffer) nil buffer nil t interactivep)))\n\n")))
+  ;; (py--execute-base nil nil \"" ele "\" filename nil t t t))\n\n")))
   (insert "(provide 'python-components-execute-file)
 ;;; python-components-execute-file.el ends here\n")
   (when (called-interactively-p 'interactive)

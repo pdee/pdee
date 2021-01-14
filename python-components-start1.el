@@ -283,10 +283,11 @@ The returned file name can be used directly as argument of
   "Return `t' if emacs major version is above 23"
   (< 23 (string-to-number (car (split-string emacs-version "\\.")))))
 
-(defun py-which-execute-file-command (filename)
-  "Return the command appropriate to Python version and FILENAME.
+;; (format "execfile(r'%s')\n" file)
+(defun py-execute-file-command (filename)
+  "Return the command using FILENAME.
 
-Per default it's \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for Python 2 series."
+Default was \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for Python 2 series."
   (format "exec(compile(open(r'%s').read(), r'%s', 'exec')) # PYTHON-MODE\n" filename filename)
   )
 
@@ -5720,7 +5721,7 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 		       (no-output
 			(and orig (py--cleanup-shell orig buffer))))))))))
 
-(defun py--execute-file-base (filename &optional proc cmd procbuf origline fast)
+(defun py--execute-file-base (filename &optional proc cmd procbuf origline fast interactivep)
   "Send to Python interpreter process PROC.
 
 In Python version 2.. \"execfile('FILENAME')\".
@@ -5731,10 +5732,11 @@ Make that process's buffer visible and force display.  Also make
 comint believe the user typed this string so that
 ‘kill-output-from-shell’ does The Right Thing.
 Returns position where output starts."
-  (let* ((buffer (or procbuf (and proc (process-buffer proc)) (py-shell nil nil nil nil nil fast)))
+  (let* ((filename (expand-file-name filename))
+	 (buffer (or procbuf (and proc (process-buffer proc)) (py-shell nil nil nil nil nil fast)))
 	 (proc (or proc (get-buffer-process buffer)))
 	 (limit (marker-position (process-mark proc)))
-	 (cmd (or cmd (py-which-execute-file-command filename)))
+	 (cmd (or cmd (py-execute-file-command filename)))
 	 erg)
     (if fast
 	(process-send-string proc cmd)
@@ -5745,7 +5747,10 @@ Returns position where output starts."
 	(setq erg (py--postprocess buffer origline limit cmd filename))
 	(if py-error
 	    (setq py-error (prin1-to-string py-error))
-	  erg)))))
+	  erg)))
+    (when (or interactivep
+	      (or py-switch-buffers-on-execute-p py-split-window-on-execute))
+      (py--shell-manage-windows buffer (find-file-noselect filename) py-split-window-on-execute py-switch-buffers-on-execute-p))))
 
 (defun py-restore-window-configuration ()
   "Restore ‘py-restore-window-configuration’ when completion is done resp. abandoned."

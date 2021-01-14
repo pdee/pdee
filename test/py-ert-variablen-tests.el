@@ -31,9 +31,6 @@
 (ert-deftest py-ert-underscore-word-syntax-p-test-BHl93t ()
   (should (boundp 'py-underscore-word-syntax-p)))
 
-(ert-deftest py-ert-auto-fill-mode-orig-test-XhIxsm ()
-  (should (boundp 'py-auto-fill-mode-orig)))
-
 (ert-deftest py-ert-kill-empty-line-test-TsQNSe ()
   (should (boundp 'py-kill-empty-line)))
 

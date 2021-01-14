@@ -520,8 +520,8 @@
 (ert-deftest py-ert-switch-to-shell-functionp-test-I9gy6C ()
   (should (functionp 'py-switch-to-shell)))
 
-(ert-deftest py-ert-which-execute-file-command-functionp-test-q8Pvch ()
-  (should (functionp 'py-which-execute-file-command)))
+(ert-deftest py-ert-execute-file-command-functionp-test-q8Pvch ()
+  (should (functionp 'py-execute-file-command)))
 
 (ert-deftest py-ert--store-result-maybe-functionp-test-CUmPeV ()
   (should (functionp 'py--store-result-maybe)))

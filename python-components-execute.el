@@ -395,7 +395,7 @@ This may be preferable to ‘\\[py-execute-buffer]’ because:
                                           (format "import sys\nif sys.modules.has_key('%s'):\n reload(%s)\nelse:\n import %s\n" m m m)
                                         (format "import sys,imp\nif'%s' in sys.modules:\n imp.reload(%s)\nelse:\n import %s\n" m m m)))
                                   ;; (format "execfile(r'%s')\n" file)
-                                  (py-which-execute-file-command file))))
+                                  (py-execute-file-command file))))
       (py-execute-buffer))))
 
 (provide 'python-components-execute);

@@ -458,7 +458,6 @@ module-qualified names."
                #'(lambda () (interactive) (beep))))
            (where-is-internal 'self-insert-command)))
 
-
 (defvar py-auto-fill-mode-orig (auto-fill-mode)
   "Store the original state of auto-fill-mode. ")
 
@@ -469,7 +468,7 @@ module-qualified names."
   (if (or (and arg (< 0 (prefix-numeric-value arg))) (and (boundp 'py-comment-auto-fill)(not py-comment-auto-fill)))
       (progn
         (set (make-local-variable 'py-comment-auto-fill-p) t)
-        (setq fill-column comment-fill-column)
+        (setq fill-column py-comment-fill-column)
         (auto-fill-mode 1))
     (set (make-local-variable 'py-comment-auto-fill-p) nil)
 ;;    (set (make-local-variable 'py-comment-auto-fill-only-comments) nil)
