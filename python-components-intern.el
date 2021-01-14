@@ -1032,15 +1032,19 @@ If BOL is t, mark from beginning-of-line"
          (endform (intern-soft (concat "py-forward-" form "-bol")))
          (begcheckform (intern-soft (concat "py--beginning-of-" form "-bol-p")))
          beg end erg)
-    (setq beg (if
-                  (setq beg (funcall begcheckform))
-                  beg
-                (funcall begform)))
+    (if (functionp begcheckform)
+	(or (setq beg (funcall begcheckform))
+	    (if (functionp begform)
+		(setq beg (funcall begform))
+	      (error (concat "py--mark-base-bol: " begform " don't exist!" ))))
+      (error (concat "py--mark-base-bol: " begcheckform " don't exist!" )))
     (when mark-decorators
       (save-excursion
         (when (setq erg (py-backward-decorator))
           (setq beg erg))))
-    (setq end (funcall endform))
+    (if (functionp endform)
+	(setq end (funcall endform))
+      (error (concat "py--mark-base-bol: " endform " don't exist!" )))
     (push-mark beg t t)
     (unless end (when (< beg (point))
                   (setq end (point))))
