@@ -1363,8 +1363,8 @@
 (ert-deftest py-ert-backward-except-block-bol-functionp-test-I3PK0D ()
   (should (functionp 'py-backward-except-block-bol)))
 
-(ert-deftest py-ert-comment-auto-fill-functionp-test-4Cr5xp ()
-  (should (functionp 'py-comment-auto-fill)))
+(ert-deftest py-ert-toggle-comment-auto-fill-functionp-test-4Cr5xp ()
+  (should (functionp 'py-toggle-comment-auto-fill)))
 
 (ert-deftest py-ert-comment-auto-fill-on-functionp-test-uQUz1a ()
   (should (functionp 'py-comment-auto-fill-on)))

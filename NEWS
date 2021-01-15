@@ -31,6 +31,8 @@ New in version 6.2.4
   useful if customizing `py-indent-offset' is no option - for example
   if indentation step is unknown.
 
+- ‘py-comment-auto-fill’ renamed ‘py-toggle-comment-auto-fill’
+
 New in version 6.2.3
 ---------------------
 

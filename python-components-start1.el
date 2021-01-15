@@ -2455,7 +2455,8 @@ Travels the indentifiers. Default is t.
 See also command `py-toggle-underscore-word-syntax-p'")
 
 (defvar py-autofill-timer nil)
-(defvar py-fill-column-orig fill-column)
+(defvar py-fill-column-orig fill-column
+  "Used to reset fill-column")
 
 ;; defvared value isn't updated maybe
 (defvar python-mode-message-string
