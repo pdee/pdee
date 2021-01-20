@@ -2479,14 +2479,6 @@ See also command `py-toggle-underscore-word-syntax-p'")
     (when pos (goto-char pos))
     (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
 
-(unless (fboundp 'string-to-syntax)
-  ;; Skip's XE workaround
-  (defun string-to-syntax (s)
-    (cond
-     ((equal s "|") '(15))
-     ((equal s "_") '(3))
-     (t (error "Unhandled string: %s" s)))))
-
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol.
 
@@ -3333,19 +3325,6 @@ the full statement in the case of imports."
   :type 'string
   :tag "py-shell-completion-string-code"
   :group 'python-mode)
-
-(defsubst py-keep-region-active ()
-  "Keep the region active in XEmacs."
-  (and (boundp 'zmacs-region-stays)
-       (setq zmacs-region-stays t)))
-
- ;; GNU's syntax-ppss-context
-(unless (functionp 'syntax-ppss-context)
-  (defsubst syntax-ppss-context (ppss)
-    (cond
-     ((nth 3 ppss) 'string)
-     ((nth 4 ppss) 'comment)
-     (t nil))))
 
 (defface py-XXX-tag-face
   '((t (:inherit font-lock-string-face)))
@@ -4386,8 +4365,7 @@ Interactively output of `--version' is displayed. "
 (defun py-version ()
   "Echo the current version of `python-mode' in the minibuffer."
   (interactive)
-  (message "Using `python-mode' version %s" py-version)
-  (py-keep-region-active))
+  (message "Using `python-mode' version %s" py-version))
 
 (declare-function compilation-shell-minor-mode "compile" (&optional arg))
 
@@ -5210,21 +5188,6 @@ In source-buffer, this will deliver the exception-buffer again.")
                                                    nil
                                                    file t)))
              (py--jump-to-exception-intern act file origline)))))
-;; XEmacs
-(defun py-mouseto-exception (event)
-  "Jump to the code which caused the Python exception at EVENT.
-EVENT is usually a mouse click."
-  (interactive "e")
-  (cond
-   ((fboundp 'event-point)
-    ;; XEmacs
-    (let* ((point (event-point event))
-           (buffer (event-buffer event))
-           (e (and point buffer (extent-at point buffer 'py-exc-info)))
-           (info (and e (extent-property e 'py-exc-info))))
-      (message "Event point: %d, info: %s" point info)
-      (and info
-           (py--jump-to-exception (car info) nil (cdr info)))))))
 
 (defun py-goto-exception (&optional file line)
   "Go to FILE and LINE indicated by the traceback."
@@ -5281,6 +5244,9 @@ jump to the top (outermost) exception in the exception stack."
     (if top
         (py--find-next-exception 'bob buffer 're-search-forward "Top")
       (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
+
+
+
 ;; ;
 ;;  obsolete by py--fetch-result
 ;;  followed by py--fetch-error

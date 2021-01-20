@@ -667,12 +667,6 @@
 (ert-deftest py-ert-remove-overlays-at-point-functionp-test-6n4P9g ()
   (should (functionp 'py-remove-overlays-at-point)))
 
-(ert-deftest py-ert-mouseto-exception-functionp-test-6PNXCY ()
-  (should (functionp 'py-mouseto-exception)))
-
-(ert-deftest py-ert-goto-exception-functionp-test-KgMU1F ()
-  (should (functionp 'py-goto-exception)))
-
 (ert-deftest py-ert--find-next-exception-functionp-test-6ByApn ()
   (should (functionp 'py--find-next-exception)))
 
