@@ -79,7 +79,7 @@ def baz(self):
 x = {'abc':'def',
          'ghi':'jkl'}
 "
-    (when py--debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (goto-char 24)
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
@@ -133,7 +133,7 @@ x = {'abc':'def',
   (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
   (py-test-with-temp-buffer
       ""
-    (when py--debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python"))
       (py-shell)
       (sit-for 0.1 t)
@@ -153,7 +153,7 @@ x = {'abc':'def',
   (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "*Python2*"))
   (py-test-with-temp-buffer
       ""
-    (when py--debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (let ((py-shell-name "python2"))
       (py-shell)
       (sit-for 0.1 t)

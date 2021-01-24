@@ -263,7 +263,7 @@ See available customizations listed in files variables-python-mode at directory 
 
   (when py-hide-show-minor-mode-p (hs-minor-mode 1))
   (when py-outline-minor-mode-p (outline-minor-mode 1))
-  (when (and py--debug-p (called-interactively-p 'any))
+  (when (and py-debug-p (called-interactively-p 'any))
     (py-message-which-python-mode))
   (force-mode-line-update))
 

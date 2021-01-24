@@ -192,7 +192,7 @@ Receives a ‘buffer-name’ as argument"
 
 (defun py--store-result-maybe (erg)
   "If no error occurred and ‘py-store-result-p’ store ERG for yank."
-  (and (not py-error) erg (or py--debug-p py-store-result-p) (kill-new erg)))
+  (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 
 (defun py-current-working-directory ()
   "Return the directory of current python SHELL."
@@ -236,7 +236,7 @@ when given, to value of ‘py-default-working-directory’ otherwise"
 
 (defun py--close-execution (tempbuf tempfile)
   "Delete TEMPBUF and TEMPFILE."
-  (unless py--debug-p
+  (unless py-debug-p
     (when tempfile (py-delete-temporary tempfile tempbuf))))
 
 (defun py--python-send-setup-code-intern (name buffer)

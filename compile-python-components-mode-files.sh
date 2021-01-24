@@ -34,7 +34,7 @@ echo "\$PYTHONMODE: $PYTHONMODE"
 
 date; time -p $EMACS -Q --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py--debug-p nil)" \
+--eval "(setq py-debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(add-to-list 'load-path \"$PDIR/\")" \
  \

@@ -22,7 +22,7 @@
 
 ;; (require 'org)
 
-;; (setq py--debug-p t)
+;; (setq py-debug-p t)
 
 (if (file-readable-p "../python-components-mode.el")
     (load "../python-components-mode.el" nil t)
@@ -110,7 +110,7 @@ BODY is code to be executed within the temp buffer.  Point is
      (let (hs-minor-mode py--imenu-create-index-p)
        (insert ,contents)
        (python-mode)
-       (when py--debug-p
+       (when py-debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
        ,@body)))
@@ -125,7 +125,7 @@ BODY is code to be executed within the temp buffer.  Point is
        (insert ,contents)
        (goto-char (point-min))
        (python-mode)
-       (when py--debug-p
+       (when py-debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
        ,@body)))

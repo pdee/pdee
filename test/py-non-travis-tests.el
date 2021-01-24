@@ -57,10 +57,10 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
       (py-kill-buffer-unconditional (get-buffer "*Python Completions*")))
     (py-test-with-temp-buffer
 	"import socket\nsocket."
-      (let ((py--debug-p t)
+      (let ((py-debug-p t)
 	    (py-shell-name ele)
 	    oldbuf)
-	(when py--debug-p (switch-to-buffer (current-buffer))
+	(when py-debug-p (switch-to-buffer (current-buffer))
 	      (font-lock-fontify-buffer))
 	(py-indent-or-complete)
 	(if (string-match "ipython" ele)

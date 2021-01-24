@@ -72,7 +72,7 @@
 
 Takes STRG
 Avoid empty lines at the beginning."
-  ;; (when py--debug-p (message "py--fix-start:"))
+  ;; (when py-debug-p (message "py--fix-start:"))
   (let (py--imenu-create-index-p
 	py-guess-py-install-directory-p
 	py-autopair-mode

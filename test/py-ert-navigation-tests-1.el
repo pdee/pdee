@@ -1018,7 +1018,7 @@ def baz():
 	"# r1416
 
 def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don= 't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
 
     This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
     \"\"\"
@@ -1453,7 +1453,7 @@ class bar:
 
 "
     'python-mode
-    py--debug-p
+    py-debug-p
     (goto-char (point-max))
     (skip-chars-backward " \n")
     (forward-char 1)

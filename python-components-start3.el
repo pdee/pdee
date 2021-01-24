@@ -238,7 +238,7 @@ Unless DIRECTION is symbol 'forward, go backward first"
 	(write-file tempfile))
       (unwind-protect
 	  (py--execute-file-base tempfile proc nil procbuf origline fast)
-	(and (file-readable-p tempfile) (delete-file tempfile py--debug-p))))))
+	(and (file-readable-p tempfile) (delete-file tempfile py-debug-p))))))
 
 
 (defun py--postprocess-intern (&optional origline exception-buffer output-buffer)
@@ -394,7 +394,7 @@ Optional FAST RETURN"
 (defun py--execute-base (&optional start end shell filename proc wholebuf fast dedicated split switch)
   "Update optional variables START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
   (setq py-error nil)
-  (when py--debug-p (message "py--execute-base: (current-buffer): %s" (current-buffer)))
+  (when py-debug-p (message "py--execute-base: (current-buffer): %s" (current-buffer)))
   ;; (when (or fast py-fast-process-p) (ignore-errors (py-kill-buffer-unconditional py-output-buffer)))
   (let* ((orig (point))
 	 (fast (or fast py-fast-process-p))

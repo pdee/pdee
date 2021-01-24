@@ -44,7 +44,7 @@
 (ert-deftest py-complete-in-python3-shell-test-JtNakZ ()
   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
   (set-buffer (python3))
-  (when py--debug-p (switch-to-buffer (current-buffer)))
+  (when py-debug-p (switch-to-buffer (current-buffer)))
   (sit-for 0.1)
   (should (eq (current-buffer) (get-buffer "*Python3*")))
   (goto-char (point-max))
@@ -76,8 +76,8 @@ os.write"
     (sit-for 0.1)
     (set-buffer py-output-buffer)
     (goto-char (point-max))
-    (when py--debug-p (switch-to-buffer (current-buffer)))
-    (when py--debug-p (message "%s" (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (message "%s" (current-buffer)))
     (goto-char comint-last-output-start)
     (should (string-match "write" (buffer-substring-no-properties (point) (point-max))))))
 
@@ -102,11 +102,11 @@ finally:
     print(a)"
     (let ((py-fast-process-p t)
 	  (py-return-result-p t)
-	  (py--debug-p t)
+	  (py-debug-p t)
 	  py-result py-split-window-on-execute)
       (py-execute-block)
       (sit-for 0.3)
-      (when py--debug-p (message "py-ert-execute-block-fast-9Ui5ja, py-result: %s" py-result))
+      (when py-debug-p (message "py-ert-execute-block-fast-9Ui5ja, py-result: %s" py-result))
       (should (string-match "[0-9]" py-result)))))
 
 (ert-deftest py-ert-execute-block-9Ui5ja-DUvXA6 ()
@@ -122,17 +122,17 @@ finally:
     (setq py-result "")
     (let ((py-fast-process-p nil)
 	  (py-return-result-p t)
-	  (py--debug-p t)
+	  (py-debug-p t)
 	  py-split-window-on-execute)
       (py-execute-block)
       (sit-for 1)
-      (when py--debug-p (message "py-ert-execute-block-fast-9Ui5ja, py-result: %s" py-result))
+      (when py-debug-p (message "py-ert-execute-block-fast-9Ui5ja, py-result: %s" py-result))
       (should (string-match "[0-9]+" py-result)))))
 
 (ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test-zI51W7 ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
-    (let ((py--debug-p t)
+    (let ((py-debug-p t)
 	  py-store-result-p
 	  erg)
       (call-interactively 'py-execute-statement-python3-dedicated)
@@ -156,7 +156,7 @@ finally:
 (ert-deftest py-shell-complete-in-dedicated-shell-XafVPb ()
   ;; (py-test-with-temp-buffer
   (with-current-buffer (python '(4))
-    ;; (when py--debug-p (switch-to-buffer (current-buffer)))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     ;; (switch-to-buffer (current-buffer))
     (insert "pri")
     (sit-for 1 t)
@@ -221,7 +221,7 @@ finally:
     (py-fast-complete)
     (sit-for 1)
     (goto-char (point-max))
-    (when py--debug-p (message "py-ert-fast-complete-1, current-buffer: %s" (current-buffer)))
+    (when py-debug-p (message "py-ert-fast-complete-1, current-buffer: %s" (current-buffer)))
     (should (search-backward "ect"))))
 
 (ert-deftest py-execute-string-text-dtOWbA1 ()
@@ -1164,7 +1164,7 @@ by the
 # paragraphs using M-q.
 "
     'python-mode
-    py--debug-p
+    py-debug-p
     (goto-char (point-min))
     ;; (font-lock-fontify-region (point-min)(point-max))
     (search-forward "Some other" nil t 1)
@@ -1248,10 +1248,10 @@ by the
 # paragraphs using M-q.
 "
     'python-mode
-    py--debug-p
+    py-debug-p
     (goto-char (point-min))
     (search-forward "one-line summary." nil t 1)
-    (when py--debug-p (message "fill-column: %s" fill-column))
+    (when py-debug-p (message "fill-column: %s" fill-column))
     (fill-paragraph)
     (forward-line 1)
     (sit-for 0.1 t)
@@ -1274,22 +1274,23 @@ by the
     pass"
     (ignore-errors (unload-feature 'python))
     (goto-char (point-min))
-    (when py--debug-p
+    (when py-debug-p
       (search-forward "\"\"\"")
       (message "(syntax-after (point)) (point): %s %s" (syntax-after (point)) (point))
       (message "(syntax-after (1- (point)) (point)): %s %s" (syntax-after (1- (point))) (1- (point)))
       (message "(syntax-after (- (point) 2)): %s %s" (syntax-after (- (point) 2)) (- (point) 2))
       (message "(syntax-after (- (point) 3)): %s %s" (syntax-after (- (point) 3)) (- (point) 3))
-      (message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
-      (message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
-      (message "(ar-syntax-class-atpt (point)) (point): %s %s" (ar-syntax-class-atpt (point)) (point))
-      (message "(ar-syntax-class-atpt (1- (point)) (point)): %s %s" (ar-syntax-class-atpt (1- (point))) (1- (point)))
-      (message "(ar-syntax-class-atpt (- (point) 2)): %s %s" (ar-syntax-class-atpt (- (point) 2)) (- (point) 2))
-      (message "(ar-syntax-class-atpt (- (point) 3)): %s %s" (ar-syntax-class-atpt (- (point) 3)) (- (point) 3))
-      (message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
-      (message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
-      (message "(ar-syntax-atpt 1 nil (- (point) 2)): %s %s" (ar-syntax-atpt 1 nil (- (point) 2)) (- (point) 2))
-      (message "(ar-syntax-atpt 1 nil (- (point) 3)): %s %s" (ar-syntax-atpt 1 nil (- (point) 3)) (- (point) 3))
+      (when (functionp 'ar-syntax-atpt)
+	(message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
+	(message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
+	(message "(ar-syntax-class-atpt (point)) (point): %s %s" (ar-syntax-class-atpt (point)) (point))
+	(message "(ar-syntax-class-atpt (1- (point)) (point)): %s %s" (ar-syntax-class-atpt (1- (point))) (1- (point)))
+	(message "(ar-syntax-class-atpt (- (point) 2)): %s %s" (ar-syntax-class-atpt (- (point) 2)) (- (point) 2))
+	(message "(ar-syntax-class-atpt (- (point) 3)): %s %s" (ar-syntax-class-atpt (- (point) 3)) (- (point) 3))
+	(message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
+	(message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
+	(message "(ar-syntax-atpt 1 nil (- (point) 2)): %s %s" (ar-syntax-atpt 1 nil (- (point) 2)) (- (point) 2))
+	(message "(ar-syntax-atpt 1 nil (- (point) 3)): %s %s" (ar-syntax-atpt 1 nil (- (point) 3)) (- (point) 3)))
       (search-forward "second"))
     (back-to-indentation)
     (should (eq 8 (py-compute-indentation)))))
@@ -1352,8 +1353,8 @@ def baz():
       ;; (font-lock-fontify-buffer)
       (goto-char 49)
       (fill-paragraph)
-      (search-forward "\"\"\"")
-      (forward-line -2)
+      (search-forward "multiline" nil t 3)
+      (forward-line 2)
       (should (py-empty-line-p)))))
 
 (ert-deftest py--fast-send-string-no-output-VxbcvH ()
@@ -1361,7 +1362,7 @@ def baz():
       "print(234)"
     (py--fast-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
     (set-buffer "*Python3 Fast*")
-    (when py--debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     (should (eq 1 (point-max)))))
 
 (ert-deftest py-pdbtrack-test-H6CpKY ()

@@ -352,8 +352,6 @@ See lp:1066489 "
       (unless (py-empty-line-p) (newline 1)))
     (py--fill-fix-end thisend orig delimiters-style)))
 
-
-
 (defun py--fill-docstring-first-line (beg end)
   "Refill first line after newline maybe. "
   (fill-region-as-paragraph beg (line-end-position) nil t t)
@@ -364,40 +362,43 @@ See lp:1066489 "
       (back-to-indentation)
       (unless (or (< end (point)) (py-empty-line-p))
 	(newline 1)
-	;;(fill-region (line-beginning-position) end)
 	))))
 
+(defun py--fill-paragraph-in-docstring ()
+  ;; (goto-char innerbeg)
+  (let* (;; (orig (point))
+	 (parabeg (py--beginning-of-paragraph-position))
+	 (paraend (copy-marker (py--end-of-paragraph-position))))
+    ;; if paragraph is a substring, take it
+    (fill-region parabeg paraend)
+    (goto-char paraend)
+    (skip-chars-forward " \t\r\n\f")
+    (unless (eobp)
+      (py--fill-paragraph-in-docstring))))
+
 (defun py--fill-docstring (justify style docstring orig py-current-indent &optional beg end)
-  ;; Delete spaces after/before string fence
+  ;; Delete spaces after/before string fencge
   (py--string-fence-delete-spaces beg)
-  (let* ((thisbeg (copy-marker (or beg docstring)))
-         (thisend (copy-marker
-		   (or end
-                       (progn
-			 (goto-char thisbeg)
-			 (py--skip-raw-string-front-fence)
-			 (skip-syntax-forward "^\|")
-			 (1+ (point))))))
-         (parabeg (progn (goto-char orig) (py--beginning-of-paragraph-position)))
-         (paraend (progn (goto-char orig) (py--end-of-paragraph-position)))
-         ;; if paragraph is a substring, take it
-         (beg (copy-marker (if (< thisbeg parabeg) parabeg thisbeg)))
-         (end (copy-marker (if (< thisend paraend) thisend paraend)))
-	 (multi-line-p (string-match "\n" (buffer-substring-no-properties thisbeg thisend)))
-	 (first-line-p (<= (line-beginning-position) beg)
-		       ;; (progn (goto-char beg) (member (char-after) (list ?\" ?\' ?u ?U ?r ?R)))
-		       ))
-    (when (string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
-      (py-fill-labelled-string beg end))
-    (when first-line-p
-      (py--fill-docstring-first-line beg end))
-    (when (save-excursion (goto-char end)
-			  (or (member (char-after) (list ?\" ?\'))
-			      (member (char-before) (list ?\" ?\'))))
-      (py--fill-docstring-last-line thisend beg end multi-line-p))
-    ;; py-fill-docstring-pep-257-nn-test-ylBRzi
-    ;; (fill-region beg end justify t t)
-    (py--fill-docstring-base thisbeg thisend style multi-line-p beg end py-current-indent orig)))
+  (let* ((beg (or beg docstring))
+	 (innerbeg (copy-marker (progn (goto-char beg) (py--skip-raw-string-front-fence) (point))))
+         (end (copy-marker
+	       (or end
+                   (progn
+		     (goto-char innerbeg)
+		     ;; (py--skip-raw-string-front-fence)
+		     (skip-syntax-forward "^|")
+		     (1+ (point))))))
+	 (innerend (copy-marker (progn (goto-char end)(skip-chars-backward "\'\"") (point))))
+	 (multi-line-p (string-match "\n" (buffer-substring-no-properties innerbeg innerend))))
+    (save-restriction
+      (narrow-to-region beg end)
+
+      (when (string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
+	(py-fill-labelled-string beg end))
+      ;; (first-line-p (<= (line-beginning-position) beg)
+      (goto-char innerbeg)
+      (py--fill-paragraph-in-docstring))
+    (py--fill-docstring-base innerbeg innerend style multi-line-p beg end py-current-indent orig)))
 
 (defun py-fill-string (&optional justify style docstring pps)
   "String fill function for `py-fill-paragraph'.

@@ -2594,7 +2594,7 @@ can write into: the value (if any) of the environment variable TMPDIR,
 (defvar py-shell-complete-debug nil
   "For interal use when debugging, stores completions." )
 
-(defvar py--debug-p nil
+(defvar py-debug-p nil
   "Activate extra code for analysis and test purpose when non-nil.
 
 Temporary files are not deleted. Other functions might implement
@@ -2602,11 +2602,11 @@ some logging, etc.
 For normal operation, leave it set to nil, its default.
 Defined with a defvar form to allow testing the loading of new versions.")
 
-(defun py-toggle-py--debug-p ()
-  "Toggle value of ‘py--debug-p’."
+(defun py-toggle-py-debug-p ()
+  "Toggle value of ‘py-debug-p’."
   (interactive)
-  (setq py--debug-p (not py--debug-p))
-  (when (called-interactively-p 'interactive) (message "py--debug-p: %s" py--debug-p)))
+  (setq py-debug-p (not py-debug-p))
+  (when (called-interactively-p 'interactive) (message "py-debug-p: %s" py-debug-p)))
 
 (defcustom py-shell-complete-p nil
   "Enable native completion.
@@ -4138,7 +4138,7 @@ Optional argument END specify end."
 	    (if
 		(re-search-backward py-shell-prompt-regexp nil t 1)
 		(goto-char (match-end 0))
-	      ;; (when py--debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
+	      ;; (when py-debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
 	      (goto-char beg))
 	  (goto-char beg)))
       (while (and (< (point) end)(not (eobp)) (skip-chars-forward "^\n" end))
@@ -4146,7 +4146,7 @@ Optional argument END specify end."
         (unless (or (not (< (point) end)) (eobp)) (forward-char 1)
                 (setq count (+ count (abs (skip-chars-forward "\n" end))))))
       (when (bolp) (setq count (1+ count)))
-      (when (and py--debug-p (called-interactively-p 'any)) (message "%s" count))
+      (when (and py-debug-p (called-interactively-p 'any)) (message "%s" count))
       count)))
 
 (defun py--escape-doublequotes (start end)
@@ -4886,7 +4886,7 @@ BUF must exist.
 
 Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source buffer"
   (with-current-buffer output-buffer
-    (when py--debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
     ;; (setq py-error (buffer-substring-no-properties (point) (point-max)))
     (goto-char (point-max))
     (when (re-search-backward "File \"\\(.+\\)\", line \\([0-9]+\\)\\(.*\\)$" nil t)
@@ -4920,7 +4920,7 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
   ;; py--fast-send-string doesn't set origline
   (when (or py-return-result-p py-store-result-p)
     (with-current-buffer output-buffer
-      (when py--debug-p (switch-to-buffer (current-buffer)))
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (sit-for (py--which-delay-process-dependent (prin1-to-string output-buffer)))
       ;; (catch 'py--postprocess
       (setq py-result (py--fetch-result output-buffer limit cmd))
@@ -5033,7 +5033,7 @@ Remove trailing newline"
   (with-current-buffer buffer
     (with-silent-modifications
       (sit-for py-python3-send-delay)
-      (when py--debug-p (switch-to-buffer (current-buffer)))
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (delete-region orig (point-max)))))
 
 (defun py-shell--save-temp-file (strg)
@@ -5630,7 +5630,7 @@ detecting a prompt at the end of the buffer."
 (defun py--fast-send-string-no-output-intern (strg proc limit output-buffer no-output)
   (let (erg)
     (with-current-buffer output-buffer
-      ;; (when py--debug-p (switch-to-buffer (current-buffer)))
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       ;; (erase-buffer)
       (process-send-string proc strg)
       (or (string-match "\n$" strg)

@@ -131,7 +131,7 @@
   (should (boundp 'py-custom-temp-directory)))
 
 (ert-deftest py-ert-debug-p-test-ZckRGf ()
-  (should (boundp 'py--debug-p)))
+  (should (boundp 'py-debug-p)))
 
 (ert-deftest py-ert-dedent-keep-relative-column-test-N5uAr8 ()
   (should (boundp 'py-dedent-keep-relative-column)))

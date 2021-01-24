@@ -1729,14 +1729,14 @@ Customize `py-match-paren-key' which key to use. Use `M-x customize-variable' to
 
 	   ("Debug"
 
-	    ["py--debug-p"
-	     (setq py--debug-p
-		   (not py--debug-p))
+	    ["py-debug-p"
+	     (setq py-debug-p
+		   (not py-debug-p))
 	     :help "When non-nil, keep resp\. store information useful for debugging\.
 
 Temporary files are not deleted\. Other functions might implement
 some logging etc\. Use `M-x customize-variable' to set it permanently"
-	     :style toggle :selected py--debug-p]
+	     :style toggle :selected py-debug-p]
 
 	    ["Pdbtrack do tracking "
 	     (setq py-pdbtrack-do-tracking-p
