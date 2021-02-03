@@ -3825,7 +3825,7 @@ Return and move to match-beginning if successful"
 			(point))
 		    (point))))))
       (when (and erg (py-backward-statement))
-	(when (looking-at py-def-or-class-re)
+	(when (or (bobp) (looking-at py-def-or-class-re)(looking-at "\\_<__[[:alnum:]_]+__\\_>"))
 	  erg)))))
 
 (defun py--font-lock-syntactic-face-function (state)

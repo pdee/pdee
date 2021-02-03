@@ -73,7 +73,8 @@ Choices are:
 (defun py-compute-list-indent--according-to-circumstance (pps line origline)
   (and (nth 1 pps) (goto-char (nth 1 pps)))
   (if (looking-at "[({\\[][ \t]*$")
-      (+ (current-indentation) py-indent-offset)
+      (min (+ (current-indentation) py-indent-offset)
+	   (1+ (current-column)))
     (if (or line (< (py-count-lines) origline))
 	(py-compute-indentation--according-to-list-style))))
 

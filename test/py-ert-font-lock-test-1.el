@@ -135,5 +135,56 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
     (font-lock-fontify-region (point-min) (point-max))
     (should (eq 'py-object-reference-face (get-char-property (point) 'face)))))
 
+(ert-deftest bug46233-assignment-test-f6YGZs ()
+  (py-test-with-temp-buffer
+      "def foo(bar: int) -> str:
+    spam = bar
+    eggs = f'lkjahsd {spam}'
+    return eggs
+
+def foo2(bar: int):
+    spam = bar
+    eggs = f'lkjahsd {spam}'
+    return eggs
+
+def foo3(bar):
+    spam = bar
+    eggs = f'lkjahsd {spam}'
+    return eggs
+"
+    (goto-char (point-max))
+    (font-lock-fontify-buffer) 
+    (search-backward "spam" nil t 2)
+    (should (eq (face-at-point) 'py-variable-name-face))
+    (search-backward "spam" nil t 2)
+    (should (eq (face-at-point) 'py-variable-name-face))
+    (search-backward "spam" nil t 2)
+    (should (eq (face-at-point) 'py-variable-name-face))
+    ))
+
+
+(ert-deftest bug46233-font-lock-assignment-test-UAIyOJ ()
+  (py-test-with-temp-buffer
+      "class Student:
+    \"\"\"Described a student\.
+
+    Attributes
+    ----------
+    name : str
+        Full name
+    idnum : int
+        Identification number
+
+    \"\"\"
+    name: str = \"\"   ## <--- 'name' is not given the variable face (keeps default)
+    idnum: int = 0
+"
+    (goto-char (point-max))
+    (font-lock-fontify-buffer)
+    (search-backward "idnum")
+    (should (eq (face-at-point) 'py-variable-name-face))
+    (search-backward "name" nil t 2)
+    (should (eq (face-at-point) 'py-variable-name-face))))
+
 (provide 'py-ert-font-lock-test-1)
 ;;; py-ert-font-lock-test-1.el here
