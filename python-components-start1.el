@@ -3354,7 +3354,7 @@ See also `py-object-reference-face'"
   :group 'python-mode)
 
 (defface py-number-face
- '((t (:inherit default)))
+ '((t (:inherit nil)))
   "Highlight numbers."
   :tag "py-number-face"
   :group 'python-mode)
