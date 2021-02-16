@@ -2256,7 +2256,7 @@ SYMMETRIC:
           (const :tag "Django's coding standards style." django)
           (const :tag "One newline and start and Two at end style." onetwo)
           (const :tag "PEP-257 with 2 newlines at end of string." pep-257)
-          (const :tag "PEP-257 with 1 newline at end of string." pep-257-nn)
+          (const :tag "PEP-257-nn with 1 newline at end of string." pep-257-nn)
           (const :tag "Symmetric style." symmetric))
   :tag "py-docstring-style"
   :group 'python-mode)

@@ -364,17 +364,16 @@ See lp:1066489 "
 	(newline 1)
 	))))
 
-(defun py--fill-paragraph-in-docstring ()
+(defun py--fill-paragraph-in-docstring (beg)
   ;; (goto-char innerbeg)
-  (let* (;; (orig (point))
-	 (parabeg (py--beginning-of-paragraph-position))
+  (let* ((fill-column (- fill-column (current-indentation)))
+	 (parabeg (max beg (py--beginning-of-paragraph-position)))
 	 (paraend (copy-marker (py--end-of-paragraph-position))))
     ;; if paragraph is a substring, take it
-    (fill-region parabeg paraend)
-    (goto-char paraend)
-    (skip-chars-forward " \t\r\n\f")
-    (unless (eobp)
-      (py--fill-paragraph-in-docstring))))
+    (goto-char parabeg)
+    (py--fill-docstring-first-line parabeg paraend)
+    (unless (or (< paraend (point))(eobp))
+      (py--fill-paragraph-in-docstring (point)))))
 
 (defun py--fill-docstring (justify style docstring orig py-current-indent &optional beg end)
   ;; Delete spaces after/before string fencge
@@ -388,16 +387,16 @@ See lp:1066489 "
 		     ;; (py--skip-raw-string-front-fence)
 		     (skip-syntax-forward "^|")
 		     (1+ (point))))))
-	 (innerend (copy-marker (progn (goto-char end)(skip-chars-backward "\'\"") (point))))
+	 (innerend (copy-marker (progn (goto-char end)(skip-chars-backward "\\'\"") (point))))
 	 (multi-line-p (string-match "\n" (buffer-substring-no-properties innerbeg innerend))))
     (save-restriction
-      (narrow-to-region beg end)
+      (narrow-to-region (point-min) end)
 
       (when (string-match (concat "^" py-labelled-re) (buffer-substring-no-properties beg end))
 	(py-fill-labelled-string beg end))
       ;; (first-line-p (<= (line-beginning-position) beg)
       (goto-char innerbeg)
-      (py--fill-paragraph-in-docstring))
+      (py--fill-paragraph-in-docstring beg))
     (py--fill-docstring-base innerbeg innerend style multi-line-p beg end py-current-indent orig)))
 
 (defun py-fill-string (&optional justify style docstring pps)
