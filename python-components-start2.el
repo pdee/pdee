@@ -81,24 +81,23 @@ Avoid empty lines at the beginning."
 	py-load-skeletons-p
 	erg)
     (with-temp-buffer
-      ;; (python-mode)
-      (insert strg)
-      (goto-char (point-min))
-      (when (< 0 (setq erg (skip-chars-forward " \t\r\n\f" (line-end-position))))
-	(dotimes (_ erg)
-	  (indent-rigidly-left (point-min) (point-max))))
-      (unless (py--beginning-of-statement-p)
-	(py-forward-statement))
-      (while (not (eq (current-indentation) 0))
-	(py-shift-left py-indent-offset))
-      (goto-char (point-max))
-      (unless (py-empty-line-p)
-	(newline 1))
-      (buffer-substring-no-properties 1 (point-max)))))
-
-
-
-
+      (with-current-buffer (current-buffer)
+	(when py-debug-p
+	  (switch-to-buffer (current-buffer)))
+	;; (python-mode)
+	(insert strg)
+	(goto-char (point-min))
+	(when (< 0 (setq erg (skip-chars-forward " \t\r\n\f" (line-end-position))))
+	  (dotimes (_ erg)
+	    (indent-rigidly-left (point-min) (point-max))))
+	(unless (py--beginning-of-statement-p)
+	  (py-forward-statement))
+	(while (not (eq (current-indentation) 0))
+	  (py-shift-left py-indent-offset))
+	(goto-char (point-max))
+	(unless (py-empty-line-p)
+	  (newline 1))
+	(buffer-substring-no-properties 1 (point-max))))))
 
 (defun py-fast-send-string (strg  &optional proc output-buffer result no-output argprompt args dedicated shell exception-buffer)
   (interactive

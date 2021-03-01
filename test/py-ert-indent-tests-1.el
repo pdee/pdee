@@ -948,6 +948,23 @@ else: #<- this else is not possible to indent 1 tab
     (search-backward "args" nil t 2)
     (should (eq 7  (py-compute-indentation)))))
 
+(ert-deftest py-indent-inconsistent-test-Zh2hP0 ()
+  (py-test-with-temp-buffer
+      "def lcs (first):
+    for i in range(len(first)):
+        print(first[i])
+        print(i)
+"
+    (goto-char (point-max))
+    (search-backward "print" nil t 2)
+    (py-indent-line)
+    (should (eq 8 (current-indentation)))
+    (forward-line 1)
+    (back-to-indentation)
+    (py-indent-line)
+    (should (eq 8 (current-indentation)))
+    ))
+
 
 (provide 'py-ert-indent-tests-1)
 ;;; py-ert-indent-tests-1.el ends here
