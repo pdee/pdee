@@ -1,6 +1,6 @@
 ;;; python-components-start1.el --- Edit, debug, develop, run Python programs. -*- lexical-binding: t; -*-
 
-;; Version: 6.2.3
+;; Version: 6.3.0
 
 ;; Keywords: languages, processes, python, oop
 
