@@ -204,11 +204,6 @@ neither 1 nor 4 will switch off `py-smart-indentation' for this execution.
 This permits to correct allowed but unwanted indents. Similar to
 `py-toggle-smart-indentation' resp. `py-smart-indentation-off' followed by TAB.
 
-This function is normally used by `indent-line-function' resp.
-\\[indent-for-tab-command].
-
-When bound to TAB, \\[quoted-insert] TAB inserts a TAB.
-
 OUTMOST-ONLY stops circling possible indent.
 
 When `py-tab-shifts-region-p' is t, not just the current line,
