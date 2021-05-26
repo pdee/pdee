@@ -1117,7 +1117,7 @@
       (set-buffer buffer))\n"))
 
 (defun write--unified-extended-execute-let-form ()
-  (insert "  (let (wholebuf)\n"))
+  (insert "  (let ((wholebuf nil))\n"))
 
 (defun write--unified-extended-execute-shells (elt)
   (if (string= "" elt)

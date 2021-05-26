@@ -30,8 +30,8 @@
 (defun py-execute-region-pdb (beg end)
   "Takes region between BEG END."
   (interactive "r")
-  (let ((py-python-command-args "-i -m pdb")))
-    (py-execute-region beg end))
+  (let ((py-python-command-args "-i -m pdb"))
+    (py-execute-region beg end)))
 
 (defun py-pdb-execute-statement ()
   "Execute statement running pdb."

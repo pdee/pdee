@@ -460,5 +460,31 @@ import os"
       (backward-char)
       (should (eq (char-after) ?f)))))
 
+(ert-deftest py-master-file-not-honored-lp-794850-test-P6QZmU ()
+  (py-test-with-temp-buffer
+
+"
+# -*- coding: utf-8 -*-
+
+# Local Variables:
+# py-master-file: \"/tmp/my-master.py\"
+# End:
+ "
+
+  (let ((oldbuf (current-buffer)))
+    (save-excursion
+      (set-buffer (get-buffer-create "test-master.py"))
+      (erase-buffer)
+      (insert "#! /usr/bin/env python
+ # -*- coding: utf-8 -*-
+
+print(\"Hello, I'm your master!\")
+")
+      (write-file "/tmp/my-master.py"))
+    (set-buffer oldbuf)
+    (unwind-protect
+        (py-execute-buffer)
+      (when (file-readable-p "/tmp/my-master.py") (delete-file "/tmp/my-master.py"))))))
+
 (provide 'py-ert-misc-tests-1)
 ;;; py-ert-misc-tests-1.el ends here

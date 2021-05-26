@@ -97,7 +97,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 
 (defun py--try-completion-intern (input completion buffer)
   (with-current-buffer buffer
-    (let (erg)
+    (let ((erg nil))
       (and (setq erg (try-completion input completion))
 	   (sit-for 0.1)
 	   (looking-back input (line-beginning-position))
@@ -110,7 +110,8 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   "Repeat `try-completion' as long as match are found.
 
 Interal used. Takes INPUT COMPLETION"
-  (let (erg newlist)
+  (let ((erg nil)
+	(newlist nil))
     (unless (py--try-completion-intern input completion (current-buffer))
       (dolist (elt completion)
 	(unless (string= erg elt)

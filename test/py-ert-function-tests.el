@@ -589,9 +589,6 @@
 (ert-deftest py-ert--fix-start-functionp-test-0u6prE ()
   (should (functionp 'py--fix-start)))
 
-(ert-deftest py-ert-fetch-py-master-file-functionp-test-y4643i ()
-  (should (functionp 'py-fetch-py-master-file)))
-
 (ert-deftest py-ert-execute-import-or-reload-functionp-test-y6CSEX ()
   (should (functionp 'py-execute-import-or-reload)))
 
