@@ -3545,7 +3545,9 @@ REPEAT - count and consider repeats"
 	(and last (goto-char last)
 	     (forward-line 1)
 	     (back-to-indentation))
-	(py-forward-statement orig done repeat))
+	;; py-forward-statement-test-3JzvVW
+	(unless (or (looking-at (concat " *" comment-start))(eolp))
+	  (py-forward-statement orig done repeat)))
        ;; string
        ((looking-at py-string-delim-re)
 	(goto-char (match-end 0))

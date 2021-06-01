@@ -3493,5 +3493,21 @@ def example3():
     (should (looking-back "red\"\]\)\)\)" (line-beginning-position)))
     ))
 
+(ert-deftest py-forward-statement-test-3JzvVW ()
+  (py-test-with-temp-buffer-point-min
+      "def upload_to_s3(file_name):
+
+    # Instanstiate
+    s3_hook=S3Hook(aws_conn_id=S3_CONN_ID)
+
+    # Create file
+    sample_file = \"{0}_file_{1}\.txt\"\.format(name, file_name) #swap your name here
+    example_file = open(sample_file, \"w+\")"
+    (goto-char (point-min))
+    (search-forward "CONN_ID)") 
+    (py-forward-statement)
+    (should (looking-back "file_name)" (line-beginning-position)))))
+
+
 (provide 'py-ert-navigation-tests-1)
 ;;; py-ert-navigation-tests-1.el ends here

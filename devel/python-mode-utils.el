@@ -143,6 +143,7 @@
    "region"
    "statement"
    "top-level"
+   ""
    )
   "Internally used")
 
@@ -1116,6 +1117,16 @@
 		       (find-file-noselect filename)))
       (set-buffer buffer))\n"))
 
+(defun write--unified-extended-execute-basic-form ()
+  (insert "  (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
+        (wholebuf t)
+        filename buffer)
+    (when py-master-file
+      (setq filename (expand-file-name py-master-file)
+	    buffer (or (get-file-buffer filename)
+		       (find-file-noselect filename)))
+      (set-buffer buffer))\n"))
+
 (defun write--unified-extended-execute-let-form ()
   (insert "  (let ((wholebuf nil))\n"))
 
@@ -1124,9 +1135,18 @@
       (insert " shell")
     (insert (concat " '" elt))))
 
+;; (defvar py--basic-execute-forms
+;;   (defun py-execute-statement (&optional shell dedicated fast split switch proc)
+;;   "Send statement at point to interpreter."
+;;   (interactive)
+;;   (let ((wholebuf nil))
+;;     (py--execute-prepare 'statement shell dedicated switch nil nil nil fast proc wholebuf split)))
+;; "Internally used by python-mode-utils.el"
+
 (defun write--unified-extended-execute-forms-intern ()
   (switch-to-buffer (current-buffer))
   (goto-char (point-max))
+  (insert py--basic-execute-forms)
   (dolist (ele py-execute-forms)
     (unless (string= "region" ele)
       (dolist (elt py-shells)
@@ -1139,10 +1159,12 @@
 	  (write--unified-extended-execute-forms-arglist ele pyo elt)
 	  (write--unified-extended-execute-forms-docu ele elt pyo)
 	  (write--unified-extended-execute-forms-interactive-spec ele)
-	  (if (string= "buffer" ele)
-	      (write--unified-extended-execute-buffer-form)
-	    (write--unified-extended-execute-let-form)
-	    )
+	  (cond ((string= "buffer" ele)
+		 (write--unified-extended-execute-buffer-form))
+		;; ((string= "buffer" ele)
+		;; (write--unified-extended-execute-basic-form))
+		(t (write--unified-extended-execute-let-form)
+		   ))
 	  (insert (concat "    (py--execute-prepare '"ele))
 	  (write--unified-extended-execute-shells elt)
 	  (write--extended-execute-switches ele pyo))))))
@@ -1160,7 +1182,8 @@
 	(concat "py-execute-" ele)
 	(unless (string= "" elt)
 	  (concat "-" elt))
-	(unless (string= pyo "")(concat "-" pyo))))))))
+	(unless (string= pyo "")(concat "-" pyo))
+	))))))
 
 (defun write-unified-extended-execute-forms ()
   "Write ‘py-execute-statement, ...’ etc.
