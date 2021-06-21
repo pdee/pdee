@@ -27,7 +27,7 @@ EMACS25=$HOME/emacs-25.3/src/emacs-25.3.1
 #  emacs26=~$HOME/emacs-20180529/src/emacs-27.0.50.1
 EMACS26=$HOME/emacs-26.3/src/emacs-26.3.1
 EMACS27=$HOME/emacs-27.0.91/src/emacs-27.0.91.1
-EMACS28=$HOME/emacs-20201230/src/emacs-28.0.50.1
+EMACS28=$HOME/emacs-20210328/src/emacs-28.0.50.1
 # system Emacs
 EMACS=emacs
 

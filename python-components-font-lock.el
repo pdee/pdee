@@ -31,7 +31,7 @@
 	      "if" "and" "del"  "not" "while" "as" "elif" "global"
 	      "or" "async with" "with" "assert" "else"  "pass" "yield" "break"
 	      "exec" "in" "continue" "finally" "is" "except" "raise"
-	      "return"  "async for" "for" "lambda" "await")
+	      "return"  "async for" "for" "lambda" "await" "match" "case")
              symbol-end)
         (,(rx symbol-start (or "async def" "def" "class") symbol-end) . py-def-class-face)
         (,(rx symbol-start (or "import" "from") symbol-end) . py-import-from-face)

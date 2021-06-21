@@ -1722,7 +1722,7 @@ At any case only current input gets fontified."
 (defcustom py-hide-show-keywords
   '("class"    "def"    "elif"    "else"    "except"
     "for"      "if"     "while"   "finally" "try"
-    "with")
+    "with"     "match"  "case")
   "Keywords composing visible heads."
   :type '(repeat string)
   :tag "py-hide-show-keywords
@@ -1744,7 +1744,7 @@ At any case only current input gets fontified."
 (defcustom py-outline-mode-keywords
   '("class"    "def"    "elif"    "else"    "except"
     "for"      "if"     "while"   "finally" "try"
-    "with")
+    "with"     "match"  "case")
   "Keywords composing visible heads."
   :type '(repeat string)
   :tag "py-outline-mode-keywords
@@ -2866,6 +2866,8 @@ See ‘py-no-outdent-re-raw’ for better readable content")
    "try"
    "while"
    "with"
+   "match"
+   "case"
    )
   "Matches the beginning of a compound statement but not it's clause."
   :type '(repeat string)
@@ -2949,6 +2951,8 @@ Second group grabs the name")
    "try"
    "while"
    "with"
+   "match"
+   "case"
    )
   "Matches the beginning of a compound statement or it's clause."
   :type '(repeat string)
@@ -2977,7 +2981,9 @@ Second group grabs the name")
    "if"
    "try"
    "while"
-   "with")
+   "with"
+   "match"
+   "case")
   "Matches the beginning of a compound statement or it's clause."
   :type '(repeat string)
   :tag "py-extended-block-or-clause-re-raw"
