@@ -412,7 +412,7 @@ $EMACS -Q -L . --batch \
 }
 
 hier() {
-    date; time -p $EMACS -Q -L . --batch \
+    date; $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \

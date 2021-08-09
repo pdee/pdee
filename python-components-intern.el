@@ -364,6 +364,8 @@ LIEP stores line-end-position at point-of-interest
 			((and (eq liep (line-end-position))
                               (save-excursion
 				(and (setq erg (py--go-to-keyword 'py-extended-block-or-clause-re (* py-indent-offset 99)))
+				     ;; maybe Result: (nil nil nil), which evaluates to ‘t’
+				     (not (bobp))
 				     (if (and (not indent-offset) py-smart-indentation) (setq indent-offset (py-guess-indent-offset)) t)
 				     (ignore-errors (< orig (or (py-forward-block-or-clause) (point)))))))
 			 (+ (car erg) (if py-smart-indentation

@@ -153,7 +153,7 @@ def foo3(bar):
     return eggs
 "
     (goto-char (point-max))
-    (font-lock-fontify-buffer) 
+    (font-lock-fontify-buffer)
     (search-backward "spam" nil t 2)
     (should (eq (face-at-point) 'py-variable-name-face))
     (search-backward "spam" nil t 2)
@@ -185,6 +185,18 @@ def foo3(bar):
     (should (eq (face-at-point) 'py-variable-name-face))
     (search-backward "name" nil t 2)
     (should (eq (face-at-point) 'py-variable-name-face))))
+
+(ert-deftest py-110-Support-PEP-634-structural-pattern-matching-P6QZmU ()
+  (py-test-with-temp-buffer
+      "def sort(seq):
+    match seq:
+        case [] | [_]:
+            return seq"
+    (goto-char (point-max))
+    (search-backward "match")
+    (should (eq (face-at-point) 'py-variable-name-face))
+    (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))))
+
 
 (provide 'py-ert-font-lock-test-1)
 ;;; py-ert-font-lock-test-1.el here

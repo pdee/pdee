@@ -965,7 +965,15 @@ else: #<- this else is not possible to indent 1 tab
     (should (eq 8 (current-indentation)))
     ))
 
+(ert-deftest py-indent-test-W5dPqP ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env ipython
+# -*- coding: utf-8 -*-
 
+import os"
+    (goto-char (point-max))
+    (backward-char 6)
+    (should (eq 0 (py-compute-indentation)))))
 
 (provide 'py-ert-indent-tests-1)
 ;;; py-ert-indent-tests-1.el ends here

@@ -55,7 +55,7 @@
 
 Optional LINE FILE CONDITION"
   (interactive "p")
-  (let ((line (or line (py-count-lines))))
+  (let ((line (number-to-string (or line (py-count-lines)))))
     (py-execute-string (concat "import pdb;pdb.break('" line "')"))))
 
 (defun py--pdb-versioned ()
