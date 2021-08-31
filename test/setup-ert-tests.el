@@ -23,6 +23,8 @@
 ;; (require 'org)
 
 ;; (setq py-debug-p t)
+(setq py-debug-p nil)
+(setq py-verbose-p nil)
 
 (if (file-readable-p "../python-components-mode.el")
     (load "../python-components-mode.el" nil t)
@@ -30,7 +32,6 @@
     (load "../python-mode.el")))
 
 (require 'font-lock)
-
 
 (unless (functionp 'ar-syntax-class-atpt)
   (defun ar-syntax-class-atpt (&optional pos)

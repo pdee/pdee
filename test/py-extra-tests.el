@@ -227,8 +227,7 @@ finally:
 (ert-deftest py-execute-string-text-dtOWbA1 ()
   (py-test-with-temp-buffer
       ""
-    (let (erg)
-      (setq erg (py-execute-string "print(\"foo\")" nil t))
+    (let ((erg (py-execute-string "print(\"foo\")" nil t)))
       (should (string= erg "foo"))
       (should (string= py-result "foo")))))
 

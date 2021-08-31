@@ -1114,7 +1114,7 @@
     (when py-master-file
       (setq filename (expand-file-name py-master-file)
 	    buffer (or (get-file-buffer filename)
-		       (find-file-noselect filename)))
+		       (find-file-noselect filename noninteractive)))
       (set-buffer buffer))\n"))
 
 (defun write--unified-extended-execute-basic-form ()
@@ -1124,7 +1124,7 @@
     (when py-master-file
       (setq filename (expand-file-name py-master-file)
 	    buffer (or (get-file-buffer filename)
-		       (find-file-noselect filename)))
+		       (find-file-noselect filename noninteractive)))
       (set-buffer buffer))\n"))
 
 (defun write--unified-extended-execute-let-form ()
@@ -1135,13 +1135,13 @@
       (insert " shell")
     (insert (concat " '" elt))))
 
-;; (defvar py--basic-execute-forms
-;;   (defun py-execute-statement (&optional shell dedicated fast split switch proc)
-;;   "Send statement at point to interpreter."
-;;   (interactive)
-;;   (let ((wholebuf nil))
-;;     (py--execute-prepare 'statement shell dedicated switch nil nil nil fast proc wholebuf split)))
-;; "Internally used by python-mode-utils.el"
+(defvar py--basic-execute-forms
+  (defun py-execute-statement (&optional shell dedicated fast split switch proc)
+  "Send statement at point to interpreter."
+  (interactive)
+  (let ((wholebuf nil))
+    (py--execute-prepare 'statement shell dedicated switch nil nil nil fast proc wholebuf split)))
+"Internally used by python-mode-utils.el"
 
 (defun write--unified-extended-execute-forms-intern ()
   (switch-to-buffer (current-buffer))

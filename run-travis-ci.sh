@@ -23,11 +23,11 @@
 # This script tests functions from python-mode.el.
 
 # Code:
-EMACS25=$HOME/emacs-25.3/src/emacs-25.3.1
+#  EMACS25=$HOME/emacs-25.3/src/emacs-25.3.1
 #  emacs26=~$HOME/emacs-20180529/src/emacs-27.0.50.1
-EMACS26=$HOME/emacs-26.3/src/emacs-26.3.1
-EMACS27=$HOME/emacs-27.0.91/src/emacs-27.0.91.1
-EMACS28=$HOME/emacs-20210328/src/emacs-28.0.50.1
+EMACS26=emacs
+EMACS27=$HOME/emacs-27.2/src/emacs-27.2.1
+EMACS28=$HOME/emacs-20210812/src/emacs-28.0.50.1
 # system Emacs
 EMACS=emacs
 
@@ -497,7 +497,7 @@ hier26() {
 }
 
 hier27() {
-    date; time -p $EMACS27 -Q -L . --batch \
+    date; $EMACS27 -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
@@ -525,7 +525,7 @@ hier27() {
 }
 
 hier28() {
-    date; time -p $EMACS28 -Q -L . --batch \
+    date; $EMACS28 -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
