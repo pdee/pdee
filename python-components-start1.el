@@ -6118,8 +6118,8 @@ process buffer for a list of commands.)"
 	    (unless fast (py-shell-mode))
 	    (and internal (set-process-query-on-exit-flag proc nil)))
 	  (when (or interactivep
-		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
-	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
+		    (unless internal (or switch py-switch-buffers-on-execute-p py-split-window-on-execute)))
+	    (py--shell-manage-windows buffer exception-buffer (unless internal split) (unless internal (or interactivep switch))))
 	  buffer)
       (error (concat "py-shell:" (py--fetch-error py-output-buffer))))))
 

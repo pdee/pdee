@@ -57,19 +57,23 @@ banner and the initial prompt are received separately."
   "Do completion at point using PROCESS for IMPORT or INPUT.
 When IMPORT is non-nil takes precedence over INPUT for
 completion."
-  (setq input (or import input))
-  (with-current-buffer (process-buffer process)
-    (let ((completions
-           (ignore-errors
-	     (py--string-trim
-	      (py-send-string-no-output
-	       (format
-		(concat py-completion-setup-code
-			"\nprint (" py-shell-completion-string-code ")")
-		input) process (buffer-name (current-buffer)))))))
-      (when (> (length completions) 2)
-        (split-string completions
-                      "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
+  (let ((input (or import input))
+	(process (if (string-match "^i" (process-name process) )
+		     ;; bug #111, Pressing tab key in IPython shell creates new window
+		     (get-buffer-process (py-shell nil nil nil "python" nil nil nil nil nil t))
+		   process)))
+    (with-current-buffer (process-buffer process)
+      (let ((completions
+             (ignore-errors
+	       (py--string-trim
+		(py-send-string-no-output
+		 (format
+		  (concat py-completion-setup-code
+			  "\nprint (" py-shell-completion-string-code ")")
+		  input) process (buffer-name (current-buffer)))))))
+	(when (> (length completions) 2)
+          (split-string completions
+			"^'\\|^\"\\|;\\|'$\\|\"$" t))))))
 
 (defun py-shell-completion-at-point (&optional process)
   "Function for `completion-at-point-functions' in `py-shell-mode'.
