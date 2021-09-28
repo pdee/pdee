@@ -85,7 +85,7 @@ Return beginning and end positions of marked area, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-assignment ()
-  "Mark assignment, take beginning of line positions. 
+  "Mark assignment, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -93,7 +93,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-block ()
-  "Mark block, take beginning of line positions. 
+  "Mark block, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -101,7 +101,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-block-or-clause ()
-  "Mark block-or-clause, take beginning of line positions. 
+  "Mark block-or-clause, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -109,7 +109,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-class (&optional arg)
-  "Mark class, take beginning of line positions. 
+  "Mark class, take beginning of line positions.
 
 With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, decorators are marked too.
 Return beginning and end positions of region, a cons."
@@ -119,7 +119,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-clause ()
-  "Mark clause, take beginning of line positions. 
+  "Mark clause, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -127,7 +127,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-def (&optional arg)
-  "Mark def, take beginning of line positions. 
+  "Mark def, take beginning of line positions.
 
 With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, decorators are marked too.
 Return beginning and end positions of region, a cons."
@@ -137,7 +137,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-def-or-class (&optional arg)
-  "Mark def-or-class, take beginning of line positions. 
+  "Mark def-or-class, take beginning of line positions.
 
 With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, decorators are marked too.
 Return beginning and end positions of region, a cons."
@@ -147,7 +147,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-elif-block ()
-  "Mark elif-block, take beginning of line positions. 
+  "Mark elif-block, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -155,7 +155,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-else-block ()
-  "Mark else-block, take beginning of line positions. 
+  "Mark else-block, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -163,7 +163,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-except-block ()
-  "Mark except-block, take beginning of line positions. 
+  "Mark except-block, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -171,7 +171,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-for-block ()
-  "Mark for-block, take beginning of line positions. 
+  "Mark for-block, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -179,7 +179,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-if-block ()
-  "Mark if-block, take beginning of line positions. 
+  "Mark if-block, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -187,15 +187,15 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-indent ()
-  "Mark indent, take beginning of line positions. 
+  "Mark indent, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
-  (py--mark-base-bol "indent")
-  (exchange-point-and-mark))
+  (progn (py--mark-base-bol "indent")
+	 (exchange-point-and-mark)))
 
 (defun py-mark-minor-block ()
-  "Mark minor-block, take beginning of line positions. 
+  "Mark minor-block, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -203,7 +203,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-statement ()
-  "Mark statement, take beginning of line positions. 
+  "Mark statement, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)
@@ -211,7 +211,7 @@ Return beginning and end positions of region, a cons."
   (exchange-point-and-mark))
 
 (defun py-mark-try-block ()
-  "Mark try-block, take beginning of line positions. 
+  "Mark try-block, take beginning of line positions.
 
 Return beginning and end positions of region, a cons."
   (interactive)

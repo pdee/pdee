@@ -3327,7 +3327,7 @@ ausgabe = kugel.ausgabe"
 }"
       (goto-char (point-max))
       (search-backward "\"b")
-      (should (eq (py-forward-indent) 31))))
+      (should (eq (py-forward-indent) 54))))
 
 (ert-deftest py-forward-indent-AvmF3n ()
   (py-test-with-temp-buffer-point-min
