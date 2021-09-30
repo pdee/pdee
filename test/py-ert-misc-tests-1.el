@@ -46,7 +46,6 @@
 ;;      (sit-for 0.1)
 ;;      (should (search-backward "run" nil t)))))
 
-
 (ert-deftest py-ert-borks-all-lp-1294820-sIKMyz ()
   (py-test-with-temp-buffer-point-min
       "# M-q within some code (not in= a docstring) completely borks all previous
@@ -376,21 +375,6 @@ GeomSim."
     (py-mark-indent)
     ;; (message "%s" (buffer-substring-no-properties (region-beginning) (region-end)))
     (should (eq 28 (length (buffer-substring-no-properties (region-beginning) (region-end)))))))
-
-(ert-deftest py-ert-shift-indent-test-NZCkbL ()
-  (py-test-with-temp-buffer-point-min
-      "class A(object):
-    def a(self):
-        sdfasde
-        sdfasde
-        sdfasde
-        print(123)"
-    (goto-char (point-min) )
-    (search-forward "sdfasde")
-    (py-shift-indent-right)
-    (should (eq 12 (current-indentation)))
-    (py-shift-indent-left)
-    (should (eq 8 (current-indentation)))))
 
 (ert-deftest py-ert-edit-docstring-write-content-back-test-mh1es0 ()
   (py-test-with-temp-buffer-point-min

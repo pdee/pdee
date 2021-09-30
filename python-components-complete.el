@@ -220,9 +220,8 @@ Use `py-fast-process' "
   (setq py-last-window-configuration
   	(current-window-configuration))
   (py-shell-complete shell nil nil word 1 imports)
-  (save-excursion
-    (py-restore-window-configuration)
-    ))
+  (py-restore-window-configuration)
+  )
 
 (defun py-indent-or-complete ()
   "Complete or indent depending on the context.

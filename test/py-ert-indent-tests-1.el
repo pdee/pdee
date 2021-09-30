@@ -975,5 +975,15 @@ import os"
     (backward-char 6)
     (should (eq 0 (py-compute-indentation)))))
 
+(ert-deftest py-indent-gnu-bug34268-i1nySM ()
+  (py-test-with-temp-buffer
+      "def long_function_name(var_one, var_two, var_three,
+                       var_four):
+    print(var_one)
+"
+    (goto-char (point-max))
+    (search-backward "print")
+    (should (eq 4  (py-compute-indentation)))))
+
 (provide 'py-ert-indent-tests-1)
 ;;; py-ert-indent-tests-1.el ends here

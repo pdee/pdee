@@ -1026,9 +1026,6 @@ If BOL is t, mark from beginning-of-line"
       nil)))
 
 (defun py--mark-base-bol (form &optional mark-decorators)
-    "Mark indent, take beginning of line positions. 
-
-Return beginning and end positions of region, a cons."
   (let* ((begform (intern-soft (concat "py-backward-" form "-bol")))
          (endform (intern-soft (concat "py-forward-" form "-bol")))
          (begcheckform (intern-soft (concat "py--beginning-of-" form "-bol-p")))

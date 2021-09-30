@@ -4874,13 +4874,13 @@ Optional ENFORCE-REGEXP: search for regexp only."
       py-ipython-send-delay
     py-python-send-delay))
 
-(defun py-temp-file-name (strg proc)
+(defun py-temp-file-name (strg)
   (let* ((temporary-file-directory
-	  (with-current-buffer (process-buffer proc)
-            (if (file-remote-p default-directory)
-		(concat (file-remote-p default-directory) "/tmp")
-              temporary-file-directory)))
+          (if (file-remote-p default-directory)
+              (concat (file-remote-p default-directory) "/tmp")
+            temporary-file-directory))
          (temp-file-name (make-temp-file "py")))
+
     (with-temp-file temp-file-name
       (insert strg)
       (delete-trailing-whitespace))
@@ -5681,7 +5681,7 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 							    ;; (buffer-name buffer)
 							    buffer
 							    ))  ;; multiline
-	     (let* ((temp-file-name (py-temp-file-name strg proc))
+	     (let* ((temp-file-name (py-temp-file-name strg))
 		    (file-name (or (buffer-file-name) temp-file-name)))
 	       (py-execute-file file-name proc)))
 	    (t (with-current-buffer buffer
@@ -5918,7 +5918,7 @@ Return the output."
     (or
      (with-local-quit
        (if (and (string-match ".\n+." strg) (string-match "^\*[Ii]" buffer))  ;; IPython or multiline
-           (let* ((temp-file-name (py-temp-file-name strg proc))
+           (let* ((temp-file-name (py-temp-file-name strg))
 		  (file-name (or (buffer-file-name) temp-file-name)))
 	     (py-execute-file file-name proc))
 	 (py-shell-send-string strg proc))
@@ -6118,8 +6118,8 @@ process buffer for a list of commands.)"
 	    (unless fast (py-shell-mode))
 	    (and internal (set-process-query-on-exit-flag proc nil)))
 	  (when (or interactivep
-		    (unless internal (or switch py-switch-buffers-on-execute-p py-split-window-on-execute)))
-	    (py--shell-manage-windows buffer exception-buffer (unless internal split) (unless internal (or interactivep switch))))
+		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
+	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
 	  buffer)
       (error (concat "py-shell:" (py--fetch-error py-output-buffer))))))
 

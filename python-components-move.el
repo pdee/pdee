@@ -110,10 +110,7 @@ Returns final position when called from inside section, nil otherwise"
 	(orig (point))
 	(indent (current-indentation)))
     (while (and (not (eobp)) (not done) (progn (forward-line 1) (back-to-indentation) (or (py-empty-line-p) (and (<= indent (current-indentation))(< last (point))(setq last (point)))(setq done t))))
-      (when (< (current-indentation) indent)(setq done t)))
-    (skip-chars-forward " \t\r\n\f")
-    (if (eq (current-indentation) indent)
-	(py-forward-indent) 
+      (and (< indent (current-indentation))(setq done t)))
     (if (and last (< orig last))
 	(progn (goto-char last)
 	       (end-of-line)
@@ -121,7 +118,7 @@ Returns final position when called from inside section, nil otherwise"
       (skip-chars-forward " \t\r\n\f")
       (end-of-line)
       (skip-chars-backward " \t\r\n\f"))
-    (and (< orig (point))(point)))))
+    (and (< orig (point))(point))))
 
 (defun py-forward-indent-bol ()
   "Go to beginning of line following of a section of equal indentation.
