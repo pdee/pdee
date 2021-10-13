@@ -1730,7 +1730,7 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
     (unless (string= ele "statement")
       (insert (concat "
 \(defun py-up-" ele " (&optional indent)
-  \"Go to the beginning of next " ele " upwards in buffer according to INDENT.
+  \"Go to the beginning of next " ele " upwards according to INDENT.
 Optional INDENT
 Return position if " ele " found, nil otherwise.\"
   (interactive)
@@ -1747,7 +1747,7 @@ Return position if " ele " found, nil otherwise.\"
 	nil
       (insert (concat "
 \(defun py-up-" ele "-bol (&optional indent)
-  \"Go to the beginning of next " ele " upwards in buffer according to INDENT.
+  \"Go to the beginning of next " ele " upwards according to INDENT.
 
 Go to beginning of line.
 Return position if " ele " found, nil otherwise.\"
@@ -1776,7 +1776,7 @@ Return position if " ele " found, nil otherwise.\"
 	nil
       (insert (concat "
 \(defun py-down-" ele " (&optional indent)
-  \"Go to the beginning of next " ele " downwards in buffer according to INDENT.
+  \"Go to the beginning of next " ele " downwards according to INDENT.
 
 Return position if " ele " found, nil otherwise.\"
   (interactive)
@@ -1787,7 +1787,7 @@ Return position if " ele " found, nil otherwise.\"
         nil
       (insert (concat "
 \(defun py-down-" ele "-bol (&optional indent)
-  \"Go to the beginning of next " ele " below in buffer according to INDENT.
+  \"Go to the beginning of next " ele " below according to INDENT.
 
 Go to beginning of line
 Optional INDENT: honor indentation
@@ -2070,7 +2070,7 @@ Use backward-statement for ‘top-level’, also bol-forms don't make sense here
     (insert (concat "
   \"When called interactively, mark " (capitalize ele) " at point.
 
-When called from a programm, return source-code of " (capitalize ele) " at point, a string."))
+From a programm, return source of " (capitalize ele) " at point, a string."))
         (if (member ele (list "block" "block-or-clause" "def" "def-or-class" "class" "top-level"))
 	    (insert "\n\nOptional arg DECORATORS: include decorators when called at def or class.
 Also honors setting of ‘py-mark-decorators’\"")
@@ -2436,6 +2436,23 @@ class bar:
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (goto-char (point-max))
+  (insert "\n(defun py-forward-assignment (\&optional orig bol)
+  \"Go to end of assignment\.
+
+Return end of ‘assignment’ if successful, nil otherwise
+Optional ORIG: start position
+Optional BOL: go to beginning of line following end-position\"
+  (interactive)
+  (cdr-safe (py--end-base 'py-assignment-re orig bol)))
+
+\(defun py-forward-assignment-bol ()
+  \"Goto beginning of line following end of ‘assignment’\.
+
+Return position reached, if successful, nil otherwise\.
+See also ‘py-down-assignment’.\"
+  (interactive)
+  (py-forward-assignment nil t))\n\n")
+
   (insert "(defun py-forward-region ()
   \"Go to the end of current region.\"
   (interactive)
@@ -2461,7 +2478,7 @@ Optional BOL: go to beginning of line following end-position\"
   \"Goto beginning of line following end of ‘" ele "’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-" ele "’: down from current definition to next beginning of ‘" ele "’ below.\"
+See also ‘py-down-" ele "’.\"
   (interactive)
   (py-forward-" ele " nil t))\n")))
 
@@ -2488,7 +2505,8 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
       ;; expression needs "\b"
       ;; (unless (equal ele "expression")
       (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
-  \"Return position, if cursor is at the beginning of a ‘" ele "’, nil otherwise.\"\n"))
+  \"If cursor is at the beginning of a ‘" ele "’.
+Return position, nil otherwise.\"\n"))
       (insert (concat "  (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
          (looking-at (concat \"\\\\b\" py-"  (ar-block-regexp-name-richten ele) "-re))
@@ -2496,7 +2514,8 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   (dolist (ele py-bol-forms)
     (unless (string-equal ele "statement")
       (insert (concat "\(defun py--beginning-of-" ele "-p (&optional pps)
-  \"Return position, if cursor is at the beginning of a ‘" ele "’, nil otherwise.\""))
+  \"If cursor is at the beginning of a ‘" ele "’.
+Return position, nil otherwise.\""))
       (insert (concat "
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -2507,7 +2526,8 @@ See also ‘py-down-" ele "’: down from current definition to next beginning o
   (dolist (ele py-bol-forms)
     (unless (string-equal ele "statement")
       (insert (concat "\(defun py--beginning-of-" ele "-bol-p (&optional pps)
-  \"Return position, if cursor is at the beginning of a ‘" ele "’, nil otherwise.\""))
+  \"If cursor is at the beginning of a ‘" ele "’.
+Return position, nil otherwise.\""))
       (insert (concat "
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -2556,7 +2576,8 @@ where 'XX' is the Python syntactic element."
     (dolist (ele py-non-bol-forms)
       (insert (concat "
 \(defun py--end-of-" ele "-p ()
-  \"Return position, if cursor is at the end of a " ele ", nil otherwise.\"
+  \"If cursor is at the end of a " ele ".
+Return position, nil otherwise.\"
   (let ((orig (point)))
     (save-excursion
       (py-backward-" ele ")
@@ -2568,7 +2589,8 @@ where 'XX' is the Python syntactic element."
       (unless (string= "statement" ele)
 	(insert (concat "
 \(defun py--end-of-" ele "-bol-p ()
-  \"Return position, if cursor is at ‘beginning-of-line’ at the end of a " ele ", nil otherwise.\"
+  \"If at ‘beginning-of-line’ at the end of a " ele ".
+Return position, nil otherwise.\"
   (let ((orig (point)))
     (save-excursion
       (py-backward-" ele "-bol)
@@ -2580,7 +2602,8 @@ where 'XX' is the Python syntactic element."
       (unless (string= "statement" ele)
 	(insert (concat "
 \(defun py--end-of-" ele "-p ()
-  \"Return position, if cursor is at the end of a " ele ", nil otherwise.\"
+  \"If cursor is at the end of a " ele ".
+Return position, nil otherwise.\"
   (let ((orig (point)))
     (save-excursion
       (py-backward-" ele ")
@@ -2649,7 +2672,9 @@ Stores data in kill ring. Might be yanked back using ‘C-y’.\"
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline.\"
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline.\"
   (interactive \"*\")
   (py--close-intern 'py-" ele "-re))
 "))))

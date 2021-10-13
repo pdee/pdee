@@ -285,14 +285,13 @@ The returned file name can be used directly as argument of
 
 ;; (format "execfile(r'%s')\n" file)
 (defun py-execute-file-command (filename)
-  "Return the command using FILENAME.
-
-Default was \"(format \"execfile(r'%s') # PYTHON-MODE\\n\" filename)\" for Python 2 series."
+  "Return the command using FILENAME."
   (format "exec(compile(open(r'%s').read(), r'%s', 'exec')) # PYTHON-MODE\n" filename filename)
   )
 
 (defun py--beginning-of-buffer-p ()
-  "Returns position, if cursor is at the beginning of buffer, nil otherwise. "
+  "Returns position, if cursor is at the beginning of buffer.
+Return nil otherwise. "
   (when (bobp)(point)))
 
 ;;  (setq strip-chars-before  "[ \t\r\n]*")
@@ -3700,7 +3699,7 @@ Optional MAXINDENT: don't stop if indentation is larger"
   "Goto beginning of line where statement start.
 Returns position reached, if successful, nil otherwise.
 
-See also `py-up-statement': up from current definition to next beginning of statement above."
+See also `py-up-statement'"
   (interactive)
   (let* ((orig (point))
          erg)
@@ -4391,7 +4390,7 @@ Interactively output of `--version' is displayed. "
     (current-indentation)))
 
 (defun py-continuation-offset (&optional arg)
-  "With numeric ARG different from 1 py-continuation-offset is set to that value; returns py-continuation-offset. "
+  "Set if numeric ARG differs from 1. "
   (interactive "p")
   (and (numberp arg) (not (eq 1 arg)) (setq py-continuation-offset arg))
   (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" py-continuation-offset))
@@ -4627,10 +4626,8 @@ Return beginning position, nil if not inside."
     erg))
 
 (defun py--record-list-error (pps)
-  "When encountering a missing parenthesis, store its line, position. `py-verbose-p'  must be t
-
-Unclosed-string errors are not handled here, as made visible by fontification already.
-"
+  "When encountering a missing parenthesis, store its line, position.
+`py-verbose-p'  must be t"
   (let ((this-err
          (save-excursion
            (list
@@ -4892,7 +4889,8 @@ Optional ENFORCE-REGEXP: search for regexp only."
 If an exception occurred return error-string, otherwise return nil.
 BUF must exist.
 
-Indicate LINE if code wasn't run from a file, thus remember ORIGLINE of source buffer"
+Indicate LINE if code wasn't run from a file,
+thus remember ORIGLINE of source buffer"
   (with-current-buffer output-buffer
     (when py-debug-p (switch-to-buffer (current-buffer)))
     ;; (setq py-error (buffer-substring-no-properties (point) (point-max)))
@@ -5119,7 +5117,8 @@ Uses ‘comint-send-string’."
   "Connect am (I)Python process suitable for large output.
 
 Output buffer displays \"Fast\"  by default
-It is not in interactive, i.e. comint-mode, as its bookkeepings seem linked to the freeze reported by lp:1253907"
+It is not in interactive, i.e. comint-mode,
+as its bookkeepings seem linked to the freeze reported by lp:1253907"
   (interactive)
   (let ((this-buffer
          (set-buffer (or (and buffer (get-buffer-create buffer))
@@ -5728,7 +5727,7 @@ Returns position where output starts."
       (py--shell-manage-windows buffer (find-file-noselect filename) py-split-window-on-execute py-switch-buffers-on-execute-p))))
 
 (defun py-restore-window-configuration ()
-  "Restore ‘py-restore-window-configuration’ when completion is done resp. abandoned."
+  "Restore ‘py-restore-window-configuration’."
   (let (val)
     (and (setq val (get-register py--windows-config-register))(and (consp val) (window-configuration-p (car val))(markerp (cadr val)))(marker-buffer (cadr val))
 	 (jump-to-register py--windows-config-register))))
@@ -5756,13 +5755,13 @@ Internal use"
   (goto-char (process-mark (get-buffer-process (current-buffer)))))
 
 (defun py--alternative-split-windows-on-execute-function ()
-  "If ‘py--split-windows-on-execute-function’ is ‘split-window-vertically’ return ‘split-window-horizontally’ and vice versa."
+  "Toggle split-window-horizontally resp. vertically."
   (if (eq py-split-windows-on-execute-function 'split-window-vertically)
       'split-window-horizontally
     'split-window-vertically))
 
 (defun py--get-splittable-window ()
-  "If selected window doesn't permit a further split, search ‘window-list’ for a suitable one."
+  "Search ‘window-list’ for a window suitable for splitting."
   (or (and (window-left-child)(split-window (window-left-child)))
       (and (window-top-child)(split-window (window-top-child)))
       (and (window-parent)(ignore-errors (split-window (window-parent))))

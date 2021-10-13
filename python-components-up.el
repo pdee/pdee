@@ -26,56 +26,56 @@
 
 
 (defun py-up-block (&optional indent)
-  "Go to the beginning of next block upwards in buffer according to INDENT.
+  "Go to the beginning of next block upwards according to INDENT.
 Optional INDENT
 Return position if block found, nil otherwise."
   (interactive)
   (py-up-base 'py-block-re indent))
 
 (defun py-up-class (&optional indent)
-  "Go to the beginning of next class upwards in buffer according to INDENT.
+  "Go to the beginning of next class upwards according to INDENT.
 Optional INDENT
 Return position if class found, nil otherwise."
   (interactive)
   (py-up-base 'py-class-re indent))
 
 (defun py-up-clause (&optional indent)
-  "Go to the beginning of next clause upwards in buffer according to INDENT.
+  "Go to the beginning of next clause upwards according to INDENT.
 Optional INDENT
 Return position if clause found, nil otherwise."
   (interactive)
   (py-up-base 'py-clause-re indent))
 
 (defun py-up-block-or-clause (&optional indent)
-  "Go to the beginning of next block-or-clause upwards in buffer according to INDENT.
+  "Go to the beginning of next block-or-clause upwards according to INDENT.
 Optional INDENT
 Return position if block-or-clause found, nil otherwise."
   (interactive)
   (py-up-base 'py-block-or-clause-re indent))
 
 (defun py-up-def (&optional indent)
-  "Go to the beginning of next def upwards in buffer according to INDENT.
+  "Go to the beginning of next def upwards according to INDENT.
 Optional INDENT
 Return position if def found, nil otherwise."
   (interactive)
   (py-up-base 'py-def-re indent))
 
 (defun py-up-def-or-class (&optional indent)
-  "Go to the beginning of next def-or-class upwards in buffer according to INDENT.
+  "Go to the beginning of next def-or-class upwards according to INDENT.
 Optional INDENT
 Return position if def-or-class found, nil otherwise."
   (interactive)
   (py-up-base 'py-def-or-class-re indent))
 
 (defun py-up-minor-block (&optional indent)
-  "Go to the beginning of next minor-block upwards in buffer according to INDENT.
+  "Go to the beginning of next minor-block upwards according to INDENT.
 Optional INDENT
 Return position if minor-block found, nil otherwise."
   (interactive)
   (py-up-base 'py-minor-block-re indent))
 
 (defun py-up-block-bol (&optional indent)
-  "Go to the beginning of next block upwards in buffer according to INDENT.
+  "Go to the beginning of next block upwards according to INDENT.
 
 Go to beginning of line.
 Return position if block found, nil otherwise."
@@ -84,7 +84,7 @@ Return position if block found, nil otherwise."
   (progn (beginning-of-line)(point)))
 
 (defun py-up-class-bol (&optional indent)
-  "Go to the beginning of next class upwards in buffer according to INDENT.
+  "Go to the beginning of next class upwards according to INDENT.
 
 Go to beginning of line.
 Return position if class found, nil otherwise."
@@ -93,7 +93,7 @@ Return position if class found, nil otherwise."
   (progn (beginning-of-line)(point)))
 
 (defun py-up-clause-bol (&optional indent)
-  "Go to the beginning of next clause upwards in buffer according to INDENT.
+  "Go to the beginning of next clause upwards according to INDENT.
 
 Go to beginning of line.
 Return position if clause found, nil otherwise."
@@ -102,7 +102,7 @@ Return position if clause found, nil otherwise."
   (progn (beginning-of-line)(point)))
 
 (defun py-up-block-or-clause-bol (&optional indent)
-  "Go to the beginning of next block-or-clause upwards in buffer according to INDENT.
+  "Go to the beginning of next block-or-clause upwards according to INDENT.
 
 Go to beginning of line.
 Return position if block-or-clause found, nil otherwise."
@@ -111,7 +111,7 @@ Return position if block-or-clause found, nil otherwise."
   (progn (beginning-of-line)(point)))
 
 (defun py-up-def-bol (&optional indent)
-  "Go to the beginning of next def upwards in buffer according to INDENT.
+  "Go to the beginning of next def upwards according to INDENT.
 
 Go to beginning of line.
 Return position if def found, nil otherwise."
@@ -120,7 +120,7 @@ Return position if def found, nil otherwise."
   (progn (beginning-of-line)(point)))
 
 (defun py-up-def-or-class-bol (&optional indent)
-  "Go to the beginning of next def-or-class upwards in buffer according to INDENT.
+  "Go to the beginning of next def-or-class upwards according to INDENT.
 
 Go to beginning of line.
 Return position if def-or-class found, nil otherwise."
@@ -129,7 +129,7 @@ Return position if def-or-class found, nil otherwise."
   (progn (beginning-of-line)(point)))
 
 (defun py-up-minor-block-bol (&optional indent)
-  "Go to the beginning of next minor-block upwards in buffer according to INDENT.
+  "Go to the beginning of next minor-block upwards according to INDENT.
 
 Go to beginning of line.
 Return position if minor-block found, nil otherwise."

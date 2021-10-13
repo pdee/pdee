@@ -207,9 +207,9 @@ Receives a ‘buffer-name’ as argument"
     erg))
 
 (defun py-set-working-directory (&optional directory)
-  "Set working directory according to optional DIRECTORY
+  "Set working directory according to optional DIRECTORY.
 
-when given, to value of ‘py-default-working-directory’ otherwise"
+When given, to value of ‘py-default-working-directory’ otherwise"
   (interactive)
   (let* ((proc (get-buffer-process (current-buffer)))
 	 (dir (or directory py-default-working-directory))
@@ -400,3 +400,7 @@ This may be preferable to ‘\\[py-execute-buffer]’ because:
 
 (provide 'python-components-execute);
 ;;;  python-components-execute.el ends here
+
+(provide 'python-components-execute)
+
+;;; python-components-execute.el ends here

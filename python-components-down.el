@@ -1,4 +1,5 @@
-;;; python-components-down.el -- Searching downwards in buffer -*- lexical-binding: t; -*-
+;;; python-components-down.el -- Searching downwards in buffer -*- lexical-binding: t; -*- 
+
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
@@ -23,57 +24,58 @@
 
 ;;; Code:
 
+
 (defun py-down-block (&optional indent)
-  "Go to the beginning of next block downwards in buffer according to INDENT.
+  "Go to the beginning of next block downwards according to INDENT.
 
 Return position if block found, nil otherwise."
   (interactive)
   (py-down-base 'py-block-re indent))
 
 (defun py-down-class (&optional indent)
-  "Go to the beginning of next class downwards in buffer according to INDENT.
+  "Go to the beginning of next class downwards according to INDENT.
 
 Return position if class found, nil otherwise."
   (interactive)
   (py-down-base 'py-class-re indent))
 
 (defun py-down-clause (&optional indent)
-  "Go to the beginning of next clause downwards in buffer according to INDENT.
+  "Go to the beginning of next clause downwards according to INDENT.
 
 Return position if clause found, nil otherwise."
   (interactive)
   (py-down-base 'py-clause-re indent))
 
 (defun py-down-block-or-clause (&optional indent)
-  "Go to the beginning of next block-or-clause downwards in buffer according to INDENT.
+  "Go to the beginning of next block-or-clause downwards according to INDENT.
 
 Return position if block-or-clause found, nil otherwise."
   (interactive)
   (py-down-base 'py-block-or-clause-re indent))
 
 (defun py-down-def (&optional indent)
-  "Go to the beginning of next def downwards in buffer according to INDENT.
+  "Go to the beginning of next def downwards according to INDENT.
 
 Return position if def found, nil otherwise."
   (interactive)
   (py-down-base 'py-def-re indent))
 
 (defun py-down-def-or-class (&optional indent)
-  "Go to the beginning of next def-or-class downwards in buffer according to INDENT.
+  "Go to the beginning of next def-or-class downwards according to INDENT.
 
 Return position if def-or-class found, nil otherwise."
   (interactive)
   (py-down-base 'py-def-or-class-re indent))
 
 (defun py-down-minor-block (&optional indent)
-  "Go to the beginning of next minor-block downwards in buffer according to INDENT.
+  "Go to the beginning of next minor-block downwards according to INDENT.
 
 Return position if minor-block found, nil otherwise."
   (interactive)
   (py-down-base 'py-minor-block-re indent))
 
 (defun py-down-block-bol (&optional indent)
-  "Go to the beginning of next block below in buffer according to INDENT.
+  "Go to the beginning of next block below according to INDENT.
 
 Go to beginning of line
 Optional INDENT: honor indentation
@@ -83,7 +85,7 @@ Return position if block found, nil otherwise "
   (progn (beginning-of-line)(point)))
 
 (defun py-down-class-bol (&optional indent)
-  "Go to the beginning of next class below in buffer according to INDENT.
+  "Go to the beginning of next class below according to INDENT.
 
 Go to beginning of line
 Optional INDENT: honor indentation
@@ -93,7 +95,7 @@ Return position if class found, nil otherwise "
   (progn (beginning-of-line)(point)))
 
 (defun py-down-clause-bol (&optional indent)
-  "Go to the beginning of next clause below in buffer according to INDENT.
+  "Go to the beginning of next clause below according to INDENT.
 
 Go to beginning of line
 Optional INDENT: honor indentation
@@ -103,7 +105,7 @@ Return position if clause found, nil otherwise "
   (progn (beginning-of-line)(point)))
 
 (defun py-down-block-or-clause-bol (&optional indent)
-  "Go to the beginning of next block-or-clause below in buffer according to INDENT.
+  "Go to the beginning of next block-or-clause below according to INDENT.
 
 Go to beginning of line
 Optional INDENT: honor indentation
@@ -113,7 +115,7 @@ Return position if block-or-clause found, nil otherwise "
   (progn (beginning-of-line)(point)))
 
 (defun py-down-def-bol (&optional indent)
-  "Go to the beginning of next def below in buffer according to INDENT.
+  "Go to the beginning of next def below according to INDENT.
 
 Go to beginning of line
 Optional INDENT: honor indentation
@@ -123,7 +125,7 @@ Return position if def found, nil otherwise "
   (progn (beginning-of-line)(point)))
 
 (defun py-down-def-or-class-bol (&optional indent)
-  "Go to the beginning of next def-or-class below in buffer according to INDENT.
+  "Go to the beginning of next def-or-class below according to INDENT.
 
 Go to beginning of line
 Optional INDENT: honor indentation
@@ -133,7 +135,7 @@ Return position if def-or-class found, nil otherwise "
   (progn (beginning-of-line)(point)))
 
 (defun py-down-minor-block-bol (&optional indent)
-  "Go to the beginning of next minor-block below in buffer according to INDENT.
+  "Go to the beginning of next minor-block below according to INDENT.
 
 Go to beginning of line
 Optional INDENT: honor indentation

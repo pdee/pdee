@@ -278,7 +278,8 @@ REPEAT - count and consider repeats"
 (defun py-backward-line ()
   "Go to ‘beginning-of-line’, return position.
 
-If already at ‘beginning-of-line’ and not at BOB, go to beginning of previous line."
+If already at ‘beginning-of-line’ and not at BOB,
+go to beginning of previous line."
   (interactive)
   (unless (bobp)
     (let ((erg

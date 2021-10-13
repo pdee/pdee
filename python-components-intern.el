@@ -160,7 +160,6 @@ Choices are:
 When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
 `raise', `break', `continue', and `pass' force one level of dedenting.
 
-Optional arguments are flags resp. values set and used by `py-compute-indentation' internally:
 ORIG keeps original position
 ORIGLINE keeps line where compute started
 CLOSING is t when started at a char delimiting a list as \"]})\"
@@ -491,7 +490,9 @@ module-qualified names."
           (t (setq fill-column py-fill-column-orig)))))
 
 (defun py--run-auto-fill-timer ()
-  "Set fill-column to values of `py-docstring-fill-column' resp. to `py-comment-fill-column' according to environment. "
+  "Set fill-column to values according to environment.
+
+`py-docstring-fill-column' resp. to `py-comment-fill-column'."
   (when py-auto-fill-mode
     (unless py-autofill-timer
       (setq py-autofill-timer
@@ -555,15 +556,19 @@ For stricter sense specify regexp. "
   (py--statement-opens-base py-block-or-clause-re))
 
 (defun py--statement-opens-class-p ()
-  "Return `t' if the statement opens a functions or class definition, nil otherwise. "
+  "If the statement opens a functions or class.
+
+Return `t', nil otherwise. "
   (py--statement-opens-base py-class-re))
 
 (defun py--statement-opens-def-p ()
-  "Return `t' if the statement opens a functions or class definition, nil otherwise. "
+  "If the statement opens a functions or class.
+Return `t', nil otherwise. "
   (py--statement-opens-base py-def-re))
 
 (defun py--statement-opens-def-or-class-p ()
-  "Return `t' if the statement opens a functions or class definition, nil otherwise. "
+  "If the statement opens a functions or class definition.
+Return `t', nil otherwise. "
   (py--statement-opens-base py-def-or-class-re))
 
 (defun py--down-top-level (&optional regexp)
@@ -786,7 +791,9 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
 	(process-mark process)))))
 
 (defun py-which-def-or-class (&optional orig)
-  "Returns concatenated `def' and `class' names in hierarchical order, if cursor is inside.
+  "Returns concatenated `def' and `class' names.
+
+In hierarchical order, if cursor is inside.
 
 Returns \"???\" otherwise
 Used by variable `which-func-functions' "
@@ -924,9 +931,12 @@ Returns position successful, nil otherwise"
     erg))
 
 (defun py-down (&optional indent)
-  "Go to beginning one level below of compound statement or definition at point.
+  "Go to beginning one level below.
 
-If no statement or block below, but a delimited form --string or list-- go to its beginning. Repeated call from there will behave like down-list.
+Of compound statement or definition at point.
+
+Also honor a delimited form -- string or list.
+Repeated call from there will behave like down-list.
 
 Returns position if successful, nil otherwise"
   (interactive)
@@ -1065,7 +1075,8 @@ If BOL is t, mark from beginning-of-line"
 
 If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
-If at beginning of a statement or block, go to previous beginning of compound statement or definition at point.
+If at beginning of a statement or block,
+go to previous beginning of at point.
 If no further element at same level, go one level up."
   (interactive)
   (let* ((pps (parse-partial-sexp (point-min) (point)))
@@ -1082,7 +1093,7 @@ If no further element at same level, go one level up."
 
 If inside a delimited form --string or list-- go to its beginning.
 If not at beginning of a statement or block, go to its beginning.
-If at beginning of a statement or block, go to previous beginning of compound statement or definition at point.
+If at beginning of a statement or block, go to previous beginning.
 If no further element at same level, go one level up."
   (interactive)
   (let (erg)
@@ -1222,7 +1233,7 @@ lines relative.
 Otherwise lines in region get outmost indent,
 same with optional argument
 
-In order to shift a chunk of code, where the first line is okay, start with second line.
+In order to shift a chunk of code, start with second line.
 
 Optional BEG: used by tests
 Optional END: used by tests

@@ -33,7 +33,9 @@
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline."
   (interactive "*")
   (py--close-intern 'py-block-re))
 
@@ -42,7 +44,9 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline."
   (interactive "*")
   (py--close-intern 'py-class-re))
 
@@ -51,7 +55,9 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline."
   (interactive "*")
   (py--close-intern 'py-clause-re))
 
@@ -60,7 +66,9 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline."
   (interactive "*")
   (py--close-intern 'py-block-or-clause-re))
 
@@ -69,7 +77,9 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline."
   (interactive "*")
   (py--close-intern 'py-def-re))
 
@@ -78,7 +88,9 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline."
   (interactive "*")
   (py--close-intern 'py-def-or-class-re))
 
@@ -87,7 +99,9 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline."
   (interactive "*")
   (py--close-intern 'py-minor-block-re))
 
@@ -96,7 +110,9 @@ If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, ins
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty and ‘py-close-block-provides-newline’ non-nil, insert a newline."
+If final line isn't empty
+and ‘py-close-block-provides-newline’ non-nil,
+insert a newline."
   (interactive "*")
   (py--close-intern 'py-statement-re))
 

@@ -22,11 +22,11 @@
 ;;; Code:
 
 (defun py-indent-forward-line (&optional arg)
-  "Indent and move one line forward to next indentation.
+  "Indent and move line forward to next indentation.
 Returns column of line reached.
 
 If `py-kill-empty-line' is non-nil, delete an empty line.
-When closing a form, use py-close-block et al, which will move and indent likewise.
+
 With \\[universal argument] just indent.
 "
   (interactive "*P")
@@ -279,7 +279,7 @@ Matches lists, but also block, statement, string and comment. "
     (insert "pdb.set_trace()")))
 
 (defun py-printform-insert (&optional arg strg)
-  "Inserts a print statement out of current `(car kill-ring)' by default, inserts STRING if delivered.
+  "Inserts a print statement from `(car kill-ring)'.
 
 With optional \\[universal-argument] print as string"
   (interactive "*P")

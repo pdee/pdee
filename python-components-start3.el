@@ -245,10 +245,12 @@ Unless DIRECTION is symbol 'forward, go backward first"
   "Highlight exceptions found in BUF.
 
 Optional ORIGLINE EXCEPTION-BUFFER
-If an exception occurred return error-string, otherwise return nil.
+If an exception occurred return error-string,
+otherwise return nil.
 BUF must exist.
 
-Indicate LINE if code wasn't run from a file, thus remember line of source buffer"
+Indicate LINE if code wasn't run from a file,
+thus remember line of source buffer"
   (save-excursion
     (with-current-buffer output-buffer
       (let* (estring ecode erg)
@@ -392,7 +394,8 @@ Optional FAST RETURN"
     )))
 
 (defun py--execute-base (&optional start end shell filename proc wholebuf fast dedicated split switch)
-  "Update optional variables START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
+  "Update optional variables.
+START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
   (setq py-error nil)
   (when py-debug-p (message "py--execute-base: (current-buffer): %s" (current-buffer)))
   ;; (when (or fast py-fast-process-p) (ignore-errors (py-kill-buffer-unconditional py-output-buffer)))

@@ -27,11 +27,6 @@
 
 ;;; Code:
 
-(defun py-forward-region ()
-  "Go to the end of current region."
-  (interactive)
-  (let ((end (region-end)))
-    (when end (goto-char end))))
 
 (defun py-forward-assignment (&optional orig bol)
   "Go to end of assignment.
@@ -46,9 +41,15 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘assignment’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-assignment’: down from current definition to next beginning of ‘assignment’ below."
+See also ‘py-down-assignment’."
   (interactive)
   (py-forward-assignment nil t))
+
+(defun py-forward-region ()
+  "Go to the end of current region."
+  (interactive)
+  (let ((end (region-end)))
+    (when end (goto-char end))))
 
 (defun py-forward-block (&optional orig bol)
   "Go to end of block.
@@ -63,7 +64,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-block’: down from current definition to next beginning of ‘block’ below."
+See also ‘py-down-block’."
   (interactive)
   (py-forward-block nil t))
 
@@ -80,7 +81,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘block-or-clause’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-block-or-clause’: down from current definition to next beginning of ‘block-or-clause’ below."
+See also ‘py-down-block-or-clause’."
   (interactive)
   (py-forward-block-or-clause nil t))
 
@@ -98,7 +99,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘class’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-class’: down from current definition to next beginning of ‘class’ below."
+See also ‘py-down-class’."
   (interactive)
   (py-forward-class nil t))
 
@@ -115,7 +116,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘clause’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-clause’: down from current definition to next beginning of ‘clause’ below."
+See also ‘py-down-clause’."
   (interactive)
   (py-forward-clause nil t))
 
@@ -133,7 +134,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘def’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-def’: down from current definition to next beginning of ‘def’ below."
+See also ‘py-down-def’."
   (interactive)
   (py-forward-def nil t))
 
@@ -151,7 +152,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘def-or-class’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-def-or-class’: down from current definition to next beginning of ‘def-or-class’ below."
+See also ‘py-down-def-or-class’."
   (interactive)
   (py-forward-def-or-class nil t))
 
@@ -168,7 +169,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘elif-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-elif-block’: down from current definition to next beginning of ‘elif-block’ below."
+See also ‘py-down-elif-block’."
   (interactive)
   (py-forward-elif-block nil t))
 
@@ -185,7 +186,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘else-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-else-block’: down from current definition to next beginning of ‘else-block’ below."
+See also ‘py-down-else-block’."
   (interactive)
   (py-forward-else-block nil t))
 
@@ -202,7 +203,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘except-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-except-block’: down from current definition to next beginning of ‘except-block’ below."
+See also ‘py-down-except-block’."
   (interactive)
   (py-forward-except-block nil t))
 
@@ -219,7 +220,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘for-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-for-block’: down from current definition to next beginning of ‘for-block’ below."
+See also ‘py-down-for-block’."
   (interactive)
   (py-forward-for-block nil t))
 
@@ -236,7 +237,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘if-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-if-block’: down from current definition to next beginning of ‘if-block’ below."
+See also ‘py-down-if-block’."
   (interactive)
   (py-forward-if-block nil t))
 
@@ -253,7 +254,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘minor-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-minor-block’: down from current definition to next beginning of ‘minor-block’ below."
+See also ‘py-down-minor-block’."
   (interactive)
   (py-forward-minor-block nil t))
 
@@ -270,7 +271,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘try-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘py-down-try-block’: down from current definition to next beginning of ‘try-block’ below."
+See also ‘py-down-try-block’."
   (interactive)
   (py-forward-try-block nil t))
 

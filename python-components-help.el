@@ -590,7 +590,8 @@ Imports done are displayed in message buffer."
 ;;  pep8
 (defalias 'pep8 'py-pep8-run)
 (defun py-pep8-run (command)
-  "*Run pep8 using COMMAND, check formatting - default on the file currently visited."
+  "*Run pep8 using COMMAND, check formatting.
+Default on the file currently visited."
   (interactive
    (let ((default
            (if (py--buffer-filename-remote-maybe)
@@ -635,7 +636,9 @@ Imports done are displayed in message buffer."
 ;;  Pylint
 (defalias 'pylint 'py-pylint-run)
 (defun py-pylint-run (command)
-  "Run pylint from COMMAND (default on the file currently visited).
+  "Run pylint from COMMAND.
+
+Default on the file currently visited.
 
 For help see \\[pylint-help] resp. \\[pylint-long-help].
 Home-page: http://www.logilab.org/project/pylint"
@@ -679,7 +682,9 @@ Calls ‘pylint --full-documentation’"
 ;;  Pyflakes
 (defalias 'pyflakes 'py-pyflakes-run)
 (defun py-pyflakes-run (command)
-  "*Run pyflakes on COMMAND (default on the file currently visited).
+  "*Run pyflakes on COMMAND.
+
+Default on the file currently visited.
 
 For help see \\[pyflakes-help] resp. \\[pyflakes-long-help].
 Home-page: http://www.logilab.org/project/pyflakes"
@@ -719,9 +724,7 @@ Home-page: http://www.logilab.org/project/pyflakes"
 
 (defalias 'pyflakes-help 'py-pyflakes-help)
 (defun py-pyflakes-help ()
-  "Display Pyflakes command line help messages.
-
-Let's have this until more Emacs-like help is prepared"
+  "Display Pyflakes command line help messages."
   (interactive)
   ;; (set-buffer (get-buffer-create "*Pyflakes-Help*"))
   ;; (erase-buffer)
@@ -756,7 +759,9 @@ Extracted from http://manpages.ubuntu.com/manpages/natty/man1/pyflakes.1.html"))
 ;;  Pyflakes-pep8
 (defalias 'pyflakespep8 'py-pyflakespep8-run)
 (defun py-pyflakespep8-run (command)
-  "*Run COMMAND pyflakespep8, check formatting (default on the file currently visited)."
+  "*Run COMMAND pyflakespep8, check formatting.
+
+Default on the file currently visited."
   (interactive
    (let ((default
            (if (py--buffer-filename-remote-maybe)

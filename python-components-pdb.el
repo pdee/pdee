@@ -104,7 +104,9 @@ Otherwise return resuslt from `executable-find'"
       (executable-find "pdb")))
 
 (defun py-update-gud-pdb-history ()
-  "If pdb is called at a Python buffer, put it's file name at the head of `gud-pdb-history'."
+  "Put pdb file name at the head of `gud-pdb-history'.
+
+If pdb is called at a Python buffer."
   (interactive)
   (let* (;; PATH/TO/pdb
 	 (first (cond ((and gud-pdb-history (ignore-errors (car gud-pdb-history)))

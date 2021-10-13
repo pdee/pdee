@@ -413,7 +413,9 @@ See also ‘py--bounds-of-statements’"
         nil))))
 
 (defun py-backward-declarations ()
-  "Got to the beginning of assigments resp. statements in current level which don't open blocks."
+  "Got to the beginning of assigments resp. statements.
+
+Move in current level which don't open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (erg (car bounds)))
@@ -421,7 +423,9 @@ See also ‘py--bounds-of-statements’"
     erg))
 
 (defun py-forward-declarations ()
-  "Got to the end of assigments resp. statements in current level which don't open blocks."
+  "Got to the end of assigments resp. statements.
+
+Move in current level which don't open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (erg (cdr bounds)))
@@ -429,9 +433,11 @@ See also ‘py--bounds-of-statements’"
     erg))
 
 (defun py-declarations ()
-  "Forms in current level,which don't open blocks or start with a keyword.
+  "Forms in current level.
 
-See also `py-statements', which is more general, taking also simple statements starting with a keyword."
+Forms don't open blocks or start with a keyword.
+
+See also `py-statements'."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (beg (car bounds))
@@ -518,9 +524,11 @@ Indented same level, which don't open blocks."
     erg))
 
 (defun py-statements ()
-  "Copy and mark simple statements in current level which don't open blocks.
+  "Copy and mark simple statements level.
 
-More general than ‘py-declarations’, which would stop at keywords like a print-statement."
+These statements don't open blocks.
+
+More general than ‘py-declarations’."
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))

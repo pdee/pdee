@@ -28,16 +28,7 @@
 ;;; Code:
 
 (defun py-edit-abbrevs ()
-  "Jumps to `python-mode-abbrev-table' in a buffer containing lists of abbrev definitions.
-You can edit them and type \\<edit-abbrevs-map>\\[edit-abbrevs-redefine] to redefine abbrevs
-according to your editing.
-Buffer contains a header line for each abbrev table,
- which is the abbrev table name in parentheses.
-This is followed by one line per abbrev in that table:
-NAME   USECOUNT   EXPANSION   HOOK
-where NAME and EXPANSION are strings with quotes,
-USECOUNT is an integer, and HOOK is any valid function
-or may be omitted (it is usually omitted).  "
+  "Jumps to `python-mode-abbrev-table'."
   (interactive)
   (save-excursion
     (let ((mat (abbrev-table-name local-abbrev-table)))
@@ -72,14 +63,7 @@ or may be omitted (it is usually omitted).  "
         (define-abbrev table (downcase name) exp)))))
 
 (defun py-add-abbrev (arg)
-  "Defines python-mode specific abbrev for last expressions before point.
-Argument is how many `py-partial-expression's form the expansion; or zero means the region is the expansion.
-
-Reads the abbreviation in the minibuffer; with numeric arg it displays a proposal for an abbrev.
-Proposal is composed from the initial character(s) of the
-expansion.
-
-Don't use this function in a Lisp program; use `define-abbrev' instead."
+  "Defines python-mode specific abbrev."
   (interactive "p")
   (save-excursion
     (py--add-abbrev-propose
