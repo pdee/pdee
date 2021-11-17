@@ -300,7 +300,7 @@ LIEP stores line-end-position at point-of-interest
 			;; ((and (looking-at py-elif-re) (eq (py-count-lines) origline))
 			;; (when (py--line-backward-maybe) (setq line t))
 			;; (car (py--clause-lookup-keyword py-elif-re -1 nil origline)))
-			((and (looking-at py-clause-re) (not line)
+			((and (looking-at py-minor-clause-re) (not line)
                               (eq liep (line-end-position)))
 			 (cond ((looking-at py-outdent-re)
 				;; (and (py--backward-regexp 'py-block-or-clause-re) (current-indentation)))

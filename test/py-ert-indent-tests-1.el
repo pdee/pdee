@@ -985,5 +985,16 @@ import os"
     (search-backward "print")
     (should (eq 4  (py-compute-indentation)))))
 
+(ert-deftest py-incorrect-indentation-for-functions-bug113-i1nySM ()
+  (py-test-with-temp-buffer
+      "def draw(
+    handlecolor=\"blue\",
+    handleline=\"blue\"
+):
+foo"
+    (goto-char (point-max))
+    (beginning-of-line) 
+    (should (eq 4  (py-compute-indentation)))))
+
 (provide 'py-ert-indent-tests-1)
 ;;; py-ert-indent-tests-1.el ends here

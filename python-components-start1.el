@@ -2982,7 +2982,8 @@ Second group grabs the name")
    "while"
    "with"
    "match"
-   "case")
+   "case"
+   )
   "Matches the beginning of a compound statement or it's clause."
   :type '(repeat string)
   :tag "py-extended-block-or-clause-re-raw"
@@ -2992,7 +2993,7 @@ Second group grabs the name")
   (concat
    "[ \t]*"
    (regexp-opt  py-extended-block-or-clause-re-raw 'symbols)
-   "[( \t]*.*:")
+   "[( \t:]+")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
 
 (defun py--arglist-indent (nesting &optional indent-offset)
@@ -3783,7 +3784,9 @@ Return and move to match-beginning if successful"
 		  ;; # class kugel(object) -> a[1:2]:
 		  ;; class kugel(object):
 		  ;; (re-search-backward regexpvalue nil 'move 1)
-		  (re-search-backward (concat "^ \\{0,"(format "%s" indent) "\\}"regexpvalue) nil 'move 1)
+		  ;; (re-search-backward (concat "^ \\{0,"(format "%s" indent) "\\}"regexpvalue) nil 'move 1)
+		  (re-search-backward regexpvalue nil 'move 1)
+		  ;; (re-search-backward (concat "^" "def") nil 'move 1)
 		  ;; re-search-backward not greedy
 		  (not (and (looking-back "async *" (line-beginning-position))
 			    (goto-char (match-beginning 0))))

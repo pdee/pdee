@@ -23,11 +23,10 @@
 # This script tests functions from python-mode.el.
 
 # Code:
-EMACS25=$HOME/emacs-25.3/src/emacs-25.3.1
-#  emacs26=~$HOME/emacs-20180529/src/emacs-27.0.50.1
-EMACS26=emacs
-EMACS27=$HOME/emacs-27.2/src/emacs-27.2.1
-EMACS28=$HOME/emacs-20210812/src/emacs-28.0.50.1
+# EMACS26=emacs
+# EMACS27=$HOME/emacs-27.2/src/emacs-27.2.1
+# EMACS28=$HOME/emacs-28/src/emacs-28.0.60.1
+# EMACS29=$HOME/emacs-20211014/src/emacs-29.0.50.1
 # system Emacs
 EMACS=emacs
 
@@ -552,8 +551,36 @@ hier28() {
 -f ert-run-tests-batch-and-exit
 }
 
+hier29() {
+    date; time -p $EMACS29 -Q -L . --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
+-l $TEST1 \
+-l $TEST2 \
+-l $TEST3 \
+-l $TEST4 \
+-l $TEST5 \
+-l $TEST6 \
+-l $TEST7 \
+-l $TEST8 \
+-l $TEST9 \
+-l $TEST10 \
+-l $TEST11 \
+-l $TEST12 \
+-l $TEST13 \
+-l $TEST14 \
+-l $TEST16 \
+-l $TEST19 \
+-l $TEST20 \
+-f ert-run-tests-batch-and-exit
+}
+
 if [ $WERKSTATT -eq 0 ]; then
-    while getopts 123456789abcdefghijkmpqrstuvx option
+    while getopts 123456789abcdefghijklmpqrstuvx option
     do
         case $option in
 	    1) echo "Lade \$TEST1: \"$TEST1\"";h1;;
@@ -576,7 +603,8 @@ if [ $WERKSTATT -eq 0 ]; then
 	    i) echo "Lade \$TEST10: \"$TEST10\"";h10;;
 	    j) echo "Lade \$TEST11: \"$TEST11\"";h11;;
 	    k) echo "Lade \$TEST12: \"$TEST12\"";h12;;
-	    m) echo "Lade \$TEST12: \"$TEST12\"";hier28;;
+	    l) echo "Running Emacs29 python-tests.el";hier29;;
+	    m) echo "Running Emacs28 python-tests.el";hier28;;
 	    p) echo "Lade \$TEST13: \"$TEST13\"";h13;;
 	    q) echo "Lade \$TEST14: \"$TEST14\"";h14;;
 	    r) echo "Lade \$TEST15: \"$TEST15\"";h15;;

@@ -96,21 +96,35 @@ x = {'abc':'def',
 ;;     (should (eq 46 (mark)))))
 
 (ert-deftest py-dedicated-shell-test-7tw0PH ()
-  (let ((erg (buffer-name (py-shell nil nil t "python"))))
-    (should (< 8 (length erg)))
-    (should (eq 0 (string-match "^*Python" erg)))))
+  (if (not (executable-find "python"))
+      (message "py-dedicated-shell-test-7tw0PH: %s" "No python executable found!")
+    (let ((erg (buffer-name (py-shell nil nil t "python"))))
+      (should (< 8 (length erg)))
+      (should (eq 0 (string-match "^*Python" erg))))))
+
+(ert-deftest py-dedicated-shell-test-HViYH5 ()
+  (if (not (executable-find "python3"))
+      (message "py-dedicated-shell-test-HViYH5: %s" "No python3 executable found!")
+    (let ((erg (buffer-name (py-shell nil nil t "python3"))))
+      (should (< 8 (length erg)))
+      (should (eq 0 (string-match "^*Python3" erg))))))
 
 (ert-deftest py-python-shell-test-Ms1Z0k ()
   ""
-  (let ((erg (python)))
-    (should (bufferp (get-buffer erg)))
-    (should (get-buffer-process erg))))
+  (if (not (executable-find "python"))
+      (message "py-python-shell-test-Ms1Z0k: %s" "No python executable found!")
+    (let ((erg (python)))
+      (should (bufferp (get-buffer erg)))
+      (should (get-buffer-process erg)))))
 
 (ert-deftest py-python2-shell-test-8Ostfe ()
   ""
-  (let ((erg (python2)))
-    (should (bufferp (get-buffer erg)))
-    (should (get-buffer-process erg))))
+  (if (not (executable-find "python2"))
+      (message "py-python2-shell-test-8Ostfe: %s" "No python executable found!")
+
+    (let ((erg (python2)))
+      (should (bufferp (get-buffer erg)))
+      (should (get-buffer-process erg)))))
 
 (ert-deftest py-python3-shell-test-YW7ToN ()
   ""
@@ -129,24 +143,30 @@ x = {'abc':'def',
       (should (eq (window-height) full-height)))))
 
 (ert-deftest py-shell-python-lp-1398530-test-Haizw1 ()
-  (when (buffer-live-p (get-buffer "*Python*"))(py-kill-buffer-unconditional "*Python*"))
-  (py-test-with-temp-buffer
-      ""
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (let ((py-shell-name "python"))
-      (py-shell)
-      (sit-for 0.1 t)
-      (should (buffer-live-p (get-buffer "*Python*"))))))
+  (if (not (executable-find "python"))
+      (message "py-shell-python-lp-1398530-test-Haizw1: %s" "No python executable found!")
+    (when (buffer-live-p (get-buffer "*Python*"))
+      (py-kill-buffer-unconditional "*Python*"))
+    (py-test-with-temp-buffer
+	""
+      (when py-debug-p (switch-to-buffer (current-buffer)))
+      (let ((py-shell-name "python"))
+	(py-shell)
+	(sit-for 0.1 t)
+	(should (buffer-live-p (get-buffer "*Python*")))))))
 
 (ert-deftest py-shell-python3-lp-1398530-test-gm7LwH ()
-  (when (buffer-live-p (get-buffer "*Python3*"))(py-kill-buffer-unconditional "*Python3*"))
-  (py-test-with-temp-buffer
-      ""
-    (goto-char (point-max))
-    (let ((py-shell-name "python3"))
-      (py-shell)
-      (sit-for 0.1 t)
-      (should (buffer-live-p (get-buffer "*Python3*"))))))
+  (if (not (executable-find "python3"))
+      (message "py-shell-python3-lp-1398530-test-gm7LwH: %s" "No python3 executable found!")
+    (when (buffer-live-p (get-buffer "*Python3*"))
+      (py-kill-buffer-unconditional "*Python3*"))
+    (py-test-with-temp-buffer
+	""
+      (goto-char (point-max))
+      (let ((py-shell-name "python3"))
+	(py-shell)
+	(sit-for 0.1 t)
+	(should (buffer-live-p (get-buffer "*Python3*")))))))
 
 (ert-deftest py-shell-python2-lp-1398530-test-TaiABe ()
   (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "*Python2*"))
@@ -435,7 +455,7 @@ import os"
   (let ((buffer (py-shell nil nil t)))
   (should (buffer-live-p buffer))))
 
-(ert-deftest py-shell-fontify-test-t3Sizn ()
+(ert-deftest py-shell-test-t3Sizn ()
   (let ((buffer (py-shell nil nil t)))
     (with-current-buffer buffer
       (switch-to-buffer (current-buffer))
