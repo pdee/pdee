@@ -1,6 +1,6 @@
 ;;; python-components-start1.el --- Edit, debug, develop, run Python programs. -*- lexical-binding: t; -*-
 
-;; Version: 6.3.0
+;; Version: 6.3.1
 
 ;; Keywords: languages, processes, python, oop
 
@@ -90,7 +90,7 @@
   :group 'languages
   :prefix "py-")
 
-(defconst py-version "6.2.3")
+(defconst py-version "6.3.1")
 
 (defvar py-install-directory nil
   "Make sure it exists.")
