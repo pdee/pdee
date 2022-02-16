@@ -1,80 +1,74 @@
-PDEE [![Build Status](https://travis-ci.com/pdee/pdee.svg?branch=master)](https://travis-ci.com/pdee/pdee)
 [![MELPA](https://melpa.org/packages/python-mode-badge.svg)](https://melpa.org/#/python-mode)
-===
 
 Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
 
 
-# Initialize
-  Put the following into your initialization file:
+* Initialize
+  Make sure the directory, where python-mode.el resides, is in load-path
+  For expample put something like that in your init-file: 
+
+  (add-to-list 'load-path "PATH/TO/PYTHON-MODE")
+  (require 'python-mode)
+
+  or probably still better: 
 
   (setq py-install-directory "PATH/TO/PYTHON-MODE/")
   (add-to-list 'load-path py-install-directory)
   (require 'python-mode)
 
-# Selecting a Python shell:
+* Selecting a Python shell:
 
   Customize default Python shell as `py-shell-name'
 
   `py-shell-name' might be an installed default executable as shell
   command `type' would display, but also a PATH/TO/EXECUTABLE
 
-  If different flavours of Python are installed, customize
-  py-python-command - python2
-  py-python3-command
-  py-ipython-command
+  If different flavours of Python are installed, in order to adress
+  them customize var ‘py-known-shells’ and reload. python-mode will
+  create the required commands according to contents of this list.
+
+  Depending from your instell the var py-known-shells might show contents like that:
+  ("ipython" "ipython2.7" "ipython3" "jython" "python" "python2" "python3" "pypy")
+
+  If needed, customize respective arguments
+  py-SHELL-command-args,  i.e.
 
   py-python-command-args
   py-python3-command-args
   py-ipython-command-args
 
-  You might run code by another installed (I)Python-version than
-  default.
+  etc.
 
-  Normally this would happen if a shebang in buffer specifies it.
-  Shebang precedes default py-shell-name.
-
-  In case you will run code by default-shell, ignoring shebang, set
-  `py-force-py-shell-name-p' to. This might be done also via menu
-  Python/.../Switches
-
-  Another way to enforce a different shell is specifiyng a path
-  --interactively C-u prompts for that-- or using commands which end in
-  version like `py-execute-statement-python3' See menu
-  Python/Interpreter/Other/Ignoring Defaults
-
-# Invoking an (I)Python interactive shell
   Commands related to a specific shell start with
-  it's name as `ipython-complete'.
-  Open an installed shell by
 
   M-x SHELL RET
 
   This calls py-shell with its default arguments
+  With C-u, shell will get an unique name.
 
-  (py-shell &optional ARGPROMPT DEDICATED SHELL BUFFER-NAME FAST-PROCESS
-EXCEPTION-BUFFER)
+  According to contents of ‘py-known-shells’ commands might be
+  available like this:
 
-  if DEDICATED is set to `t', shell will get an unique name.
+  M-x py-shell RET ==> "*Python*"
+  M-x python RET ==> "*Python*"
+  M-x ipython RET ==> "*IPython*"
+  M-x python3 RET ==> "*Python3*"
 
-  Install a local shell by evaluating
+  etc.
+
+  A shebang precedes default py-shell-name.
+  In case you will run code by default-shell, ignoring shebang, set
+  `py-force-py-shell-name-p' to. This might be done also via menu
+  Python/.../Switches
+
+  Run a local shell by evaluating
 
   (defun MY-LOCAL-SHELL ()
   (interactive)
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
 
-#*  Invoking versioned Python shells in interactive mode:
-
-    M-x py-shell RET ==> "*Python*"
-    M-x python RET ==> "*Python*"
-    M-x ipython RET ==> "*IPython*"
-    M-x python3 RET ==> "*Python3*"
-
-    When Path/To/Executable is given
-    C-u python RET ==> "*PTE Python*"
-
-# Prefix conventions
+* Prefix conventions
 
   Most python-mode.el commands start with prefix `py-'
 
@@ -85,38 +79,38 @@ EXCEPTION-BUFFER)
   List virtualenv related `M-x virtualenv- TAB'
   resp. Pymacs commands `M-x pymacs-'
 
-# Execution code
+* Execution code
   Python code might be processed by an
 
 - interactive Python shell (DEFAULT)
 - non-interactive Python (`py-fast-process-p')
   The latter, while design for large output, seems more reliable - see  also PROBLEMS.org.
 
-Both processes might run in
+Both processes might run in 
 - session, i.e. start from possible previous state (DEFAULT)
 - dedicated, (`py-dedicated-process-p') run in separate process
 
 There is also
 - python-mode-v5-behavior
 
-# Checks
+* Checks
   Access is provided to a couple of known checkers like Flake8, pep8, pylint
   Need to be installed for example calling "pip install pep8" from a shell command-line
   Get flycheck from https://www.flycheck.org
 
-# Displaying Output
+* Displaying Output
 
   `py-execute-...'-commands arrive in buffer created by
   `py-shell'. It's name is composed WRT to Python
-  version used, it's path etc.
+  version used, it's path etc. 
 
   Result of commands ending  "-fast"
   arrives in `py-fast-output-buffer'
-
-# Window management
+  
+* Window management
   Variables in question:
 
-  ** py-keep-windows-configuration
+  ** py-keep-windows-configuration 
 
   Default is nil.
   When non-nil, it takes precedence over
@@ -144,7 +138,7 @@ There is also
   Put focus into the output buffer: this will display buffer in any
   case
 
-# Completion
+* Completion
   At the end of a word TAB by default calls completion.
 
   Auto-completion should be available via
@@ -167,15 +161,16 @@ There is also
 
   Extern tools like jedi-server/mode should work too.
 
-# Moving
+
+* Moving
 
   Beside common moves like `defun', `statement', block
   called via py-end-of-..., py-beginning-...
   specific Python-mode edits are delivered:
 
-  `py-expression' and `py-partial-expression'.
+  `py-expression' and `py-partial-expression'. 
 
-  Statement below is considered composed of two `py-expression'
+  Statement below is considered composed of two `py-expression' 
 
   a = ['spam', 'eggs', 100, 1234]
   ||  |_________________________|
@@ -192,11 +187,12 @@ There is also
   all levels encountered, i.e. at opening `[' `py-expression' would return ['spam', 'eggs', 100, 1234], while one char behind at `''
   it yields `'spam','
 
-- py-sexp-function,
+- py-sexp-function, 
   When set, it's value is called instead of `forward-sexp', `backward-sexp
   Choices are py-partial-expression, py-expression, default nil
 
-# Filling
+
+* Filling
   Customize boolean `py-set-fill-column-p'
 
   If `t', enables use Python specific `fill-column' according to
@@ -209,7 +205,7 @@ There is also
   any non-integer value, which means: do not use a
   different value of `fill-column' than emacs-wide
 
-# Python and IPython
+* Python and IPython
 
   Start IPython shell after loading python-mode via M-x
   ipython, not from plain shell.
@@ -218,7 +214,12 @@ There is also
   regular Python, also getting completions from. However,
   with IPython, it feels a demi-second slower.
 
-# Troubleshooting
+* Session mode
+  Py-shell runs in session mode by default. Not to run in session
+  mode, customize ‘py-session-p’ to nil. Or for current session call
+  ‘py-toggle-session-p’. 
+
+* Troubleshooting
 
   Start with Emacs -Q from the directory where python-mode.el lives.
   Open python-mode.el and evaluate it.
@@ -257,7 +258,7 @@ There is also
   qualify the script file, since otherwise it complains it can't find
   the file).
 
-# Testing
+* Testing
 
   File ‘run-travis-ci.sh’ runs tests in batch-mode locally and remote.
   If the shell-variable WERKSTATT is set to 0, local run is assumed.

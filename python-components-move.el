@@ -103,21 +103,19 @@ Travel this INDENT forward"
   "Go to the end of a section of equal indentation.
 
 If already at the end, go down to next indent in buffer
-Returns final position when called from inside section, nil otherwise"
+Returns final position when moved, nil otherwise"
   (interactive)
   (let (done
-	(last (point))
-	(orig (point))
-	(indent (current-indentation)))
-    (while (and (not (eobp)) (not done) (progn (forward-line 1) (back-to-indentation) (or (py-empty-line-p) (and (<= indent (current-indentation))(< last (point))(setq last (point)))(setq done t))))
-      (and (< indent (current-indentation))(setq done t)))
-    (if (and last (< orig last))
-	(progn (goto-char last)
-	       (end-of-line)
-	       (skip-chars-backward " \t\r\n\f"))
-      (skip-chars-forward " \t\r\n\f")
-      (end-of-line)
-      (skip-chars-backward " \t\r\n\f"))
+	(orig (line-beginning-position))
+	(indent (current-indentation))
+	(last (progn (back-to-indentation) (point))))
+    (while (and (not (eobp)) (not done)
+		(progn (forward-line 1) (back-to-indentation) (or (py-empty-line-p) (and (<= indent (current-indentation))(< last (point))))))
+      (unless (py-empty-line-p) (skip-chars-forward " \t\r\n\f")(setq last (point)))
+      (and (not (py-empty-line-p))(< (current-indentation) indent)(setq done t)))
+    (goto-char last)
+    (end-of-line)
+    (skip-chars-backward " \t\r\n\f")
     (and (< orig (point))(point))))
 
 (defun py-forward-indent-bol ()
@@ -128,10 +126,11 @@ Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (eobp)
     (let (erg indent)
-      (when (py-forward-statement)
-      	(save-excursion
-      	  (setq indent (and (py-backward-statement)(current-indentation))))
-	(setq erg (py--travel-this-indent-forward indent))
+      ;; (when (py-forward-statement)
+      (when (py-forward-indent)
+	;; (save-excursion
+      	;; (setq indent (and (py-backward-statement)(current-indentation))))
+	;; (setq erg (py--travel-this-indent-forward indent))
 	(unless (eobp) (forward-line 1) (beginning-of-line) (setq erg (point))))
       erg)))
 

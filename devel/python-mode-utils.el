@@ -2713,7 +2713,7 @@ insert a newline.\"
 	(insert (concat "\n  (let ((py-mark-decorators (or arg py-mark-decorators)))
     (py--mark-base \"" ele "\" py-mark-decorators)"))
       (insert "\n  (py--mark-base \"" ele "\")"))
-    (insert "\n  (exchange-point-and-mark))")
+    (insert "\n  (exchange-point-and-mark)\n  (cons (region-beginning) (region-end)))")
     (newline))
   (dolist (ele py-bol-forms)
     (unless (string= ele "section")
@@ -2737,7 +2737,7 @@ insert a newline.\"
 	  (insert (concat "\n  (let ((py-mark-decorators (or arg py-mark-decorators)))
     (py--mark-base-bol \"" ele "\" py-mark-decorators))"))
 	(insert "\n  (py--mark-base-bol \"" ele "\")"))
-      (insert "\n  (exchange-point-and-mark))\n")
+      (insert "\n  (exchange-point-and-mark)\n  (cons (region-beginning) (region-end)))")
       ))
 
   (insert "\n(provide 'python-components-mark-forms)
