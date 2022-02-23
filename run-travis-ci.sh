@@ -28,7 +28,12 @@
 # EMACS28=$HOME/emacs-28/src/emacs-28.0.60.1
 # EMACS29=$HOME/emacs-20211014/src/emacs-29.0.50.1
 # system Emacs
-EMACS=emacs
+EMACS=$HOME/emacs-28/src/emacs-28.0.60.1
+
+#  [ $EMACS ] || echo \$EMACS not set
+
+echo "\$EMACS: $EMACS"
+[ -x $EMACS ] && echo "\$EMACS: $EMACS"
 
 ARSUBR=~/werkstatt/thingatpt-utils-core/ar-subr.el
 PYTHON=~/emacs-20180529/lisp/progmodes/python.el
@@ -525,6 +530,34 @@ hier27() {
 
 hier28() {
     date; time -p $EMACS28 -Q -L . --batch \
+-load $PYTHONMODE \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-l $TEST1 \
+-l $TEST2 \
+-l $TEST3 \
+-l $TEST4 \
+-l $TEST5 \
+-l $TEST6 \
+-l $TEST7 \
+-l $TEST8 \
+-l $TEST9 \
+-l $TEST10 \
+-l $TEST11 \
+-l $TEST12 \
+-l $TEST13 \
+-l $TEST14 \
+-l $TEST16 \
+-l $TEST19 \
+-l $TEST20 \
+-f ert-run-tests-batch-and-exit
+}
+
+hier28a() {
+    date; time -p $EMACS28 -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
@@ -541,6 +574,17 @@ hier28() {
 -l $TEST8 \
 -l $TEST9 \
 -l $TEST10 \
+-f ert-run-tests-batch-and-exit
+}
+
+hier28b() {
+    date; time -p $EMACS28 -Q -L . --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
 -l $TEST11 \
 -l $TEST12 \
 -l $TEST13 \
@@ -583,37 +627,39 @@ if [ $WERKSTATT -eq 0 ]; then
     while getopts 123456789abcdefghijklmpqrstuvx option
     do
         case $option in
-	    1) echo "Lade \$TEST1: \"$TEST1\"";h1;;
-	    2) echo "Lade \$TEST2: \"$TEST2\"";h2;;
-	    3) echo "Lade \$TEST3: \"$TEST3\"";h3;;
-	    4) echo "Lade \$TEST4: \"$TEST4\"";h4;;
-	    5) echo "Lade \$TEST5: \"$TEST5\"";h5;;
-	    6) echo "Lade \$TEST6: \"$TEST6\"";h6;;
-	    7) echo "Lade \$TEST7: \"$TEST7\"";h7;;
-	    8) echo "Lade \$TEST8: \"$TEST8\"";h8;;
-	    9) echo "Lade \$TEST9: \"$TEST9\"";h9;;
-	    a) echo "Lade erst"; erst;;
-	    b) echo "Lade zweit"; zweit;;
-	    c) echo "Running python-tests.el";h17;;
-	    d) echo "Running python-tests.el";hier25;;
-	    e) echo "Lade testumgebung \"ENTFERNT\""; entfernt;;
-	    f) echo "Running python-tests.el";hier26;;
-	    g) echo "Running python-tests.el";hier27;;
-            h) echo "Lade testumgebung \"HIER1\"";hier;;
-	    i) echo "Lade \$TEST10: \"$TEST10\"";h10;;
-	    j) echo "Lade \$TEST11: \"$TEST11\"";h11;;
-	    k) echo "Lade \$TEST12: \"$TEST12\"";h12;;
-	    l) echo "Running Emacs29 python-tests.el";hier29;;
-	    m) echo "Running Emacs28 python-tests.el";hier28;;
-	    p) echo "Lade \$TEST13: \"$TEST13\"";h13;;
-	    q) echo "Lade \$TEST14: \"$TEST14\"";h14;;
-	    r) echo "Lade \$TEST15: \"$TEST15\"";h15;;
-	    s) echo "Lade \$TEST16: \"$TEST16\"";h16;;
+	    1) echo "h1: Lade \$TEST1: \"$TEST1\"";h1;;
+	    2) echo "h2: Lade \$TEST2: \"$TEST2\"";h2;;
+	    3) echo "h3: Lade \$TEST3: \"$TEST3\"";h3;;
+	    4) echo "h4: Lade \$TEST4: \"$TEST4\"";h4;;
+	    5) echo "h5: Lade \$TEST5: \"$TEST5\"";h5;;
+	    6) echo "h6: Lade \$TEST6: \"$TEST6\"";h6;;
+	    7) echo "h7: Lade \$TEST7: \"$TEST7\"";h7;;
+	    8) echo "h8: Lade \$TEST8: \"$TEST8\"";h8;;
+	    9) echo "h9: Lade \$TEST9: \"$TEST9\"";h9;;
+	    a) echo "h10: Lade \$TEST10: \"$TEST10\"";h10;;
+	    b) echo "h11: Lade \$TEST11: \"$TEST11\"";h11;;
+	    c) echo "h12: Lade \$TEST12: \"$TEST12\"";h12;;
+	    d) echo "h13: Lade \$TEST13: \"$TEST13\"";h13;;
+	    e) echo "h14: Lade \$TEST14: \"$TEST14\"";h14;;
+	    f) echo "h15: Lade \$TEST15: \"$TEST15\"";h15;;
+	    g) echo "h16: Lade \$TEST16: \"$TEST16\"";h16;;
+            h) echo "h17: Running python-tests.el";h17;;
+	    i) ;;
+	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
+	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
+	    l) echo "hier29: Running Emacs29 python-tests.el";hier29;;
+	    m) echo "hier28: Running Emacs28 python-tests.el";hier28;;
+	    p) echo "hier25: Running python-tests.el";hier25;;
+	    q) echo "entfernt: Lade testumgebung \"ENTFERNT\""; entfernt;;
+	    r) echo "hier26: Running python-tests.el";hier26;;
+	    s) echo "h16: Lade \$TEST16: \"$TEST16\"";h16;;
 	    t) echo "Lade \$TEST19: \"$TEST19\"";h19;;
-	    u) echo "Lade \$TEST20: \"$TEST20\"";h20;;
-	    v) echo "Lade testumgebung \"EXTRA\"";hierv5;;
-	    w) echo "Lade testumgebung \"EXTRA\"";extrav5;;
-	    x) echo "Lade testumgebung \"EXTRA\"";extra;;
+	    t) echo "erst: Lade erst"; erst;;
+	    u) echo "hier: Lade testumgebung \"HIER1\"";hier;;
+	    #  v) echo "hierv5: Lade testumgebung \"EXTRA\"";hierv5;;
+	    #  w) echo "extrav5: Lade testumgebung \"EXTRA\"";extrav5;;
+	    #  x) echo "extra: Lade testumgebung \"EXTRA\"";extra;;
+	    #  echo "zweit: Lade zweit"; zweit;;
 
 	esac
     done

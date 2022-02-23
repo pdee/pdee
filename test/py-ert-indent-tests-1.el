@@ -22,6 +22,7 @@
 
 (require 'setup-ert-tests)
 
+
 (ert-deftest py-ert-indent-list-style-test-UVqzej ()
   (should py-indent-list-style))
 
@@ -167,26 +168,7 @@ from foo.bar.baz import something, something_1 \\
     (search-forward "something_4, something_5")
     (should (= (py-compute-indentation) 5))))
 
-(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-1-2H3ET7 ()
-  "Indent line-by-line as first line is okay "
-  (py-test-with-temp-buffer
-   "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-def foo ():
-if True:
-    print(123)
 
-with file(\"foo\" + zeit + \".ending\", 'w') as datei:
-    for i in range(anzahl):
-        bar.dosomething()
-        datei.write(str(baz[i]) + \"\\n\")
-"
-   (goto-char (point-max))
-   (push-mark)
-   (search-backward "True")
-   (save-excursion
-     (py-indent-region (line-beginning-position) (point-max) t))
-   (should (eq 4 (current-indentation)))))
 
 (ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-2-wF0CYZ ()
   "Indent line-by-line as first line is okay "
@@ -319,23 +301,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (goto-char (point-min))
     (should (eq 0 (py-compute-indentation)))))
 
-(ert-deftest py-indentation-lp-1375122-test-yx67am ()
-  (py-test-with-temp-buffer
-      "def foo():
-    if True:
-pass
-"
-    (goto-char (point-max))
-    (forward-line -1)
-    (call-interactively 'py-indent-or-complete)
-    (sit-for 0.1 t)
-    (should (eq 8 (current-column)))
-    (beginning-of-line)
-    (delete-horizontal-space)
-    (indent-to 4)
-    (call-interactively 'py-indent-or-complete)
-    (sit-for 0.1 t)
-    (should (eq 8 (current-column)))))
+
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-1-ld9am7 ()
   (py-test-with-temp-buffer
@@ -709,8 +675,6 @@ my_list = [
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
-
-
 (ert-deftest py-ert-async-indent-test-MFS8IW ()
   (py-test-with-temp-buffer-point-min
       "async def coro(name, lock):
@@ -725,8 +689,6 @@ my_list = [
     (should (eq 4 (py-compute-indentation)))
     (forward-line 3)
     (should (eq 8 (py-compute-indentation)))))
-
-
 
 (ert-deftest py-ert-parens-span-multiple-lines-lp-1191225-test-AkoTP3 ()
   (py-test-with-temp-buffer-point-min
@@ -804,8 +766,6 @@ def foo():
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
-
-
 (ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test-P19RGY ()
   (py-test-with-temp-buffer
       "def foo():
@@ -837,8 +797,6 @@ Bar
     (py-indent-region (point-min) (point-max) t)
     (should (eq 0 (current-indentation)))))
 
-
-
 (ert-deftest py-indentation-after-an-explicit-dedent-61-test-lpYaIp ()
   (py-test-with-temp-buffer
       "mport sys
@@ -852,8 +810,6 @@ def main():
     (goto-char (point-max))
     (goto-char (point-max))
     (should (eq 4  (py-compute-indentation)))))
-
-
 
 (ert-deftest py-clause-indent-test-UXZsX9 ()
   (py-test-with-temp-buffer
@@ -875,16 +831,6 @@ def main():
 else: "
     (goto-char (point-max))
     (should (eq 4  (py-compute-indentation)))))
-
-(ert-deftest py-in-list-indent-test-LEON2Q ()
-  (py-test-with-temp-buffer
-      "def foo():
-print(rest)"
-    (goto-char (point-max))
-    (search-backward "rest")
-    (py-indent-or-complete)
-    (sit-for 0.1)
-    (should (eq 4 (current-indentation)))))
 
 
 (ert-deftest py-multline-arguments-with-literal-lists-79-test-7NWa5T ()
@@ -993,8 +939,58 @@ import os"
 ):
 foo"
     (goto-char (point-max))
-    (beginning-of-line) 
+    (beginning-of-line)
     (should (eq 4  (py-compute-indentation)))))
+
+(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-1-2H3ET7 ()
+  "Indent line-by-line as first line is okay "
+  (py-test-with-temp-buffer
+   "#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+def foo ():
+if True:
+    print(123)
+
+with file(\"foo\" + zeit + \".ending\", 'w') as datei:
+    for i in range(anzahl):
+        bar.dosomething()
+        datei.write(str(baz[i]) + \"\\n\")
+"
+   (goto-char (point-max))
+   (push-mark)
+   (search-backward "True")
+   (save-excursion
+     (py-indent-region (line-beginning-position) (point-max) t))
+   (should (eq 4 (current-indentation)))))
+
+
+
+(ert-deftest py-indentation-lp-1375122-test-yx67am ()
+  (py-test-with-temp-buffer
+      "def foo():
+    if True:
+pass
+"
+    (goto-char (point-max))
+    (forward-line -1)
+    (py-indent-or-complete)
+    (sit-for 0.1 t)
+    (should (eq 8 (current-column)))
+    (beginning-of-line)
+    (delete-horizontal-space)
+    (indent-to 4)
+    (py-indent-or-complete)
+    (sit-for 0.1 t)
+    (should (eq 8 (current-column)))))
+
+(ert-deftest py-in-list-indent-test-LEON2Q ()
+  (py-test-with-temp-buffer
+      "def foo():
+print(rest)"
+    (goto-char (point-max))
+    (search-backward "rest")
+    (py-indent-or-complete)
+    (should (eq 4 (current-indentation)))))
 
 (provide 'py-ert-indent-tests-1)
 ;;; py-ert-indent-tests-1.el ends here

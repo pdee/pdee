@@ -2713,6 +2713,12 @@ This variable is set in ‘py-execute-region’ and used in ‘py--jump-to-excep
 
 (defvar py-pseudo-keyword-face 'py-pseudo-keyword-face)
 
+(defface py-variable-name-face
+  '((t (:inherit font-lock-variable-name-face)))
+  "Face method decorators."
+  :tag "py-variable-name-face"
+  :group 'python-mode)
+
 (defvar py-variable-name-face 'py-variable-name-face)
 
 (defvar py-number-face 'py-number-face)
@@ -3353,11 +3359,7 @@ See also `py-object-reference-face'"
   :tag "py-object-reference-face"
   :group 'python-mode)
 
-(defface py-variable-name-face
-  '((t (:inherit font-lock-variable-name-face)))
-  "Face method decorators."
-  :tag "py-variable-name-face"
-  :group 'python-mode)
+
 
 (defface py-number-face
  '((t (:inherit nil)))

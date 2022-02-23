@@ -29,10 +29,8 @@
 (defconst py-shells
   (list
    'ipython
-   'ipython2.7
    'ipython3
    'jython
-   'python
    'python2
    'python3
    'pypy
