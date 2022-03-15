@@ -1291,5 +1291,21 @@ Returns imports"
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" imports))
     imports))
 
+(defun py-kill-buffer-unconditional (&optional buffer)
+  "Kill buffer unconditional, kill buffer-process if existing."
+  (interactive
+   (list (current-buffer)))
+  (let ((buffer (or (and (bufferp buffer) buffer)
+		    (get-buffer (current-buffer))))
+	proc kill-buffer-query-functions)
+    (if (buffer-live-p buffer)
+        (progn
+          (setq proc (get-buffer-process buffer))
+          (and proc (kill-process proc))
+          (set-buffer buffer)
+          (set-buffer-modified-p 'nil)
+          (kill-buffer (current-buffer)))
+      (message "Can't see a buffer %s" buffer))))
+
 (provide 'python-components-intern)
  ;;;  python-components-intern.el ends here

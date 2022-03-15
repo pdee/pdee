@@ -1,6 +1,6 @@
 ;; py-ert-delete-tests.el --- testing python-mode.el -*- lexical-binding: t; -*-
 
-;; Keywords: languages 
+;; Keywords: languages
 
 ;; GNU Emacs is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -83,6 +83,13 @@
       (goto-char (point-max))
       (py-electric-backspace 1)
       (should (eq ?\} (char-after))))))
+
+(ert-deftest py-ert-electric-kill-backward-arg-test-b118 ()
+    (py-test-with-temp-buffer
+      "asdf    "
+      (goto-char (point-max))
+      (py-electric-backspace 4)
+      (should (eq ?f (char-before)))))
 
 (provide 'py-ert-delete-tests-1)
 ;;; py-ert-delete-tests-1.el ends here

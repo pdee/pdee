@@ -125,14 +125,24 @@ If already at the end, go down to next indent in buffer
 Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (eobp)
-    (let (erg indent)
-      ;; (when (py-forward-statement)
-      (when (py-forward-indent)
-	;; (save-excursion
-      	;; (setq indent (and (py-backward-statement)(current-indentation))))
-	;; (setq erg (py--travel-this-indent-forward indent))
-	(unless (eobp) (forward-line 1) (beginning-of-line) (setq erg (point))))
-      erg)))
+    (when (py-forward-indent)
+      (unless (eobp) (progn (forward-line 1) (beginning-of-line) (point))))))
+
+;; (defun py-forward-indent-bol ()
+;;   "Go to beginning of line following of a section of equal indentation.
+
+;; If already at the end, go down to next indent in buffer
+;; Returns final position when called from inside section, nil otherwise"
+;;   (interactive)
+;;   (unless (eobp)
+;;     (let (erg indent)
+;;       ;; (when (py-forward-statement)
+;;       (when (py-forward-indent)
+;; 	;; (save-excursion
+;;       	;; (setq indent (and (py-backward-statement)(current-indentation))))
+;; 	;; (setq erg (py--travel-this-indent-forward indent))
+;; 	(unless (eobp) (forward-line 1) (beginning-of-line) (setq erg (point))))
+;;       erg)))
 
 (defun py-backward-expression (&optional orig done repeat)
   "Go to the beginning of a python expression.

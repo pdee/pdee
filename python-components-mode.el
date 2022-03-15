@@ -66,6 +66,7 @@
 
 ;;; Code:
 
+(require 'python-components-foot)
 (require 'python-components-start1)
 (require 'python-components-extra)
 (require 'python-components-shift-forms)
@@ -121,7 +122,7 @@
 (require 'python-components-ffap)
 
 ;; (require 'python-components-eldoc)
-(require 'python-components-foot)
+
 
 ;; (provide 'python-components-mode)
 (provide 'python-mode)

@@ -23,6 +23,8 @@
 
 ;;; Code:
 
+(require 'setup-ert-tests)
+
 (ert-deftest py-ert-beginning-of-block-test ()
   (py-test-with-temp-buffer
       "# -*- coding: utf-8 -*-

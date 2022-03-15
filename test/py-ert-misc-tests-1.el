@@ -83,39 +83,6 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
 
-;; (ert-deftest py-ert-mark-expression-test-29MdXT ()
-;;   (py-test-with-temp-buffer
-;;       "assert pycompletions('TestClass.test' , name) == \
-;;           ['testclassmeth', 'testmeth', 'testprop', 'teststaticmeth']"
-;;     (goto-char (point-max))
-;;     (forward-char -1)
-;;     (py-mark-expression)
-;;     (should (eq 119 (mark)))
-;;     (goto-char 44)
-;;     (py-mark-expression)
-;;     (should (eq 46 (mark)))))
-
-(ert-deftest py-dedicated-shell-test-7tw0PH ()
-  (if (not (executable-find "python"))
-      (message "py-dedicated-shell-test-7tw0PH: %s" "No python executable found!")
-    (let ((erg (buffer-name (py-shell nil nil t "python"))))
-      (should (< 8 (length erg)))
-      (should (eq 0 (string-match "^*Python" erg))))))
-
-(ert-deftest py-dedicated-shell-test-HViYH5 ()
-  (if (not (executable-find "python3"))
-      (message "py-dedicated-shell-test-HViYH5: %s" "No python3 executable found!")
-    (let ((erg (buffer-name (py-shell nil nil t "python3"))))
-      (should (< 8 (length erg)))
-      (should (eq 0 (string-match "^*Python3" erg))))))
-
-(ert-deftest py-python-shell-test-Ms1Z0k ()
-  ""
-  (if (not (executable-find "python"))
-      (message "py-python-shell-test-Ms1Z0k: %s" "No python executable found!")
-    (let ((erg (python)))
-      (should (bufferp (get-buffer erg)))
-      (should (get-buffer-process erg)))))
 
 (ert-deftest py-python2-shell-test-8Ostfe ()
   ""
@@ -142,72 +109,7 @@ x = {'abc':'def',
       (py-execute-statement)
       (should (eq (window-height) full-height)))))
 
-(ert-deftest py-shell-python-lp-1398530-test-Haizw1 ()
-  (if (not (executable-find "python"))
-      (message "py-shell-python-lp-1398530-test-Haizw1: %s" "No python executable found!")
-    (when (buffer-live-p (get-buffer "*Python*"))
-      (py-kill-buffer-unconditional "*Python*"))
-    (py-test-with-temp-buffer
-	""
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (let ((py-shell-name "python"))
-	(py-shell)
-	(sit-for 0.1 t)
-	(should (buffer-live-p (get-buffer "*Python*")))))))
 
-(ert-deftest py-shell-python3-lp-1398530-test-gm7LwH ()
-  (if (not (executable-find "python3"))
-      (message "py-shell-python3-lp-1398530-test-gm7LwH: %s" "No python3 executable found!")
-    (when (buffer-live-p (get-buffer "*Python3*"))
-      (py-kill-buffer-unconditional "*Python3*"))
-    (py-test-with-temp-buffer
-	""
-      (goto-char (point-max))
-      (let ((py-shell-name "python3"))
-	(py-shell)
-	(sit-for 0.1 t)
-	(should (buffer-live-p (get-buffer "*Python3*")))))))
-
-(ert-deftest py-shell-python2-lp-1398530-test-TaiABe ()
-  (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "*Python2*"))
-  (py-test-with-temp-buffer
-      ""
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (let ((py-shell-name "python2"))
-      (py-shell)
-      (sit-for 0.1 t)
-      (should (buffer-live-p (get-buffer "*Python2*"))))))
-
-(ert-deftest py-face-lp-1454858-python2-1-test-cBoEWe ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python2
-file.close()"
-    (goto-char(point-max))
-    (let ((py-python-edit-version ""))
-      (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1)
-      (should (eq (face-at-point) 'py-builtins-face)))))
-
-;; Setting of py-python-edit-version should precede
-(ert-deftest py-face-lp-1454858-python2-2-test-VGqacZ ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python3
-file.close()"
-    (goto-char(point-max))
-    (let ((py-python-edit-version "python2"))
-      (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1)
-      (should (eq (face-at-point) 'py-builtins-face)))))
-
-(ert-deftest py-face-lp-1454858-python2-3-test-X7oyjk ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python2
-print()"
-    (goto-char(point-max))
-    (let ((py-python-edit-version ""))
-      (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1)
-      (should (eq (face-at-point) 'font-lock-keyword-face)))))
 
 (ert-deftest py-ert-in-comment-p-test-G6FUaB ()
   (py-test-with-temp-buffer
@@ -489,6 +391,39 @@ print(\"Hello, I'm your master!\")
     (unwind-protect
         (py-execute-buffer)
       (when (file-readable-p "/tmp/my-master.py") (delete-file "/tmp/my-master.py"))))))
+
+(ert-deftest py-named-shell-python3-794850-test-P6QZmU ()
+  (py-test-mode-explizit
+      "foo"
+    'fundamental-mode
+    py-debug-p
+    ;; (switch-to-buffer (current-buffer))
+    (call-interactively 'python3)
+    (should (buffer-live-p (get-buffer "*Python3*")))
+    (py-kill-buffer-unconditional (get-buffer "*Python3*"))))
+
+(ert-deftest py-named-shell-ipython3-794850-test-P6QZmU ()
+  (py-test-mode-explizit
+      "foo"
+    'fundamental-mode
+    py-debug-p
+    (call-interactively 'ipython3)
+    (should (buffer-live-p (get-buffer "*IPython3*")))
+    (py-kill-buffer-unconditional (get-buffer "*IPython3*"))))
+
+(ert-deftest py-named-shell-ipython-794850-test-P6QZmU ()
+  (py-test-mode-explizit
+      "foo"
+    'fundamental-mode
+    py-debug-p
+    (call-interactively 'ipython)
+    (should (buffer-live-p (get-buffer "*IPython*")))
+    (py-kill-buffer-unconditional (get-buffer "*IPython*"))))
+
+(ert-deftest py-run-python-test-QDE84k ()
+  "Test built-in python.el."
+  (run-python)
+  (should (buffer-live-p (get-buffer "*Python*"))))
 
 (provide 'py-ert-misc-tests-1)
 ;;; py-ert-misc-tests-1.el ends here

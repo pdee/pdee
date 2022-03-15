@@ -53,13 +53,12 @@ With optional \\[universal-argument] get a new dedicated shell."
   (interactive "p")
   (py-shell argprompt args nil "jython" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
 
+(defun python (&optional argprompt args buffer fast exception-buffer split)
+  "Start an Python interpreter.
 
-;; (defun python (&optional argprompt args buffer fast exception-buffer split)
-;;   "Start an Python interpreter.
-
-;; With optional \\[universal-argument] get a new dedicated shell."
-;;   (interactive "p")
-;;   (py-shell argprompt args nil "python" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
+With optional \\[universal-argument] get a new dedicated shell."
+  (interactive "p")
+  (py-shell argprompt args nil "python" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
 
 (defun python2 (&optional argprompt args buffer fast exception-buffer split)
   "Start an Python2 interpreter.

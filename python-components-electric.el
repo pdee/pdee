@@ -1,6 +1,5 @@
 ;;; python-components-electric.el --- Python-mode electric inserts  -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages
@@ -173,42 +172,42 @@ string or comment."
 (defun py-electric-backspace (&optional arg)
   "Delete preceding character or level of indentation.
 
+With optinal ARG, kill that many chars before point.
+
 Delete region when both variable `delete-active-region' and (use-region-p)
 are non-nil.
 
-Unless at indentation:
-  With `py-electric-kill-backward-p' delete whitespace before point.
-  With `py-electric-kill-backward-p' at end of a list, empty that list.
+Unless at indentation delete whitespace before point.
+With `py-electric-kill-backward-p' at end of a list, empty that list.
 
 Returns column reached."
   (interactive "p*")
   (or arg (setq arg 1))
-  (let (erg)
-    (cond
-     ((and (use-region-p)
-           ;; Emacs23 doesn't know that var
-           (boundp 'delete-active-region)
-           delete-active-region)
-      (backward-delete-char-untabify arg))
-     ;; (delete-region (region-beginning) (region-end)))
-     ((looking-back "^[ \t]+" (line-beginning-position))
-      (let* ((remains (% (current-column) py-indent-offset)))
-        (if (< 0 remains)
-            (delete-char (- remains))
-          (indent-line-to (- (current-indentation) py-indent-offset)))))
-     ;;
-     ((and py-electric-kill-backward-p
-           (member (char-before) (list ?\) ?\] ?\})))
-      (py-empty-out-list-backward))
-     ;;
-     ((and py-electric-kill-backward-p
-           (< 0 (setq erg (abs (skip-chars-backward " \t\r\n\f")))))
-      (delete-region (point) (+ erg (point))))
-     ;;
-     (t
-      (delete-char (- 1))))
-    (setq erg (current-column))
-    erg))
+  (cond
+   ((< 1 (prefix-numeric-value arg))
+    (delete-char (- arg)))
+   ((and (use-region-p)
+         ;; Emacs23 doesn't know that var
+         (boundp 'delete-active-region)
+         delete-active-region)
+    (backward-delete-char-untabify arg))
+   ;; (delete-region (region-beginning) (region-end)))
+   ((looking-back "^[ \t]+" (line-beginning-position))
+    (let* ((remains (% (current-column) py-indent-offset)))
+      (if (< 0 remains)
+          (delete-char (- remains))
+        (indent-line-to (- (current-indentation) py-indent-offset)))))
+   ;;
+   ((and py-electric-kill-backward-p
+         (member (char-before) (list ?\) ?\] ?\})))
+    (py-empty-out-list-backward))
+   ;;
+   ((progn (push-mark) (< 0 (abs (skip-chars-backward " \t" (line-beginning-position)))))
+    (delete-region (point) (mark)))
+   ;;
+   (t
+    (delete-char (- arg))))
+  (current-column))
 
 ;; TODO: PRouleau: the key binding in python-mode-map for command only works
 ;;       when Emacs runs in Graphics mode, not in terminal mode. It'd be nice

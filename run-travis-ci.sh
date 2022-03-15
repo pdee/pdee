@@ -28,15 +28,35 @@
 # EMACS28=$HOME/emacs-28/src/emacs-28.0.60.1
 # EMACS29=$HOME/emacs-20211014/src/emacs-29.0.50.1
 # system Emacs
-EMACS=$HOME/emacs-28/src/emacs-28.0.60.1
+#  EMACS=$HOME/emacs-28/src/emacs-28.0.60.1
 
+if [ $1 == e28 ]; then
+    export EMACS="$HOME/emacs-28.0.91/src/emacs -Q"
+elif
+    [ $1 == e29 ];then
+    export EMACS="$HOME/emacs-20220306/src/emacs -Q"
+fi
+
+#  EMACS=emacs
+#  echo "before shift \$EMACS: $EMACS"
+shift
+
+# if [ -s $HOSTNAME == "kiste" ];then 
+#     EMACS='$HOME/emacs-20210812/src/emacs-28.0.50.1'
+# elif [ -s $HOSTNAME == "affe" ];then
+#    EMACS="$HOME/emacs-28.0.91/src/emacs"
+# fi
+
+# echo "\$EMACS: $EMACS"
+
+echo "\$*: $*"
 #  [ $EMACS ] || echo \$EMACS not set
 
-echo "\$EMACS: $EMACS"
-[ -x $EMACS ] && echo "\$EMACS: $EMACS"
+#  echo "\$EMACS: $EMACS"
+#  [ -x $EMACS ] && echo "\$EMACS: $EMACS"
 
-ARSUBR=~/werkstatt/thingatpt-utils-core/ar-subr.el
-PYTHON=~/emacs-20180529/lisp/progmodes/python.el
+#  ARSUBR=~/werkstatt/thingatpt-utils-core/ar-subr.el
+#  PYTHON=~/emacs-20180529/lisp/progmodes/python.el
 PDIR=$PWD
 echo "\$PWD: $PWD"
 # WERKSTATT set in .bashrc, thus unset remotly
@@ -80,7 +100,7 @@ TEST17=$HOME/emacs/test/lisp/progmodes/python-tests.el
 TEST18=$TESTDIR/translated-python-tests.el
 TEST19=$TESTDIR/py-ert-hide-tests.el
 TEST20=$TESTDIR/py-ert-font-lock-test-1.el
-
+TEST21=$TESTDIR/py-executable-python-tests-1.el
 # if [ -s $HOME/emacs-20201119/src/emacs ]; then
 #     EMACS=$HOME/emacs-20201119/src/emacs
 # else
@@ -309,6 +329,16 @@ h20() {
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $PYTHONMODE \
 -l $TEST20 \
+-f ert-run-tests-batch-and-exit
+}
+
+h21() {
+    date; time -p $EMACS -Q -L . --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST21 \
 -f ert-run-tests-batch-and-exit
 }
 
@@ -647,21 +677,14 @@ if [ $WERKSTATT -eq 0 ]; then
 	    i) ;;
 	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
 	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
-	    l) echo "hier29: Running Emacs29 python-tests.el";hier29;;
-	    m) echo "hier28: Running Emacs28 python-tests.el";hier28;;
-	    p) echo "hier25: Running python-tests.el";hier25;;
-	    q) echo "entfernt: Lade testumgebung \"ENTFERNT\""; entfernt;;
-	    r) echo "hier26: Running python-tests.el";hier26;;
-	    s) echo "h16: Lade \$TEST16: \"$TEST16\"";h16;;
-	    t) echo "Lade \$TEST19: \"$TEST19\"";h19;;
-	    t) echo "erst: Lade erst"; erst;;
-	    u) echo "hier: Lade testumgebung \"HIER1\"";hier;;
-	    #  v) echo "hierv5: Lade testumgebung \"EXTRA\"";hierv5;;
-	    #  w) echo "extrav5: Lade testumgebung \"EXTRA\"";extrav5;;
-	    #  x) echo "extra: Lade testumgebung \"EXTRA\"";extra;;
-	    #  echo "zweit: Lade zweit"; zweit;;
+	    l) echo "hier: Lade Testumgebung ‘hier’";hier;;
+	    m) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
 
 	esac
+	shift
+	echo "\$*: $*"
+	EMACS=$1
+	
     done
 
     # hier1

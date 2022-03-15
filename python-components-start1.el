@@ -4855,15 +4855,15 @@ Optional ENFORCE-REGEXP: search for regexp only."
       (or (< 0 (abs (skip-chars-backward " \t\r\n\f")))
 	  (py-backward-comment))))
 
-(defun py-kill-buffer-unconditional (buffer)
-  "Kill buffer unconditional, kill buffer-process if existing. "
-  (interactive
-   (list (current-buffer)))
-  (ignore-errors (with-current-buffer buffer
-    (let (kill-buffer-query-functions)
-      (set-buffer-modified-p nil)
-      (ignore-errors (kill-process (get-buffer-process buffer)))
-      (kill-buffer buffer)))))
+;; (defun py-kill-buffer-unconditional (buffer)
+;;   "Kill buffer unconditional, kill buffer-process if existing. "
+;;   (interactive
+;;    (list (current-buffer)))
+;;   (ignore-errors (with-current-buffer buffer
+;;     (let (kill-buffer-query-functions)
+;;       (set-buffer-modified-p nil)
+;;       (ignore-errors (kill-process (get-buffer-process buffer)))
+;;       (kill-buffer buffer)))))
 
 (defun py--down-end-form ()
   "Return position."
@@ -6079,7 +6079,11 @@ process buffer for a list of commands.)"
 	 (fast (unless (eq major-mode 'org-mode)
 		 (or fast py-fast-process-p)))
 	 (dedicated (or (eq 4 (prefix-numeric-value argprompt)) dedicated py-dedicated-process-p))
-	 (shell (or shell (py-choose-shell)))
+	 (shell (if shell
+		    (if (executable-find shell)
+			shell
+		      (error (concat "py-shell: Can't see an executable for ‘"shell "’ on your system. Maybe needs a link?")))
+		    (py-choose-shell)))
 	 (args (or args (py--provide-command-args shell fast)))
 	 (buffer-name
 	  (or buffer

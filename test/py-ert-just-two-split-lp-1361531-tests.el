@@ -23,6 +23,8 @@
 
 ;;; Code:
 
+(require 'setup-ert-tests)
+
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-python2-test ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python2
