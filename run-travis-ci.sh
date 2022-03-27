@@ -15,61 +15,34 @@
 
 # Commentary:
 
-# run all tests calling this script
-# or
 # run-travis-ci.sh -[OPTION]
 # selecting single test-files
 
 # This script tests functions from python-mode.el.
 
 # Code:
-# EMACS26=emacs
-# EMACS27=$HOME/emacs-27.2/src/emacs-27.2.1
-# EMACS28=$HOME/emacs-28/src/emacs-28.0.60.1
-# EMACS29=$HOME/emacs-20211014/src/emacs-29.0.50.1
-# system Emacs
-#  EMACS=$HOME/emacs-28/src/emacs-28.0.60.1
 
 if [ $1 == e28 ]; then
-    export EMACS="$HOME/emacs-28.0.91/src/emacs -Q"
+    #  export EMACS="$HOME/emacs-28.0.91/src/emacs -Q"
+    #  export EMACS=$(echo $(alias e28) | sed 's,alias [^~]*.\([^ ]*\).*,$HOME\1,g')
+    export EMACS=$(echo $(alias e28) | sed 's,alias [^~]*.\([^ ]*\).*,/home/speck/\1,g')
 elif
     [ $1 == e29 ];then
-    export EMACS="$HOME/emacs-20220306/src/emacs -Q"
+    #  export EMACS="$HOME/emacs-20220306/src/emacs -Q"
+    export EMACS=$(echo $(alias e29) | sed 's,alias [^~]*.\([^ ]*\).*,/home/speck/\1,g')
 fi
 
-#  EMACS=emacs
-#  echo "before shift \$EMACS: $EMACS"
+echo "before shift \$EMACS: $EMACS"
 shift
-
-# if [ -s $HOSTNAME == "kiste" ];then 
-#     EMACS='$HOME/emacs-20210812/src/emacs-28.0.50.1'
-# elif [ -s $HOSTNAME == "affe" ];then
-#    EMACS="$HOME/emacs-28.0.91/src/emacs"
-# fi
-
-# echo "\$EMACS: $EMACS"
-
 echo "\$*: $*"
-#  [ $EMACS ] || echo \$EMACS not set
-
-#  echo "\$EMACS: $EMACS"
-#  [ -x $EMACS ] && echo "\$EMACS: $EMACS"
-
-#  ARSUBR=~/werkstatt/thingatpt-utils-core/ar-subr.el
-#  PYTHON=~/emacs-20180529/lisp/progmodes/python.el
 PDIR=$PWD
 echo "\$PWD: $PWD"
 # WERKSTATT set in .bashrc, thus unset remotly
 WERKSTATT=${WERKSTATT:=1}
 echo "\$WERKSTATT: $WERKSTATT"
-
 TESTDIR=$PDIR/test
 export TESTDIR
 
-# echo "\$1: $1"
-
-# if $1; then
-# PYTHONMODE=$PDIR/$1
 if [ -s $PDIR/python-mode.el ]; then
     PYTHONMODE=$PDIR/python-mode.el
 elif [ -s $PDIR/python-components-mode.el ]; then
@@ -77,41 +50,36 @@ elif [ -s $PDIR/python-components-mode.el ]; then
 fi
 
 echo "\$PYTHONMODE: $PYTHONMODE"
+SETUP=$TESTDIR/py-setup-ert-tests.el
 
-SETUP=$TESTDIR/setup-ert-tests.el
-
-TEST1=$TESTDIR/py-ert-indent-tests-1.el
-TEST2=$TESTDIR/py-ert-misc-tests-1.el
-TEST3=$TESTDIR/py-ert-scope-tests-1.el
-TEST4=$TESTDIR/py-ert-just-two-split-lp-1361531-tests.el
-TEST5=$TESTDIR/py-ert-beginning-tests.el
-TEST6=$TESTDIR/py-ert-forward-tests.el
-TEST7=$TESTDIR/py-ert-function-tests.el
-TEST8=$TESTDIR/py-ert-variablen-tests.el
-TEST9=$TESTDIR/py-ert-navigation-tests-1.el
-TEST10=$TESTDIR/py-ert-delete-tests-1.el
-TEST11=$TESTDIR/py-ert-execute-region-test.el
-TEST12=$TESTDIR/py-execute-region-commandp-test.el
-TEST13=$TESTDIR/py-ert-fill-tests-1.el
-TEST14=$TESTDIR/py-ert-forward-tests.el
-TEST15=$TESTDIR/py-ert-interactive-tests.el
-TEST16=$TESTDIR/py-extra-tests.el
-TEST17=$HOME/emacs/test/lisp/progmodes/python-tests.el
-TEST18=$TESTDIR/translated-python-tests.el
-TEST19=$TESTDIR/py-ert-hide-tests.el
-TEST20=$TESTDIR/py-ert-font-lock-test-1.el
-TEST21=$TESTDIR/py-executable-python-tests-1.el
-# if [ -s $HOME/emacs-20201119/src/emacs ]; then
-#     EMACS=$HOME/emacs-20201119/src/emacs
-# else
-#     EMACS=emacs
-# fi
+TEST1=$TESTDIR/py-ert-indent-tests.el
+TEST2=$TESTDIR/py-ert-misc-tests.el
+TEST3=$TESTDIR/py-ert-scope-tests.el
+TEST4=$TESTDIR/py-ert-beginning-tests.el
+TEST5=$TESTDIR/py-ert-forward-tests.el
+TEST6=$TESTDIR/py-ert-function-tests.el
+TEST7=$TESTDIR/py-ert-variablen-tests.el
+TEST8=$TESTDIR/py-ert-navigation-tests.el
+TEST9=$TESTDIR/py-ert-delete-tests.el
+TEST10=$TESTDIR/py-ert-execute-region-test.el
+TEST11=$TESTDIR/py-execute-region-commandp-test.el
+TEST12=$TESTDIR/py-ert-fill-tests.el
+TEST13=$TESTDIR/py-ert-forward-tests.el
+TEST14=$TESTDIR/py-extra-tests.el
+TEST15=$TESTDIR/py-ert-hide-tests.el
+TEST16=$TESTDIR/py-ert-font-lock-test.el
+TEST17=$TESTDIR/py-executable-python-tests.el
+TEST18=$TESTDIR/py-split-window-on-execute-test
+TEST19=$TESTDIR/py-split-just-two-window-on-execute-test.el
+TEST20=$TESTDIR/py-non-ert-tests.el
+TEST21=$TESTDIR/py-ert-interactive-tests.el
+TEST22=$HOME/emacs/test/lisp/progmodes/python-tests.el
 
 echo "\$EMACS: $EMACS"
 
 PYCO="$PDIR/completion/pycomplete.el"
 
-h1() {
+h1() { 
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
@@ -307,8 +275,17 @@ h16() {
 h17() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
--l /home/speck/emacs-20200406/lisp/progmodes/python.el \
+-l $HOME/emacs/lisp/progmodes/python.el \
 -l $TEST17 \
+-f ert-run-tests-batch-and-exit
+}
+
+
+h18() {
+    date; time -p $EMACS -Q -L . --batch \
+--eval "(message (emacs-version))" \
+-l $HOME/emacs/lisp/progmodes/python.el \
+-l $TEST18 \
 -f ert-run-tests-batch-and-exit
 }
 
@@ -342,6 +319,26 @@ h21() {
 -f ert-run-tests-batch-and-exit
 }
 
+h22() {
+    date; time -p $EMACS -Q -L . --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST22 \
+-f ert-run-tests-batch-and-exit
+}
+
+h23() {
+    date; time -p $EMACS -Q -L . --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $PYTHONMODE \
+-l $TEST23 \
+--eval "(py-in-list-indent-test-XnIq9d1)"
+}
+
 hierv5() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
@@ -361,41 +358,6 @@ hierv5() {
 -l $TEST13 \
 -l $TEST14 \
 -l $TEST16 \
--f ert-run-tests-batch-and-exit
-}
-
-
-
-erst() {
-    date; time -p $EMACS -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST1 \
--l $TEST2 \
--l $TEST4 \
--l $TEST5 \
--l $TEST6 \
--l $TEST7 \
--f ert-run-tests-batch-and-exit
-}
-
-zweit() {
-    date; time -p $EMACS -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST8 \
--l $TEST11 \
--l $TEST12 \
--l $TEST13 \
--l $TEST14 \
 -f ert-run-tests-batch-and-exit
 }
 
@@ -466,187 +428,6 @@ hier() {
 -l $TEST11 \
 -l $TEST12 \
 -l $TEST13 \
--l $TEST14 \
--l $TEST16 \
--l $TEST19 \
--l $TEST20 \
--f ert-run-tests-batch-and-exit
-}
-
-
-hier25() {
-    date; time -p $EMACS -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST1 \
--l $TEST2 \
--l $TEST3 \
--l $TEST4 \
--l $TEST5 \
--l $TEST6 \
--l $TEST7 \
--l $TEST8 \
--l $TEST9 \
--l $TEST10 \
--l $TEST11 \
--l $TEST12 \
--l $TEST13 \
--l $TEST14 \
--l $TEST16 \
--l $TEST19 \
--l $TEST20 \
--f ert-run-tests-batch-and-exit
-}
-
-hier26() {
-    date; time -p $EMACS26 -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST1 \
--l $TEST2 \
--l $TEST3 \
--l $TEST4 \
--l $TEST5 \
--l $TEST6 \
--l $TEST7 \
--l $TEST8 \
--l $TEST9 \
--l $TEST10 \
--l $TEST11 \
--l $TEST12 \
--l $TEST13 \
--l $TEST14 \
--l $TEST16 \
--l $TEST19 \
--l $TEST20 \
--f ert-run-tests-batch-and-exit
-}
-
-hier27() {
-    date; time -p $EMACS27 -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST1 \
--l $TEST2 \
--l $TEST3 \
--l $TEST4 \
--l $TEST5 \
--l $TEST6 \
--l $TEST7 \
--l $TEST8 \
--l $TEST9 \
--l $TEST10 \
--l $TEST11 \
--l $TEST12 \
--l $TEST13 \
--l $TEST14 \
--l $TEST16 \
--l $TEST19 \
--l $TEST20 \
--f ert-run-tests-batch-and-exit
-}
-
-hier28() {
-    date; time -p $EMACS28 -Q -L . --batch \
--load $PYTHONMODE \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--l $TEST1 \
--l $TEST2 \
--l $TEST3 \
--l $TEST4 \
--l $TEST5 \
--l $TEST6 \
--l $TEST7 \
--l $TEST8 \
--l $TEST9 \
--l $TEST10 \
--l $TEST11 \
--l $TEST12 \
--l $TEST13 \
--l $TEST14 \
--l $TEST16 \
--l $TEST19 \
--l $TEST20 \
--f ert-run-tests-batch-and-exit
-}
-
-hier28a() {
-    date; time -p $EMACS28 -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST1 \
--l $TEST2 \
--l $TEST3 \
--l $TEST4 \
--l $TEST5 \
--l $TEST6 \
--l $TEST7 \
--l $TEST8 \
--l $TEST9 \
--l $TEST10 \
--f ert-run-tests-batch-and-exit
-}
-
-hier28b() {
-    date; time -p $EMACS28 -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST11 \
--l $TEST12 \
--l $TEST13 \
--l $TEST14 \
--l $TEST16 \
--l $TEST19 \
--l $TEST20 \
--f ert-run-tests-batch-and-exit
-}
-
-hier29() {
-    date; time -p $EMACS29 -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST1 \
--l $TEST2 \
--l $TEST3 \
--l $TEST4 \
--l $TEST5 \
--l $TEST6 \
--l $TEST7 \
--l $TEST8 \
--l $TEST9 \
--l $TEST10 \
--l $TEST11 \
--l $TEST12 \
--l $TEST13 \
--l $TEST14 \
 -l $TEST16 \
 -l $TEST19 \
 -l $TEST20 \
@@ -654,7 +435,7 @@ hier29() {
 }
 
 if [ $WERKSTATT -eq 0 ]; then
-    while getopts 123456789abcdefghijklmpqrstuvx option
+    while getopts 123456789abcdefghijklmnopqrstuvx option
     do
         case $option in
 	    1) echo "h1: Lade \$TEST1: \"$TEST1\"";h1;;
@@ -674,11 +455,13 @@ if [ $WERKSTATT -eq 0 ]; then
 	    f) echo "h15: Lade \$TEST15: \"$TEST15\"";h15;;
 	    g) echo "h16: Lade \$TEST16: \"$TEST16\"";h16;;
             h) echo "h17: Running python-tests.el";h17;;
-	    i) ;;
+	    i) echo "h18: Lade \$TEST18: \"$TEST18\"";h18;;
 	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
 	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
-	    l) echo "hier: Lade Testumgebung ‘hier’";hier;;
-	    m) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
+	    l) echo "h21: Lade \$TEST21: \"$TEST21\"";h21;;
+	    m) echo "h21: Lade \$TEST21: \"$TEST21\"";h21;;
+	    n) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
+	    o) echo "Lade Testumgebung ‘hier’";hier;;
 
 	esac
 	shift
@@ -687,12 +470,7 @@ if [ $WERKSTATT -eq 0 ]; then
 	
     done
 
-    # hier1
-    # echo "Lade testumgebung \"HIER1\""
-    # hier2
-    # echo "Lade testumgebung \"HIER1\""
-
-else
+    else
     echo "entfernt"
     echo "\$WERKSTATT: $WERKSTATT"
     echo "Lade testumgebung \"ENTFERNT\""

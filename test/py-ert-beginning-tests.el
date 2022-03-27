@@ -23,7 +23,7 @@
 
 ;;; Code:
 
-(require 'setup-ert-tests)
+(require 'py-setup-ert-tests)
 
 (ert-deftest py-ert-beginning-of-block-test ()
   (py-test-with-temp-buffer

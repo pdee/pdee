@@ -16,7 +16,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(require 'setup-ert-tests)
+(require 'py-setup-ert-tests)
 
 ;; (ert-deftest py-ert-hide-partial-expression-test-Li7vPR ()
 

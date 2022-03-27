@@ -29,6 +29,8 @@
        (python . t)
        ))
 
+(require 'py-setup-ert-tests)
+
 (ert-deftest py-ert-moves-up-execute-statement-test-RdqUKX ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
@@ -143,15 +145,17 @@ finally:
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
 (ert-deftest py-ert-execute-block-jython-test-9gQUza ()
-  (let ((buffer (py--choose-buffer-name "jython"))
-	py-split-window-on-execute py-switch-buffers-on-execute-p)
-    (py-test-with-temp-buffer
-        "if True:
+  (if (not (executable-find "jython"))
+      (message "py-ert-execute-block-jython-test-9gQUza: %s" "No executable found!")
+    (let ((buffer (py--choose-buffer-name "jython"))
+	  py-split-window-on-execute py-switch-buffers-on-execute-p)
+      (py-test-with-temp-buffer
+          "if True:
     print(\"one\")
     print(\"two\")"
-      (py-execute-block-jython)
-      (sit-for 2)
-      (should (string-match "two" py-result)))))
+	(py-execute-block-jython)
+	(sit-for 2)
+	(should (string-match "two" py-result))))))
 
 (ert-deftest py-shell-complete-in-dedicated-shell-XafVPb ()
   ;; (py-test-with-temp-buffer
@@ -1063,9 +1067,11 @@ print(u'\\xA9')"
     (goto-char (point-max))
     (push-mark)
     (beginning-of-line)
-    (py-execute-region-ipython (region-beginning) (region-end))
-    (set-buffer "*IPython*")
-    (string-match "@" (buffer-substring-no-properties (point-min) (point-max)))))
+    (if (not (executable-find  "ipython"))
+	(message "py-execute-region-ipython-test-1-1gyFLs: %s" "No executable found")
+      (py-execute-region-ipython (region-beginning) (region-end))
+      (set-buffer "*IPython*")
+      (string-match "@" (buffer-substring-no-properties (point-min) (point-max))))))
 
 ;; (ert-deftest py-execute-org-source-tdzgdj ()
 ;;   (py-test-with-temp-buffer

@@ -239,6 +239,7 @@ in (I)Python shell-modes `py-shell-complete'"
   ;; (setq py-last-window-configuration
   ;;       (current-window-configuration))
   (cond ((use-region-p)
+	 (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘use-region-p’-clause"))
 	 (py-indent-region (region-beginning) (region-end)))
 	((or (bolp)
 	     (member (char-before) (list 9 10 12 13 32 ?: ?\) ?\] ?\}))
@@ -248,6 +249,7 @@ in (I)Python shell-modes `py-shell-complete'"
 	 ;; (let* ((shell (process-name (get-buffer-process (current-buffer)))))
 	 (ignore-errors (completion-at-point)))
 	(t
+	 (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘t’-clause"))
 	 ;; (py-fast-complete)
 	 (completion-at-point))))
 

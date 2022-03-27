@@ -20,6 +20,8 @@
 
 ;;; Code:
 
+(require 'py-setup-ert-tests)
+
 (ert-deftest py-ert-execute-region-python-test ()
   (py-test-with-temp-buffer
       "print(\"one\")
@@ -59,14 +61,16 @@ print(\"two\")"
   (py-test-with-temp-buffer
       "print(\"one\")
 print(\"two\")"
+    (if (not (executable-find "ipython"))
+	(message "py-ert-execute-region-ipython-test: %s" "No executable found!")
     (let ((buffer (py--choose-buffer-name "ipython")))
       (py-execute-region-ipython (point-min) (point-max))
       (set-buffer buffer)
       ;; (accept-process-output (get-buffer-process buffer) 0.1)
-      (switch-to-buffer (current-buffer)) 
+      (switch-to-buffer (current-buffer))
       (goto-char (point-max))
       (sit-for 0.5 t)
-      (should (search-backward "two")))))
+      (should (search-backward "two"))))))
 
 (ert-deftest py-ert-execute-region-ipython3-test ()
   (py-test-with-temp-buffer
@@ -76,7 +80,7 @@ print(\"two\")"
 	  (inhibit-point-motion-hooks t))
       (py-execute-region-ipython3 (point-min) (point-max))
       (set-buffer buffer)
-      (accept-process-output (get-buffer-process buffer) 0.1) 
+      (accept-process-output (get-buffer-process buffer) 0.1)
       ;; (goto-char (point-max))
       (switch-to-buffer (current-buffer))
       (goto-char (point-max))

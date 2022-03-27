@@ -1,4 +1,4 @@
-;;; setup-ert-tests.el --- Provide needed forms -*- lexical-binding: t; -*-
+;;; py-setup-ert-tests.el --- Provide needed forms -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: lisp
@@ -25,9 +25,9 @@
 ;; (setq py-debug-p t)
 
 (if (file-readable-p "../python-components-mode.el")
-    (load (expand-file-name "../python-components-mode.el" nil t))
+    (load (expand-file-name "../python-components-mode.el") nil t)
   (when (file-readable-p "../python-mode.el")
-    (load (expand-file-name "../python-mode.el"))))
+    (load (expand-file-name "../python-mode.el") nil t)))
 
 (require 'font-lock)
 
@@ -108,8 +108,8 @@ BODY is code to be executed within the temp buffer.  Point is
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
-       (insert ,contents)
        (python-mode)
+       (insert ,contents)
        (when py-debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
@@ -122,9 +122,9 @@ BODY is code to be executed within the temp buffer.  Point is
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
+       (python-mode)
        (insert ,contents)
        (goto-char (point-min))
-       (python-mode)
        (when py-debug-p
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
@@ -146,8 +146,8 @@ BODY is code to be executed within the temp buffer "
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode)
-       (insert ,contents)
        (funcall ,mode)
+       (insert ,contents)
        (when ,debug
 	 (switch-to-buffer (current-buffer))
 	 (save-excursion (font-lock-fontify-region (point-min)(point-max)))
@@ -170,5 +170,5 @@ BODY is code to be executed within the temp buffer.  Point is
 	 (save-excursion (font-lock-fontify-region (point-min)(point-max))))
        ,@body)))
 
-(provide 'setup-ert-tests)
-;; setup-ert-tests.el ends here
+(provide 'py-setup-ert-tests)
+;; py-setup-ert-tests.el ends here
