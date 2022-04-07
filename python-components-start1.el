@@ -1776,9 +1776,6 @@ Else python"
 "
   :group 'python-mode)
 
-(defvar py-tempfile nil
-  "Internally used.")
-
 (defcustom py-python-command
   (if (eq system-type 'windows-nt)
       ;; "C:\\Python27\\python.exe"

@@ -351,5 +351,21 @@ GeomSim."
     (run-python)
     (should (buffer-live-p (get-buffer "*Python*")))))
 
+(ert-deftest py-honor-py-python-command-7JbtYW ()
+  (py-test-with-temp-buffer
+      "print(123)"
+    (let ((py-python-command "ipython3"))
+      (py-shell)
+      (py-execute-buffer)
+      (should (buffer-live-p "*Ipython3*"))
+      (should (string= "123" b (with-current-buffer "*Ipython3*" (buffer-substring-no-properties (point-min) (point-max))))))))
+
+(ert-deftest py-honor-py-python-command-kroygP ()
+  (py-test-with-temp-buffer
+      "print(123)"
+    (let ((py-python-command "ipython3"))
+      (py-shell))))
+
+
 (provide 'py-ert-misc-tests)
 ;;; py-ert-misc-tests.el ends here
