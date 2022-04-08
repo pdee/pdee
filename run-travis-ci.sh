@@ -459,9 +459,8 @@ if [ $WERKSTATT -eq 0 ]; then
 	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
 	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
 	    l) echo "h21: Lade \$TEST21: \"$TEST21\"";h21;;
-	    m) echo "h21: Lade \$TEST21: \"$TEST21\"";h21;;
-	    n) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
-	    o) echo "Lade Testumgebung ‘hier’";hier;;
+	    m) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
+	    n) echo "Lade Testumgebung ‘hier’";hier;;
 
 	esac
 	shift

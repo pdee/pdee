@@ -566,7 +566,7 @@ Might not be TRT when a lot of output arrives"
 (defcustom py-modeline-display-full-path-p nil
   "If the full PATH/TO/PYTHON be in modeline.
 
-Default is nil. Note: when `py-shell-name' is
+Default is nil. Note: when ‘py-python-command’ is
 specified with path, it's shown as an acronym in
 ‘buffer-name’ already."
 
@@ -611,7 +611,9 @@ Give some hints, if not."
 (defvar py--edit-register nil)
 
 (defvar py-result nil
-  "Internally used.  May store result from Python process.")
+  "Internally used.  May store result from Python process.
+
+See var ‘py-return-result-p’ and command ‘py-toggle-py-return-result-p’")
 
 (defvar py-error nil
   "Takes the error-messages from Python process.")
@@ -1758,23 +1760,23 @@ At any case only current input gets fontified."
   :group 'python-mode
   )
 
-(defcustom py-shell-name
-  (if (eq system-type 'windows-nt)
-      "C:/Python27/python"
-    "python")
+;; (defcustom py-shell-name
+;;   (if (eq system-type 'windows-nt)
+;;       "C:/Python27/python"
+;;     "python")
 
-  "A PATH/TO/EXECUTABLE or default value `py-shell' may look for.
+;;   "A PATH/TO/EXECUTABLE or default value `py-shell' may look for.
 
-If no shell is specified by command.
+;; If no shell is specified by command.
 
-On Windows default is C:/Python27/python
---there is no garantee it exists, please check your system--
+;; On Windows default is C:/Python27/python
+;; --there is no garantee it exists, please check your system--
 
-Else python"
-  :type 'string
-  :tag "py-shell-name
-"
-  :group 'python-mode)
+;; Else python"
+;;   :type 'string
+;;   :tag "py-shell-name
+;; "
+;;   :group 'python-mode)
 
 (defcustom py-python-command
   (if (eq system-type 'windows-nt)
@@ -1796,6 +1798,8 @@ Else /usr/bin/python"
   :tag "py-python-command
 "
   :group 'python-mode)
+
+(defvaralias 'py-shell-name 'py-python-command)
 
 (defcustom py-python-command-args '("-i")
   "String arguments to be used when starting a Python shell."
@@ -3979,12 +3983,13 @@ Return nil, if no executable found."
 		    ((py--choose-shell-by-import))
 		    ((py-choose-shell-by-path))
 		    (t (or
-			(default-value 'py-shell-name)
-			"python"))))
+			py-python-command
+			"python3"))))
 	     (cmd (if (or
 		       ;; comint-check-proc was succesful
 		       done
-		       py-edit-only-p) erg
+		       py-edit-only-p)
+		      erg
 		    (executable-find erg))))
 	(if cmd
 	    (when (called-interactively-p 'any)

@@ -354,11 +354,11 @@ GeomSim."
 (ert-deftest py-honor-py-python-command-7JbtYW ()
   (py-test-with-temp-buffer
       "print(123)"
-    (let ((py-python-command "ipython3"))
-      (py-shell)
+    (let ((py-python-command "ipython3")
+	  (py-return-result-p t))
       (py-execute-buffer)
-      (should (buffer-live-p "*Ipython3*"))
-      (should (string= "123" b (with-current-buffer "*Ipython3*" (buffer-substring-no-properties (point-min) (point-max))))))))
+      (should (buffer-live-p (get-buffer  "*IPython3*")))
+      (should (string= "123" py-result)))))
 
 (ert-deftest py-honor-py-python-command-kroygP ()
   (py-test-with-temp-buffer
@@ -366,6 +366,13 @@ GeomSim."
     (let ((py-python-command "ipython3"))
       (py-shell))))
 
+(ert-deftest py-buffer-check-7JbtYW ()
+  (with-temp-buffer
+    (let ((oldbuf (current-buffer)))
+      (with-current-buffer
+	  (set-buffer (get-buffer-create "Test"))
+	(switch-to-buffer (current-buffer)))
+      (should (equal (current-buffer) (get-buffer  oldbuf))))))
 
 (provide 'py-ert-misc-tests)
 ;;; py-ert-misc-tests.el ends here
