@@ -3145,7 +3145,7 @@ asdf = []"
 
 (ert-deftest py-backward-assignment-test-nnyBdy()
   (py-test-with-temp-buffer
-      "print('%(language)s has %(number)03d quote types\.' %
+      "print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})"
     (goto-char (point-max))
     (should-not (py-backward-assignment))))
@@ -3311,8 +3311,8 @@ ausgabe = kugel.ausgabe"
 (ert-deftest py-forward-indent-AvmF3n ()
   (py-test-with-temp-buffer-point-min
       "class kugel(object):
-    zeit = time\.strftime('%Y%m%d--%H-%M-%S')
-    # zeit = time\.strftime('%Y-%m-%d--%H-%M-%S')
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
     spiel = \[]
     gruen = \[0]
 "
@@ -3343,10 +3343,10 @@ ausgabe = kugel.ausgabe"
 
 #
 # Licensed to theasdf adsf adf  under one or more
-# contributor license agreements\.  See the NOTICE file distributed with
+# contributor license agreements.  See the NOTICE file distributed with
 
 \"\"\"
-Utility for creating release candidates and promoting release candidates to a final relase\.
+Utility for creating release candidates and promoting release candidates to a final relase.
 asdf asfsd afd
 \"\"\"
 
@@ -3433,16 +3433,16 @@ except:
         return treffer
 #        print(\"len(spiel): %s \" % len(spiel))
 
-zeit = kugel\.zeit
-ausgabe = kugel\.ausgabe
-spiel = kugel\.spiel
+zeit = kugel.zeit
+ausgabe = kugel.ausgabe
+spiel = kugel.spiel
 
-# with file(\"roulette-\" + zeit + \"\.csv\", 'w') as datei:
+# with file(\"roulette-\" + zeit + \".csv\", 'w') as datei:
 #     for i in range(anzahl):
-#         klauf\.pylauf()
-#         datei\.write(str(spiel\[i]) + \" \")
+#         klauf.pylauf()
+#         datei.write(str(spiel\[i]) + \" \")
 
-#     datei\.write(\"treffer\; schwarz\; gruen\; rot\; pair\; impair\; passe\; manque\; spiel\")
+#     datei.write(\"treffer\; schwarz\; gruen\; rot\; pair\; impair\; passe\; manque\; spiel\")
 #     pri
 
 ''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
@@ -3457,9 +3457,9 @@ a = b = c = 5
 foo: int = 1
 
 weight = 23
-print(\"\\nFinal Weight: {}\"\.format(weight))
+print(\"\\nFinal Weight: {}\".format(weight))
 
-print(\"%(language)s has %(number)03d quote types\.\" %
+print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})
 
 def example3():
@@ -3478,12 +3478,2512 @@ def example3():
     s3_hook=S3Hook(aws_conn_id=S3_CONN_ID)
 
     # Create file
-    sample_file = \"{0}_file_{1}\.txt\"\.format(name, file_name) #swap your name here
+    sample_file = \"{0}_file_{1}.txt\".format(name, file_name) #swap your name here
     example_file = open(sample_file, \"w+\")"
     (goto-char (point-min))
     (search-forward "CONN_ID)")
     (py-forward-statement)
     (should (looking-back "file_name)" (line-beginning-position)))))
+
+(ert-deftest py-forward-class-test-dr9XSR ()
+  (py-test-with-temp-buffer-point-min
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+
+    def start(self):
+        \"\"\"
+        Return the start symbol of the grammar
+
+        :rtype: Nonterminal
+        \"\"\"
+        return self._start
+
+    # tricky to balance readability and efficiency here!
+    # can't use set operations as they don't preserve ordering
+    def productions(self, lhs=None, rhs=None, empty=False):
+        \"\"\"
+        Return the grammar productions, filtered by the left-hand side
+        or the first item in the right-hand side.
+
+        :param lhs: Only return productions with the given left-hand side.
+        :param rhs: Only return productions with the given first item
+            in the right-hand side.
+        :param empty: Only return productions with an empty right-hand side.
+        :return: A list of productions matching the given constraints.
+        :rtype: list(Production)
+        \"\"\"
+        if rhs and empty:
+            raise ValueError(
+                \"You cannot select empty and non-empty \" \"productions at the same time.\"
+            )
+
+        # no constraints so return everything
+        if not lhs and not rhs:
+            if not empty:
+                return self._productions
+            else:
+                return self._empty_index.values()
+
+        # only lhs specified so look up its index
+        elif lhs and not rhs:
+            if not empty:
+                return self._lhs_index.get(lhs, \[])
+            elif lhs in self._empty_index:
+                return \[self._empty_index\[lhs]]
+            else:
+                return \[]
+
+        # only rhs specified so look up its index
+        elif rhs and not lhs:
+            return self._rhs_index.get(rhs, \[])
+
+        # intersect
+        else:
+            return \[
+                prod
+                for prod in self._lhs_index.get(lhs, \[])
+                if prod in self._rhs_index.get(rhs, \[])
+            ]
+
+    def leftcorners(self, cat):
+        \"\"\"
+        Return the set of all nonterminals that the given nonterminal
+        can start with, including itself.
+
+        This is the reflexive, transitive closure of the immediate
+        leftcorner relation:  (A > B)  iff  (A -> B beta)
+
+        :param cat: the parent of the leftcorners
+        :type cat: Nonterminal
+        :return: the set of all leftcorners
+        :rtype: set(Nonterminal)
+        \"\"\"
+        return self._leftcorners.get(cat, set(\[cat]))
+
+    def is_leftcorner(self, cat, left):
+        \"\"\"
+        True if left is a leftcorner of cat, where left can be a
+        terminal or a nonterminal.
+
+        :param cat: the parent of the leftcorner
+        :type cat: Nonterminal
+        :param left: the suggested leftcorner
+        :type left: Terminal or Nonterminal
+        :rtype: bool
+        \"\"\"
+        if is_nonterminal(left):
+            return left in self.leftcorners(cat)
+        elif self._leftcorner_words:
+            return left in self._leftcorner_words.get(cat, set())
+        else:
+            return any(
+                left in self._immediate_leftcorner_words.get(parent, set())
+                for parent in self.leftcorners(cat)
+            )
+
+    def leftcorner_parents(self, cat):
+        \"\"\"
+        Return the set of all nonterminals for which the given category
+        is a left corner. This is the inverse of the leftcorner relation.
+
+        :param cat: the suggested leftcorner
+        :type cat: Nonterminal
+        :return: the set of all parents to the leftcorner
+        :rtype: set(Nonterminal)
+        \"\"\"
+        return self._leftcorner_parents.get(cat, set(\[cat]))
+
+    def check_coverage(self, tokens):
+        \"\"\"
+        Check whether the grammar rules cover the given list of tokens.
+        If not, then raise an exception.
+
+        :type tokens: list(str)
+        \"\"\"
+        missing = \[tok for tok in tokens if not self._lexical_index.get(tok)]
+        if missing:
+            missing = ', '.join('%r' % (w,) for w in missing)
+            raise ValueError(
+                \"Grammar does not cover some of the \" \"input words: %r.\" % missing
+            )
+
+    def _calculate_grammar_forms(self):
+        \"\"\"
+        Pre-calculate of which form(s) the grammar is.
+        \"\"\"
+        prods = self._productions
+        self._is_lexical = all(p.is_lexical() for p in prods)
+        self._is_nonlexical = all(p.is_nonlexical() for p in prods if len(p) != 1)
+        self._min_len = min(len(p) for p in prods)
+        self._max_len = max(len(p) for p in prods)
+        self._all_unary_are_lexical = all(p.is_lexical() for p in prods if len(p) == 1)
+
+    def is_lexical(self):
+        \"\"\"
+        Return True if all productions are lexicalised.
+        \"\"\"
+        return self._is_lexical
+
+    def is_nonlexical(self):
+        \"\"\"
+        Return True if all lexical rules are \"preterminals\", that is,
+        unary rules which can be separated in a preprocessing step.
+
+        This means that all productions are of the forms
+        A -> B1 ... Bn (n>=0), or A -> \"s\".
+
+        Note: is_lexical() and is_nonlexical() are not opposites.
+        There are grammars which are neither, and grammars which are both.
+        \"\"\"
+        return self._is_nonlexical
+
+    def min_len(self):
+        \"\"\"
+        Return the right-hand side length of the shortest grammar production.
+        \"\"\"
+        return self._min_len
+
+    def max_len(self):
+        \"\"\"
+        Return the right-hand side length of the longest grammar production.
+        \"\"\"
+        return self._max_len
+
+    def is_nonempty(self):
+        \"\"\"
+        Return True if there are no empty productions.
+        \"\"\"
+        return self._min_len > 0
+
+    def is_binarised(self):
+        \"\"\"
+        Return True if all productions are at most binary.
+        Note that there can still be empty and unary productions.
+        \"\"\"
+        return self._max_len <= 2
+
+    def is_flexible_chomsky_normal_form(self):
+        \"\"\"
+        Return True if all productions are of the forms
+        A -> B C, A -> B, or A -> \"s\".
+        \"\"\"
+        return self.is_nonempty() and self.is_nonlexical() and self.is_binarised()
+
+    def is_chomsky_normal_form(self):
+        \"\"\"
+        Return True if the grammar is of Chomsky Normal Form, i.e. all productions
+        are of the form A -> B C, or A -> \"s\".
+        \"\"\"
+        return self.is_flexible_chomsky_normal_form() and self._all_unary_are_lexical
+
+    def chomsky_normal_form(self, new_token_padding='@$@', flexible=False):
+        \"\"\"
+        Returns a new Grammer that is in chomsky normal
+        :param: new_token_padding
+            Customise new rule formation during binarisation
+        \"\"\"
+        if self.is_chomsky_normal_form():
+            return
+        if self.productions(empty=True):
+            raise ValueError(('Grammar has Empty rules. '
+                              'Cannot deal with them at the moment'))
+
+        # check for mixed rules
+        for rule in self.productions():
+            if rule.is_lexical() and len(rule.rhs()) > 1:
+                raise ValueError(
+                    'Cannot handled mixed rule {} => {}'.format(rule.lhs(),
+                                                                rule.rhs()))
+
+        step1 = CFG.eliminate_start(self)
+        step2 = CFG.binarize(step1, new_token_padding)
+        if flexible:
+            return step2
+        step3 = CFG.remove_unitary_rules(step2)
+        return step3
+
+    @classmethod
+    def remove_unitary_rules(cls, grammar):
+        \"\"\"
+        Remove nonlexical unitary rules and convert them to
+        lexical
+        \"\"\"
+        result = \[]
+        unitary = \[]
+        for rule in grammar.productions():
+            if len(rule) == 1 and rule.is_nonlexical():
+                unitary.append(rule)
+            else:
+                result.append(rule)
+
+        while unitary:
+            rule = unitary.pop(0)
+            for item in grammar.productions(lhs=rule.rhs()\[0]):
+                new_rule = Production(rule.lhs(), item.rhs())
+                if len(new_rule) != 1 or new_rule.is_lexical():
+                    result.append(new_rule)
+                else:
+                    unitary.append(new_rule)
+
+        n_grammar = CFG(grammar.start(), result)
+        return n_grammar
+
+    @classmethod
+    def binarize(cls, grammar, padding='@$@'):
+        \"\"\"
+        Convert all non-binary rules into binary by introducing
+        new tokens.
+        Example::
+        Original:
+            A => B C D
+        After Conversion:
+            A => B A@$@B
+            A@$@B => C D
+        \"\"\"
+        result = \[]
+
+        for rule in grammar.productions():
+            if len(rule.rhs()) > 2:
+                # this rule needs to be broken down
+                left_side = rule.lhs()
+                for k in range(0, len(rule.rhs()) - 2):
+                    tsym = rule.rhs()\[k]
+                    new_sym = Nonterminal(
+                        left_side.symbol() + padding + tsym.symbol()
+                    )
+                    new_production = Production(left_side, (tsym, new_sym))
+                    left_side = new_sym
+                    result.append(new_production)
+                last_prd = Production(left_side, rule.rhs()\[-2:])
+                result.append(last_prd)
+            else:
+                result.append(rule)
+
+        n_grammar = CFG(grammar.start(), result)
+        return n_grammar
+
+    @classmethod
+    def eliminate_start(cls, grammar):
+        \"\"\"
+        Eliminate start rule in case it appears on RHS
+        Example: S -> S0 S1 and S0 -> S1 S
+        Then another rule S0_Sigma -> S is added
+        \"\"\"
+        start = grammar.start()
+        result = \[]
+        need_to_add = None
+        for rule in grammar.productions():
+            if start in rule.rhs():
+                need_to_add = True
+            result.append(rule)
+        if need_to_add:
+            start = Nonterminal('S0_SIGMA')
+            result.append(Production(start, grammar.start()))
+            n_grammar = CFG(start, result)
+            return n_grammar
+        return grammar
+
+    def __repr__(self):
+        return '<Grammar with %d productions>' % len(self._productions)
+
+    def __str__(self):
+        result = 'Grammar with %d productions' % len(self._productions)
+        result += ' (start state = %r)' % self._start
+        for production in self._productions:
+            result += '\\n    %s' % production
+        return result
+
+
+class FeatureGrammar(CFG):
+    \"\"\"
+    A feature-based grammar.  This is equivalent to a
+    \`\`CFG\`\` whose nonterminals are all
+    \`\`FeatStructNonterminal\`\`.
+
+    A grammar consists of a start state and a set of
+    productions.  The set of terminals and nonterminals
+    is implicitly specified by the productions.
+    \"\"\"
+
+    def __init__(self, start, productions):
+        \"\"\"
+        Create a new feature-based grammar, from the given start
+        state and set of \`\`Productions\`\`.
+
+        :param start: The start symbol
+        :type start: FeatStructNonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        \"\"\"
+        CFG.__init__(self, start, productions)
+
+    # The difference with CFG is that the productions are
+    # indexed on the TYPE feature of the nonterminals.
+    # This is calculated by the method _get_type_if_possible().
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._empty_productions = \[]
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = self._get_type_if_possible(prod._lhs)
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = self._get_type_if_possible(prod._rhs\[0])
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                if lhs not in self._empty_index:
+                    self._empty_index\[lhs] = \[]
+                self._empty_index\[lhs].append(prod)
+                self._empty_productions.append(prod)
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    @classmethod
+    def fromstring(
+        cls, input, features=None, logic_parser=None, fstruct_reader=None, encoding=None
+    ):
+        \"\"\"
+        Return a feature structure based grammar.
+
+        :param input: a grammar, either in the form of a string or else
+        as a list of strings.
+        :param features: a tuple of features (default: SLASH, TYPE)
+        :param logic_parser: a parser for lambda-expressions,
+        by default, \`\`LogicParser()\`\`
+        :param fstruct_reader: a feature structure parser
+        (only if features and logic_parser is None)
+        \"\"\"
+        if features is None:
+            features = (SLASH, TYPE)
+
+        if fstruct_reader is None:
+            fstruct_reader = FeatStructReader(
+                features, FeatStructNonterminal, logic_parser=logic_parser
+            )
+        elif logic_parser is not None:
+            raise Exception(
+                '\\'logic_parser\\' and \\'fstruct_reader\\' must ' 'not both be set'
+            )
+
+        start, productions = read_grammar(
+            input, fstruct_reader.read_partial, encoding=encoding
+        )
+        return cls(start, productions)
+
+    def productions(self, lhs=None, rhs=None, empty=False):
+        \"\"\"
+        Return the grammar productions, filtered by the left-hand side
+        or the first item in the right-hand side.
+
+        :param lhs: Only return productions with the given left-hand side.
+        :param rhs: Only return productions with the given first item
+            in the right-hand side.
+        :param empty: Only return productions with an empty right-hand side.
+        :rtype: list(Production)
+        \"\"\"
+        if rhs and empty:
+            raise ValueError(
+                \"You cannot select empty and non-empty \" \"productions at the same time.\"
+            )
+
+        # no constraints so return everything
+        if not lhs and not rhs:
+            if empty:
+                return self._empty_productions
+            else:
+                return self._productions
+
+        # only lhs specified so look up its index
+        elif lhs and not rhs:
+            if empty:
+                return self._empty_index.get(self._get_type_if_possible(lhs), \[])
+            else:
+                return self._lhs_index.get(self._get_type_if_possible(lhs), \[])
+
+        # only rhs specified so look up its index
+        elif rhs and not lhs:
+            return self._rhs_index.get(self._get_type_if_possible(rhs), \[])
+
+        # intersect
+        else:
+            return \[
+                prod
+                for prod in self._lhs_index.get(self._get_type_if_possible(lhs), \[])
+                if prod in self._rhs_index.get(self._get_type_if_possible(rhs), \[])
+            ]
+
+    def leftcorners(self, cat):
+        \"\"\"
+        Return the set of all words that the given category can start with.
+        Also called the \"first set\" in compiler construction.
+        \"\"\"
+        raise NotImplementedError(\"Not implemented yet\")
+
+    def leftcorner_parents(self, cat):
+        \"\"\"
+        Return the set of all categories for which the given category
+        is a left corner.
+        \"\"\"
+        raise NotImplementedError(\"Not implemented yet\")
+
+    def _get_type_if_possible(self, item):
+        \"\"\"
+        Helper function which returns the \`\`TYPE\`\` feature of the \`\`item\`\`,
+        if it exists, otherwise it returns the \`\`item\`\` itself
+        \"\"\"
+        if isinstance(item, dict) and TYPE in item:
+            return FeatureValueType(item\[TYPE])
+        else:
+            return item
+
+
+@total_ordering
+@python_2_unicode_compatible
+class FeatureValueType(object):
+    \"\"\"
+    A helper class for \`\`FeatureGrammars\`\`, designed to be different
+    from ordinary strings.  This is to stop the \`\`FeatStruct\`\`
+    \`\`FOO\[]\`\` from being compare equal to the terminal \"FOO\".
+    \"\"\"
+
+    def __init__(self, value):
+        self._value = value
+        self._hash = hash(value)
+
+    def __repr__(self):
+        return '<%s>' % self._value
+
+    def __eq__(self, other):
+        return type(self) == type(other) and self._value == other._value
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        if not isinstance(other, FeatureValueType):
+            raise_unorderable_types(\"<\", self, other)
+        return self._value < other._value
+
+    def __hash__(self):
+        return self._hash
+
+
+@python_2_unicode_compatible
+class DependencyGrammar(object):
+    \"\"\"
+    A dependency grammar.  A DependencyGrammar consists of a set of
+    productions.  Each production specifies a head/modifier relationship
+    between a pair of words.
+    \"\"\"
+
+    def __init__(self, productions):
+        \"\"\"
+        Create a new dependency grammar, from the set of \`\`Productions\`\`.
+
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        \"\"\"
+        self._productions = productions
+
+    @classmethod
+    def fromstring(cls, input):
+        productions = \[]
+        for linenum, line in enumerate(input.split('\\n')):
+            line = line.strip()
+            if line.startswith('#') or line == '':
+                continue
+            try:
+                productions += _read_dependency_production(line)
+            except ValueError:
+                raise ValueError('Unable to parse line %s: %s' % (linenum, line))
+        if len(productions) == 0:
+            raise ValueError('No productions found!')
+        return cls(productions)
+
+    def contains(self, head, mod):
+        \"\"\"
+        :param head: A head word.
+        :type head: str
+        :param mod: A mod word, to test as a modifier of 'head'.
+        :type mod: str
+
+        :return: true if this \`\`DependencyGrammar\`\` contains a
+            \`\`DependencyProduction\`\` mapping 'head' to 'mod'.
+        :rtype: bool
+        \"\"\"
+        for production in self._productions:
+            for possibleMod in production._rhs:
+                if production._lhs == head and possibleMod == mod:
+                    return True
+        return False
+
+    def __contains__(self, head, mod):
+        \"\"\"
+        Return True if this \`\`DependencyGrammar\`\` contains a
+        \`\`DependencyProduction\`\` mapping 'head' to 'mod'.
+
+        :param head: A head word.
+        :type head: str
+        :param mod: A mod word, to test as a modifier of 'head'.
+        :type mod: str
+        :rtype: bool
+        \"\"\"
+        for production in self._productions:
+            for possibleMod in production._rhs:
+                if production._lhs == head and possibleMod == mod:
+                    return True
+        return False
+
+    #   # should be rewritten, the set comp won't work in all comparisons
+    # def contains_exactly(self, head, modlist):
+    #   for production in self._productions:
+    #       if(len(production._rhs) == len(modlist)):
+    #           if(production._lhs == head):
+    #               set1 = Set(production._rhs)
+    #               set2 = Set(modlist)
+    #               if(set1 == set2):
+    #                   return True
+    #   return False
+
+    def __str__(self):
+        \"\"\"
+        Return a verbose string representation of the \`\`DependencyGrammar\`\`
+
+        :rtype: str
+        \"\"\"
+        str = 'Dependency grammar with %d productions' % len(self._productions)
+        for production in self._productions:
+            str += '\\n  %s' % production
+        return str
+
+    def __repr__(self):
+        \"\"\"
+        Return a concise string representation of the \`\`DependencyGrammar\`\`
+        \"\"\"
+        return 'Dependency grammar with %d productions' % len(self._productions)
+
+
+@python_2_unicode_compatible
+class ProbabilisticDependencyGrammar(object):
+    \"\"\"
+
+    \"\"\"
+
+    def __init__(self, productions, events, tags):
+        self._productions = productions
+        self._events = events
+        self._tags = tags
+
+    def contains(self, head, mod):
+        \"\"\"
+        Return True if this \`\`DependencyGrammar\`\` contains a
+        \`\`DependencyProduction\`\` mapping 'head' to 'mod'.
+
+        :param head: A head word.
+        :type head: str
+        :param mod: A mod word, to test as a modifier of 'head'.
+        :type mod: str
+        :rtype: bool
+        \"\"\"
+        for production in self._productions:
+            for possibleMod in production._rhs:
+                if production._lhs == head and possibleMod == mod:
+                    return True
+        return False
+
+    def __str__(self):
+        \"\"\"
+        Return a verbose string representation of the \`\`ProbabilisticDependencyGrammar\`\`
+
+        :rtype: str
+        \"\"\"
+        str = 'Statistical dependency grammar with %d productions' % len(
+            self._productions
+        )
+        for production in self._productions:
+            str += '\\n  %s' % production
+        str += '\\nEvents:'
+        for event in self._events:
+            str += '\\n  %d:%s' % (self._events\[event], event)
+        str += '\\nTags:'
+        for tag_word in self._tags:
+            str += '\\n %s:\\t(%s)' % (tag_word, self._tags\[tag_word])
+        return str
+
+    def __repr__(self):
+        \"\"\"
+        Return a concise string representation of the \`\`ProbabilisticDependencyGrammar\`\`
+        \"\"\"
+        return 'Statistical Dependency grammar with %d productions' % len(
+            self._productions
+        )
+
+
+class PCFG(CFG):
+    \"\"\"
+    A probabilistic context-free grammar.  A PCFG consists of a
+    start state and a set of productions with probabilities.  The set of
+    terminals and nonterminals is implicitly specified by the productions.
+
+    PCFG productions use the \`\`ProbabilisticProduction\`\` class.
+    \`\`PCFGs\`\` impose the constraint that the set of productions with
+    any given left-hand-side must have probabilities that sum to 1
+    (allowing for a small margin of error).
+
+    If you need efficient key-based access to productions, you can use
+    a subclass to implement it.
+
+    :type EPSILON: float
+    :cvar EPSILON: The acceptable margin of error for checking that
+        productions with a given left-hand side have probabilities
+        that sum to 1.
+    \"\"\"
+
+    EPSILON = 0.01
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`ProbabilisticProductions\`\`.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :raise ValueError: if the set of productions with any left-hand-side
+            do not have probabilities that sum to a value within
+            EPSILON of 1.
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        CFG.__init__(self, start, productions, calculate_leftcorners)
+
+        # Make sure that the probabilities sum to one.
+        probs = {}
+        for production in productions:
+            probs\[production.lhs()] = probs.get(production.lhs(), 0) + production.prob()
+        for (lhs, p) in probs.items():
+            if not ((1 - PCFG.EPSILON) < p < (1 + PCFG.EPSILON)):
+                raise ValueError(\"Productions for %r do not sum to 1\" % lhs)
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return a probabilistic context-free grammar corresponding to the
+        input string(s).
+
+        :param input: a grammar, either in the form of a string or else
+             as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, probabilistic=True, encoding=encoding
+        )
+        return cls(start, productions)
+
+
+#################################################################
+# Inducing Grammars
+#################################################################
+
+# Contributed by Nathan Bodenstab <bodenstab@cslu.ogi.edu>
+
+
+def induce_pcfg(start, productions):
+    \"\"\"
+    Induce a PCFG grammar from a list of productions.
+
+    The probability of a production A -> B C in a PCFG is:
+
+    |                count(A -> B C)
+    |  P(B, C | A) = ---------------       where \\* is any right hand side
+    |                 count(A -> \\*)
+
+    :param start: The start symbol
+    :type start: Nonterminal
+    :param productions: The list of productions that defines the grammar
+    :type productions: list(Production)
+    \"\"\"
+    # Production count: the number of times a given production occurs
+    pcount = {}
+
+    # LHS-count: counts the number of times a given lhs occurs
+    lcount = {}
+
+    for prod in productions:
+        lcount\[prod.lhs()] = lcount.get(prod.lhs(), 0) + 1
+        pcount\[prod] = pcount.get(prod, 0) + 1
+
+    prods = \[
+        ProbabilisticProduction(p.lhs(), p.rhs(), prob=pcount\[p] / lcount\[p.lhs()])
+        for p in pcount
+    ]
+    return PCFG(start, prods)
+
+
+#################################################################
+# Helper functions for reading productions
+#################################################################
+
+
+def _read_cfg_production(input):
+    \"\"\"
+    Return a list of context-free \`\`Productions\`\`.
+    \"\"\"
+    return _read_production(input, standard_nonterm_parser)
+
+
+def _read_pcfg_production(input):
+    \"\"\"
+    Return a list of PCFG \`\`ProbabilisticProductions\`\`.
+    \"\"\"
+    return _read_production(input, standard_nonterm_parser, probabilistic=True)
+
+
+def _read_fcfg_production(input, fstruct_reader):
+    \"\"\"
+    Return a list of feature-based \`\`Productions\`\`.
+    \"\"\"
+    return _read_production(input, fstruct_reader)
+
+
+# Parsing generic grammars
+
+_ARROW_RE = re.compile(r'\\s* -> \\s*', re.VERBOSE)
+_PROBABILITY_RE = re.compile(r'( \\\[ \[\\d\\.]+ \\] ) \\s*', re.VERBOSE)
+_TERMINAL_RE = re.compile(r'( \"\[^\"]+\" | \\'\[^\\']+\\' ) \\s*', re.VERBOSE)
+_DISJUNCTION_RE = re.compile(r'\\| \\s*', re.VERBOSE)
+
+
+def _read_production(line, nonterm_parser, probabilistic=False):
+    \"\"\"
+    Parse a grammar rule, given as a string, and return
+    a list of productions.
+    \"\"\"
+    pos = 0
+
+    # Parse the left-hand side.
+    lhs, pos = nonterm_parser(line, pos)
+
+    # Skip over the arrow.
+    m = _ARROW_RE.match(line, pos)
+    if not m:
+        raise ValueError('Expected an arrow')
+    pos = m.end()
+
+    # Parse the right hand side.
+    probabilities = \[0.0]
+    rhsides = \[\[]]
+    while pos < len(line):
+        # Probability.
+        m = _PROBABILITY_RE.match(line, pos)
+        if probabilistic and m:
+            pos = m.end()
+            probabilities\[-1] = float(m.group(1)\[1:-1])
+            if probabilities\[-1] > 1.0:
+                raise ValueError(
+                    'Production probability %f, '
+                    'should not be greater than 1.0' % (probabilities\[-1],)
+                )
+
+        # String -- add terminal.
+        elif line\[pos] in \"\\'\\\"\":
+            m = _TERMINAL_RE.match(line, pos)
+            if not m:
+                raise ValueError('Unterminated string')
+            rhsides\[-1].append(m.group(1)\[1:-1])
+            pos = m.end()
+
+        # Vertical bar -- start new rhside.
+        elif line\[pos] == '|':
+            m = _DISJUNCTION_RE.match(line, pos)
+            probabilities.append(0.0)
+            rhsides.append(\[])
+            pos = m.end()
+
+        # Anything else -- nonterminal.
+        else:
+            nonterm, pos = nonterm_parser(line, pos)
+            rhsides\[-1].append(nonterm)
+
+    if probabilistic:
+        return \[
+            ProbabilisticProduction(lhs, rhs, prob=probability)
+            for (rhs, probability) in zip(rhsides, probabilities)
+        ]
+    else:
+        return \[Production(lhs, rhs) for rhs in rhsides]
+
+
+#################################################################
+# Reading Phrase Structure Grammars
+#################################################################
+
+
+def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
+    \"\"\"
+    Return a pair consisting of a starting category and a list of
+    \`\`Productions\`\`.
+
+    :param input: a grammar, either in the form of a string or else
+        as a list of strings.
+    :param nonterm_parser: a function for parsing nonterminals.
+        It should take a \`\`(string, position)\`\` as argument and
+        return a \`\`(nonterminal, position)\`\` as result.
+    :param probabilistic: are the grammar rules probabilistic?
+    :type probabilistic: bool
+    :param encoding: the encoding of the grammar, if it is a binary string
+    :type encoding: str
+    \"\"\"
+    if encoding is not None:
+        input = input.decode(encoding)
+    if isinstance(input, string_types):
+        lines = input.split('\\n')
+    else:
+        lines = input
+
+    start = None
+    productions = \[]
+    continue_line = ''
+    for linenum, line in enumerate(lines):
+        line = continue_line + line.strip()
+        if line.startswith('#') or line == '':
+            continue
+        if line.endswith('\\'):
+            continue_line = line\[:-1].rstrip() + ' '
+            continue
+        continue_line = ''
+        try:
+            if line\[0] == '%':
+                directive, args = line\[1:].split(None, 1)
+                if directive == 'start':
+                    start, pos = nonterm_parser(args, 0)
+                    if pos != len(args):
+                        raise ValueError('Bad argument to start directive')
+                else:
+                    raise ValueError('Bad directive')
+            else:
+                # expand out the disjunctions on the RHS
+                productions += _read_production(line, nonterm_parser, probabilistic)
+        except ValueError as e:
+            raise ValueError('Unable to parse line %s: %s\\n%s' % (linenum + 1, line, e))
+
+    if not productions:
+        raise ValueError('No productions found!')
+    if not start:
+        start = productions\[0].lhs()
+    return (start, productions)
+
+
+_STANDARD_NONTERM_RE = re.compile('( \[\\w/]\[\\w/^<>-]* ) \\s*', re.VERBOSE)
+
+
+def standard_nonterm_parser(string, pos):
+    m = _STANDARD_NONTERM_RE.match(string, pos)
+    if not m:
+        raise ValueError('Expected a nonterminal, found: ' + string\[pos:])
+    return (Nonterminal(m.group(1)), m.end())
+
+
+#################################################################
+# Reading Dependency Grammars
+#################################################################
+
+_READ_DG_RE = re.compile(
+    r'''^\\s*                # leading whitespace
+                              ('\[^']+')\\s*        # single-quoted lhs
+                              (?:\[-=]+>)\\s*        # arrow
+                              (?:(                 # rhs:
+                                   \"\[^\"]+\"         # doubled-quoted terminal
+                                 | '\[^']+'         # single-quoted terminal
+                                 | \\|              # disjunction
+                                 )
+                                 \\s*)              # trailing space
+                                 *$''',  # zero or more copies
+    re.VERBOSE,
+)
+_SPLIT_DG_RE = re.compile(r'''('\[^']'|\[-=]+>|\"\[^\"]+\"|'\[^']+'|\\|)''')
+
+
+def _read_dependency_production(s):
+    if not _READ_DG_RE.match(s):
+        raise ValueError('Bad production string')
+    pieces = _SPLIT_DG_RE.split(s)
+    pieces = \[p for i, p in enumerate(pieces) if i % 2 == 1]
+    lhside = pieces\[0].strip('\\'\\\"')
+    rhsides = \[\[]]
+    for piece in pieces\[2:]:
+        if piece == '|':
+            rhsides.append(\[])
+        else:
+            rhsides\[-1].append(piece.strip('\\'\\\"'))
+    return \[DependencyProduction(lhside, rhside) for rhside in rhsides]
+
+
+#################################################################
+# Demonstration
+#################################################################
+
+
+def cfg_demo():
+    \"\"\"
+    A demonstration showing how \`\`CFGs\`\` can be created and used.
+    \"\"\"
+
+    from nltk import nonterminals, Production, CFG
+
+    # Create some nonterminals
+    S, NP, VP, PP = nonterminals('S, NP, VP, PP')
+    N, V, P, Det = nonterminals('N, V, P, Det')
+    VP_slash_NP = VP / NP
+
+    print('Some nonterminals:', \[S, NP, VP, PP, N, V, P, Det, VP / NP])
+    print('    S.symbol() =>', repr(S.symbol()))
+    print()
+
+    print(Production(S, \[NP]))
+
+    # Create some Grammar Productions
+    grammar = CFG.fromstring(
+        \"\"\"
+      S -> NP VP
+      PP -> P NP
+      NP -> Det N | NP PP
+      VP -> V NP | VP PP
+      Det -> 'a' | 'the'
+      N -> 'dog' | 'cat'
+      V -> 'chased' | 'sat'
+      P -> 'on' | 'in'
+    \"\"\"
+    )
+
+    print('A Grammar:', repr(grammar))
+    print('    grammar.start()       =>', repr(grammar.start()))
+    print('    grammar.productions() =>', end=' ')
+    # Use string.replace(...) is to line-wrap the output.
+    print(repr(grammar.productions()).replace(',', ',\\n' + ' ' * 25))
+    print()
+
+
+toy_pcfg1 = PCFG.fromstring(
+    \"\"\"
+    S -> NP VP \[1.0]
+    NP -> Det N \[0.5] | NP PP \[0.25] | 'John' \[0.1] | 'I' \[0.15]
+    Det -> 'the' \[0.8] | 'my' \[0.2]
+    N -> 'man' \[0.5] | 'telescope' \[0.5]
+    VP -> VP PP \[0.1] | V NP \[0.7] | V \[0.2]
+    V -> 'ate' \[0.35] | 'saw' \[0.65]
+    PP -> P NP \[1.0]
+    P -> 'with' \[0.61] | 'under' \[0.39]
+    \"\"\"
+)
+
+toy_pcfg2 = PCFG.fromstring(
+    \"\"\"
+    S    -> NP VP         \[1.0]
+    VP   -> V NP          \[.59]
+    VP   -> V             \[.40]
+    VP   -> VP PP         \[.01]
+    NP   -> Det N         \[.41]
+    NP   -> Name          \[.28]
+    NP   -> NP PP         \[.31]
+    PP   -> P NP          \[1.0]
+    V    -> 'saw'         \[.21]
+    V    -> 'ate'         \[.51]
+    V    -> 'ran'         \[.28]
+    N    -> 'boy'         \[.11]
+    N    -> 'cookie'      \[.12]
+    N    -> 'table'       \[.13]
+    N    -> 'telescope'   \[.14]
+    N    -> 'hill'        \[.5]
+    Name -> 'Jack'        \[.52]
+    Name -> 'Bob'         \[.48]
+    P    -> 'with'        \[.61]
+    P    -> 'under'       \[.39]
+    Det  -> 'the'         \[.41]
+    Det  -> 'a'           \[.31]
+    Det  -> 'my'          \[.28]
+    \"\"\"
+)
+
+
+def pcfg_demo():
+    \"\"\"
+    A demonstration showing how a \`\`PCFG\`\` can be created and used.
+    \"\"\"
+
+    from nltk.corpus import treebank
+    from nltk import treetransforms
+    from nltk import induce_pcfg
+    from nltk.parse import pchart
+
+    pcfg_prods = toy_pcfg1.productions()
+
+    pcfg_prod = pcfg_prods\[2]
+    print('A PCFG production:', repr(pcfg_prod))
+    print('    pcfg_prod.lhs()  =>', repr(pcfg_prod.lhs()))
+    print('    pcfg_prod.rhs()  =>', repr(pcfg_prod.rhs()))
+    print('    pcfg_prod.prob() =>', repr(pcfg_prod.prob()))
+    print()
+
+    grammar = toy_pcfg2
+    print('A PCFG grammar:', repr(grammar))
+    print('    grammar.start()       =>', repr(grammar.start()))
+    print('    grammar.productions() =>', end=' ')
+    # Use .replace(...) is to line-wrap the output.
+    print(repr(grammar.productions()).replace(',', ',\\n' + ' ' * 26))
+    print()
+
+    # extract productions from three trees and induce the PCFG
+    print(\"Induce PCFG grammar from treebank data:\")
+
+    productions = \[]
+    item = treebank._fileids\[0]
+    for tree in treebank.parsed_sents(item)\[:3]:
+        # perform optional tree transformations, e.g.:
+        tree.collapse_unary(collapsePOS=False)
+        tree.chomsky_normal_form(horzMarkov=2)
+
+        productions += tree.productions()
+
+    S = Nonterminal('S')
+    grammar = induce_pcfg(S, productions)
+    print(grammar)
+    print()
+
+    print(\"Parse sentence using induced grammar:\")
+
+    parser = pchart.InsideChartParser(grammar)
+    parser.trace(3)
+
+    # doesn't work as tokens are different:
+    # sent = treebank.tokenized('wsj_0001.mrg')\[0]
+
+    sent = treebank.parsed_sents(item)\[0].leaves()
+    print(sent)
+    for parse in parser.parse(sent):
+        print(parse)
+
+
+def fcfg_demo():
+    import nltk.data
+
+    g = nltk.data.load('grammars/book_grammars/feat0.fcfg')
+    print(g)
+    print()
+
+
+def dg_demo():
+    \"\"\"
+    A demonstration showing the creation and inspection of a
+    \`\`DependencyGrammar\`\`.
+    \"\"\"
+    grammar = DependencyGrammar.fromstring(
+        \"\"\"
+    'scratch' -> 'cats' | 'walls'
+    'walls' -> 'the'
+    'cats' -> 'the'
+    \"\"\"
+    )
+    print(grammar)
+
+
+def sdg_demo():
+    \"\"\"
+    A demonstration of how to read a string representation of
+    a CoNLL format dependency tree.
+    \"\"\"
+    from nltk.parse import DependencyGraph
+
+    dg = DependencyGraph(
+        \"\"\"
+    1   Ze                ze                Pron  Pron  per|3|evofmv|nom                 2   su      _  _
+    2   had               heb               V     V     trans|ovt|1of2of3|ev             0   ROOT    _  _
+    3   met               met               Prep  Prep  voor                             8   mod     _  _
+    4   haar              haar              Pron  Pron  bez|3|ev|neut|attr               5   det     _  _
+    5   moeder            moeder            N     N     soort|ev|neut                    3   obj1    _  _
+    6   kunnen            kan               V     V     hulp|ott|1of2of3|mv              2   vc      _  _
+    7   gaan              ga                V     V     hulp|inf                         6   vc      _  _
+    8   winkelen          winkel            V     V     intrans|inf                      11  cnj     _  _
+    9   ,                 ,                 Punc  Punc  komma                            8   punct   _  _
+    10  zwemmen           zwem              V     V     intrans|inf                      11  cnj     _  _
+    11  of                of                Conj  Conj  neven                            7   vc      _  _
+    12  terrassen         terras            N     N     soort|mv|neut                    11  cnj     _  _
+    13  .                 .                 Punc  Punc  punt                             12  punct   _  _
+    \"\"\"
+    )
+    tree = dg.tree()
+    print(tree.pprint())
+
+
+def demo():
+    cfg_demo()
+    pcfg_demo()
+    fcfg_demo()
+    dg_demo()
+    sdg_demo()
+
+
+if __name__ == '__main__':
+    demo()
+
+__all__ = \[
+    'Nonterminal',
+    'nonterminals',
+    'CFG',
+    'Production',
+    'PCFG',
+    'ProbabilisticProduction',
+    'DependencyGrammar',
+    'DependencyProduction',
+    'ProbabilisticDependencyGrammar',
+    'induce_pcfg',
+    'read_grammar',
+]
+"
+    (goto-char (point-min))
+    (py-forward-class)
+    (should (looking-back "return result" (line-beginning-position)))))
+
+(ert-deftest py-up-class-test-F8GRke ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "p")
+    (py-up)
+    (should
+     (looking-at "return"))))
+
+(ert-deftest py-up-class-test-Og0K4A ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "return")
+    (py-up)
+    (should
+     (looking-at "def fromstring(cls, input, encoding=None):"))))
+
+(ert-deftest py-up-class-test-Se4t1J ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "encoding")
+    (py-up)
+    (should
+     (looking-at "start, productions = read_grammar("))))
+
+(ert-deftest py-up-class-test-7dtO1U ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "read_grammar(")
+    (back-to-indentation)
+    (py-up)
+    (should
+     (looking-at "def fromstring(cls, input, encoding=None):"))))
+
+(ert-deftest py-up-class-test-KpIGDt ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward ":param")
+    (py-up)
+    (should
+     (looking-at "def fromstring(cls, input, encoding=None):"))))
+
+(ert-deftest py-up-class-test-NhpV4A ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "@classmethod")
+    (py-up)
+    (should
+     (looking-at "class CFG(object):"))))
+
+(ert-deftest py-up-class-test-xDsoCr ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "left, set")
+    (py-up)
+    (should
+     (looking-at "lc.update(self._immediate_leftcorner_words"))))
+
+(ert-deftest py-up-class-test-IoGRnM ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "for left")
+    (py-up)
+    (should
+     (looking-at "for cat in self._leftcorners:"))))
+
+(ert-deftest py-up-class-test-44LI5k ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "self._leftcorner_words = None")
+    (py-up)
+    (should
+     (looking-at "if nr_leftcorner_words"))))
+
+(ert-deftest py-up-class-test-ywlCYM ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "In that case it is better")
+    (py-up)
+    (should
+     (looking-at "if nr_leftcorner_words"))))
+
+
+
+
+
+
+
+
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

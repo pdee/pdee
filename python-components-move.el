@@ -472,5 +472,25 @@ Return position of successful, nil of not started from inside."
 ;; 	(and beg (setq erg (py--forward-assignment-intern)))
 ;; 	erg))))
 
+
+(defun py-up ()
+  (interactive)
+  (cond
+   ((py--beginning-of-class-p)
+	 (py-up-class (current-indentation)))
+   ((py--beginning-of-def-p)
+	 (py-up-def (current-indentation)))
+   ((py--beginning-of-block-p)
+	 (py-up-block (current-indentation)))
+   ((py--beginning-of-clause-p)
+	 (py-backward-block (current-indentation)))
+   ((py-beginning-of-statement-p)
+	 (py-backward-block-or-clause))
+   (t (py-backward-statement)) 
+   ))
+
+
+
+
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

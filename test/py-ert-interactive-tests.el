@@ -454,7 +454,7 @@ exercise()"
     (message "prompt-45: %s" (buffer-name (current-buffer)))
     (message "Nach Prompt: %s" (buffer-substring-no-properties (1- (line-beginning-position)) (point)))
     (sit-for 1)
-    (should (looking-back pdbtrack-input-prompt))))
+    (should (looking-back pdbtrack-input-prompt (line-beginning-position)))))
 
 (ert-deftest py-pdbtrack-is-tracking-45-test-N1CTvI ()
   (py-test-with-temp-buffer
