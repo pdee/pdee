@@ -135,7 +135,6 @@ string or comment."
     (self-insert-command (prefix-numeric-value arg))))
 
 ;; Electric deletion
-
 (defun py-empty-out-list-backward ()
   "Deletes all elements from list before point."
   (interactive "*")
@@ -160,83 +159,62 @@ string or comment."
          (insert-char thischar 1)
          (forward-char -1))))
 
-;; TODO: PRouleau Question:  Is there a command to toggle
-;;       py-electric-kill-backward-p?  I saw a menu entry
-;;       but not a command for it.
-;;       - What is the purpose of the optional argument ARG?
-;;         Should it not be used to identify the number of characters to
-;;         delete?
+;; TODO: PRouleau Question: [...]
+
 ;;       - Also, the mapping for [backspace] in python-mode-map only works in
 ;;         graphics mode, it does not work when Emacs runs in terminal mode.
 ;;         It would be nice to have a binding that works in terminal mode too.
-(defun py-electric-backspace (&optional arg)
-  "Delete preceding character or level of indentation.
 
-With optinal ARG, kill that many chars before point.
+(defun py-electric-backspace (&optional arg)
+  "Delete indentation level of whitespace, or ARG following characters.
 
 Delete region when both variable `delete-active-region' and (use-region-p)
 are non-nil.
 
-Unless at indentation delete whitespace before point.
-With `py-electric-kill-backward-p' at end of a list, empty that list.
+With [universal-argument], deactivate electric-behavior this time, delete just one character.
+"
+  (interactive "*P")
+  (let ((backward-delete-char-untabify-method 'untabify)
+	(indent (py-compute-indentation)))
+    (cond ((eq 4 (prefix-numeric-value arg))
+	   (backward-delete-char-untabify 1))
+	  ((use-region-p)
+           ;; Emacs23 doesn't know that var
+           (if (boundp 'delete-active-region)
+               (delete-active-region)
+	     (delete-region (region-beginning) (region-end))))
+	  ((looking-at "[ \t]*$")
+	   (end-of-line)
+	   (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point))))
+	  (t
+	   (while (and (member (char-before)  (list 9 32 ?\r))
+		       (< indent (current-column)))
+	     (backward-delete-char-untabify 1))
+	   ))))
 
-Returns column reached."
-  (interactive "p*")
-  (or arg (setq arg 1))
-  (cond
-   ((< 1 (prefix-numeric-value arg))
-    (delete-char (- arg)))
-   ((and (use-region-p)
-         ;; Emacs23 doesn't know that var
-         (boundp 'delete-active-region)
-         delete-active-region)
-    (backward-delete-char-untabify arg))
-   ;; (delete-region (region-beginning) (region-end)))
-   ((looking-back "^[ \t]+" (line-beginning-position))
-    (let* ((remains (% (current-column) py-indent-offset)))
-      (if (< 0 remains)
-          (delete-char (- remains))
-        (indent-line-to (- (current-indentation) py-indent-offset)))))
-   ;;
-   ((and py-electric-kill-backward-p
-         (member (char-before) (list ?\) ?\] ?\})))
-    (py-empty-out-list-backward))
-   ;;
-   ((progn (push-mark) (< 0 (abs (skip-chars-backward " \t" (line-beginning-position)))))
-    (delete-region (point) (mark)))
-   ;;
-   (t
-    (delete-char (- arg))))
-  (current-column))
-
-;; TODO: PRouleau: the key binding in python-mode-map for command only works
-;;       when Emacs runs in Graphics mode, not in terminal mode. It'd be nice
-;;       to have a binding that works in terminal mode too.
 (defun py-electric-delete (&optional arg)
   "Delete indentation level of whitespace, or ARG following characters.
 Delete region when both variable `delete-active-region' and (use-region-p)
-are non-nil."
-  (interactive "*p")
-  (let ((orig (point)))
+are non-nil.
+
+With [universal-argument], deactivate electric-behavior this time, delete just one character.
+"
+  (interactive "P*")
+  (let ((indpos (+ (line-beginning-position) (py-compute-indentation))))
     (cond
+     ((eq 4 (prefix-numeric-value arg))
+	   (delete-char 1))
      ;; delete active region if one is active
-     ((and (use-region-p)
-           ;; Emacs23 doesn't know that var
-           (boundp 'delete-active-region)
-           delete-active-region)
-      (delete-region (region-beginning) (region-end)))
-     ;; delete an indentation worth of whitespace
-     ((save-excursion
-        (and (< (current-column) (current-indentation))
-             (<= py-indent-offset (skip-chars-forward " \t"))))
-      (goto-char orig)
-      (delete-char py-indent-offset))
-     ;; delete all whitespace if less than indentation level
-     ((< 0 (skip-chars-forward " \t"))
-      (delete-region orig (point)))
-     ;; otherwise delete
-     (t
-      (delete-char (or arg 1))))))
+     ((use-region-p)
+      ;; Emacs23 doesn't know that var
+      (if (boundp 'delete-active-region)
+          (delete-active-region)
+	(delete-region (region-beginning) (region-end))))
+     ((looking-at "[ \t]*")
+      (delete-region (if (< (match-beginning 0)  indpos) indpos (match-beginning 0)) (match-end 0))
+      (py-electric-backspace))
+     (t (py-electric-backspace)
+	))))
 
 ;; TODO: PRouleau: the electric yank mechanism is currently commented out.
 ;;       Is this a feature to keep?  Was it used?  I can see a benefit for it.

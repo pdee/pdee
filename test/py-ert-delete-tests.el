@@ -21,75 +21,76 @@
 
 (require 'py-setup-ert-tests)
 
-(ert-deftest py-ert-electric-kill-backward-bracket-test-COL0W9 ()
-  (let ((py-electric-kill-backward-p t))
-    (py-test-with-temp-buffer
-      "mystring[0:1]"
-      (goto-char (point-max))
-      (py-electric-backspace 1)
-      (should (eq ?\] (char-after))))))
-
-(ert-deftest py-ert-electric-kill-backward-region-test-i6f2E0 ()
-  (py-test-with-temp-buffer
-      "mystring[0:1]     "
-    (goto-char (point-max))
-    (let ((py-electric-kill-backward-p t)
-	  (delete-active-region t)
-	  (transient-mark-mode t))
-      (skip-chars-backward " \t\r\n\f")
-      (set-mark (point))
-      (goto-char (point-max))
-      (py-electric-backspace 1)
-      (should (eq ?\] (char-before))))))
-
-(ert-deftest py-ert-electric-delete-eob-test-Az64kR ()
-  (py-test-with-temp-buffer
-      "mystring[0:1]     "
-    (goto-char (point-max))
-    (let ((py-electric-kill-backward-p t)
-	  (delete-active-region t)
-	  (transient-mark-mode t))
-      (skip-chars-backward " \t")
-      (set-mark (point))
-      (skip-chars-forward " \t")
-      (py-electric-delete)
-      (should (eobp)))))
-
-(ert-deftest py-ert-electric-delete-test-mWjz2H ()
-  (let ((py-electric-kill-backward-p t)
-	(delete-active-region t)
-	(transient-mark-mode t))
-    (py-test-with-temp-buffer
-	"mystring[0:1]     "
-      (goto-char (point-max))
-      (set-mark (point))
-      (skip-chars-backward " \t\r\n\f")
-      (py-electric-delete)
-      (should (eobp)))))
-
-(ert-deftest py-ert-electric-kill-backward-paren-test-2H1bGy ()
-  (let ((py-electric-kill-backward-p t))
-    (py-test-with-temp-buffer
-      "mystring(\"asdf\")"
-      (goto-char (point-max))
-      (py-electric-backspace 1)
-      (should (eq ?\) (char-after)))
-      )))
-
-(ert-deftest py-ert-electric-kill-backward-brace-test-4Osdip ()
-  (let ((py-electric-kill-backward-p t))
-    (py-test-with-temp-buffer
-      "mystring{0 . 1}"
-      (goto-char (point-max))
-      (py-electric-backspace 1)
-      (should (eq ?\} (char-after))))))
-
 (ert-deftest py-ert-electric-kill-backward-arg-test-b118 ()
     (py-test-with-temp-buffer
       "asdf    "
       (goto-char (point-max))
-      (py-electric-backspace 4)
+      (py-electric-backspace)
       (should (eq ?f (char-before)))))
+
+(ert-deftest extra-trailing-space-120-M6opJl ()
+  (py-test-with-temp-buffer
+      "def bar():
+x = 7"
+    (beginning-of-line)
+    (insert (make-string 4 32))
+    (end-of-line) 
+    (insert (make-string 1 32))
+    (py-electric-backspace)
+    (should (eolp))
+    (should (eq (char-before) ?7))))
+
+(ert-deftest extra-trailing-space-120-pKGvL2 ()
+  (py-test-with-temp-buffer
+      "def bar():
+x = 7"
+    (beginning-of-line)
+    (insert (make-string 4 32))
+    (insert (make-string 1 9))
+    (insert (make-string 2 32))
+    (when py-debug-p (whitespace-mode))
+    (backward-char 2)
+    (py-electric-delete)
+    (should (eq (current-column) 4))))
+
+(ert-deftest extra-trailing-space-120-WX8PGG ()
+  (py-test-with-temp-buffer
+      "def bar():
+x = 7"
+    (goto-char (point-max))
+    (beginning-of-line)
+    (insert (make-string 4 32))
+    (insert (make-string 1 9))
+    (insert (make-string 2 32))
+    (when py-debug-p (whitespace-mode))
+    (py-electric-backspace)
+    (should (eq (current-column) 4))))
+
+(ert-deftest extra-trailing-space-120-NahnQx ()
+  (py-test-with-temp-buffer
+      "def bar():
+x = 7"
+    (beginning-of-line)
+    (insert (make-string 4 32))
+    (end-of-line)
+    (insert (make-string 1 32))
+    (py-electric-delete)
+    (should (eolp))
+    (should (eq (char-before) ?7))))
+
+(ert-deftest extra-trailing-space-120-F8qxoR ()
+  (py-test-with-temp-buffer
+      "def bar():
+x = 7         "
+    (goto-char (point-max))
+    (beginning-of-line)
+    (insert (make-string 4 32))
+    (end-of-line)
+    (backward-char 3)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (should (eq (char-before) ?7))
+    (should (eolp))))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

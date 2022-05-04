@@ -430,7 +430,6 @@ hier() {
 -l $TEST13 \
 -l $TEST16 \
 -l $TEST19 \
--l $TEST20 \
 -f ert-run-tests-batch-and-exit
 }
 

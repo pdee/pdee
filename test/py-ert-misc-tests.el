@@ -315,8 +315,6 @@ GeomSim."
     (search-backward "le")
     (should (face-equal (face-at-point) 'py-builtins-face))))
 
-
-
 (ert-deftest py-named-shell-python3-794850-test-P6QZmU ()
   (py-test-mode-explizit
       "foo"

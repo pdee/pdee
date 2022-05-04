@@ -1,6 +1,5 @@
 ;;; py-ert-navigation-tests.el --- python-mode navigation tests  -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
 
@@ -952,7 +951,16 @@
     (py-newline-and-indent)
     (py-electric-backspace)
     (py-newline-and-indent)
-    (should (eq 42 (point)))))
+    (should (eq 8 (current-indentation)))))
+
+(ert-deftest py-ert-moves-up-honor-dedent-lp-1280982-xtRay9 ()
+  (py-test-with-temp-buffer
+      "def foo():
+    def bar():
+        pass"
+    (goto-char (point-max))
+    (py-newline-and-indent)
+    (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257-4M7aUK ()
   (let ((py-docstring-style 'pep-257))
@@ -1011,8 +1019,6 @@ def baz():
       (search-forward "\"\"\"")
       (forward-line -1)
       (should (py-empty-line-p)))))
-
-
 
 (ert-deftest py-ert-moves-up-forward-expression-test-oDlMW8 ()
     (py-test-with-temp-buffer-point-min
@@ -3210,7 +3216,6 @@ ausgabe = kugel.ausgabe"
     (should (eq (char-after) ?a))
     ))
 
-
 (ert-deftest py-forward-def-or-class-test-1-YpTSCo ()
   (py-test-with-temp-buffer
       "class foo:
@@ -3289,8 +3294,6 @@ ausgabe = kugel.ausgabe"
     (py-forward-statement)
     (should (eobp))))
 
-
-
 (ert-deftest py-forward-indent-jcMT2k ()
   (py-test-with-temp-buffer
       "{
@@ -3363,7 +3366,6 @@ from __future__ import foo
     (py-backward-indent)
     (should (eq (char-after) ?p))))
 
-
 (ert-deftest py-backward-def-or-class-text-IZvvZ5 ()
   (py-test-with-temp-buffer
       "  d
@@ -3377,7 +3379,6 @@ from __future__ import foo
     (goto-char (point-max))
     (py-backward-top-level)
     (should (py--top-level-form-p))))
-
 
 (ert-deftest py-mark-indent-Qd3qoQ ()
   (py-test-with-temp-buffer-point-min
@@ -3480,10 +3481,9 @@ def example3():
     sample_file = \"{0}_file_{1}\.txt\"\.format(name, file_name) #swap your name here
     example_file = open(sample_file, \"w+\")"
     (goto-char (point-min))
-    (search-forward "CONN_ID)") 
+    (search-forward "CONN_ID)")
     (py-forward-statement)
     (should (looking-back "file_name)" (line-beginning-position)))))
-
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

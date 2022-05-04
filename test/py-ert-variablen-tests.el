@@ -172,9 +172,6 @@
 (ert-deftest py-ert-electric-comment-p-test-h1mUlY ()
   (should (boundp 'py-electric-comment-p)))
 
-(ert-deftest py-ert-electric-kill-backward-p-test-xkCiaU ()
-  (should (boundp 'py-electric-kill-backward-p)))
-
 (ert-deftest py-ert-electric-yank-active-p-test-9Ag3XP ()
   (should (boundp 'py-electric-yank-active-p)))
 

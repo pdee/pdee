@@ -901,27 +901,6 @@ Default is nil."
   :tag "py-closing-list-keeps-space"
   :group 'python-mode)
 
-(defcustom py-electric-kill-backward-p nil
-  "Affects `py-electric-backspace'.  Default is nil.
-
-If behind a delimited form of braces, brackets or parentheses,
-backspace will kill it's contents
-
-With when cursor after
-my_string[0:1]
---------------^
-
-==>
-
-my_string[]
-----------^
-
-In result cursor is insided emptied delimited form."
-
-  :type 'boolean
-  :tag "py-electric-kill-backward-p"
-  :group 'python-mode)
-
 (defcustom py-electric-colon-active-p nil
   "`py-electric-colon' feature.
 
@@ -3360,8 +3339,6 @@ See also `py-object-reference-face'"
   :tag "py-object-reference-face"
   :group 'python-mode)
 
-
-
 (defface py-number-face
  '((t (:inherit nil)))
   "Highlight numbers."
@@ -5258,8 +5235,6 @@ jump to the top (outermost) exception in the exception stack."
     (if top
         (py--find-next-exception 'bob buffer 're-search-forward "Top")
       (py--find-next-exception 'bol buffer 're-search-backward "Top"))))
-
-
 
 ;; ;
 ;;  obsolete by py--fetch-result

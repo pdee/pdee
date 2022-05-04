@@ -1401,26 +1401,6 @@ Use `M-x customize-variable' to set it permanently"
 Default is nilUse `M-x customize-variable' to set it permanently"
 	      :style toggle :selected py-electric-yank-active-p]
 
-	     ["Electric kill backward "
-	      (setq py-electric-kill-backward-p
-		    (not py-electric-kill-backward-p))
-	      :help "Affects `py-electric-backspace'. Default is nil.
-
-If behind a delimited form of braces, brackets or parentheses,
-backspace will kill it's contents
-
-With when cursor after
-my_string\[0:1]
---------------^
-
-==>
-
-my_string\[]
-----------^
-
-In result cursor is insided emptied delimited form.Use `M-x customize-variable' to set it permanently"
-	      :style toggle :selected py-electric-kill-backward-p]
-
 	     ["Trailing whitespace smart delete "
 	      (setq py-trailing-whitespace-smart-delete-p
 		    (not py-trailing-whitespace-smart-delete-p))
