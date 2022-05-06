@@ -194,6 +194,7 @@ VARIABLES
   (set (make-local-variable 'normal-auto-fill-function) 'py-fill-string-or-comment)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
   (set (make-local-variable 'tab-width) py-indent-offset)
+  (set (make-local-variable 'electric-indent-mode) nil)
   (and py-load-skeletons-p (py-load-skeletons))
   (and py-guess-py-install-directory-p (py-set-load-path))
   (and py-autopair-mode

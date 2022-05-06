@@ -137,10 +137,37 @@ x = {'abc':'def',
 
 (ert-deftest delete-test-120-F8qxoR-v32Zaq ()
   (py-test-with-temp-buffer " "
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (py-electric-backspace)
     (should (bobp))))
+
+
+(ert-deftest delete-test-120-lXSC6t ()
+  (py-test-with-temp-buffer
+      "var5: Sequence[Mapping[str, Sequence[str]]] = [
+    {
+"
+    (goto-char (point-max))
+    (insert (make-string 8 32))
+    (insert "'red': ['scarlet', 'vermilion', 'ruby'],\n")
+    (insert (make-string 8 32))
+    (insert "'green': ['emerald', 'aqua']")
+    (insert (make-string 8 32))
+    (insert "\n")
+    (insert "    },
+    {
+")
+    (insert (make-string 8 32))
+    (insert "'sword': ['cutlass', 'rapier']
+    }\n]")
+    (search-backward "'aqua")
+    (end-of-line) 
+    (backward-char 4)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-backspace)
+    (should (eq (char-before) 93))
+    ))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
