@@ -73,16 +73,6 @@ def baz(self):
     (forward-line -1)
     (should (eq (char-after) ?\n))))
 
-(ert-deftest py-ert-deletes-too-much-lp:1300270-dMegYd ()
-  (py-test-with-temp-buffer "
-x = {'abc':'def',
-         'ghi':'jkl'}
-"
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (goto-char 24)
-    (py-electric-delete)
-    (should (eq 5 (current-indentation)))))
-
 (ert-deftest py-ert-in-comment-p-test-G6FUaB ()
   (py-test-with-temp-buffer
       "# "

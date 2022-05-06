@@ -34,7 +34,7 @@
 x = 7"
     (beginning-of-line)
     (insert (make-string 4 32))
-    (end-of-line) 
+    (end-of-line)
     (insert (make-string 1 32))
     (py-electric-backspace)
     (should (eolp))
@@ -91,6 +91,41 @@ x = 7         "
     (py-electric-delete)
     (should (eq (char-before) ?7))
     (should (eolp))))
+
+(ert-deftest delete-test-120-F8qxoR ()
+  (py-test-with-temp-buffer
+      "var5: Sequence[Mapping[str, Sequence[str]]] = [
+    {
+"
+    (goto-char (point-max))
+    (insert (make-string 8 32))
+    (insert "'red': ['scarlet', 'vermilion', 'ruby'],\n")
+    (insert (make-string 8 32))
+    (insert "'green': ['emerald', 'aqua']\n")
+    (insert "    },
+    {
+")
+    (insert (make-string 8 32))
+    (insert "'sword': ['cutlass', 'rapier']
+    }\n]")
+    (search-backward "'sword")
+    (beginning-of-line)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (skip-chars-forward " \t\r\n\f")
+    (should (eq (current-column) 5))
+    (should (eq (char-after) ?'))
+    ))
+
+(ert-deftest py-ert-deletes-too-much-lp:1300270-dMegYd ()
+  (py-test-with-temp-buffer "
+x = {'abc':'def',
+         'ghi':'jkl'}
+"
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (goto-char 24)
+    (py-electric-delete)
+    (should (eq 5 (current-indentation)))))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

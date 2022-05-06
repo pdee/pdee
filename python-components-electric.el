@@ -200,18 +200,21 @@ are non-nil.
 With [universal-argument], deactivate electric-behavior this time, delete just one character.
 "
   (interactive "P*")
-  (let ((indpos (+ (line-beginning-position) (py-compute-indentation))))
+  (let* (;; py-ert-deletes-too-much-lp:1300270-dMegYd
+	 ;; x = {'abc':'def',
+         ;;     'ghi':'jkl'}
+	 (delpos (copy-marker (+ (line-beginning-position) (py-compute-indentation)))))
     (cond
      ((eq 4 (prefix-numeric-value arg))
-	   (delete-char 1))
+      (delete-char 1))
      ;; delete active region if one is active
      ((use-region-p)
       ;; Emacs23 doesn't know that var
       (if (boundp 'delete-active-region)
           (delete-active-region)
 	(delete-region (region-beginning) (region-end))))
-     ((looking-at "[ \t]*")
-      (delete-region (if (< (match-beginning 0)  indpos) indpos (match-beginning 0)) (match-end 0))
+     ((looking-at "[ \t]+")
+      (delete-region (if (< (match-beginning 0) delpos) delpos (match-beginning 0))  (match-end 0) )
       (py-electric-backspace))
      (t (py-electric-backspace)
 	))))
