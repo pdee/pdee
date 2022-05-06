@@ -166,12 +166,15 @@ string or comment."
 ;;         It would be nice to have a binding that works in terminal mode too.
 
 (defun py-electric-backspace (&optional arg)
-  "Delete indentation level of whitespace, or ARG following characters.
+  "Delete reasonable amount of whitespace before point. Keep indentation.
 
-Delete region when both variable `delete-active-region' and (use-region-p)
+Delete region when both variable `delete-active-region' and ‘use-region-p’
 are non-nil.
 
-With [universal-argument], deactivate electric-behavior this time, delete just one character.
+With \\[universal-argument], deactivate electric-behavior this time,
+delete just one character before point.
+
+At no-whitespace character, delete one before point.
 "
   (interactive "*P")
   (let ((backward-delete-char-untabify-method 'untabify)
@@ -183,8 +186,9 @@ With [universal-argument], deactivate electric-behavior this time, delete just o
            (if (boundp 'delete-active-region)
                (delete-active-region)
 	     (delete-region (region-beginning) (region-end))))
+	  ((looking-back "[[:graph:]]" (line-beginning-position))
+	   (backward-delete-char-untabify 1))
 	  ((looking-at "[ \t]*$")
-	   (end-of-line)
 	   (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point))))
 	  (t
 	   (while (and (member (char-before)  (list 9 32 ?\r))
@@ -193,17 +197,21 @@ With [universal-argument], deactivate electric-behavior this time, delete just o
 	   ))))
 
 (defun py-electric-delete (&optional arg)
-  "Delete indentation level of whitespace, or ARG following characters.
-Delete region when both variable `delete-active-region' and (use-region-p)
+  "Delete reasonable amount of whitespace at point. Keep indentation.
+
+Delete region when both variable `delete-active-region' and ‘use-region-p’
 are non-nil.
 
-With [universal-argument], deactivate electric-behavior this time, delete just one character.
+With \\[universal-argument], deactivate electric-behavior this time,
+delete just one character at point.
+
+At no-whitespace character, delete one at point.
 "
   (interactive "P*")
   (let* (;; py-ert-deletes-too-much-lp:1300270-dMegYd
 	 ;; x = {'abc':'def',
          ;;     'ghi':'jkl'}
-	 (delpos (copy-marker (+ (line-beginning-position) (py-compute-indentation)))))
+	 (delpos (+ (line-beginning-position) (py-compute-indentation))))
     (cond
      ((eq 4 (prefix-numeric-value arg))
       (delete-char 1))
@@ -213,6 +221,8 @@ With [universal-argument], deactivate electric-behavior this time, delete just o
       (if (boundp 'delete-active-region)
           (delete-active-region)
 	(delete-region (region-beginning) (region-end))))
+     ((looking-at "[[:graph:]]")
+      (delete-char 1))
      ((looking-at "[ \t]+")
       (delete-region (if (< (match-beginning 0) delpos) delpos (match-beginning 0))  (match-end 0) )
       (py-electric-backspace))

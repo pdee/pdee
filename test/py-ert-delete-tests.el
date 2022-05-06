@@ -127,5 +127,20 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
 
+
+(ert-deftest delete-test-120-F8qxoR-dMegYd ()
+  (py-test-with-temp-buffer "x"
+    (goto-char (point-max))
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (py-electric-backspace)
+    (should (bobp))))
+
+(ert-deftest delete-test-120-F8qxoR-v32Zaq ()
+  (py-test-with-temp-buffer " "
+    (goto-char (point-max)) 
+    (when py-debug-p (switch-to-buffer (current-buffer)))
+    (py-electric-backspace)
+    (should (bobp))))
+
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
