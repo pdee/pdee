@@ -127,7 +127,6 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
 
-
 (ert-deftest delete-test-120-F8qxoR-dMegYd ()
   (py-test-with-temp-buffer "x"
     (goto-char (point-max))
@@ -141,7 +140,6 @@ x = {'abc':'def',
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (py-electric-backspace)
     (should (bobp))))
-
 
 (ert-deftest delete-test-120-lXSC6t ()
   (py-test-with-temp-buffer
@@ -162,12 +160,39 @@ x = {'abc':'def',
     (insert "'sword': ['cutlass', 'rapier']
     }\n]")
     (search-backward "'aqua")
-    (end-of-line) 
+    (end-of-line)
     (backward-char 4)
     (when py-debug-p (whitespace-mode))
     (py-electric-backspace)
     (should (eq (char-before) 93))
     ))
+
+(ert-deftest delete-issue-123-M6opJl ()
+  (py-test-with-temp-buffer
+      "def bar():
+x = 7
+"
+    (beginning-of-line)
+    (insert (make-string 4 32))
+    (goto-char (point-max))
+    (py-electric-delete)
+    (should (bolp))
+    (should (eolp))))
+
+(ert-deftest delete-issue-123-yDjJas ()
+  (py-test-with-temp-buffer
+      "def bar():
+x = 7
+"
+    (beginning-of-line)
+    (insert (make-string 4 32))
+    (goto-char (point-max))
+    (insert (make-string 9 32))
+    (beginning-of-line) 
+    (py-electric-delete)
+    (should (bolp))
+    (should (eolp))))
+
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

@@ -205,7 +205,7 @@ are non-nil.
 With \\[universal-argument], deactivate electric-behavior this time,
 delete just one character at point.
 
-At no-whitespace character, delete one at point.
+At no-whitespace char, delete one char at point.
 "
   (interactive "P*")
   (let* (;; py-ert-deletes-too-much-lp:1300270-dMegYd
@@ -225,7 +225,10 @@ At no-whitespace character, delete one at point.
       (delete-char 1))
      ((looking-at "[ \t]+")
       (delete-region (if (< (match-beginning 0) delpos) delpos (match-beginning 0))  (match-end 0) )
-      (py-electric-backspace))
+      (unless (bolp) (py-electric-backspace)))
+     ((bolp)
+      ;; do nothing electric a beginning-of-line
+      )
      (t (py-electric-backspace)
 	))))
 
