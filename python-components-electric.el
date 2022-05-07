@@ -229,8 +229,10 @@ At no-whitespace char, delete one char at point.
      ((bolp)
       ;; do nothing electric a beginning-of-line
       )
-     (t (py-electric-backspace)
-	))))
+     ((member (char-before) (list 9 32 ?\r))
+      (py-electric-backspace)
+	)
+     (t (delete-char 1)))))
 
 ;; TODO: PRouleau: the electric yank mechanism is currently commented out.
 ;;       Is this a feature to keep?  Was it used?  I can see a benefit for it.

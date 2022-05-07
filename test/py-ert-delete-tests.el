@@ -188,11 +188,23 @@ x = 7
     (insert (make-string 4 32))
     (goto-char (point-max))
     (insert (make-string 9 32))
-    (beginning-of-line) 
+    (beginning-of-line)
     (py-electric-delete)
     (should (bolp))
     (should (eolp))))
 
+(ert-deftest delete-issue-123-n2kOH4 ()
+  (py-test-with-temp-buffer
+      "def bar():
+    baz = 7
+    bar = 9
+    return baz + bar
+"
+    (goto-char (point-max))
+    (search-backward "7")
+    (forward-char 1) 
+    (py-electric-delete)
+    (should (looking-at "    bar = 9"))))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
