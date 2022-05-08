@@ -84,7 +84,7 @@ x = 7         "
     (backward-char 3)
     (when py-debug-p (whitespace-mode))
     (py-electric-delete)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (should (eq (char-before) ?7))
     (should-not (char-after))))
 
@@ -167,13 +167,10 @@ x = {'abc':'def',
 (ert-deftest delete-issue-123-M6opJl ()
   (py-test-with-temp-buffer
       "def bar():
-x = 7
+    x = 7
 "
-    (beginning-of-line)
-    (insert (make-string 4 32))
     (goto-char (point-max))
     (py-electric-delete)
-    ;; (should-not (char-after))
     (should (eq (char-before) 10))))
 
 ;; (ert-deftest delete-issue-123-yDjJas ()
@@ -227,6 +224,18 @@ x = 7
     (py-electric-backspace)
     (should (eq (char-after) ?1))
     (should (eq (char-before) 40))))
+
+(ert-deftest delete-newline-125-8qQxmm ()
+  (py-test-with-temp-buffer
+      "123
+
+234
+"
+    (goto-char (point-max))
+    (forward-line -2) 
+    (py-electric-delete)
+    (should (eq (char-after) ?2))))
+
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
