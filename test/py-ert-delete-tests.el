@@ -56,13 +56,22 @@ x = 7"
 (ert-deftest extra-trailing-space-120-WX8PGG ()
   (py-test-with-temp-buffer
       "def bar():
-x = 7"
+       x = 7"
     (goto-char (point-max))
     (beginning-of-line)
-    (insert (make-string 7 32))
     (when py-debug-p (whitespace-mode))
     (py-electric-backspace)
-    (should (eq (current-column) 4))))
+    (should (eq (char-before) ?:))))
+
+(ert-deftest extra-trailing-space-120-yC7gXH ()
+  (py-test-with-temp-buffer
+      "def bar():
+       x = 7"
+    (goto-char (point-max))
+    (beginning-of-line)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (should (eq (current-indentation) 4))))
 
 (ert-deftest extra-trailing-space-120-NahnQx ()
   (py-test-with-temp-buffer
@@ -232,7 +241,7 @@ x = {'abc':'def',
 234
 "
     (goto-char (point-max))
-    (forward-line -2) 
+    (forward-line -2)
     (py-electric-delete)
     (should (eq (char-after) ?2))))
 

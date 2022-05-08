@@ -196,7 +196,7 @@ At no-whitespace character, delete one before point.
 	  ((bolp)
 	   (backward-delete-char 1))
 	  (t
-	   (py-indent-line nil nil t)
+	   (py-indent-line nil t)
 	   ;; (while (and (member (char-before)  (list 9 32 ?\r))
 	   ;; 	       (< indent (current-column)))
 	   ;;   (backward-delete-char-untabify 1))

@@ -105,7 +105,7 @@ Requires BEG, END as the boundery of region"
 ;; TODO: Add docstring.
 ;; What is the intent of the this utility function?
 ;; What is the purpose of each argument?
-(defun py--indent-line-intern (need cui indent col &optional beg end region outmost-only dedent)
+(defun py--indent-line-intern (need cui indent col &optional beg end region dedent)
   (let (erg)
     (if py-tab-indent
 	(progn
@@ -132,10 +132,9 @@ Requires BEG, END as the boundery of region"
 	      (indent-to need)))
            ;;
 	   ((eq need cui)
-	    (if (and (not outmost-only)
-		     (or dedent
-			 (eq this-command last-command)
-			 (eq this-command 'py-indent-line)))
+	    (if (or dedent
+		    (eq this-command last-command)
+		    (eq this-command 'py-indent-line))
 		(if (and py-tab-shifts-region-p region)
 		    (while (and (goto-char beg) (< 0 (current-indentation)))
 		      (py-shift-region-left 1))
@@ -170,7 +169,7 @@ Requires BEG, END as the boundery of region"
 		(beginning-of-line))))))
       (insert-tab))))
 
-(defun py--indent-line-or-region-base (beg end region cui need arg this-indent-offset col &optional outmost-only dedent)
+(defun py--indent-line-or-region-base (beg end region cui need arg this-indent-offset col &optional dedent)
   (cond ((eq 4 (prefix-numeric-value arg))
 	 (if (and (eq cui (current-indentation))
 		  (<= need cui))
@@ -180,8 +179,8 @@ Requires BEG, END as the boundery of region"
 	   (indent-to (+ need py-indent-offset))))
 	((not (eq 1 (prefix-numeric-value arg)))
 	 (py-smart-indentation-off)
-	 (py--indent-line-intern need cui this-indent-offset col beg end region outmost-only dedent))
-	(t (py--indent-line-intern need cui this-indent-offset col beg end region outmost-only dedent))))
+	 (py--indent-line-intern need cui this-indent-offset col beg end region dedent))
+	(t (py--indent-line-intern need cui this-indent-offset col beg end region dedent))))
 
 (defun py--calculate-indent-backwards (cui indent-offset)
   "Return the next reasonable indent lower than current indentation.
@@ -193,7 +192,7 @@ Requires current indent-offset as INDENT-OFFSET"
       (/ cui indent-offset)
     (- cui indent-offset)))
 
-(defun py-indent-line (&optional arg outmost-only dedent)
+(defun py-indent-line (&optional arg dedent)
   "Indent the current line according ARG.
 
 When called interactivly with \\[universal-argument],
@@ -246,17 +245,15 @@ Optional arg DEDENT: force dedent.
     (unless (and (not dedent)(not (eq this-command last-command))(eq outmost (current-indentation)))
       (setq need
 	    (cond ((eq this-command last-command)
-		   (if outmost-only
-		       outmost
 		     (if (bolp)
 			 ;; jump forward to max indent
 			 outmost
-		       (py--calculate-indent-backwards cui this-indent-offset))))
+		       (py--calculate-indent-backwards cui this-indent-offset)))
 		  ;; (py--calculate-indent-backwards cui this-indent-offset)))))
 		  (t
 		   outmost
 		   )))
-      (py--indent-line-or-region-base beg end region cui need arg this-indent-offset col outmost-only dedent)
+      (py--indent-line-or-region-base beg end region cui need arg this-indent-offset col dedent)
       (and region (or py-tab-shifts-region-p
 		      py-tab-indents-region-p)
 	   (not (eq (point) orig))
