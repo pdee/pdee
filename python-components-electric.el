@@ -166,7 +166,10 @@ string or comment."
 ;;         It would be nice to have a binding that works in terminal mode too.
 
 (defun py-electric-backspace (&optional arg)
-  "Delete reasonable amount of whitespace before point. Keep indentation.
+  "Delete reasonable amount of whitespace before point
+until outmost reasonabla indentation.
+
+If called at whitespace below max indentation,
 
 Delete region when both variable `delete-active-region' and ‘use-region-p’
 are non-nil.
@@ -190,10 +193,13 @@ At no-whitespace character, delete one before point.
 	   (backward-delete-char-untabify 1))
 	  ((looking-at "[ \t]*$")
 	   (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point))))
+	  ((bolp)
+	   (backward-delete-char 1))
 	  (t
-	   (while (and (member (char-before)  (list 9 32 ?\r))
-		       (< indent (current-column)))
-	     (backward-delete-char-untabify 1))
+	   (py-indent-line nil nil t)
+	   ;; (while (and (member (char-before)  (list 9 32 ?\r))
+	   ;; 	       (< indent (current-column)))
+	   ;;   (backward-delete-char-untabify 1))
 	   ))))
 
 (defun py-electric-delete (&optional arg)
@@ -225,7 +231,7 @@ At no-whitespace char, delete one char at point.
       (delete-char 1))
      ((looking-at "[ \t]+")
       (delete-region (if (< (match-beginning 0) delpos) delpos (match-beginning 0))  (match-end 0) )
-      (unless (bolp) (py-electric-backspace)))
+      (unless (or (bolp) (<= (point) delpos)) (py-electric-backspace)))
      ((bolp)
       ;; do nothing electric a beginning-of-line
       )

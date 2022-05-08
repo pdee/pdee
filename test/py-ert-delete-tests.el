@@ -59,9 +59,7 @@ x = 7"
 x = 7"
     (goto-char (point-max))
     (beginning-of-line)
-    (insert (make-string 4 32))
-    (insert (make-string 1 9))
-    (insert (make-string 2 32))
+    (insert (make-string 7 32))
     (when py-debug-p (whitespace-mode))
     (py-electric-backspace)
     (should (eq (current-column) 4))))
@@ -83,14 +81,13 @@ x = 7"
       "def bar():
 x = 7         "
     (goto-char (point-max))
-    (beginning-of-line)
-    (insert (make-string 4 32))
-    (end-of-line)
     (backward-char 3)
     (when py-debug-p (whitespace-mode))
     (py-electric-delete)
+    (sit-for 0.1) 
     (should (eq (char-before) ?7))
-    (should (eolp))))
+    (should-not (char-after))))
+
 
 (ert-deftest delete-test-120-F8qxoR ()
   (py-test-with-temp-buffer
@@ -123,7 +120,7 @@ x = {'abc':'def',
          'ghi':'jkl'}
 "
     (when py-debug-p (switch-to-buffer (current-buffer)))
-    (goto-char 24)
+    (goto-char 25)
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
 
@@ -176,22 +173,23 @@ x = 7
     (insert (make-string 4 32))
     (goto-char (point-max))
     (py-electric-delete)
-    (should (bolp))
-    (should (eolp))))
+    ;; (should-not (char-after))
+    (should (eq (char-before) 10))))
 
-(ert-deftest delete-issue-123-yDjJas ()
-  (py-test-with-temp-buffer
-      "def bar():
-x = 7
-"
-    (beginning-of-line)
-    (insert (make-string 4 32))
-    (goto-char (point-max))
-    (insert (make-string 9 32))
-    (beginning-of-line)
-    (py-electric-delete)
-    (should (bolp))
-    (should (eolp))))
+;; (ert-deftest delete-issue-123-yDjJas ()
+;;   (py-test-with-temp-buffer
+;;       "def bar():
+;; x = 7
+;; "
+;;     (beginning-of-line)
+;;     (insert (make-string 4 32))
+;;     (goto-char (point-max))
+;;     (insert (make-string 9 32))
+;;     (beginning-of-line)
+;;     (py-electric-delete)
+;;     (should (eq (char-after) ?1))
+;;     (should (eq (char-before) 10))
+;;     ))
 
 (ert-deftest delete-issue-123-n2kOH4 ()
   (py-test-with-temp-buffer
@@ -202,9 +200,33 @@ x = 7
 "
     (goto-char (point-max))
     (search-backward "7")
-    (forward-char 1) 
+    (forward-char 1)
     (py-electric-delete)
     (should (looking-at "    bar = 9"))))
+
+(ert-deftest delete-issue-124-n2kOH4 ()
+  (py-test-with-temp-buffer
+      "calling(
+    123,
+"
+    (goto-char (point-max))
+    (search-backward "1")
+    ;; (forward-char 1)
+    (py-electric-backspace)
+    (should (eq (char-after) ?1))
+    (should (eq (char-before) 10))))
+
+(ert-deftest delete-issue-124-8qQxmm ()
+  (py-test-with-temp-buffer
+      "calling(
+123,
+"
+    (goto-char (point-max))
+    (search-backward "1")
+    ;; (forward-char 1)
+    (py-electric-backspace)
+    (should (eq (char-after) ?1))
+    (should (eq (char-before) 40))))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
