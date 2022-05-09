@@ -164,10 +164,12 @@ string or comment."
 ;;       - Also, the mapping for [backspace] in python-mode-map only works in
 ;;         graphics mode, it does not work when Emacs runs in terminal mode.
 ;;         It would be nice to have a binding that works in terminal mode too.
-
-(defun py-electric-backspace (&optional arg)
+;; keep-one handed over form ‘py-electric-delete’ maybe
+(defun py-electric-backspace (&optional arg keep-one)
   "Delete reasonable amount of whitespace before point
 until outmost reasonable indentation.
+
+With optional arg KEEP-ONE: don't delete a single space.
 
 If called at whitespace below max indentation,
 
@@ -178,6 +180,7 @@ With \\[universal-argument], deactivate electric-behavior this time,
 delete just one character before point.
 
 At no-whitespace character, delete one before point.
+
 "
   (interactive "*P")
   (let ((backward-delete-char-untabify-method 'untabify)
@@ -191,10 +194,21 @@ At no-whitespace character, delete one before point.
 	     (delete-region (region-beginning) (region-end))))
 	  ((looking-back "[[:graph:]]" (line-beginning-position))
 	   (backward-delete-char-untabify 1))
-	  ((looking-at "[ \t]*$")
-	   (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point))))
+	  ;; before code
+	  ((looking-back "^[ \t]+" (line-beginning-position))
+	   (if (<=  (current-column) indent)
+	       (while (member (char-before)  (list 9 32))
+		 (backward-delete-char-untabify 1))
+	     (beginning-of-line)
+	     (delete-region (point) (progn (skip-chars-forward " \t")(point)))
+	     (indent-to indent)))
+	  ;; after code
+	  ((looking-back "[[:graph:]][ \t]+" (line-beginning-position))
+	   (if (< 1 (abs (skip-chars-backward " \t")))
+	       (delete-region (point) (progn (skip-chars-forward " \t") (point)))
+	     (delete-char 1)))
 	  ((bolp)
-	   (backward-delete-char 1))
+	   (unless (bobp) (backward-delete-char 1)))
 	  (t
 	   (py-indent-line nil t)
 	   ;; (while (and (member (char-before)  (list 9 32 ?\r))
@@ -217,7 +231,10 @@ At no-whitespace char, delete one char at point.
   (let* (;; py-ert-deletes-too-much-lp:1300270-dMegYd
 	 ;; x = {'abc':'def',
          ;;     'ghi':'jkl'}
-	 (delpos (+ (line-beginning-position) (py-compute-indentation))))
+	 (indent (py-compute-indentation))
+	 (delpos (+ (line-beginning-position) indent))
+	 ;; (line-end-pos (line-end-position))
+	 done)
     (cond
      ((eq 4 (prefix-numeric-value arg))
       (delete-char 1))
@@ -229,15 +246,27 @@ At no-whitespace char, delete one char at point.
 	(delete-region (region-beginning) (region-end))))
      ((looking-at "[[:graph:]]")
       (delete-char 1))
-     ((looking-at "[ \t]+")
-      (delete-region (if (< (match-beginning 0) delpos) delpos (match-beginning 0))  (match-end 0) )
-      (unless (or (bolp) (<= (point) delpos)) (py-electric-backspace)))
-     ((member (char-before) (list 9 32 ?\r))
-      (py-electric-backspace)
-	)
-     ;; Do noting at EOB
-     ((eobp))
-     (t (delete-char 1)))))
+     (;; after code
+      (looking-at "[ \t]*$")
+      (end-of-line)
+      (if (< 0 (abs (skip-chars-backward " \t")))
+	  (delete-region (point) (line-end-position))
+	(unless (eobp) (delete-char 1))))
+     (;; before code
+      (looking-at "[ \t]+[[:graph:]]")
+      (cond ((<= indent (current-column) )
+	     (skip-chars-forward " \t")
+	     (delete-region (point) (progn (setq done (< 1 (abs (skip-chars-backward " \t"))))  (point)))
+	     (if (bolp)
+		 (indent-to indent)
+	       (when done (fixup-whitespace))
+	       ))
+	    (t
+	     (skip-chars-forward " \t")
+	     (delete-region (line-beginning-position) (point))))
+      (unless (or (bolp) (<= (point) delpos) (looking-back "[[:graph:]]" (line-beginning-position))) (py-electric-backspace)))
+     ;; Do nothing at EOB
+     (t (unless (eobp) (delete-char 1))))))
 
 ;; TODO: PRouleau: the electric yank mechanism is currently commented out.
 ;;       Is this a feature to keep?  Was it used?  I can see a benefit for it.

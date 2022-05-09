@@ -21,12 +21,19 @@
 
 (require 'py-setup-ert-tests)
 
-(ert-deftest py-ert-electric-kill-backward-arg-test-b118 ()
+(ert-deftest py-ert-electric-kill-backward-arg-test-b118-yQx574 ()
     (py-test-with-temp-buffer
       "asdf    "
       (goto-char (point-max))
       (py-electric-backspace)
       (should (eq ?f (char-before)))))
+
+(ert-deftest py-ert-electric-kill-backward-arg-test-b118-uWff3u ()
+    (py-test-with-temp-buffer
+      "asdf"
+      (goto-char (point-max))
+      (py-electric-backspace)
+      (should (eq (char-before) ?d))))
 
 (ert-deftest extra-trailing-space-120-M6opJl ()
   (py-test-with-temp-buffer
@@ -43,11 +50,9 @@ x = 7"
 (ert-deftest extra-trailing-space-120-pKGvL2 ()
   (py-test-with-temp-buffer
       "def bar():
-x = 7"
-    (beginning-of-line)
-    (insert (make-string 4 32))
-    (insert (make-string 1 9))
-    (insert (make-string 2 32))
+        x = 7"
+    (goto-char (point-max))
+    (search-backward "x")
     (when py-debug-p (whitespace-mode))
     (backward-char 2)
     (py-electric-delete)
@@ -71,18 +76,16 @@ x = 7"
     (beginning-of-line)
     (when py-debug-p (whitespace-mode))
     (py-electric-delete)
-    (should (eq (current-indentation) 4))))
+    (should (eq (char-before) 10))
+    (should (eq (char-after) ?x))))
 
 (ert-deftest extra-trailing-space-120-NahnQx ()
   (py-test-with-temp-buffer
       "def bar():
-x = 7"
-    (beginning-of-line)
-    (insert (make-string 4 32))
-    (end-of-line)
-    (insert (make-string 1 32))
+    x = 7    "
+    (goto-char (point-max))
     (py-electric-delete)
-    (should (eolp))
+    (should-not (char-after))
     (should (eq (char-before) ?7))))
 
 (ert-deftest extra-trailing-space-120-F8qxoR ()
@@ -93,29 +96,25 @@ x = 7         "
     (backward-char 3)
     (when py-debug-p (whitespace-mode))
     (py-electric-delete)
-    (sit-for 0.1)
     (should (eq (char-before) ?7))
-    (should-not (char-after))))
+    ;; (should-not  (char-after))
+    ))
 
 
 (ert-deftest delete-test-120-F8qxoR ()
   (py-test-with-temp-buffer
       "var5: Sequence[Mapping[str, Sequence[str]]] = [
     {
-"
-    (goto-char (point-max))
-    (insert (make-string 8 32))
-    (insert "'red': ['scarlet', 'vermilion', 'ruby'],\n")
-    (insert (make-string 8 32))
-    (insert "'green': ['emerald', 'aqua']\n")
-    (insert "    },
+     'red': ['scarlet', 'vermilion', 'ruby'],
+     'green': ['emerald', 'aqua']
+    },
     {
-")
-    (insert (make-string 8 32))
-    (insert "'sword': ['cutlass', 'rapier']
-    }\n]")
+                'sword': ['cutlass', 'rapier']
+    }
+]"
+    (goto-char (point-max))
     (search-backward "'sword")
-    (beginning-of-line)
+    (backward-char)
     (when py-debug-p (whitespace-mode))
     (py-electric-delete)
     (skip-chars-forward " \t\r\n\f")
@@ -133,14 +132,14 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 5 (current-indentation)))))
 
-(ert-deftest delete-test-120-F8qxoR-dMegYd ()
+(ert-deftest delete-test-120-dMegYd ()
   (py-test-with-temp-buffer "x"
     (goto-char (point-max))
     (when py-debug-p (switch-to-buffer (current-buffer)))
     (py-electric-backspace)
     (should (bobp))))
 
-(ert-deftest delete-test-120-F8qxoR-v32Zaq ()
+(ert-deftest delete-test-120-v32Zaq ()
   (py-test-with-temp-buffer " "
     (goto-char (point-max))
     (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -245,6 +244,49 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq (char-after) ?2))))
 
+(ert-deftest delete-newline-126-1FRaeJ ()
+  (py-test-with-temp-buffer
+      "def test():  a = 'a'"
+    (goto-char (point-max))
+    (search-backward ":")
+    (forward-char 1)
+    (py-electric-delete)
+    (should (eq (char-before) ?:))))
+
+(ert-deftest delete-newline-126-uWqng3 ()
+  (py-test-with-temp-buffer
+      "def test(): a = 'a'"
+    (goto-char (point-max))
+    (search-backward ":")
+    (forward-char 1)
+    (py-electric-delete)
+    (should (eq (char-before) ?:))
+    (should (eq (char-after) ?a))))
+
+(ert-deftest py-ert-moves-up-honor-dedent-lp-1280982-K6OICS ()
+  (py-test-with-temp-buffer
+      "def foo():
+    def bar():
+        asdf
+    "
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (py-newline-and-indent)
+    ;; Indent is set back, this is honoured in following lines.
+    (should (eq 4 (current-indentation)))))
+
+(ert-deftest py-ert-moves-up-honor-dedent-lp-1280982-APU5fK ()
+  (py-test-with-temp-buffer
+      "def foo():
+    def bar():
+        asdf
+"
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (py-newline-and-indent)
+    (py-electric-backspace)
+    (py-newline-and-indent)
+    (should (eq 8 (current-indentation)))))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

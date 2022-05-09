@@ -941,18 +941,6 @@
    (py-copy-statement)
    (should (string-match "from foo.bar.baz import something" (car kill-ring)))))
 
-(ert-deftest py-ert-moves-up-honor-dedent-lp-1280982-K6OICS ()
-  (py-test-with-temp-buffer
-      "def foo():
-    def bar():
-        asdf
-    "
-    (goto-char (point-max))
-    (py-newline-and-indent)
-    (py-electric-backspace)
-    (py-newline-and-indent)
-    (should (eq 8 (current-indentation)))))
-
 (ert-deftest py-ert-moves-up-honor-dedent-lp-1280982-xtRay9 ()
   (py-test-with-temp-buffer
       "def foo():
@@ -3902,7 +3890,6 @@ class CFG(object):
             result += '\\n    %s' % production
         return result
 
-
 class FeatureGrammar(CFG):
     \"\"\"
     A feature-based grammar.  This is equivalent to a
@@ -4057,7 +4044,6 @@ class FeatureGrammar(CFG):
         else:
             return item
 
-
 @total_ordering
 @python_2_unicode_compatible
 class FeatureValueType(object):
@@ -4087,7 +4073,6 @@ class FeatureValueType(object):
 
     def __hash__(self):
         return self._hash
-
 
 @python_2_unicode_compatible
 class DependencyGrammar(object):
@@ -4183,7 +4168,6 @@ class DependencyGrammar(object):
         \"\"\"
         return 'Dependency grammar with %d productions' % len(self._productions)
 
-
 @python_2_unicode_compatible
 class ProbabilisticDependencyGrammar(object):
     \"\"\"
@@ -4238,7 +4222,6 @@ class ProbabilisticDependencyGrammar(object):
         return 'Statistical Dependency grammar with %d productions' % len(
             self._productions
         )
-
 
 class PCFG(CFG):
     \"\"\"
@@ -4302,13 +4285,11 @@ class PCFG(CFG):
         )
         return cls(start, productions)
 
-
 #################################################################
 # Inducing Grammars
 #################################################################
 
 # Contributed by Nathan Bodenstab <bodenstab@cslu.ogi.edu>
-
 
 def induce_pcfg(start, productions):
     \"\"\"
@@ -4341,11 +4322,9 @@ def induce_pcfg(start, productions):
     ]
     return PCFG(start, prods)
 
-
 #################################################################
 # Helper functions for reading productions
 #################################################################
-
 
 def _read_cfg_production(input):
     \"\"\"
@@ -4353,13 +4332,11 @@ def _read_cfg_production(input):
     \"\"\"
     return _read_production(input, standard_nonterm_parser)
 
-
 def _read_pcfg_production(input):
     \"\"\"
     Return a list of PCFG \`\`ProbabilisticProductions\`\`.
     \"\"\"
     return _read_production(input, standard_nonterm_parser, probabilistic=True)
-
 
 def _read_fcfg_production(input, fstruct_reader):
     \"\"\"
@@ -4367,14 +4344,12 @@ def _read_fcfg_production(input, fstruct_reader):
     \"\"\"
     return _read_production(input, fstruct_reader)
 
-
 # Parsing generic grammars
 
 _ARROW_RE = re.compile(r'\\s* -> \\s*', re.VERBOSE)
 _PROBABILITY_RE = re.compile(r'( \\\[ \[\\d\\.]+ \\] ) \\s*', re.VERBOSE)
 _TERMINAL_RE = re.compile(r'( \"\[^\"]+\" | \\'\[^\\']+\\' ) \\s*', re.VERBOSE)
 _DISJUNCTION_RE = re.compile(r'\\| \\s*', re.VERBOSE)
-
 
 def _read_production(line, nonterm_parser, probabilistic=False):
     \"\"\"
@@ -4435,11 +4410,9 @@ def _read_production(line, nonterm_parser, probabilistic=False):
     else:
         return \[Production(lhs, rhs) for rhs in rhsides]
 
-
 #################################################################
 # Reading Phrase Structure Grammars
 #################################################################
-
 
 def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     \"\"\"
@@ -4495,16 +4468,13 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
         start = productions\[0].lhs()
     return (start, productions)
 
-
 _STANDARD_NONTERM_RE = re.compile('( \[\\w/]\[\\w/^<>-]* ) \\s*', re.VERBOSE)
-
 
 def standard_nonterm_parser(string, pos):
     m = _STANDARD_NONTERM_RE.match(string, pos)
     if not m:
         raise ValueError('Expected a nonterminal, found: ' + string\[pos:])
     return (Nonterminal(m.group(1)), m.end())
-
 
 #################################################################
 # Reading Dependency Grammars
@@ -4525,7 +4495,6 @@ _READ_DG_RE = re.compile(
 )
 _SPLIT_DG_RE = re.compile(r'''('\[^']'|\[-=]+>|\"\[^\"]+\"|'\[^']+'|\\|)''')
 
-
 def _read_dependency_production(s):
     if not _READ_DG_RE.match(s):
         raise ValueError('Bad production string')
@@ -4540,11 +4509,9 @@ def _read_dependency_production(s):
             rhsides\[-1].append(piece.strip('\\'\\\"'))
     return \[DependencyProduction(lhside, rhside) for rhside in rhsides]
 
-
 #################################################################
 # Demonstration
 #################################################################
-
 
 def cfg_demo():
     \"\"\"
@@ -4584,7 +4551,6 @@ def cfg_demo():
     # Use string.replace(...) is to line-wrap the output.
     print(repr(grammar.productions()).replace(',', ',\\n' + ' ' * 25))
     print()
-
 
 toy_pcfg1 = PCFG.fromstring(
     \"\"\"
@@ -4626,7 +4592,6 @@ toy_pcfg2 = PCFG.fromstring(
     Det  -> 'my'          \[.28]
     \"\"\"
 )
-
 
 def pcfg_demo():
     \"\"\"
@@ -4685,14 +4650,12 @@ def pcfg_demo():
     for parse in parser.parse(sent):
         print(parse)
 
-
 def fcfg_demo():
     import nltk.data
 
     g = nltk.data.load('grammars/book_grammars/feat0.fcfg')
     print(g)
     print()
-
 
 def dg_demo():
     \"\"\"
@@ -4707,7 +4670,6 @@ def dg_demo():
     \"\"\"
     )
     print(grammar)
-
 
 def sdg_demo():
     \"\"\"
@@ -4736,14 +4698,12 @@ def sdg_demo():
     tree = dg.tree()
     print(tree.pprint())
 
-
 def demo():
     cfg_demo()
     pcfg_demo()
     fcfg_demo()
     dg_demo()
     sdg_demo()
-
 
 if __name__ == '__main__':
     demo()
@@ -5976,14 +5936,6 @@ class CFG(object):
     (py-up)
     (should
      (looking-at "if nr_leftcorner_words"))))
-
-
-
-
-
-
-
-
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

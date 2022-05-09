@@ -292,7 +292,9 @@ When indent is set back manually, this is honoured in following lines."
   (let* ((orig (point))
 	 ;; lp:1280982, deliberatly dedented by user
 	 (this-dedent
-	  (when (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*" (line-beginning-position)))
+	  (when
+	      ;; (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*" (line-beginning-position)))
+	      (looking-back "^[ \t]+")
 	    (current-column)))
 	 erg)
     (newline 1)
