@@ -288,5 +288,17 @@ x = {'abc':'def',
     (py-newline-and-indent)
     (should (eq 8 (current-indentation)))))
 
+(ert-deftest delete-newline-126-XSjV1R ()
+  (py-test-with-temp-buffer
+      "def test():
+    
+    a = 'a'"
+    (goto-char (point-max))
+    (forward-line -1)
+    (end-of-line) 
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (should (eq (char-after) 32))))
+
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

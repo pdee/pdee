@@ -247,7 +247,7 @@ At no-whitespace char, delete one char at point.
      ((looking-at "[[:graph:]]")
       (delete-char 1))
      (;; after code
-      (looking-at "[ \t]*$")
+      (and (looking-at "[ \t]*$")(looking-back "[[:graph:]][ \t]*" (line-beginning-position)))
       (end-of-line)
       (if (< 0 (abs (skip-chars-backward " \t")))
 	  (delete-region (point) (line-end-position))

@@ -483,7 +483,7 @@ Return position of successful, nil of not started from inside."
    ((py--beginning-of-block-p)
 	 (py-up-block (current-indentation)))
    ((py--beginning-of-clause-p)
-	 (py-backward-block (current-indentation)))
+	 (py-backward-block))
    ((py-beginning-of-statement-p)
 	 (py-backward-block-or-clause))
    (t (py-backward-statement)) 

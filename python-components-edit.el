@@ -294,7 +294,7 @@ When indent is set back manually, this is honoured in following lines."
 	 (this-dedent
 	  (when
 	      ;; (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*" (line-beginning-position)))
-	      (looking-back "^[ \t]+")
+	      (looking-back "^[ \t]+" (line-beginning-position))
 	    (current-column)))
 	 erg)
     (newline 1)
