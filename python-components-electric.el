@@ -247,7 +247,8 @@ At no-whitespace char, delete one char at point.
      ((looking-at "[[:graph:]]")
       (delete-char 1))
      (;; after code
-      (and (looking-at "[ \t]*$")(looking-back "[[:graph:]][ \t]*" (line-beginning-position)))
+      (or (and (looking-at "[ \t]*$")(looking-back "[[:graph:]][ \t]*" (line-beginning-position)))
+	  (py-empty-line-p))
       (end-of-line)
       (if (< 0 (abs (skip-chars-backward " \t")))
 	  (delete-region (point) (line-end-position))

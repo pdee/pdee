@@ -291,14 +291,27 @@ x = {'abc':'def',
 (ert-deftest delete-newline-126-XSjV1R ()
   (py-test-with-temp-buffer
       "def test():
+
+    a = 'a'"
+    (goto-char (point-max))
+    (forward-line -1)
+    (end-of-line)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (should (eq (char-after) 32))))
+
+(ert-deftest delete-newline-126-tzqfcf ()
+  (py-test-with-temp-buffer
+      "def test():
     
     a = 'a'"
     (goto-char (point-max))
     (forward-line -1)
-    (end-of-line) 
-    (when py-debug-p (whitespace-mode))
+    (beginning-of-line)
+    (when py-debug-p (whitespace-mode))     
     (py-electric-delete)
-    (should (eq (char-after) 32))))
+    (should-not (eq (char-after) 32))))
+
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
