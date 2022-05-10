@@ -196,12 +196,18 @@ At no-whitespace character, delete one before point.
 	   (backward-delete-char-untabify 1))
 	  ;; before code
 	  ((looking-back "^[ \t]+" (line-beginning-position))
-	   (if (<=  (current-column) indent)
-	       (while (member (char-before)  (list 9 32))
-		 (backward-delete-char-untabify 1))
-	     (beginning-of-line)
-	     (delete-region (point) (progn (skip-chars-forward " \t")(point)))
-	     (indent-to indent)))
+	   (cond ((<=  (current-column) py-indent-offset)
+		  (delete-region (line-beginning-position) (point)))
+		 ((eq 0 (% (current-column) py-indent-offset))
+		  (delete-region (point) (progn (backward-char py-indent-offset) (point))))
+		 (t (delete-region
+		     (point)
+		     (progn
+		       ;; go backward the remainder
+		       (backward-char (% (current-column) py-indent-offset))
+		       (point))))))
+	  ;; (while (member (char-before) (list 9 32))
+	  ;; (backward-delete-char-untabify 1))
 	  ;; after code
 	  ((looking-back "[[:graph:]][ \t]+" (line-beginning-position))
 	   (if (< 1 (abs (skip-chars-backward " \t")))
@@ -211,7 +217,7 @@ At no-whitespace character, delete one before point.
 	   (unless (bobp) (backward-delete-char 1)))
 	  (t
 	   (py-indent-line nil t)
-	   ;; (while (and (member (char-before)  (list 9 32 ?\r))
+	   ;; (while (and (member (char-before) (list 9 32 ?\r))
 	   ;; 	       (< indent (current-column)))
 	   ;;   (backward-delete-char-untabify 1))
 	   ))))
@@ -277,7 +283,7 @@ At no-whitespace char, delete one char at point.
 	(skip-chars-backward " \t")
 	(setq done (< 1 (skip-chars-forward " \t")))
 	(delete-region (point) (progn (skip-chars-backward " \t")(point)))
-	(when done (fixup-whitespace)) 
+	(when done (fixup-whitespace))
 	))
      ;; Do nothing at EOB
      (t (unless (eobp) (delete-char 1))))))

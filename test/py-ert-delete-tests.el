@@ -272,8 +272,8 @@ x = {'abc':'def',
     (when py-debug-p (whitespace-mode))
     (py-newline-and-indent)
     (py-electric-backspace)
-    (py-newline-and-indent)
-    (should (eq 8 (current-indentation)))))
+    (should (eq 4 (current-indentation)))
+    ))
 
 (ert-deftest delete-newline-126-XSjV1R ()
   (py-test-with-temp-buffer
@@ -322,6 +322,40 @@ x = {'abc':'def',
     (when py-debug-p (whitespace-mode))
     (py-electric-delete)
     (should (eq 4 (current-indentation)))))
+
+(ert-deftest  backspacing-indentation-127-KoplQh ()
+  (py-test-with-temp-buffer
+      "def test():
+    if True:
+        print('ok')
+        "
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (py-electric-backspace)
+    (should (eq (current-column) 4))))
+
+(ert-deftest  backspacing-indentation-127-S0ykuo ()
+  (py-test-with-temp-buffer
+      "def test():
+    if True:
+        print('ok')
+           "
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (py-electric-backspace)
+    (should (eq (current-column) 8))))
+
+(ert-deftest  backspacing-indentation-127-3fQXLA ()
+  (py-test-with-temp-buffer
+      "def test():
+    if True:
+        print('ok')
+"
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (py-electric-backspace)
+    (should (eq (char-before) 41))))
+
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
