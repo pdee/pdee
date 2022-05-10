@@ -68,17 +68,6 @@ x = 7"
     (py-electric-backspace)
     (should (eq (char-before) ?:))))
 
-(ert-deftest extra-trailing-space-120-yC7gXH ()
-  (py-test-with-temp-buffer
-      "def bar():
-       x = 7"
-    (goto-char (point-max))
-    (beginning-of-line)
-    (when py-debug-p (whitespace-mode))
-    (py-electric-delete)
-    (should (eq (char-before) 10))
-    (should (eq (char-after) ?x))))
-
 (ert-deftest extra-trailing-space-120-NahnQx ()
   (py-test-with-temp-buffer
       "def bar():
@@ -100,6 +89,17 @@ x = 7         "
     ;; (should-not  (char-after))
     ))
 
+(ert-deftest extra-trailing-space-120-YyL25g ()
+  (py-test-with-temp-buffer
+      "def bar():
+    x = 7         "
+    (goto-char (point-max))
+    (backward-char 3)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (should (eq (char-before) ?7))
+    ;; (should-not  (char-after))
+    ))
 
 (ert-deftest delete-test-120-F8qxoR ()
   (py-test-with-temp-buffer
@@ -179,22 +179,7 @@ x = {'abc':'def',
 "
     (goto-char (point-max))
     (py-electric-delete)
-    (should (eq (char-before) 10))))
-
-;; (ert-deftest delete-issue-123-yDjJas ()
-;;   (py-test-with-temp-buffer
-;;       "def bar():
-;; x = 7
-;; "
-;;     (beginning-of-line)
-;;     (insert (make-string 4 32))
-;;     (goto-char (point-max))
-;;     (insert (make-string 9 32))
-;;     (beginning-of-line)
-;;     (py-electric-delete)
-;;     (should (eq (char-after) ?1))
-;;     (should (eq (char-before) 10))
-;;     ))
+    (should (eq (char-before) ?7))))
 
 (ert-deftest delete-issue-123-n2kOH4 ()
   (py-test-with-temp-buffer
@@ -251,7 +236,9 @@ x = {'abc':'def',
     (search-backward ":")
     (forward-char 1)
     (py-electric-delete)
-    (should (eq (char-before) ?:))))
+    (should (eq (char-before) ?:))
+    (should (eq (char-after) 32))
+    ))
 
 (ert-deftest delete-newline-126-uWqng3 ()
   (py-test-with-temp-buffer
@@ -303,15 +290,38 @@ x = {'abc':'def',
 (ert-deftest delete-newline-126-tzqfcf ()
   (py-test-with-temp-buffer
       "def test():
-    
+
     a = 'a'"
     (goto-char (point-max))
     (forward-line -1)
     (beginning-of-line)
-    (when py-debug-p (whitespace-mode))     
+    (when py-debug-p (whitespace-mode))
     (py-electric-delete)
-    (should-not (eq (char-after) 32))))
+    (should (eq (char-after) 32))))
 
+(ert-deftest extra-trailing-space-120-yC7gXH ()
+  (py-test-with-temp-buffer
+      "def bar():
+   x = 7"
+    (goto-char (point-max))
+    (beginning-of-line)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (should (eq (char-before) 10))
+    (should (eq (char-after) ?x))))
+
+(ert-deftest delete-issue-123-KoplQh ()
+  (py-test-with-temp-buffer
+      "def bar():
+       x = 7
+"
+    (goto-char (point-max))
+    (forward-line -1)
+    (beginning-of-line)
+    (forward-char 3)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (should (eq 4 (current-indentation)))))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

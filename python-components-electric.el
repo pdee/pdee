@@ -234,6 +234,7 @@ At no-whitespace char, delete one char at point.
 	 (indent (py-compute-indentation))
 	 (delpos (+ (line-beginning-position) indent))
 	 ;; (line-end-pos (line-end-position))
+	 (orig (point))
 	 done)
     (cond
      ((eq 4 (prefix-numeric-value arg))
@@ -247,25 +248,37 @@ At no-whitespace char, delete one char at point.
      ((looking-at "[[:graph:]]")
       (delete-char 1))
      (;; after code
-      (or (and (looking-at "[ \t]*$")(looking-back "[[:graph:]][ \t]*" (line-beginning-position)))
+      (or (and (looking-at "[ \t]*$") (looking-back "[[:graph:]][ \t]*" (line-beginning-position)))
 	  (py-empty-line-p))
       (end-of-line)
-      (if (< 0 (abs (skip-chars-backward " \t")))
-	  (delete-region (point) (line-end-position))
-	(unless (eobp) (delete-char 1))))
+      ;; preferably delete right
+      (cond ((eobp)
+	     (if (< 0 (abs (skip-chars-backward " \n\r\f\t")))
+		 (delete-region (point) (line-end-position))
+	       (backward-delete-char 1)))
+	    ((eolp)
+	     (delete-char 1))
+	    ((< 0 (abs (skip-chars-forward " \t")))
+	     (delete-region (point) (line-end-position)))
+	    (t (delete-char 1))))
      (;; before code
       (looking-at "[ \t]+[[:graph:]]")
-      (cond ((<= indent (current-column) )
-	     (skip-chars-forward " \t")
-	     (delete-region (point) (progn (setq done (< 1 (abs (skip-chars-backward " \t"))))  (point)))
-	     (if (bolp)
-		 (indent-to indent)
-	       (when done (fixup-whitespace))
-	       ))
-	    (t
-	     (skip-chars-forward " \t")
-	     (delete-region (line-beginning-position) (point))))
-      (unless (or (bolp) (<= (point) delpos) (looking-back "[[:graph:]]" (line-beginning-position))) (py-electric-backspace)))
+      ;; before indent
+      (if (looking-back "^[ \t]+" (line-beginning-position))
+	  (cond ((< indent (current-indentation))
+		 (back-to-indentation)
+		 (delete-region (line-beginning-position) (point))
+		 (indent-to indent))
+		(t
+		 (skip-chars-forward " \t")
+		 (delete-region (line-beginning-position) (point))))
+	;; in the middle
+	;; (fixup-whitespace)
+	(skip-chars-backward " \t")
+	(setq done (< 1 (skip-chars-forward " \t")))
+	(delete-region (point) (progn (skip-chars-backward " \t")(point)))
+	(when done (fixup-whitespace)) 
+	))
      ;; Do nothing at EOB
      (t (unless (eobp) (delete-char 1))))))
 
