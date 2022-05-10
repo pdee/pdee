@@ -275,6 +275,12 @@ At no-whitespace char, delete one char at point.
 		 (back-to-indentation)
 		 (delete-region (line-beginning-position) (point))
 		 (indent-to indent))
+		((< 0 (% (current-indentation) py-indent-offset))
+		 (back-to-indentation)
+		 (delete-region (point) (progn (backward-char (% (current-indentation) py-indent-offset)) (point))))
+		((eq 0 (% (current-indentation) py-indent-offset))
+		 (back-to-indentation)
+		 (delete-region (point) (progn (backward-char py-indent-offset) (point))))
 		(t
 		 (skip-chars-forward " \t")
 		 (delete-region (line-beginning-position) (point))))
@@ -282,9 +288,8 @@ At no-whitespace char, delete one char at point.
 	;; (fixup-whitespace)
 	(skip-chars-backward " \t")
 	(setq done (< 1 (skip-chars-forward " \t")))
-	(delete-region (point) (progn (skip-chars-backward " \t")(point)))
-	(when done (fixup-whitespace))
-	))
+	(delete-region (point) (progn (skip-chars-backward " \t") (point)))
+	(when done (fixup-whitespace))))
      ;; Do nothing at EOB
      (t (unless (eobp) (delete-char 1))))))
 

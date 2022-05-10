@@ -323,7 +323,7 @@ x = {'abc':'def',
     (py-electric-delete)
     (should (eq 4 (current-indentation)))))
 
-(ert-deftest  backspacing-indentation-127-KoplQh ()
+(ert-deftest backspacing-indentation-127-KoplQh ()
   (py-test-with-temp-buffer
       "def test():
     if True:
@@ -334,7 +334,7 @@ x = {'abc':'def',
     (py-electric-backspace)
     (should (eq (current-column) 4))))
 
-(ert-deftest  backspacing-indentation-127-S0ykuo ()
+(ert-deftest backspacing-indentation-127-S0ykuo ()
   (py-test-with-temp-buffer
       "def test():
     if True:
@@ -345,7 +345,7 @@ x = {'abc':'def',
     (py-electric-backspace)
     (should (eq (current-column) 8))))
 
-(ert-deftest  backspacing-indentation-127-3fQXLA ()
+(ert-deftest backspacing-indentation-127-3fQXLA ()
   (py-test-with-temp-buffer
       "def test():
     if True:
@@ -356,6 +356,33 @@ x = {'abc':'def',
     (py-electric-backspace)
     (should (eq (char-before) 41))))
 
+(ert-deftest delete-indentation-128-3fQXLA ()
+  (py-test-with-temp-buffer
+      "def test():
+    if True:
+        print('in')
+
+    print('out')"
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (forward-line -1)
+    ;; at BOL, line is empty
+    (py-electric-delete)
+    (should (eq 4 (current-indentation)))))
+
+(ert-deftest delete-indentation-128-iLkoVk ()
+  (py-test-with-temp-buffer
+      "def test():
+    if True:
+        print('in')
+
+     print('out')"
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (beginning-of-line)
+    (forward-char 3) 
+    (py-electric-delete)
+    (should (eq 4 (current-indentation)))))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
