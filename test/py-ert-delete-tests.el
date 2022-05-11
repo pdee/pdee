@@ -73,8 +73,9 @@ x = 7"
       "def bar():
     x = 7    "
     (goto-char (point-max))
+    (skip-chars-backward " \t\r\n\f")  
+    (when py-debug-p (whitespace-mode))
     (py-electric-delete)
-    (should-not (char-after))
     (should (eq (char-before) ?7))))
 
 (ert-deftest extra-trailing-space-120-F8qxoR ()
@@ -179,7 +180,18 @@ x = {'abc':'def',
 "
     (goto-char (point-max))
     (py-electric-delete)
-    (should (eq (char-before) ?7))))
+    (should (eq (char-before) 10))))
+
+(ert-deftest delete-issue-123-zSR3y1 ()
+  (py-test-with-temp-buffer
+      "def bar():
+    x = 7
+  "
+    (goto-char (point-max))
+    (beginning-of-line)
+    (when py-debug-p (whitespace-mode))
+    (py-electric-delete)
+    (should (eq (char-before) 10))))
 
 (ert-deftest delete-issue-123-n2kOH4 ()
   (py-test-with-temp-buffer
@@ -189,6 +201,7 @@ x = {'abc':'def',
     return baz + bar
 "
     (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
     (search-backward "7")
     (forward-char 1)
     (py-electric-delete)
@@ -302,7 +315,7 @@ x = {'abc':'def',
 (ert-deftest extra-trailing-space-120-yC7gXH ()
   (py-test-with-temp-buffer
       "def bar():
-   x = 7"
+    x = 7"
     (goto-char (point-max))
     (beginning-of-line)
     (when py-debug-p (whitespace-mode))
@@ -380,8 +393,28 @@ x = {'abc':'def',
     (goto-char (point-max))
     (when py-debug-p (whitespace-mode))
     (beginning-of-line)
-    (forward-char 3) 
+    (forward-char 3)
     (py-electric-delete)
+    (should (eq 4 (current-indentation)))))
+
+(ert-deftest extra-trailing-space-yC7gXH ()
+  (py-test-with-temp-buffer
+      "def bar():
+    x = 7
+            "
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (py-electric-backspace)
+    (should (eq 4 (current-indentation)))))
+
+(ert-deftest extra-trailing-space-yC7gXH ()
+  (py-test-with-temp-buffer
+      "def bar():
+    x = 7
+            "
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (py-electric-backspace)
     (should (eq 4 (current-indentation)))))
 
 (provide 'py-ert-delete-tests)

@@ -166,8 +166,8 @@ string or comment."
 ;;         It would be nice to have a binding that works in terminal mode too.
 ;; keep-one handed over form ‘py-electric-delete’ maybe
 (defun py-electric-backspace (&optional arg keep-one)
-  "Delete reasonable amount of whitespace before point
-until outmost reasonable indentation.
+  "Delete one or more of whitespace chars right from point.
+Honor indentation.
 
 With optional arg KEEP-ONE: don't delete a single space.
 
@@ -183,47 +183,46 @@ At no-whitespace character, delete one before point.
 
 "
   (interactive "*P")
-  (let ((backward-delete-char-untabify-method 'untabify)
-	(indent (py-compute-indentation)))
-    (cond ((eq 4 (prefix-numeric-value arg))
-	   (backward-delete-char-untabify 1))
-	  ((use-region-p)
-           ;; Emacs23 doesn't know that var
-           (if (boundp 'delete-active-region)
-               (delete-active-region)
-	     (delete-region (region-beginning) (region-end))))
-	  ((looking-back "[[:graph:]]" (line-beginning-position))
-	   (backward-delete-char-untabify 1))
-	  ;; before code
-	  ((looking-back "^[ \t]+" (line-beginning-position))
-	   (cond ((<=  (current-column) py-indent-offset)
-		  (delete-region (line-beginning-position) (point)))
-		 ((eq 0 (% (current-column) py-indent-offset))
-		  (delete-region (point) (progn (backward-char py-indent-offset) (point))))
-		 (t (delete-region
-		     (point)
-		     (progn
-		       ;; go backward the remainder
-		       (backward-char (% (current-column) py-indent-offset))
-		       (point))))))
-	  ;; (while (member (char-before) (list 9 32))
-	  ;; (backward-delete-char-untabify 1))
-	  ;; after code
-	  ((looking-back "[[:graph:]][ \t]+" (line-beginning-position))
-	   (if (< 1 (abs (skip-chars-backward " \t")))
-	       (delete-region (point) (progn (skip-chars-forward " \t") (point)))
-	     (delete-char 1)))
-	  ((bolp)
-	   (unless (bobp) (backward-delete-char 1)))
-	  (t
-	   (py-indent-line nil t)
-	   ;; (while (and (member (char-before) (list 9 32 ?\r))
-	   ;; 	       (< indent (current-column)))
-	   ;;   (backward-delete-char-untabify 1))
-	   ))))
+  (unless (bobp)
+    (let ((backward-delete-char-untabify-method 'untabify)
+	  (indent (py-compute-indentation)))
+      (cond ((eq 4 (prefix-numeric-value arg))
+	     (backward-delete-char-untabify 1))
+	    ((use-region-p)
+             ;; Emacs23 doesn't know that var
+             (if (boundp 'delete-active-region)
+		 (delete-active-region)
+	       (delete-region (region-beginning) (region-end))))
+	    ((looking-back "[[:graph:]]" (line-beginning-position))
+	     (backward-delete-char-untabify 1))
+	    ;; before code
+	    ((looking-back "^[ \t]+" (line-beginning-position))
+	     (cond ((< indent (current-indentation))
+		    (back-to-indentation)
+		    (delete-region (line-beginning-position) (point))
+		    (indent-to indent))
+		   ((<=  (current-column) py-indent-offset)
+		    (delete-region (line-beginning-position) (point)))
+		   ((eq 0 (% (current-column) py-indent-offset))
+		    (delete-region (point) (progn (backward-char py-indent-offset) (point))))
+		   (t (delete-region
+		       (point)
+		       (progn
+			 ;; go backward the remainder
+			 (backward-char (% (current-column) py-indent-offset))
+			 (point))))))
+	    ((looking-back "[[:graph:]][ \t]+" (line-beginning-position))
+	     (if (< 1 (abs (skip-chars-backward " \t")))
+		 (delete-region (point) (progn (skip-chars-forward " \t") (point)))
+	       (delete-char 1)))
+	    ((bolp)
+	     (backward-delete-char 1))
+	    (t
+	     (py-indent-line nil t))))))
 
 (defun py-electric-delete (&optional arg)
-  "Delete reasonable amount of whitespace at point. Keep indentation.
+  "Delete one or more of whitespace chars right from point.
+Honor indentation.
 
 Delete region when both variable `delete-active-region' and ‘use-region-p’
 are non-nil.
@@ -231,67 +230,62 @@ are non-nil.
 With \\[universal-argument], deactivate electric-behavior this time,
 delete just one character at point.
 
+At spaces in line of code, call fixup-whitespace.
 At no-whitespace char, delete one char at point.
 "
   (interactive "P*")
-  (let* (;; py-ert-deletes-too-much-lp:1300270-dMegYd
-	 ;; x = {'abc':'def',
-         ;;     'ghi':'jkl'}
-	 (indent (py-compute-indentation))
-	 (delpos (+ (line-beginning-position) indent))
-	 ;; (line-end-pos (line-end-position))
-	 (orig (point))
-	 done)
-    (cond
-     ((eq 4 (prefix-numeric-value arg))
-      (delete-char 1))
-     ;; delete active region if one is active
-     ((use-region-p)
-      ;; Emacs23 doesn't know that var
-      (if (boundp 'delete-active-region)
-          (delete-active-region)
-	(delete-region (region-beginning) (region-end))))
-     ((looking-at "[[:graph:]]")
-      (delete-char 1))
-     (;; after code
-      (or (and (looking-at "[ \t]*$") (looking-back "[[:graph:]][ \t]*" (line-beginning-position)))
-	  (py-empty-line-p))
-      (end-of-line)
-      ;; preferably delete right
-      (cond ((eobp)
-	     (if (< 0 (abs (skip-chars-backward " \n\r\f\t")))
-		 (delete-region (point) (line-end-position))
-	       (backward-delete-char 1)))
-	    ((eolp)
-	     (delete-char 1))
-	    ((< 0 (abs (skip-chars-forward " \t")))
-	     (delete-region (point) (line-end-position)))
-	    (t (delete-char 1))))
-     (;; before code
-      (looking-at "[ \t]+[[:graph:]]")
-      ;; before indent
-      (if (looking-back "^[ \t]+" (line-beginning-position))
-	  (cond ((< indent (current-indentation))
-		 (back-to-indentation)
-		 (delete-region (line-beginning-position) (point))
-		 (indent-to indent))
-		((< 0 (% (current-indentation) py-indent-offset))
-		 (back-to-indentation)
-		 (delete-region (point) (progn (backward-char (% (current-indentation) py-indent-offset)) (point))))
-		((eq 0 (% (current-indentation) py-indent-offset))
-		 (back-to-indentation)
-		 (delete-region (point) (progn (backward-char py-indent-offset) (point))))
-		(t
-		 (skip-chars-forward " \t")
-		 (delete-region (line-beginning-position) (point))))
-	;; in the middle
-	;; (fixup-whitespace)
-	(skip-chars-backward " \t")
-	(setq done (< 1 (skip-chars-forward " \t")))
-	(delete-region (point) (progn (skip-chars-backward " \t") (point)))
-	(when done (fixup-whitespace))))
-     ;; Do nothing at EOB
-     (t (unless (eobp) (delete-char 1))))))
+  (unless (eobp)
+    (let* (;; py-ert-deletes-too-much-lp:1300270-dMegYd
+	   ;; x = {'abc':'def',
+           ;;     'ghi':'jkl'}
+	   (backward-delete-char-untabify-method 'untabify)
+	   (indent (py-compute-indentation))
+	   ;; (delpos (+ (line-beginning-position) indent))
+	   ;; (line-end-pos (line-end-position))
+	   ;; (orig (point))
+	   done)
+      (cond
+       ((eq 4 (prefix-numeric-value arg))
+	(delete-char 1))
+       ;; delete active region if one is active
+       ((use-region-p)
+	;; Emacs23 doesn't know that var
+	(if (boundp 'delete-active-region)
+            (delete-active-region)
+	  (delete-region (region-beginning) (region-end))))
+       ((looking-at "[[:graph:]]")
+	(delete-char 1))
+       ((or (eolp) (looking-at "[ \t]+$"))
+	(cond
+	 ((eolp) (delete-char 1))
+	 ((< (+ indent (line-beginning-position)) (line-end-position))
+	  (end-of-line)
+	  (while (and (member (char-before) (list 9 32 ?\r))
+		      (< indent (current-column)))
+	    (backward-delete-char-untabify 1)))))
+       (;; before code
+	(looking-at "[ \t]+[[:graph:]]")
+	;; before indent
+	(if (looking-back "^[ \t]*" (line-beginning-position))
+	    (cond ((< indent (current-indentation))
+		   (back-to-indentation)
+		   (delete-region (line-beginning-position) (point))
+		   (indent-to indent))
+		  ((< 0 (% (current-indentation) py-indent-offset))
+		   (back-to-indentation)
+		   (delete-region (point) (progn (backward-char (% (current-indentation) py-indent-offset)) (point))))
+		  ((eq 0 (% (current-indentation) py-indent-offset))
+		   (back-to-indentation)
+		   (delete-region (point) (progn (backward-char py-indent-offset) (point))))
+		  (t
+		   (skip-chars-forward " \t")
+		   (delete-region (line-beginning-position) (point))))
+	  ;; in the middle fixup-whitespace
+	  (setq done (line-end-position))
+	  (fixup-whitespace)
+	  ;; if just one whitespace at point, delete that one
+	  (or (< (line-end-position) done) (delete-char 1))))
+       (t (delete-char 1))))))
 
 ;; TODO: PRouleau: the electric yank mechanism is currently commented out.
 ;;       Is this a feature to keep?  Was it used?  I can see a benefit for it.
