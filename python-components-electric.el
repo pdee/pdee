@@ -166,7 +166,7 @@ string or comment."
 ;;         It would be nice to have a binding that works in terminal mode too.
 ;; keep-one handed over form ‘py-electric-delete’ maybe
 (defun py-electric-backspace (&optional arg keep-one)
-  "Delete one or more of whitespace chars right from point.
+  "Delete one or more of whitespace chars left from point.
 Honor indentation.
 
 With optional arg KEEP-ONE: don't delete a single space.
