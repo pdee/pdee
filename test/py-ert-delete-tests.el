@@ -73,7 +73,7 @@ x = 7"
       "def bar():
     x = 7    "
     (goto-char (point-max))
-    (skip-chars-backward " \t\r\n\f")  
+    (skip-chars-backward " \t\r\n\f")
     (when py-debug-p (whitespace-mode))
     (py-electric-delete)
     (should (eq (char-before) ?7))))
@@ -416,6 +416,16 @@ x = {'abc':'def',
     (when py-debug-p (whitespace-mode))
     (py-electric-backspace)
     (should (eq 4 (current-indentation)))))
+
+(ert-deftest py-electric-backspace-after-colon-yC7gXH ()
+  (py-test-with-temp-buffer
+      "def test():          a = 'a'"
+    (goto-char (point-max))
+    (when py-debug-p (whitespace-mode))
+    (forward-char -9)
+    (py-electric-backspace)
+    (should (eq (char-before) ?:))
+    (should (eq (char-after) 32))))
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

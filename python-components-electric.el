@@ -212,9 +212,16 @@ At no-whitespace character, delete one before point.
 			 (backward-char (% (current-column) py-indent-offset))
 			 (point))))))
 	    ((looking-back "[[:graph:]][ \t]+" (line-beginning-position))
-	     (if (< 1 (abs (skip-chars-backward " \t")))
-		 (delete-region (point) (progn (skip-chars-forward " \t") (point)))
-	       (delete-char 1)))
+	     ;; in the middle fixup-whitespace
+	     (setq done (line-end-position))
+	     (fixup-whitespace)
+	     ;; if just one whitespace at point, delete that one
+	     (or (< (line-end-position) done) (delete-char 1)))
+
+	    ;; (if (< 1 (abs (skip-chars-backward " \t")))
+	    ;; 		 (delete-region (point) (progn (skip-chars-forward " \t") (point)))
+	    ;; 	       (delete-char 1))
+
 	    ((bolp)
 	     (backward-delete-char 1))
 	    (t
