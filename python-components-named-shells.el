@@ -81,5 +81,12 @@ With optional \\[universal-argument] get a new dedicated shell."
   (interactive "p")
   (py-shell argprompt args nil "pypy" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
 
+(defun isympy3 (&optional argprompt args buffer fast exception-buffer split)
+  "Start an Pypy interpreter.
+
+With optional \\[universal-argument] get a new dedicated shell."
+  (interactive "p")
+  (py-shell argprompt args nil "isympy3" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
+
 (provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here

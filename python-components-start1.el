@@ -4308,15 +4308,6 @@ These are Python temporary files awaiting execution."
     (push '(py-pdbtrack-is-tracking-p py-pdbtrack-minor-mode-string)
           minor-mode-alist))
 
-(defun py-set-command-args (arguments)
-  "Set Python arguments on the fly, override defaults in this session.
-
-Use `defcustom' to keep value across sessions "
-  (interactive
-   (list
-    (read-from-minibuffer "Command args: " py-python-command-args)))
-    (setq py-python-command-args arguments))
-
 (defun py--update-lighter (shell)
   "Select lighter for mode-line display"
   (setq py-modeline-display

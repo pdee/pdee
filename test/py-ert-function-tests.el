@@ -1501,9 +1501,6 @@
 (ert-deftest py-ert-complete-auto-functionp-test-iybItV ()
   (should (functionp 'py-complete-auto)))
 
-(ert-deftest py-ert-set-command-args-functionp-test-oDb33I ()
-  (should (functionp 'py-set-command-args)))
-
 (ert-deftest py-ert-emacs-version-greater-23-functionp-test-AnhhAw ()
   (should (functionp 'py---emacs-version-greater-23)))
 
