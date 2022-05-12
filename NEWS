@@ -1,6 +1,12 @@
 Python Mode News
 ================
 
+Prepared for version 6.3.2
+-----------------------
+
+- ‘isympy3’, am IPython console for SymPy
+
+
 New in version 6.3.1
 -----------------------
 

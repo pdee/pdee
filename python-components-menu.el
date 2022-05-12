@@ -49,7 +49,11 @@ Start an Python2 interpreter."]
 
        ["Python3" python3
 	:help " `python3'
-Start an Python3 interpreter."])
+Start an Python3 interpreter."]
+       ["SymPy" isympy3
+	:help " `isympy3'
+Start an SymPy interpreter."])
+
       ("Edit"
        ("Shift"
 	("Shift right"
@@ -1859,7 +1863,7 @@ Use `M-x customize-variable' to set it permanently"
 Default is nilUse `M-x customize-variable' to set it permanently"
 	   :style toggle :selected py-electric-yank-active-p]
 
-	  
+
 
 	  ["Trailing whitespace smart delete "
 	   (setq py-trailing-whitespace-smart-delete-p
