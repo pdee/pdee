@@ -5886,13 +5886,14 @@ Return the output."
           '(py-shell-output-filter))
          (py-shell-output-filter-in-progress t)
          (inhibit-quit t)
-	 (delay (py--which-delay-process-dependent buffer)))
+	 (delay (py--which-delay-process-dependent buffer))
+	 temp-file-name)
     (or
      (with-local-quit
        (if (and (string-match ".\n+." strg) (string-match "^\*[Ii]" buffer))  ;; IPython or multiline
-           (let* ((temp-file-name (py-temp-file-name strg))
-		  (file-name (or (buffer-file-name) temp-file-name)))
-	     (py-execute-file file-name proc))
+           (let ((file-name (or (buffer-file-name) (setq temp-file-name (py-temp-file-name strg)))))
+	     (py-execute-file file-name proc)
+	     (when temp-file-name (delete-file temp-file-name)))
 	 (py-shell-send-string strg proc))
        ;; (switch-to-buffer buffer)
        ;; (accept-process-output proc 9)
@@ -6087,11 +6088,12 @@ process buffer for a list of commands.)"
 		  ((string-match "^.+3" buffer-name)
 		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
 	  (setq py-modeline-display (py--update-lighter buffer-name))
-	  (sit-for delay t))))
+	  ;; (sit-for delay t)
+	  )))
     (if (setq proc (get-buffer-process buffer))
 	(progn
 	  (with-current-buffer buffer
-	    (unless fast (py-shell-mode))
+	    (unless (or done fast) (py-shell-mode))
 	    (and internal (set-process-query-on-exit-flag proc nil)))
 	  (when (or interactivep
 		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))

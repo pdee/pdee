@@ -108,8 +108,6 @@ Returns value of ‘py-force-py-shell-name-p’."
   (when (or py-verbose-p (called-interactively-p 'any)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
   py-force-py-shell-name-p)
 
-
-
 (defun py--fix-if-name-main-permission (strg)
   "Remove \"if __name__ == '__main__ '\" STRG from code to execute.
 
@@ -224,10 +222,6 @@ Unless DIRECTION is symbol 'forward, go backward first"
       (when (called-interactively-p 'any) (message "%s" py-indent-offset))
       py-indent-offset)))
 
-
-
-
-
 (defun py--execute-buffer-finally (strg proc procbuf origline filename fast wholebuf)
   (if (and filename wholebuf (not (buffer-modified-p)))
       (unwind-protect
@@ -239,7 +233,6 @@ Unless DIRECTION is symbol 'forward, go backward first"
       (unwind-protect
 	  (py--execute-file-base tempfile proc nil procbuf origline fast)
 	(and (file-readable-p tempfile) (delete-file tempfile py-debug-p))))))
-
 
 (defun py--postprocess-intern (&optional origline exception-buffer output-buffer)
   "Highlight exceptions found in BUF.
@@ -447,17 +440,14 @@ START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
 	 (proc (or proc-raw (get-buffer-process buffer-name)
 		   (prog1
 		       (get-buffer-process (py-shell nil nil dedicated shell buffer-name fast exception-buffer split switch))
-		     (sit-for 0.1))))
+		     (sit-for 1)
+		     )))
 	 (split (if python-mode-v5-behavior-p 'just-two split)))
     (setq py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
 			       (py--choose-buffer-name shell dedicated fast)))
     (py--execute-base-intern strg filename proc wholebuf py-output-buffer origline execute-directory start end fast)
     (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch))))
-
-
-
-
 
 (provide 'python-components-start3)
 ;;; python-components-start3.el ends here

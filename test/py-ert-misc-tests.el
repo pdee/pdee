@@ -362,5 +362,18 @@ GeomSim."
 	(switch-to-buffer (current-buffer)))
       (should (equal (current-buffer) (get-buffer  oldbuf))))))
 
+(when (featurep  'comint-mime)
+  (ert-deftest py-comint-mime-test-7JbtYW ()
+    (py-test-with-temp-buffer
+	"__COMINT_MIME_setup"
+      (push '(inferior-python-mode . comint-mime-setup-python)
+	    comint-mime-setup-function-alist)
+      (push '(py-shell-mode . comint-mime-setup-py-shell)
+	    comint-mime-setup-function-alist)
+      (add-hook 'py-shell-mode-hook 'comint-mime-setup)
+      (py-execute-buffer-ipython3)
+      (message "%s" py-result)
+      (should (string-match "__COMINT_MIME_setup" py-result)))))
+
 (provide 'py-ert-misc-tests)
 ;;; py-ert-misc-tests.el ends here

@@ -309,7 +309,7 @@ may want to re-add custom functions to it using the
     'indent-for-tab-command)
    (t
     (define-key py-shell-mode-map "\t"
-      'py-indent-or-complete)))
+		'py-indent-or-complete)))
   (make-local-variable 'py-pdbtrack-buffers-to-kill)
   (make-local-variable 'py-shell-fast-last-output)
   (set (make-local-variable 'py-shell--block-prompt) nil)
@@ -317,7 +317,7 @@ may want to re-add custom functions to it using the
   (py-shell-prompt-set-calculated-regexps)
   (if py-shell-fontify-p
       (progn
-	(py-shell-font-lock-turn-on))
+  	(py-shell-font-lock-turn-on))
     (py-shell-font-lock-turn-off)))
 
 (make-obsolete 'jpython-mode 'jython-mode nil)

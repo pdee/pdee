@@ -165,11 +165,9 @@ string or comment."
 ;;         graphics mode, it does not work when Emacs runs in terminal mode.
 ;;         It would be nice to have a binding that works in terminal mode too.
 ;; keep-one handed over form ‘py-electric-delete’ maybe
-(defun py-electric-backspace (&optional arg keep-one)
+(defun py-electric-backspace (&optional arg)
   "Delete one or more of whitespace chars left from point.
 Honor indentation.
-
-With optional arg KEEP-ONE: don't delete a single space.
 
 If called at whitespace below max indentation,
 
@@ -185,7 +183,8 @@ At no-whitespace character, delete one before point.
   (interactive "*P")
   (unless (bobp)
     (let ((backward-delete-char-untabify-method 'untabify)
-	  (indent (py-compute-indentation)))
+	  (indent (py-compute-indentation))
+	  done)
       (cond ((eq 4 (prefix-numeric-value arg))
 	     (backward-delete-char-untabify 1))
 	    ((use-region-p)
