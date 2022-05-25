@@ -2848,11 +2848,10 @@ See ‘py-no-outdent-re-raw’ for better readable content")
    "def"
    "for"
    "if"
+   "match"
    "try"
    "while"
    "with"
-   "match"
-   "case"
    )
   "Matches the beginning of a compound statement but not it's clause."
   :type '(repeat string)
@@ -2999,6 +2998,7 @@ Second group grabs the name")
 
 (defcustom py-minor-clause-re-raw
   (list
+   "case"
    "elif"
    "else"
    "except"

@@ -306,9 +306,10 @@ LIEP stores line-end-position at point-of-interest
 				;; (and (py--backward-regexp 'py-block-or-clause-re) (current-indentation)))
 			       	(and (py--go-to-keyword 'py-block-or-clause-re nil nil t) (current-indentation)))
 			       ((bobp) 0)
-			       (t (save-excursion (skip-chars-backward " \t\r\n\f")
-						  (if
-						      (py--backward-regexp 'py-block-or-clause-re)
+			       (t (save-excursion  
+				    ;; (skip-chars-backward " \t\r\n\f")
+						  (if (py-backward-block) 
+						      ;; (py--backward-regexp 'py-block-or-clause-re)
 						      (+ py-indent-offset (current-indentation))
 						    0)))))
 			((looking-at py-extended-block-or-clause-re)

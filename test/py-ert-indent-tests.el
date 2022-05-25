@@ -939,5 +939,30 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
      (py-indent-region (line-beginning-position) (point-max) t))
    (should (eq 4 (current-indentation)))))
 
+(ert-deftest py-match-case-test-i1nySM ()
+  (py-test-with-temp-buffer
+      "match (100, 200):
+    case (100, 300):  # Mismatch: 200 != 300
+        print('Case 1')
+    case (100, 200) if flag:  # Successful match, but guard fails
+        print('Case 2')
+    case (100, y):  # Matches and binds y to 200
+        print(f'Case 3, y: {y}')
+    case _:  # Pattern not attempted
+        print('Case 4, I match anything!')"
+    (goto-char (point-max))
+    (search-backward "print")
+    ;; (beginning-of-line)
+    (should (eq 8  (py-compute-indentation)))
+    (search-backward "case")
+    (should (eq 4  (py-compute-indentation)))
+    (search-backward "print")
+    (should (eq 8  (py-compute-indentation)))
+    (search-backward "case")
+    (should (eq 4  (py-compute-indentation)))
+    ))
+
+
+
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here
