@@ -24,7 +24,7 @@
 ;; type hints in Python
 
 (require 'py-setup-ert-tests)
-	 
+
 (ert-deftest py-assignments-with-type-hints-test-bug44568-QLpglI ()
   (py-test-with-temp-buffer
       "var1: int = 5
@@ -124,13 +124,15 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
 
 (ert-deftest py-ert-pseudo-keyword-face-lp-1294742-KgocNc ()
   (py-test-with-temp-buffer-point-min
-      "  Ellipsis True False None  __debug__ NotImplemented"
+      "  Ellipsis True False None __debug__ NotImplemented"
     (goto-char (point-min))
-    (font-lock-fontify-region (point-min)(point-max))
+    (font-lock-fontify-region (point-min) (point-max))
+    (sit-for 0.1) 
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
       (should (eq 'py-pseudo-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
 
+    ;; (should (eq (get-char-property (point) 'face) 'py-pseudo-keyword-face))
 (ert-deftest py-ert-object-reference-face-lp-1294742-HCkKIc ()
   (py-test-with-temp-buffer-point-min
       "self cls"
@@ -199,6 +201,29 @@ def foo3(bar):
     (search-backward "match")
     (should (eq (face-at-point) 'py-variable-name-face))
     (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))))
+
+(ert-deftest py-keywords-in-identifiers-highlighted-incorrectly-lp-888338-test ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+def possibly_break():
+    pass"
+    (goto-char (point-max))
+    (search-backward "bly")
+    (font-lock-fontify-buffer)
+    (sit-for 1)
+    (should (eq (get-char-property (point) 'face) 'py-def-face))))
+
+(ert-deftest py-invalid-class-function-names-test-Lie51R ()
+  (py-test-with-temp-buffer
+      "#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+def 1possibly_break():
+    pass"
+    (goto-char (point-max))
+    (search-backward "bly")
+    (should-not (eq (get-char-property (point) 'face) 'py-def-face))))
+
 
 
 (provide 'py-ert-font-lock-test)
