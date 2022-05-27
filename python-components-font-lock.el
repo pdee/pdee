@@ -135,7 +135,7 @@
       nil
       (1 py-variable-name-face)))
     (,(lambda (limit)
-        (let ((re (rx (group (+ (any word ?. ?_))) (* space)
+        (let ((re (rx (* "self")(group (+ (any word ?. ?_))) (* space)
                       (* ?, (* space) (+ (any word ?. ?_)) (* space))
                       (or ":" "=" "+=" "-=" "*=" "/=" "//=" "%=" "**=" ">>=" "<<=" "&=" "^=" "|=")))
               (res nil))

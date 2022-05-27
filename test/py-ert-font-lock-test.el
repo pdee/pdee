@@ -230,10 +230,26 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
   (py-test-with-temp-buffer
       "weight = 23"
     (font-lock-fontify-buffer)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (goto-char (point-max))
     (search-backward "w")
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))))
+
+(ert-deftest py-variable-name-face-test-bxtv3F ()
+  (py-test-with-temp-buffer
+      "class M:
+    def __init__(self):
+        \"\"\"asdf\"\"\"
+        self.a = 1
+        self.b = 2"
+    (font-lock-fontify-buffer)
+    (sit-for 0.1) 
+    (goto-char (point-max))
+    (search-backward "b")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "a")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    ))
 
 (provide 'py-ert-font-lock-test)
 ;;; py-ert-font-lock-test.el here
