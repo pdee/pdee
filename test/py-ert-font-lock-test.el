@@ -52,40 +52,6 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
     (should (face-equal (face-at-point) 'py-variable-name-face))
     ))
 
-;; (ert-deftest py-assignments-with-type-hints-test-bug45341-QLpglI ()
-;;   (py-test-with-temp-buffer
-;;       "[a, b, c] = 1, 2, 3
-;; a, *b, c = range(10)
-;; inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
-;; (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
-;; "
-;;     (font-lock-fontify-buffer)
-;;     (goto-char (point-max))
-;;     (search-backward "y")
-;;     (should (eq (face-at-point) 'py-variable-name-face))
-;;     (search-backward "x")
-;;     (should (eq (face-at-point) 'py-variable-name-face))
-;;     (search-backward "a")
-;;     (should (face-equal (face-at-point) 'py-variable-name-face))
-;;     (search-backward "foo" nil nil 2)
-;;     (should (eq (face-at-point) nil))
-;;     (search-backward "c")
-;;     (should (face-equal (face-at-point) 'py-variable-name-face))
-;;     (search-backward "inst")
-;;     (should (face-equal (face-at-point) 'py-variable-name-face))
-;;     (search-backward "inst")
-;;     (should (face-equal (face-at-point) 'py-variable-name-face))
-;;     (search-backward "inst")
-;;     (should (face-equal (face-at-point) 'py-variable-name-face))
-;;     (search-backward "range")
-;;     (should (eq (face-at-point) nil))
-;;     (search-backward "b")
-;;     (should (face-equal (face-at-point) 'py-variable-name-face))
-;;     (search-backward "b")
-;;     (should (face-equal (face-at-point) 'py-variable-name-face))
-;;     ))
-
-
 (ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
   (py-test-with-temp-buffer
       "range(len(list((1, 2, 3))))"
@@ -114,7 +80,6 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
       (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
 
-
 (ert-deftest py-ert-builtins-face-lp-1294742-zvZYG5 ()
   (py-test-with-temp-buffer-point-min
       "_ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
@@ -127,7 +92,7 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
       "  Ellipsis True False None __debug__ NotImplemented"
     (goto-char (point-min))
     (font-lock-fontify-region (point-min) (point-max))
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
       (should (eq 'py-pseudo-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))
@@ -166,7 +131,6 @@ def foo3(bar):
     (search-backward "spam" nil t 2)
     (should (eq (face-at-point) 'py-variable-name-face))
     ))
-
 
 (ert-deftest bug46233-font-lock-assignment-test-UAIyOJ ()
   (py-test-with-temp-buffer
@@ -224,7 +188,52 @@ def 1possibly_break():
     (search-backward "bly")
     (should-not (eq (get-char-property (point) 'face) 'py-def-face))))
 
+(ert-deftest py-variable-name-face-test-Lie51R ()
+  (py-test-with-temp-buffer
+      "[a, b, c] = 1, 2, 3
+a, *b, c = range(10)
+inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
+(a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+"
+    (goto-char (point-max))
+    (font-lock-fontify-buffer)
+    (sit-for 0.1)
+    (search-backward "d")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "c")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "b")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "a")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "c")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "b")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "a")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "c")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "b")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "a")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "c")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "b")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "a")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    ))
 
+(ert-deftest py-variable-name-face-test-FFVt1i ()
+  (py-test-with-temp-buffer
+      "weight = 23"
+    (font-lock-fontify-buffer)
+    (sit-for 0.1) 
+    (goto-char (point-max))
+    (search-backward "w")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))))
 
 (provide 'py-ert-font-lock-test)
 ;;; py-ert-font-lock-test.el here
