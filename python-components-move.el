@@ -285,9 +285,9 @@ REPEAT - count and consider repeats"
 ;; Partial- or Minor Expression
 ;;  Line
 (defun py-backward-line ()
-  "Go to ‘beginning-of-line’, return position.
+  "Go to `beginning-of-line', return position.
 
-If already at ‘beginning-of-line’ and not at BOB,
+If already at `beginning-of-line' and not at BOB,
 go to beginning of previous line."
   (interactive)
   (unless (bobp)
@@ -300,9 +300,9 @@ go to beginning of previous line."
       erg)))
 
 (defun py-forward-line ()
-  "Go to ‘end-of-line’, return position.
+  "Go to `end-of-line', return position.
 
-If already at ‘end-of-line’ and not at EOB, go to end of next line."
+If already at `end-of-line' and not at EOB, go to end of next line."
   (interactive)
   (unless (eobp)
     (let ((orig (point)))
@@ -458,7 +458,7 @@ Return position of successful, nil of not started from inside."
 ;;     (if (eq last-command 'py-backward-assignment)
 ;; 	;; assume at start of an assignment
 ;; 	(py--forward-assignment-intern)
-;;       ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time
+;;       ;; `py-backward-assignment' here, avoid `py--beginning-of-assignment-p' a second time
 ;;       (let* (last
 ;; 	     (beg
 ;; 	      (or (py--beginning-of-assignment-p)

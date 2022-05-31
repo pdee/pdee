@@ -32,7 +32,7 @@
 From a programm, return source of Block at point, a string.
 
 Optional arg DECORATORS: include decorators when called at def or class.
-Also honors setting of ‘py-mark-decorators’"
+Also honors setting of `py-mark-decorators'"
   (interactive)
   (if (called-interactively-p 'interactive)
       (py--mark-base "block" (or decorators py-mark-decorators))
@@ -44,7 +44,7 @@ Also honors setting of ‘py-mark-decorators’"
 From a programm, return source of Block-Or-Clause at point, a string.
 
 Optional arg DECORATORS: include decorators when called at def or class.
-Also honors setting of ‘py-mark-decorators’"
+Also honors setting of `py-mark-decorators'"
   (interactive)
   (if (called-interactively-p 'interactive)
       (py--mark-base "block-or-clause" (or decorators py-mark-decorators))
@@ -65,7 +65,7 @@ From a programm, return source of Buffer at point, a string."
 From a programm, return source of Class at point, a string.
 
 Optional arg DECORATORS: include decorators when called at def or class.
-Also honors setting of ‘py-mark-decorators’"
+Also honors setting of `py-mark-decorators'"
   (interactive)
   (if (called-interactively-p 'interactive)
       (py--mark-base "class" (or decorators py-mark-decorators))
@@ -86,7 +86,7 @@ From a programm, return source of Clause at point, a string."
 From a programm, return source of Def at point, a string.
 
 Optional arg DECORATORS: include decorators when called at def or class.
-Also honors setting of ‘py-mark-decorators’"
+Also honors setting of `py-mark-decorators'"
   (interactive)
   (if (called-interactively-p 'interactive)
       (py--mark-base "def" (or decorators py-mark-decorators))
@@ -98,7 +98,7 @@ Also honors setting of ‘py-mark-decorators’"
 From a programm, return source of Def-Or-Class at point, a string.
 
 Optional arg DECORATORS: include decorators when called at def or class.
-Also honors setting of ‘py-mark-decorators’"
+Also honors setting of `py-mark-decorators'"
   (interactive)
   (if (called-interactively-p 'interactive)
       (py--mark-base "def-or-class" (or decorators py-mark-decorators))
@@ -182,7 +182,7 @@ From a programm, return source of Statement at point, a string."
 From a programm, return source of Top-Level at point, a string.
 
 Optional arg DECORATORS: include decorators when called at def or class.
-Also honors setting of ‘py-mark-decorators’"
+Also honors setting of `py-mark-decorators'"
   (interactive)
   (if (called-interactively-p 'interactive)
       (py--mark-base "top-level" (or decorators py-mark-decorators))

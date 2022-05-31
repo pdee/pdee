@@ -59,7 +59,7 @@ Optional LINE FILE CONDITION"
     (py-execute-string (concat "import pdb;pdb.break('" line "')"))))
 
 (defun py--pdb-versioned ()
-  "Guess existing pdb version from ‘py-shell-name’.
+  "Guess existing pdb version from `py-shell-name'.
 
 Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
   (interactive)
@@ -97,7 +97,7 @@ Argument COMMAND-LINE TBD."
   (pdb command-line))
 
 (defun py--pdb-current-executable ()
-  "When ‘py-pdb-executable’ is set, return it.
+  "When `py-pdb-executable' is set, return it.
 
 Otherwise return resuslt from `executable-find'"
   (or py-pdb-executable

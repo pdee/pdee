@@ -26,7 +26,7 @@
 
 
 (defun py-comment-region (beg end &optional arg)
-  "Like ‘comment-region’ but uses double hash (‘#’) comment starter."
+  "Like `comment-region’ but uses double hash (`#') comment starter."
   (interactive "r\nP")
   (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
@@ -36,7 +36,7 @@
 (defun py-comment-block (&optional beg end arg)
   "Comments block at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#') comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -53,7 +53,7 @@ the default"
 (defun py-comment-block-or-clause (&optional beg end arg)
   "Comments block-or-clause at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -70,7 +70,7 @@ the default"
 (defun py-comment-class (&optional beg end arg)
   "Comments class at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -87,7 +87,7 @@ the default"
 (defun py-comment-clause (&optional beg end arg)
   "Comments clause at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -104,7 +104,7 @@ the default"
 (defun py-comment-def (&optional beg end arg)
   "Comments def at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -121,7 +121,7 @@ the default"
 (defun py-comment-def-or-class (&optional beg end arg)
   "Comments def-or-class at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -138,7 +138,7 @@ the default"
 (defun py-comment-indent (&optional beg end arg)
   "Comments indent at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -155,7 +155,7 @@ the default"
 (defun py-comment-minor-block (&optional beg end arg)
   "Comments minor-block at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -172,7 +172,7 @@ the default"
 (defun py-comment-section (&optional beg end arg)
   "Comments section at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -189,7 +189,7 @@ the default"
 (defun py-comment-statement (&optional beg end arg)
   "Comments statement at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -206,7 +206,7 @@ the default"
 (defun py-comment-top-level (&optional beg end arg)
   "Comments top-level at point.
 
-Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash (`#’) comment starter when `py-block-comment-prefix-p' is  t,
 the default"
   (interactive "*")
   (save-excursion

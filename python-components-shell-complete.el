@@ -102,7 +102,7 @@ Interal used. Takes INPUT COMPLETION"
 
 Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   (when imports
-    (py-send-string imports process nil t))
+    (py-execute-string imports process nil t))
   (sit-for 0.1 t)
   (let* ((completion
 	  (py--shell-completion-get-completions
@@ -126,7 +126,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 		 py-shell-module-completion-code)))
     (py--shell-do-completion-at-point proc imports word buffer code)))
 
-(defun py-shell-complete (&optional shell beg end word fast)
+(defun py-shell-complete (&optional shell beg end word)
   (interactive)
   (let* ((exception-buffer (current-buffer))
 	 (pps (parse-partial-sexp
@@ -158,8 +158,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (py-find-imports))
          py-fontify-shell-buffer-p erg)
-    (cond (fast (py--fast-complete-base shell word imports))
-	  ((and in-string filenames)
+    (cond ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))
@@ -175,7 +174,7 @@ Otherwise call `py-indent-line'
 If `(use-region-p)' returns t, indent region.
 Use `C-q TAB' to insert a literally TAB-character
 
-In ‘python-mode’ `py-complete-function' is called,
+In `python-mode' `py-complete-function' is called,
 in (I)Python shell-modes `py-shell-complete'"
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)

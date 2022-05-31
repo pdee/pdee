@@ -28,7 +28,7 @@
 ;;; Code:
 
 (defun py--beginning-of-comment-p (&optional pps)
-  "If cursor is at the beginning of a ‘comment’.
+  "If cursor is at the beginning of a `comment'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -36,7 +36,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-expression-p (&optional pps)
-  "If cursor is at the beginning of a ‘expression’.
+  "If cursor is at the beginning of a `expression'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -44,7 +44,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-line-p (&optional pps)
-  "If cursor is at the beginning of a ‘line’.
+  "If cursor is at the beginning of a `line'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -52,7 +52,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-paragraph-p (&optional pps)
-  "If cursor is at the beginning of a ‘paragraph’.
+  "If cursor is at the beginning of a `paragraph'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -60,7 +60,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-partial-expression-p (&optional pps)
-  "If cursor is at the beginning of a ‘partial-expression’.
+  "If cursor is at the beginning of a `partial-expression'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -68,7 +68,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-section-p (&optional pps)
-  "If cursor is at the beginning of a ‘section’.
+  "If cursor is at the beginning of a `section'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -76,7 +76,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-top-level-p (&optional pps)
-  "If cursor is at the beginning of a ‘top-level’.
+  "If cursor is at the beginning of a `top-level'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -84,7 +84,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-assignment-p (&optional pps)
-  "If cursor is at the beginning of a ‘assignment’.
+  "If cursor is at the beginning of a `assignment'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -94,7 +94,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-block-p (&optional pps)
-  "If cursor is at the beginning of a ‘block’.
+  "If cursor is at the beginning of a `block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -104,7 +104,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-block-or-clause-p (&optional pps)
-  "If cursor is at the beginning of a ‘block-or-clause’.
+  "If cursor is at the beginning of a `block-or-clause'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -114,7 +114,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-class-p (&optional pps)
-  "If cursor is at the beginning of a ‘class’.
+  "If cursor is at the beginning of a `class'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -124,7 +124,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-clause-p (&optional pps)
-  "If cursor is at the beginning of a ‘clause’.
+  "If cursor is at the beginning of a `clause'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -134,7 +134,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-def-p (&optional pps)
-  "If cursor is at the beginning of a ‘def’.
+  "If cursor is at the beginning of a `def'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -144,7 +144,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-def-or-class-p (&optional pps)
-  "If cursor is at the beginning of a ‘def-or-class’.
+  "If cursor is at the beginning of a `def-or-class'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -154,7 +154,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-elif-block-p (&optional pps)
-  "If cursor is at the beginning of a ‘elif-block’.
+  "If cursor is at the beginning of a `elif-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -164,7 +164,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-else-block-p (&optional pps)
-  "If cursor is at the beginning of a ‘else-block’.
+  "If cursor is at the beginning of a `else-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -174,7 +174,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-except-block-p (&optional pps)
-  "If cursor is at the beginning of a ‘except-block’.
+  "If cursor is at the beginning of a `except-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -184,7 +184,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-for-block-p (&optional pps)
-  "If cursor is at the beginning of a ‘for-block’.
+  "If cursor is at the beginning of a `for-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -194,7 +194,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-if-block-p (&optional pps)
-  "If cursor is at the beginning of a ‘if-block’.
+  "If cursor is at the beginning of a `if-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -204,7 +204,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-indent-p (&optional pps)
-  "If cursor is at the beginning of a ‘indent’.
+  "If cursor is at the beginning of a `indent'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -214,7 +214,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-minor-block-p (&optional pps)
-  "If cursor is at the beginning of a ‘minor-block’.
+  "If cursor is at the beginning of a `minor-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -224,7 +224,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-try-block-p (&optional pps)
-  "If cursor is at the beginning of a ‘try-block’.
+  "If cursor is at the beginning of a `try-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (not (or (nth 8 pps)(nth 1 pps)))
@@ -234,7 +234,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-assignment-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘assignment’.
+  "If cursor is at the beginning of a `assignment'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -244,7 +244,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-block-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘block’.
+  "If cursor is at the beginning of a `block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -254,7 +254,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-block-or-clause-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘block-or-clause’.
+  "If cursor is at the beginning of a `block-or-clause'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -264,7 +264,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-class-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘class’.
+  "If cursor is at the beginning of a `class'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -274,7 +274,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-clause-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘clause’.
+  "If cursor is at the beginning of a `clause'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -284,7 +284,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-def-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘def’.
+  "If cursor is at the beginning of a `def'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -294,7 +294,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-def-or-class-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘def-or-class’.
+  "If cursor is at the beginning of a `def-or-class'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -304,7 +304,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-elif-block-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘elif-block’.
+  "If cursor is at the beginning of a `elif-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -314,7 +314,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-else-block-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘else-block’.
+  "If cursor is at the beginning of a `else-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -324,7 +324,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-except-block-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘except-block’.
+  "If cursor is at the beginning of a `except-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -334,7 +334,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-for-block-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘for-block’.
+  "If cursor is at the beginning of a `for-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -344,7 +344,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-if-block-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘if-block’.
+  "If cursor is at the beginning of a `if-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -354,7 +354,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-indent-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘indent’.
+  "If cursor is at the beginning of a `indent'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -364,7 +364,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-minor-block-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘minor-block’.
+  "If cursor is at the beginning of a `minor-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)
@@ -374,7 +374,7 @@ Return position, nil otherwise."
          (point))))
 
 (defun py--beginning-of-try-block-bol-p (&optional pps)
-  "If cursor is at the beginning of a ‘try-block’.
+  "If cursor is at the beginning of a `try-block'.
 Return position, nil otherwise."
   (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
     (and (bolp)

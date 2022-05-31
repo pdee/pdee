@@ -30,7 +30,7 @@
 Default is t")
 
 (defvar py-menu nil
-  "Make a dynamically bound variable ‘py-menu’.")
+  "Make a dynamically bound variable `py-menu'.")
 
 
 (setq python-mode-map
@@ -170,7 +170,7 @@ Default is t")
   "Used inside a Python-shell.")
 
 (defvar py-ipython-shell-mode-map py-python-shell-mode-map
-  "Copy ‘py-python-shell-mode-map’ here.")
+  "Copy `py-python-shell-mode-map' here.")
 
 (defvar py-shell-map py-python-shell-mode-map)
 

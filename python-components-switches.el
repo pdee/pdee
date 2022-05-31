@@ -360,7 +360,7 @@ Returns value of `py-underscore-word-syntax-p'."
 ;; py-toggle-underscore-word-syntax-p must be known already
 ;; circular: py-toggle-underscore-word-syntax-p sets and calls it
 (defcustom py-underscore-word-syntax-p t
-  "If underscore chars should be of ‘syntax-class’ word.
+  "If underscore chars should be of `syntax-class' word.
 
 I.e. not of `symbol'.
 

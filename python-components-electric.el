@@ -164,14 +164,14 @@ string or comment."
 ;;       - Also, the mapping for [backspace] in python-mode-map only works in
 ;;         graphics mode, it does not work when Emacs runs in terminal mode.
 ;;         It would be nice to have a binding that works in terminal mode too.
-;; keep-one handed over form ‘py-electric-delete’ maybe
+;; keep-one handed over form `py-electric-delete' maybe
 (defun py-electric-backspace (&optional arg)
   "Delete one or more of whitespace chars left from point.
 Honor indentation.
 
 If called at whitespace below max indentation,
 
-Delete region when both variable `delete-active-region' and ‘use-region-p’
+Delete region when both variable `delete-active-region' and `use-region-p'
 are non-nil.
 
 With \\[universal-argument], deactivate electric-behavior this time,
@@ -230,7 +230,7 @@ At no-whitespace character, delete one before point.
   "Delete one or more of whitespace chars right from point.
 Honor indentation.
 
-Delete region when both variable `delete-active-region' and ‘use-region-p’
+Delete region when both variable `delete-active-region' and `use-region-p'
 are non-nil.
 
 With \\[universal-argument], deactivate electric-behavior this time,

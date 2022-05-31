@@ -96,7 +96,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-assignment-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a assignment.
+  "If at `beginning-of-line' at the end of a assignment.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -106,7 +106,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-block-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a block.
+  "If at `beginning-of-line' at the end of a block.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -116,7 +116,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-block-or-clause-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a block-or-clause.
+  "If at `beginning-of-line' at the end of a block-or-clause.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -126,7 +126,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-class-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a class.
+  "If at `beginning-of-line' at the end of a class.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -136,7 +136,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-clause-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a clause.
+  "If at `beginning-of-line' at the end of a clause.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -146,7 +146,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-def-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a def.
+  "If at `beginning-of-line' at the end of a def.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -156,7 +156,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-def-or-class-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a def-or-class.
+  "If at `beginning-of-line' at the end of a def-or-class.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -166,7 +166,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-elif-block-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a elif-block.
+  "If at `beginning-of-line' at the end of a elif-block.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -176,7 +176,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-else-block-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a else-block.
+  "If at `beginning-of-line' at the end of a else-block.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -186,7 +186,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-except-block-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a except-block.
+  "If at `beginning-of-line' at the end of a except-block.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -196,7 +196,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-for-block-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a for-block.
+  "If at `beginning-of-line' at the end of a for-block.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -206,7 +206,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-if-block-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a if-block.
+  "If at `beginning-of-line' at the end of a if-block.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -216,7 +216,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-indent-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a indent.
+  "If at `beginning-of-line' at the end of a indent.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -226,7 +226,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-minor-block-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a minor-block.
+  "If at `beginning-of-line' at the end of a minor-block.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion
@@ -236,7 +236,7 @@ Return position, nil otherwise."
         orig))))
 
 (defun py--end-of-try-block-bol-p ()
-  "If at ‘beginning-of-line’ at the end of a try-block.
+  "If at `beginning-of-line' at the end of a try-block.
 Return position, nil otherwise."
   (let ((orig (point)))
     (save-excursion

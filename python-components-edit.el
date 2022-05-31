@@ -210,7 +210,7 @@ When `py-tab-shifts-region-p' is t, not just the current line,
 but the region is shiftet that way.
 
 If `py-tab-indents-region-p' is t and first TAB doesn't shift
---as indent is at outmost reasonable--, ‘indent-region’ is called.
+--as indent is at outmost reasonable--, `indent-region' is called.
 
 Optional arg DEDENT: force dedent.
 
@@ -381,7 +381,7 @@ If IACT is provided, message result"
 Indented same level, which don't open blocks.
 Typically declarations resp. initialisations of variables following
 a class or function definition.
-See also ‘py--bounds-of-statements’"
+See also `py--bounds-of-statements'"
   (let* ((orig-indent (progn
                         (back-to-indentation)
                         (unless (py--beginning-of-statement-p)
@@ -454,7 +454,7 @@ See also `py-statements'."
 (defun py-kill-declarations ()
   "Delete variables declared in current level.
 
-Store deleted variables in ‘kill-ring’"
+Store deleted variables in `kill-ring'"
   (interactive "*")
   (let* ((bounds (py--bounds-of-declarations))
          (beg (car bounds))
@@ -530,7 +530,7 @@ Indented same level, which don't open blocks."
 
 These statements don't open blocks.
 
-More general than ‘py-declarations’."
+More general than `py-declarations'."
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))
@@ -545,7 +545,7 @@ More general than ‘py-declarations’."
 (defun py-kill-statements ()
   "Delete statements declared in current level.
 
-Store deleted statements in ‘kill-ring’"
+Store deleted statements in `kill-ring'"
   (interactive "*")
   (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))
@@ -658,7 +658,7 @@ Returns the string inserted."
   (insert-buffer-substring py-edit-buffer))
 
 (defun py-edit--intern (buffer-name mode &optional beg end prefix suffix action)
-  "Edit string or active region in ‘python-mode’.
+  "Edit string or active region in `python-mode'.
 
 arg BUFFER-NAME: a string.
 arg MODE: which buffer-mode used in edit-buffer"
@@ -692,7 +692,7 @@ arg MODE: which buffer-mode used in edit-buffer"
 	(message "%s" "Type C-c C-c writes contents back")))))
 
 (defun py-edit-docstring ()
-  "Edit docstring or active region in ‘python-mode’."
+  "Edit docstring or active region in `python-mode'."
   (interactive "*")
   (py-edit--intern "Edit docstring" 'python-mode))
 
@@ -725,7 +725,7 @@ arg MODE: which buffer-mode used in edit-buffer"
     (insert erg)))
 
 (defun py-prettyprint-assignment ()
-  "Prettyprint assignment in ‘python-mode’."
+  "Prettyprint assignment in `python-mode'."
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
   (save-excursion

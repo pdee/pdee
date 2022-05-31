@@ -41,7 +41,7 @@
     (+ (current-indentation) py-indent-offset)))
 
 (defun py-compute-indentation--according-to-list-style ()
-   "See ‘py-indent-list-style’
+   "See `py-indent-list-style'
 
 Choices are:
 
@@ -364,7 +364,7 @@ LIEP stores line-end-position at point-of-interest
 			((and (eq liep (line-end-position))
                               (save-excursion
 				(and (setq erg (py--go-to-keyword 'py-extended-block-or-clause-re (* py-indent-offset 99)))
-				     ;; maybe Result: (nil nil nil), which evaluates to ‘t’
+				     ;; maybe Result: (nil nil nil), which evaluates to `t'
 				     (not (bobp))
 				     (if (and (not indent-offset) py-smart-indentation) (setq indent-offset (py-guess-indent-offset)) t)
 				     (ignore-errors (< orig (or (py-forward-block-or-clause) (point)))))))
@@ -406,12 +406,12 @@ If region is active, restrict uncommenting at region "
   (dolist (ele py-known-shells)
     (let ((erg (py-install-named-shells-fix-doc ele)))
       (eval (fset (car (read-from-string ele)) (car
-						(read-from-string (concat "(lambda (&optional dedicated args) \"Start a ‘" erg "’ interpreter.
+						(read-from-string (concat "(lambda (&optional dedicated args) \"Start a `" erg "' interpreter.
 Optional DEDICATED: with \\\\[universal-argument] start in a new
 dedicated shell.
-Optional ARGS overriding ‘py-" ele "-command-args’.
+Optional ARGS overriding `py-" ele "-command-args'.
 
-Calls ‘py-shell’
+Calls `py-shell'
 \"
   (interactive \"p\") (py-shell dedicated args nil \""ele"\"))")))))))
   (when (functionp (car (read-from-string (car-safe py-known-shells))))
@@ -1161,7 +1161,7 @@ Use current region unless optional args BEG END are delivered."
     res))
 
 (defun py-toggle-shell-fontification (msg)
-  "Toggles value of ‘py-shell-fontify-p’. "
+  "Toggles value of `py-shell-fontify-p'. "
   (interactive "p")
 
   (if (setq py-shell-fontify-p (not py-shell-fontify-p))

@@ -26,7 +26,7 @@
 
 
 (defun py-delete-block ()
-  "Delete BLOCK at point until ‘beginning-of-line’.
+  "Delete BLOCK at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -34,7 +34,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-block-or-clause ()
-  "Delete BLOCK-OR-CLAUSE at point until ‘beginning-of-line’.
+  "Delete BLOCK-OR-CLAUSE at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -42,17 +42,17 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-class (&optional arg)
-  "Delete CLASS at point until ‘beginning-of-line’.
+  "Delete CLASS at point until `beginning-of-line'.
 
 Don't store data in kill ring.
-With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, ‘decorators’ are included."
+With ARG \\[universal-argument] or `py-mark-decorators' set to t, `decorators' are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
         (erg (py--mark-base "class" py-mark-decorators)))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-clause ()
-  "Delete CLAUSE at point until ‘beginning-of-line’.
+  "Delete CLAUSE at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -60,27 +60,27 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-def (&optional arg)
-  "Delete DEF at point until ‘beginning-of-line’.
+  "Delete DEF at point until `beginning-of-line'.
 
 Don't store data in kill ring.
-With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, ‘decorators’ are included."
+With ARG \\[universal-argument] or `py-mark-decorators' set to t, `decorators' are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
         (erg (py--mark-base "def" py-mark-decorators)))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-def-or-class (&optional arg)
-  "Delete DEF-OR-CLASS at point until ‘beginning-of-line’.
+  "Delete DEF-OR-CLASS at point until `beginning-of-line'.
 
 Don't store data in kill ring.
-With ARG \\[universal-argument] or ‘py-mark-decorators’ set to t, ‘decorators’ are included."
+With ARG \\[universal-argument] or `py-mark-decorators' set to t, `decorators' are included."
   (interactive "P")
  (let* ((py-mark-decorators (or arg py-mark-decorators))
         (erg (py--mark-base "def-or-class" py-mark-decorators)))
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-elif-block ()
-  "Delete ELIF-BLOCK at point until ‘beginning-of-line’.
+  "Delete ELIF-BLOCK at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -88,7 +88,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-else-block ()
-  "Delete ELSE-BLOCK at point until ‘beginning-of-line’.
+  "Delete ELSE-BLOCK at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -96,7 +96,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-except-block ()
-  "Delete EXCEPT-BLOCK at point until ‘beginning-of-line’.
+  "Delete EXCEPT-BLOCK at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -104,7 +104,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-for-block ()
-  "Delete FOR-BLOCK at point until ‘beginning-of-line’.
+  "Delete FOR-BLOCK at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -112,7 +112,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-if-block ()
-  "Delete IF-BLOCK at point until ‘beginning-of-line’.
+  "Delete IF-BLOCK at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -120,7 +120,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-indent ()
-  "Delete INDENT at point until ‘beginning-of-line’.
+  "Delete INDENT at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -128,7 +128,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-minor-block ()
-  "Delete MINOR-BLOCK at point until ‘beginning-of-line’.
+  "Delete MINOR-BLOCK at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -136,7 +136,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-statement ()
-  "Delete STATEMENT at point until ‘beginning-of-line’.
+  "Delete STATEMENT at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)
@@ -144,7 +144,7 @@ Don't store data in kill ring."
     (delete-region (car erg) (cdr erg))))
 
 (defun py-delete-try-block ()
-  "Delete TRY-BLOCK at point until ‘beginning-of-line’.
+  "Delete TRY-BLOCK at point until `beginning-of-line'.
 
 Don't store data in kill ring."
   (interactive)

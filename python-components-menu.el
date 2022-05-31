@@ -513,7 +513,7 @@ Go to beginning of def."]
 
 	["Backward block" py-backward-block
 	 :help " `py-backward-block'
-Go to beginning of ‘block’."]
+Go to beginning of `block'."]
 
 	["Backward statement" py-backward-statement
 	 :help " `py-backward-statement'
@@ -543,35 +543,35 @@ Go to next section start upward in buffer."]
 
 	 ["Backward block or clause" py-backward-block-or-clause
 	  :help " `py-backward-block-or-clause'
-Go to beginning of ‘block-or-clause’."]
+Go to beginning of `block-or-clause'."]
 
 	 ["Backward clause" py-backward-clause
 	  :help " `py-backward-clause'
-Go to beginning of ‘clause’."]
+Go to beginning of `clause'."]
 
 	 ["Backward elif block" py-backward-elif-block
 	  :help " `py-backward-elif-block'
-Go to beginning of ‘elif-block’."]
+Go to beginning of `elif-block'."]
 
 	 ["Backward else block" py-backward-else-block
 	  :help " `py-backward-else-block'
-Go to beginning of ‘else-block’."]
+Go to beginning of `else-block'."]
 
 	 ["Backward except block" py-backward-except-block
 	  :help " `py-backward-except-block'
-Go to beginning of ‘except-block’."]
+Go to beginning of `except-block'."]
 
 	 ["Backward if block" py-backward-if-block
 	  :help " `py-backward-if-block'
-Go to beginning of ‘if-block’."]
+Go to beginning of `if-block'."]
 
 	 ["Backward minor block" py-backward-minor-block
 	  :help " `py-backward-minor-block'
-Go to beginning of ‘minor-block’."]
+Go to beginning of `minor-block'."]
 
 	 ["Backward try block" py-backward-try-block
 	  :help " `py-backward-try-block'
-Go to beginning of ‘try-block’."]))
+Go to beginning of `try-block'."]))
        ("Forward"
 	["Forward def or class" py-forward-def-or-class
 	 :help " `py-forward-def-or-class'
@@ -653,11 +653,11 @@ Go to end of try-block."]))
 	("Backward"
 	 ["Backward block bol" py-backward-block-bol
 	  :help " `py-backward-block-bol'
-Go to beginning of ‘block’, go to BOL."]
+Go to beginning of `block', go to BOL."]
 
 	 ["Backward block or clause bol" py-backward-block-or-clause-bol
 	  :help " `py-backward-block-or-clause-bol'
-Go to beginning of ‘block-or-clause’, go to BOL."]
+Go to beginning of `block-or-clause', go to BOL."]
 
 	 ["Backward class bol" py-backward-class-bol
 	  :help " `py-backward-class-bol'
@@ -665,7 +665,7 @@ Go to beginning of class, go to BOL."]
 
 	 ["Backward clause bol" py-backward-clause-bol
 	  :help " `py-backward-clause-bol'
-Go to beginning of ‘clause’, go to BOL."]
+Go to beginning of `clause', go to BOL."]
 
 	 ["Backward def bol" py-backward-def-bol
 	  :help " `py-backward-def-bol'
@@ -677,26 +677,26 @@ Go to beginning of def-or-class, go to BOL."]
 
 	 ["Backward elif block bol" py-backward-elif-block-bol
 	  :help " `py-backward-elif-block-bol'
-Go to beginning of ‘elif-block’, go to BOL."]
+Go to beginning of `elif-block', go to BOL."]
 
 	 ["Backward else block bol" py-backward-else-block-bol
 	  :help " `py-backward-else-block-bol'
-Go to beginning of ‘else-block’, go to BOL."]
+Go to beginning of `else-block', go to BOL."]
 
 	 ["Backward except block bol" py-backward-except-block-bol
 	  :help " `py-backward-except-block-bol'
-Go to beginning of ‘except-block’, go to BOL."]
+Go to beginning of `except-block', go to BOL."]
 
 	 ["Backward expression bol" py-backward-expression-bol
 	  :help " `py-backward-expression-bol'"]
 
 	 ["Backward for block bol" py-backward-for-block-bol
 	  :help " `py-backward-for-block-bol'
-Go to beginning of ‘for-block’, go to BOL."]
+Go to beginning of `for-block', go to BOL."]
 
 	 ["Backward if block bol" py-backward-if-block-bol
 	  :help " `py-backward-if-block-bol'
-Go to beginning of ‘if-block’, go to BOL."]
+Go to beginning of `if-block', go to BOL."]
 
 	 ["Backward indent bol" py-backward-indent-bol
 	  :help " `py-backward-indent-bol'
@@ -704,7 +704,7 @@ Go to the beginning of line of a section of equal indent."]
 
 	 ["Backward minor block bol" py-backward-minor-block-bol
 	  :help " `py-backward-minor-block-bol'
-Go to beginning of ‘minor-block’, go to BOL."]
+Go to beginning of `minor-block', go to BOL."]
 
 	 ["Backward partial expression bol" py-backward-partial-expression-bol
 	  :help " `py-backward-partial-expression-bol'"]
@@ -718,7 +718,7 @@ Goto beginning of line where statement starts."]
 
 	 ["Backward try block bol" py-backward-try-block-bol
 	  :help " `py-backward-try-block-bol'
-Go to beginning of ‘try-block’, go to BOL."])
+Go to beginning of `try-block', go to BOL."])
 	("Forward"
 	 ["Forward block bol" py-forward-block-bol
 	  :help " `py-forward-block-bol'
@@ -811,7 +811,7 @@ Send block-or-clause at point to interpreter."]
 
        ["Execute buffer" py-execute-buffer
 	:help " `py-execute-buffer'
-:around advice: ‘ad-Advice-py-execute-buffer’"]
+:around advice: `ad-Advice-py-execute-buffer'"]
 
        ["Execute class" py-execute-class
 	:help " `py-execute-class'
@@ -1482,7 +1482,7 @@ Execute statement running pdb."]
 
        ["Pdb" pdb
 	:help " `pdb'
-Run pdb on program FILE in buffer ‘*gud-FILE*’."])
+Run pdb on program FILE in buffer `*gud-FILE*'."])
       ("Checks"
        ["Pychecker run" py-pychecker-run
 	:help " `py-pychecker-run'
@@ -1498,7 +1498,7 @@ Display Pylint command line help messages."]
 
 	["Pylint flymake mode" pylint-flymake-mode
 	 :help " `pylint-flymake-mode'
-Toggle ‘pylint’ ‘flymake-mode’."])
+Toggle `pylint' `flymake-mode'."])
        ("Pep8"
 	["Pep8 run" py-pep8-run
 	 :help " `py-pep8-run'
@@ -1510,7 +1510,7 @@ Display pep8 command line help messages."]
 
 	["Pep8 flymake mode" pep8-flymake-mode
 	 :help " `pep8-flymake-mode'
-Toggle ‘pep8’ ‘flymake-mode’."])
+Toggle `pep8’ `flymake-mode'."])
        ("Pyflakes"
 	["Pyflakes run" py-pyflakes-run
 	 :help " `py-pyflakes-run'
@@ -1522,7 +1522,7 @@ Display Pyflakes command line help messages."]
 
 	["Pyflakes flymake mode" pyflakes-flymake-mode
 	 :help " `pyflakes-flymake-mode'
-Toggle ‘pyflakes’ ‘flymake-mode’."])
+Toggle `pyflakes' `flymake-mode'."])
        ("Flake8"
 	["Flake8 run" py-flake8-run
 	 :help " `py-flake8-run'
@@ -2334,7 +2334,7 @@ Kill buffer unconditional, kill buffer-process if existing."]
 
        ["Remove overlays at point" py-remove-overlays-at-point
 	:help " `py-remove-overlays-at-point'
-Remove overlays as set when ‘py-highlight-error-source-p’ is non-nil."]
+Remove overlays as set when `py-highlight-error-source-p' is non-nil."]
        ("Electric"
 	["Complete electric comma" py-complete-electric-comma
 	 :help " `py-complete-electric-comma'"]
@@ -2360,7 +2360,7 @@ Delete following character or levels of whitespace."]
 
 	["Electric yank" py-electric-yank
 	 :help " `py-electric-yank'
-Perform command ‘yank’ followed by an ‘indent-according-to-mode’"]
+Perform command `yank' followed by an `indent-according-to-mode'"]
 
 	["Hungry delete backwards" py-hungry-delete-backwards
 	 :help " `py-hungry-delete-backwards'

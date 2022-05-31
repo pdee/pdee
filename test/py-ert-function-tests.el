@@ -481,9 +481,6 @@
 (ert-deftest py-ert-toggle-split-window-function-functionp-test-sdTVyw ()
   (should (functionp 'py-toggle-split-window-function)))
 
-(ert-deftest py-ert--manage-windows-set-and-switch-functionp-test-GaPncc ()
-  (should (functionp 'py--manage-windows-set-and-switch)))
-
 (ert-deftest py-ert--alternative-split-windows-on-execute-function-functionp-test-cBDqBQ ()
   (should (functionp 'py--alternative-split-windows-on-execute-function)))
 
@@ -601,59 +598,20 @@
 (ert-deftest py-ert-execute-buffer-dedicated-functionp-test-m4vmoV ()
   (should (functionp 'py-execute-buffer-dedicated)))
 
-(ert-deftest py-ert-execute-buffer-switch-functionp-test-GII2Vz ()
-  (should (functionp 'py-execute-buffer-switch)))
-
-(ert-deftest py-ert-execute-buffer-no-switch-functionp-test-q2hNpe ()
-  (should (functionp 'py-execute-buffer-no-switch)))
-
-(ert-deftest py-ert-execute-buffer-dedicated-switch-functionp-test-86hTRS ()
-  (should (functionp 'py-execute-buffer-dedicated-switch)))
-
 (ert-deftest py-ert-execute-region-python-functionp-test-g59lNA ()
   (should (functionp 'py-execute-region-python)))
-
-(ert-deftest py-ert-execute-region-python-switch-functionp-test-K8ChJi ()
-  (should (functionp 'py-execute-region-python-switch)))
-
-(ert-deftest py-ert-execute-region-python-no-switch-functionp-test-ukU2C0 ()
-  (should (functionp 'py-execute-region-python-no-switch)))
 
 (ert-deftest py-ert-execute-region-python2-functionp-test-8c7pvI ()
   (should (functionp 'py-execute-region-python2)))
 
-(ert-deftest py-ert-execute-region-python2-switch-functionp-test-0Ekulq ()
-  (should (functionp 'py-execute-region-python2-switch)))
-
-(ert-deftest py-ert-execute-region-python2-no-switch-functionp-test-EXEU87 ()
-  (should (functionp 'py-execute-region-python2-no-switch)))
-
 (ert-deftest py-ert-execute-region-python3-functionp-test-m8bqUP ()
   (should (functionp 'py-execute-region-python3)))
-
-(ert-deftest py-ert-execute-region-python3-switch-functionp-test-yKpwDx ()
-  (should (functionp 'py-execute-region-python3-switch)))
-
-(ert-deftest py-ert-execute-region-python3-no-switch-functionp-test-SCzVif ()
-  (should (functionp 'py-execute-region-python3-no-switch)))
 
 (ert-deftest py-ert-execute-region-ipython-functionp-test-0GyaYW ()
   (should (functionp 'py-execute-region-ipython)))
 
-(ert-deftest py-ert-execute-region-ipython-switch-functionp-test-QrgtEE ()
-  (should (functionp 'py-execute-region-ipython-switch)))
-
-(ert-deftest py-ert-execute-region-ipython-no-switch-functionp-test-6rXwhm ()
-  (should (functionp 'py-execute-region-ipython-no-switch)))
-
 (ert-deftest py-ert-execute-region-jython-functionp-test-eSdxV3 ()
   (should (functionp 'py-execute-region-jython)))
-
-(ert-deftest py-ert-execute-region-jython-switch-functionp-test-gL4dwL ()
-  (should (functionp 'py-execute-region-jython-switch)))
-
-(ert-deftest py-ert-execute-region-jython-no-switch-functionp-test-CUk24s ()
-  (should (functionp 'py-execute-region-jython-no-switch)))
 
 (ert-deftest py-ert-process-file-functionp-test-kv2RaS ()
   (should (functionp 'py-process-file)))
@@ -1413,9 +1371,6 @@
 
 (ert-deftest py-ert-line-to-printform-python2-functionp-test-oZT4UH ()
   (should (functionp 'py-line-to-printform-python2)))
-
-(ert-deftest py-ert-boolswitch-functionp-test-qWohkw ()
-  (should (functionp 'py-boolswitch)))
 
 (ert-deftest py-ert-end-of-elif-block-functionp-test-YtomSl ()
   (should (functionp 'py-forward-elif-block)))

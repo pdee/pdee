@@ -34,10 +34,10 @@ With EOB-P, go to end of buffer."
 
 ;;  Split-Windows-On-Execute forms
 (defun py-toggle-split-windows-on-execute (&optional arg)
-  "If ‘py-split-window-on-execute’ should be on or off.
+  "If `py-split-window-on-execute' should be on or off.
 
 optional ARG
-  Returns value of ‘py-split-window-on-execute’ switched to."
+  Returns value of `py-split-window-on-execute' switched to."
   (interactive)
   (let ((arg (or arg (if py-split-window-on-execute -1 1))))
     (if (< 0 arg)
@@ -47,9 +47,9 @@ optional ARG
     py-split-window-on-execute))
 
 (defun py-split-windows-on-execute-on (&optional arg)
-  "Make sure, ‘py-split-window-on-execute’ according to ARG.
+  "Make sure, `py-split-window-on-execute' according to ARG.
 
-Returns value of ‘py-split-window-on-execute’."
+Returns value of `py-split-window-on-execute'."
   (interactive "p")
   (let ((arg (or arg 1)))
     (py-toggle-split-windows-on-execute arg))
@@ -57,9 +57,9 @@ Returns value of ‘py-split-window-on-execute’."
   py-split-window-on-execute)
 
 (defun py-split-windows-on-execute-off ()
-  "Make sure, ‘py-split-window-on-execute’ is off.
+  "Make sure, `py-split-window-on-execute' is off.
 
-Returns value of ‘py-split-window-on-execute’."
+Returns value of `py-split-window-on-execute'."
   (interactive)
   (py-toggle-split-windows-on-execute -1)
   (when (called-interactively-p 'any) (message "py-split-window-on-execute: %s" py-split-window-on-execute))
@@ -67,9 +67,9 @@ Returns value of ‘py-split-window-on-execute’."
 
 ;;  Shell-Switch-Buffers-On-Execute forms
 (defun py-toggle-switch-buffers-on-execute (&optional arg)
-  "If ‘py-switch-buffers-on-execute-p’ according to ARG.
+  "If `py-switch-buffers-on-execute-p' according to ARG.
 
-  Returns value of ‘py-switch-buffers-on-execute-p’ switched to."
+  Returns value of `py-switch-buffers-on-execute-p' switched to."
   (interactive)
   (let ((arg (or arg (if py-switch-buffers-on-execute-p -1 1))))
     (if (< 0 arg)
@@ -79,9 +79,9 @@ Returns value of ‘py-split-window-on-execute’."
     py-switch-buffers-on-execute-p))
 
 (defun py-switch-buffers-on-execute-on (&optional arg)
-  "Make sure, ‘py-switch-buffers-on-execute-p’ according to ARG.
+  "Make sure, `py-switch-buffers-on-execute-p' according to ARG.
 
-Returns value of ‘py-switch-buffers-on-execute-p’."
+Returns value of `py-switch-buffers-on-execute-p'."
   (interactive "p")
   (let ((arg (or arg 1)))
     (py-toggle-switch-buffers-on-execute arg))
@@ -89,9 +89,9 @@ Returns value of ‘py-switch-buffers-on-execute-p’."
   py-switch-buffers-on-execute-p)
 
 (defun py-switch-buffers-on-execute-off ()
-  "Make sure, ‘py-switch-buffers-on-execute-p’ is off.
+  "Make sure, `py-switch-buffers-on-execute-p' is off.
 
-Returns value of ‘py-switch-buffers-on-execute-p’."
+Returns value of `py-switch-buffers-on-execute-p'."
   (interactive)
   (py-toggle-switch-buffers-on-execute -1)
   (when (called-interactively-p 'any) (message "py-shell-switch-buffers-on-execute: %s" py-switch-buffers-on-execute-p))
@@ -123,7 +123,7 @@ Returns value of ‘py-switch-buffers-on-execute-p’."
   "Start an interpreter in another window according to ARGPROMPT.
 
 With optional \\[universal-argument] user is prompted by
-‘py-choose-shell’ for command and options to pass to the Python
+`py-choose-shell' for command and options to pass to the Python
 interpreter."
   (interactive "P")
   (py-shell argprompt nil t))
@@ -133,7 +133,7 @@ interpreter."
 
 Otherwise kill default (I)Python shell.
 Kill buffer and its process.
-Receives a ‘buffer-name’ as argument"
+Receives a `buffer-name' as argument"
   (interactive)
   (let ((shell (or shell (py-shell))))
     (ignore-errors (py-kill-buffer-unconditional shell))))
@@ -157,7 +157,7 @@ Receives a ‘buffer-name’ as argument"
     erg))
 
 (defun py--guess-buffer-name (argprompt dedicated)
-  "Guess the ‘buffer-name’ core string according to ARGPROMPT DEDICATED."
+  "Guess the `buffer-name' core string according to ARGPROMPT DEDICATED."
   (when (and (not dedicated) argprompt
 	     (eq 4 (prefix-numeric-value argprompt)))
     (read-buffer "Py-Shell buffer: "
@@ -181,7 +181,7 @@ Receives a ‘buffer-name’ as argument"
   (if (not (string= "" py-shell-local-path))
       (expand-file-name py-shell-local-path)
     (when py-use-local-default
-      (error "Abort: ‘py-use-local-default’ is set to t but ‘py-shell-local-path’ is empty. Maybe call ‘py-toggle-local-default-use’"))))
+      (error "Abort: `py-use-local-default' is set to t but `py-shell-local-path' is empty. Maybe call `y-toggle-local-default-use'"))))
 
 (defun py-switch-to-shell ()
   "Switch to Python process buffer."
@@ -191,7 +191,7 @@ Receives a ‘buffer-name’ as argument"
 ;;  Code execution commands
 
 (defun py--store-result-maybe (erg)
-  "If no error occurred and ‘py-store-result-p’ store ERG for yank."
+  "If no error occurred and `py-store-result-p' store ERG for yank."
   (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 
 (defun py-current-working-directory ()
@@ -209,7 +209,7 @@ Receives a ‘buffer-name’ as argument"
 (defun py-set-working-directory (&optional directory)
   "Set working directory according to optional DIRECTORY.
 
-When given, to value of ‘py-default-working-directory’ otherwise"
+When given, to value of `py-default-working-directory' otherwise"
   (interactive)
   (let* ((proc (get-buffer-process (current-buffer)))
 	 (dir (or directory py-default-working-directory))
@@ -283,7 +283,7 @@ Used by `py-ipython-module-completion-string'"
   "Send the argument STRG to an unique Python interpreter.
 
 Optional SHELL SWITCH FAST
-See also ‘py-execute-region’."
+See also `py-execute-region'."
   (interactive)
   (let ((strg (or strg (read-from-minibuffer "String: ")))
         (shell (or shell (default-value 'py-shell-name))))
@@ -309,7 +309,7 @@ See also ‘py-execute-region’."
              (unless (eq 9 (char-after)) (newline 1))
              (insert (concat "import os; os.chdir(\"" directory "\")\n"))))))
 
-;; ‘py-execute-line’ calls void function, lp:1492054,  lp:1519859
+;; `py-execute-line' calls void function, lp:1492054,  lp:1519859
 (or (functionp 'indent-rigidly-left)
     (defun indent-rigidly--pop-undo ()
       (and (memq last-command '(indent-rigidly-left indent-rigidly-right
@@ -357,16 +357,16 @@ the latest version.
 
 If the file's name does not end in \".py\", then do execfile instead.
 
-If the current buffer is not visiting a file, do ‘py-execute-buffer’
+If the current buffer is not visiting a file, do `py-execute-buffer'
 instead.
 
-If the file local variable ‘py-master-file’ is non-nil, import or
+If the file local variable `py-master-file' is non-nil, import or
 reload the named file instead of the buffer's file.  The file may be
-saved based on the value of ‘py-execute-import-or-reload-save-p’.
+saved based on the value of `py-execute-import-or-reload-save-p'.
 
-See also ‘\\[py-execute-region]’.
+See also `\\[py-execute-region]'.
 
-This may be preferable to ‘\\[py-execute-buffer]’ because:
+This may be preferable to `\\[py-execute-buffer]' because:
 
  - Definitions stay in their module rather than appearing at top
    level, where they would clutter the global namespace and not affect

@@ -67,15 +67,15 @@
 ;;; Code:
 
 (defun toggle-force-py-shell-name-p (&optional arg)
-  "If customized default ‘py-shell-name’ should be enforced upon execution.
+  "If customized default `py-shell-name' should be enforced upon execution.
 
-If ‘py-force-py-shell-name-p’ should be on or off.
-Returns value of ‘py-force-py-shell-name-p’ switched to.
+If `py-force-py-shell-name-p' should be on or off.
+Returns value of `py-force-py-shell-name-p' switched to.
 
 Optional ARG
 See also commands
-‘force-py-shell-name-p-on’
-‘force-py-shell-name-p-off’
+`force-py-shell-name-p-on'
+`force-py-shell-name-p-off'
 
 Caveat: Completion might not work that way."
   (interactive)
@@ -87,10 +87,10 @@ Caveat: Completion might not work that way."
     py-force-py-shell-name-p))
 
 (defun force-py-shell-name-p-on ()
-  "Switch ‘py-force-py-shell-name-p’ on.
+  "Switch `py-force-py-shell-name-p' on.
 
-Customized default ‘py-shell-name’ will be enforced upon execution.
-Returns value of ‘py-force-py-shell-name-p’.
+Customized default `py-shell-name' will be enforced upon execution.
+Returns value of `py-force-py-shell-name-p'.
 
 Caveat: Completion might not work that way."
   (interactive)
@@ -99,10 +99,10 @@ Caveat: Completion might not work that way."
   py-force-py-shell-name-p)
 
 (defun force-py-shell-name-p-off ()
-  "Make sure, ‘py-force-py-shell-name-p’ is off.
+  "Make sure, `py-force-py-shell-name-p' is off.
 
 Function to use by executes will be guessed from environment.
-Returns value of ‘py-force-py-shell-name-p’."
+Returns value of `py-force-py-shell-name-p'."
   (interactive)
   (toggle-force-py-shell-name-p -1)
   (when (or py-verbose-p (called-interactively-p 'any)) (message "py-force-py-shell-name-p: %s" py-force-py-shell-name-p))
@@ -111,7 +111,7 @@ Returns value of ‘py-force-py-shell-name-p’."
 (defun py--fix-if-name-main-permission (strg)
   "Remove \"if __name__ == '__main__ '\" STRG from code to execute.
 
-See ‘py-if-name-main-permission-p’"
+See `py-if-name-main-permission-p'"
   (let ((strg (if py-if-name-main-permission-p strg
 		(replace-regexp-in-string
 		 "if[( ]*__name__[) ]*==[( ]*['\"]\\{1,3\\}__main__['\"]\\{1,3\\}[) ]*:"
@@ -202,7 +202,7 @@ Set local value of `py-indent-offset', return it
 
 Might change local value of `py-indent-offset' only when called
 downwards from beginning of block followed by a statement.
-Otherwise ‘default-value’ is returned.
+Otherwise `default-value' is returned.
 Unless DIRECTION is symbol 'forward, go backward first"
   (interactive)
   (save-excursion
@@ -270,7 +270,7 @@ thus remember line of source buffer"
 					(progn (skip-chars-forward " \t\r\n\f"   (line-end-position))(point)))
 		  (insert (concat "    File " (buffer-name exception-buffer) ", line "
 				  (prin1-to-string origline)))))
-	      ;; these are let-bound as ‘tempbuf’
+	      ;; these are let-bound as `tempbuf'
 	      (and (boundp 'tempbuf)
 		   ;; (message "%s" tempbuf)
 		   (search-forward (buffer-name tempbuf) nil t)
@@ -350,7 +350,7 @@ May we get rid of the temporary file?"
     (unless (string-match "[jJ]ython" which-shell)
       ;; (when (and execute-directory py-use-current-dir-when-execute-p
       ;; (not (string= execute-directory default-directory)))
-      ;; (message "Warning: options ‘execute-directory’ and ‘py-use-current-dir-when-execute-p’ may conflict"))
+      ;; (message "Warning: options `execute-directory' and `py-use-current-dir-when-execute-p' may conflict"))
       (and execute-directory
            (process-send-string proc (concat "import os; os.chdir(\"" execute-directory "\")\n"))))
     (set-buffer filebuf)

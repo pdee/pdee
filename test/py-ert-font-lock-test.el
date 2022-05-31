@@ -92,7 +92,7 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
       "  Ellipsis True False None __debug__ NotImplemented"
     (goto-char (point-min))
     (font-lock-fontify-region (point-min) (point-max))
-    (sit-for 0.1)
+    (sit-for 0.2)
     (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
       (should (eq 'py-pseudo-keyword-face (get-char-property (point) 'face)))
       (skip-chars-forward "^ \n"))))

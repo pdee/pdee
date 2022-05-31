@@ -108,7 +108,7 @@ Avoid empty lines at the beginning."
   (py-fast-send-string strg proc output-buffer result t))
 
 (defun py--send-to-fast-process (strg proc output-buffer result)
-  "Called inside of ‘py--execute-base-intern’.
+  "Called inside of `py--execute-base-intern'.
 
 Optional STRG PROC OUTPUT-BUFFER RETURN"
   (let ((output-buffer (or output-buffer (process-buffer proc)))
@@ -163,7 +163,7 @@ Returns position if successful, nil otherwise "
           (setq done t)))
       erg)))
 
-;; might be slow due to repeated calls of ‘py-down-statement’
+;; might be slow due to repeated calls of `py-down-statement'
 (defun py-forward-top-level ()
   "Go to end of top-level form at point.
 

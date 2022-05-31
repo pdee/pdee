@@ -25,7 +25,7 @@ Provide fine grained navigation of all known Python constructs.
   command `type' would display, but also a PATH/TO/EXECUTABLE
 
   If different flavours of Python are installed, in order to adress
-  them customize var ‘py-known-shells’ and reload. python-mode will
+  them customize var `py-known-shells' and reload. python-mode will
   create the required commands according to contents of this list.
 
   Depending from your instell the var py-known-shells might show contents like that:
@@ -47,7 +47,7 @@ Provide fine grained navigation of all known Python constructs.
   This calls py-shell with its default arguments
   With C-u, shell will get an unique name.
 
-  According to contents of ‘py-known-shells’ commands might be
+  According to contents of `py-known-shells' commands might be
   available like this:
 
   M-x py-shell RET ==> "*Python*"
@@ -216,8 +216,8 @@ There is also
 
 * Session mode
   Py-shell runs in session mode by default. Not to run in session
-  mode, customize ‘py-session-p’ to nil. Or for current session call
-  ‘py-toggle-session-p’. 
+  mode, customize `py-session-p' to nil. Or for current session call
+  `py-toggle-session-p'. 
 
 * Troubleshooting
 
@@ -260,7 +260,7 @@ There is also
 
 * Testing
 
-  File ‘run-travis-ci.sh’ runs tests in batch-mode locally and remote.
+  File `run-travis-ci.sh' runs tests in batch-mode locally and remote.
   If the shell-variable WERKSTATT is set to 0, local run is assumed.
   The script does
   WERKSTATT=${WERKSTATT:=1}
