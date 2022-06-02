@@ -25,6 +25,97 @@
 ;;; Code:
 (require 'python)
 
+(defmacro py-rx (&rest regexps)
+  "Python mode specialized rx macro.
+This variant of `rx' supports common Python named REGEXPS."
+  `(rx-let ((block-start       (seq symbol-start
+                                    (or "def" "class" "if" "elif" "else" "try"
+                                        "except" "finally" "for" "while" "with"
+                                        ;; Python 3.10+ PEP634
+                                        "match" "case"
+                                        ;; Python 3.5+ PEP492
+                                        (and "async" (+ space)
+                                             (or "def" "for" "with")))
+                                    symbol-end))
+            (dedenter          (seq symbol-start
+                                    (or "elif" "else" "except" "finally")
+                                    symbol-end))
+            (block-ender       (seq symbol-start
+                                    (or
+                                     "break" "continue" "pass" "raise" "return")
+                                    symbol-end))
+            (decorator         (seq line-start (* space) ?@ (any letter ?_)
+                                    (* (any word ?_))))
+            (defun             (seq symbol-start
+                                    (or "def" "class"
+                                        ;; Python 3.5+ PEP492
+                                        (and "async" (+ space) "def"))
+                                    symbol-end))
+            (if-name-main      (seq line-start "if" (+ space) "__name__"
+                                    (+ space) "==" (+ space)
+                                    (any ?' ?\") "__main__" (any ?' ?\")
+                                    (* space) ?:))
+            (symbol-name       (seq (any letter ?_) (* (any word ?_))))
+            (assignment-target (seq (? ?*)
+                                    (* symbol-name ?.) symbol-name
+                                    (? ?\[ (+ (not ?\])) ?\])))
+            (grouped-assignment-target (seq (? ?*)
+                                            (* symbol-name ?.) (group symbol-name)
+                                            (? ?\[ (+ (not ?\])) ?\])))
+            (open-paren        (or "{" "[" "("))
+            (close-paren       (or "}" "]" ")"))
+            (simple-operator   (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))
+            (not-simple-operator (not (or simple-operator ?\n)))
+            (operator          (or "==" ">=" "is" "not"
+                                   "**" "//" "<<" ">>" "<=" "!="
+                                   "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
+                                   "=" "%"))
+            (assignment-operator (or "+=" "-=" "*=" "/=" "//=" "%=" "**="
+                                     ">>=" "<<=" "&=" "^=" "|="
+                                     "="))
+            (string-delimiter  (seq
+                                ;; Match even number of backslashes.
+                                (or (not (any ?\\ ?\' ?\")) point
+                                    ;; Quotes might be preceded by an
+                                    ;; escaped quote.
+                                    (and (or (not (any ?\\)) point) ?\\
+                                         (* ?\\ ?\\) (any ?\' ?\")))
+                                (* ?\\ ?\\)
+                                ;; Match single or triple quotes of any kind.
+                                (group (or  "\"\"\"" "\"" "'''" "'"))))
+            (coding-cookie (seq line-start ?# (* space)
+                                (or
+                                 ;; # coding=<encoding name>
+                                 (: "coding" (or ?: ?=) (* space)
+                                    (group-n 1 (+ (or word ?-))))
+                                 ;; # -*- coding: <encoding name> -*-
+                                 (: "-*-" (* space) "coding:" (* space)
+                                    (group-n 1 (+ (or word ?-)))
+                                    (* space) "-*-")
+                                 ;; # vim: set fileencoding=<encoding name> :
+                                 (: "vim:" (* space) "set" (+ space)
+                                    "fileencoding" (* space) ?= (* space)
+                                    (group-n 1 (+ (or word ?-)))
+                                    (* space) ":")))))
+     (rx ,@regexps)))
+
+(defun py-font-lock-assignment-matcher (regexp)
+  "Font lock matcher for assignments based on REGEXP.
+Search for next occurrence if REGEXP matched within a `paren'
+context (to avoid, e.g., default values for arguments or passing
+arguments by name being treated as assignments) or is followed by
+an '=' sign (to avoid '==' being treated as an assignment.  Set
+point to the position one character before the end of the
+occurrence found so that subsequent searches can detect the '='
+sign in chained assignment."
+  (lambda (limit)
+    (cl-loop while (re-search-forward regexp limit t)
+             unless (or
+                     ;; (python-syntax-context 'paren)
+                     (nth 1 (parse-partial-sexp (point-min) (point))) 
+                        (equal (char-after) ?=))
+               return (progn (backward-char) t))))
+
 (defconst python-font-lock-keywords
   ;; Keywords
   `(,(rx symbol-start
@@ -119,8 +210,8 @@
     ;; a, *b, c = range(10)
     ;; inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     ;; (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
-    (,(python-font-lock-assignment-matcher
-       (python-rx line-start (* space) (? (or "[" "("))
+    (,(py-font-lock-assignment-matcher
+       (py-rx line-start (* space) (? (or "[" "("))
                   grouped-assignment-target (* space) ?, (* space)
                   (* assignment-target (* space) ?, (* space))
                   (? assignment-target (* space))
@@ -128,7 +219,7 @@
                   (? (or ")" "]") (* space))
                   (group assignment-operator)))
      (1 py-variable-name-face)
-     (,(python-rx grouped-assignment-target)
+     (,(py-rx grouped-assignment-target)
       (progn
         (goto-char (match-end 1))       ; go back after the first symbol
         (match-beginning 2))            ; limit the search until the assignment

@@ -243,13 +243,28 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         self.a = 1
         self.b = 2"
     (font-lock-fontify-buffer)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (goto-char (point-max))
     (search-backward "b")
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
     (search-backward "a")
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
     ))
+
+(ert-deftest py-variable-name-face-test-4wdYit ()
+  (py-test-with-temp-buffer
+      "[a, b, c] = 1, 2, 3
+a, *b, c = range(10)
+inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
+(a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+"
+    (goto-char (point-max))
+    (font-lock-fontify-buffer)
+    (sit-for 0.1)
+    (search-backward "y")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "x")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))))
 
 (provide 'py-ert-font-lock-test)
 ;;; py-ert-font-lock-test.el here
