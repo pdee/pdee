@@ -66,6 +66,7 @@
 
 ;;; Code:
 
+(require 'python-components-rx)
 (require 'python-components-foot)
 (require 'python-components-start1)
 (require 'python-components-extra)

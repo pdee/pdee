@@ -25,6 +25,87 @@
 ;;; Code:
 ;; (require 'python)
 
+;; (defconst rx--builtin-symbols
+;;   (append '(nonl not-newline any anychar anything unmatchable
+;;             bol eol line-start line-end
+;;             bos eos string-start string-end
+;;             bow eow word-start word-end
+;;             symbol-start symbol-end
+;;             point word-boundary not-word-boundary not-wordchar)
+;;           (mapcar #'car rx--char-classes))
+;;   "List of built-in rx variable-like symbols.")
+
+;; (defconst rx--builtin-forms
+;;   '(seq sequence : and or | any in char not-char not intersection
+;;     repeat = >= **
+;;     zero-or-more 0+ *
+;;     one-or-more 1+ +
+;;     zero-or-one opt optional \?
+;;     *? +? \??
+;;     minimal-match maximal-match
+;;     group submatch group-n submatch-n backref
+;;     syntax not-syntax category
+;;     literal eval regexp regex)
+;;   "List of built-in rx function-like symbols.")
+
+;; (defconst rx--builtin-names
+;;   (append rx--builtin-forms rx--builtin-symbols)
+;;   "List of built-in rx names.  These cannot be redefined by the user.")
+
+;; (defun rx--make-binding (name tail)
+;;   "Make a definitions entry out of TAIL.
+;; TAIL is on the form ([ARGLIST] DEFINITION)."
+;;   (unless (symbolp name)
+;;     (error "Bad `rx' definition name: %S" name))
+;;   ;; FIXME: Consider using a hash table or symbol property, for speed.
+;;   (when (memq name rx--builtin-names)
+;;     (error "Cannot redefine built-in rx name `%s'" name))
+;;   (pcase tail
+;;     (`(,def)
+;;      (list def))
+;;     (`(,args ,def)
+;;      (unless (and (listp args) (rx--every #'symbolp args))
+;;        (error "Bad argument list for `rx' definition %s: %S" name args))
+;;      (list args def))
+;;     (_ (error "Bad `rx' definition of %s: %S" name tail))))
+
+;; (defun rx--make-named-binding (bindspec)
+;;   "Make a definitions entry out of BINDSPEC.
+;; BINDSPEC is on the form (NAME [ARGLIST] DEFINITION)."
+;;   (unless (consp bindspec)
+;;     (error "Bad `rx-let' binding: %S" bindspec))
+;;   (cons (car bindspec)
+;;         (rx--make-binding (car bindspec) (cdr bindspec))))
+
+;; ;;;###autoload
+;; (defmacro rx-let (bindings &rest body)
+;;   "Evaluate BODY with local BINDINGS for `rx'.
+;; BINDINGS is an unevaluated list of bindings each on the form
+;; (NAME [(ARGS...)] RX).
+;; They are bound lexically and are available in `rx' expressions in
+;; BODY only.
+
+;; For bindings without an ARGS list, NAME is defined as an alias
+;; for the `rx' expression RX.  Where ARGS is supplied, NAME is
+;; defined as an `rx' form with ARGS as argument list.  The
+;; parameters are bound from the values in the (NAME ...) form and
+;; are substituted in RX.  ARGS can contain `&rest' parameters,
+;; whose values are spliced into RX where the parameter name occurs.
+
+;; Any previous definitions with the same names are shadowed during
+;; the expansion of BODY only.
+;; For local extensions to `rx-to-string', use `rx-let-eval'.
+;; To make global rx extensions, use `rx-define'.
+;; For more details, see Info node `(elisp) Extending Rx'.
+
+;; \(fn BINDINGS BODY...)"
+;;   (declare (indent 1) (debug (sexp body)))
+;;   (let ((prev-locals (cdr (assq :rx-locals macroexpand-all-environment)))
+;;         (new-locals (mapcar #'rx--make-named-binding bindings)))
+;;     (macroexpand-all (cons 'progn body)
+;;                      (cons (cons :rx-locals (append new-locals prev-locals))
+;;                            macroexpand-all-environment))))
+
 (defmacro py-rx (&rest regexps)
   "Python mode specialized rx macro.
 This variant of `rx' supports common Python named REGEXPS."
@@ -112,7 +193,7 @@ sign in chained assignment."
     (cl-loop while (re-search-forward regexp limit t)
              unless (or
                      ;; (python-syntax-context 'paren)
-                     (nth 1 (parse-partial-sexp (point-min) (point))) 
+                     (nth 1 (parse-partial-sexp (point-min) (point)))
                         (equal (char-after) ?=))
                return (progn (backward-char) t))))
 

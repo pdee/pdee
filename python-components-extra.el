@@ -290,31 +290,30 @@ With argument MSG show activation/deactivation message."
       (py-shell-font-lock-turn-off msg))
     py-shell-fontify-p))
 
-(defun comint-mime-setup-py-shell ()
-  "Enable `comint-mime'.
+(when (featurep 'comint-mime)
+  (defun comint-mime-setup-py-shell ()
+    "Enable `comint-mime'.
 
 Setup code specific to `py-shell-mode'."
-  (interactive)
-  ;; (if (not py-shell--first-prompt-received)
-  ;; (add-hook 'py-shell-first-prompt-hook #'comint-mime-setup-py-shell nil t)
-  (setq py-python-command "ipython3"
-	py-ipython-command "ipython3"
-	py-ipython-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt")
-	py-python-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt"))
-  (py-send-string-no-output
-   (format "%s\n__COMINT_MIME_setup('''%s''')"
-           (with-temp-buffer
-	     (switch-to-buffer (current-buffer)) 
-	     (insert-file-contents
-	      (expand-file-name "comint-mime.py"
-                                comint-mime-setup-script-dir))
-	     (buffer-string))
-           (if (listp comint-mime-enabled-types)
-	       (string-join comint-mime-enabled-types ";")
-	     comint-mime-enabled-types))))
-;; )
+    (interactive)
+    ;; (if (not py-shell--first-prompt-received)
+    ;; (add-hook 'py-shell-first-prompt-hook #'comint-mime-setup-py-shell nil t)
+    (setq py-python-command "ipython3"
+          py-ipython-command "ipython3"
+          py-ipython-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt")
+          py-python-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt"))
+    (py-send-string-no-output
+     (format "%s\n__COMINT_MIME_setup('''%s''')"
+             (with-temp-buffer
+               (switch-to-buffer (current-buffer))
+               (insert-file-contents
+                (expand-file-name "comint-mime.py"
+                                  comint-mime-setup-script-dir))
+               (buffer-string))
+             (if (listp comint-mime-enabled-types)
+                 (string-join comint-mime-enabled-types ";")
+               comint-mime-enabled-types))))
 
-(when (featurep 'comint-mime)
   (add-hook 'py-shell-mode-hook 'comint-mime-setup-py-shell)
   (push '(py-shell-mode . comint-mime-setup-py-shell)
 	comint-mime-setup-function-alist)
