@@ -30,6 +30,9 @@ elif
     [ $1 == e29 ];then
     #  export EMACS="$HOME/emacs-20220306/src/emacs -Q"
     export EMACS=$(echo $(alias e29) | sed 's,alias [^~]*.\([^ ]*\).*,/home/speck/\1,g')
+
+else
+    EMACS=emacs
 fi
 
 echo "before shift \$EMACS: $EMACS"

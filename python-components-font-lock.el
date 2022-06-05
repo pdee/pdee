@@ -23,7 +23,7 @@
 ;;
 
 ;;; Code:
-(require 'python)
+;; (require 'python)
 
 (defmacro py-rx (&rest regexps)
   "Python mode specialized rx macro.

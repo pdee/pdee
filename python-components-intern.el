@@ -45,9 +45,9 @@
 
 Choices are:
 
-'line-up-with-first-element (default)
-'one-level-to-beginning-of-statement
-'one-level-from-opener"
+\\='line-up-with-first-element (default)
+\\='one-level-to-beginning-of-statement
+\\='one-level-from-opener"
   (save-excursion
     (pcase py-indent-list-style
       (`line-up-with-first-element

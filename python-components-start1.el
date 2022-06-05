@@ -842,8 +842,8 @@ my_list = [
 ]
 
 result = some_function_that_takes_arguments(
-    'a', 'b', 'c',
-    'd', 'e', 'f'
+    \\='a\\=', \\='b\\=', \\='c\\=',
+    \\='d\\=', \\='e\\=', \\='f\\='
 )
 
 Default is nil, i.e.
@@ -853,8 +853,8 @@ my_list = [
     4, 5, 6
     ]
 result = some_function_that_takes_arguments(
-    'a', 'b', 'c',
-    'd', 'e', 'f'
+    \\='a\\=', \\='b\\=', \\='c\\=',
+    \\='d\\=', \\='e\\=', \\='f\\='
     )
 
 Examples from PEP8
@@ -1644,7 +1644,7 @@ Other buffer will be hidden that way.
 When set to t, `python-mode' tries to reuse existing windows
 and will split only if needed.
 
-With 'always, results will displayed in a new window.
+With \\='always, results will displayed in a new window.
 
 Both t and `always' is experimental still.
 
@@ -1652,7 +1652,7 @@ For the moment: If a multitude of python-shells/buffers should be
 visible, open them manually and set `py-keep-windows-configuration' to t.
 
 See also `py-keep-windows-configuration'"
-  :type '(choice
+  :type `(choice
           (const :tag "default" just-two)
 	  (const :tag "reuse" t)
           (const :tag "no split" nil)
@@ -2022,7 +2022,7 @@ If on, messages value of `py-result' for instance."
   "Default is nil.
 
 When t, `python-mode' calls
-\(add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local)
+\(add-hook \\='before-save-hook \\='delete-trailing-whitespace nil \\='local)
 
 Also commands may delete trailing whitespace by the way.
 When editing other peoples code, this may produce a larger diff than expected"
@@ -2055,8 +2055,8 @@ Default is known to work an Ubuntu 14.10 - having python-
 mode, pymacs and auto-complete-el, with the following minimal
 Emacs initialization:
 
-\(require 'pymacs)
-\(require 'auto-complete-config)
+\(require \\='pymacs)
+\(require \\='auto-complete-config)
 \(ac-config-default)"
   :type 'hook
   :tag "py-complete-ac-sources"
@@ -3140,7 +3140,7 @@ Default is nil"
   "If t, track source from shell-buffer.
 
 Default is t.
-Add hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file"
+Add hook \\='comint-output-filter-functions \\='py--pdbtrack-track-stack-file"
 
   :type 'boolean
   :tag "pdb-track-stack-from-shell-p"

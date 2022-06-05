@@ -203,7 +203,7 @@ Set local value of `py-indent-offset', return it
 Might change local value of `py-indent-offset' only when called
 downwards from beginning of block followed by a statement.
 Otherwise `default-value' is returned.
-Unless DIRECTION is symbol 'forward, go backward first"
+Unless DIRECTION is symbol \\='forward, go backward first"
   (interactive)
   (save-excursion
     (let* ((indents
