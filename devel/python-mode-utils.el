@@ -2006,8 +2006,6 @@ Return beginning of form if successful, nil otherwise\"\n"))
 (defun py--insert-backward-def-or-class-bol-forms ()
   ;; bol forms
   (dolist (ele py-backward-def-or-class-forms)
-    (when (or (string-match "def" ele) (string-match "class" ele))
-      (insert "\n;;;###autoload"))
     (insert (concat "
 \(defun py-backward-" ele "-bol ()"))
     ;; (if (string-match "def\\|class" ele)
@@ -2511,8 +2509,8 @@ See also `py-down-assignment'.\"
     (when end (goto-char end))))
 ")
   (dolist (ele py-block-forms)
-    (when (or (string-match "def" ele) (string-match "class" ele))
-      (insert "\n;;;###autoload"))
+    ;; (when (or (string-match "def" ele) (string-match "class" ele))
+    ;;   (insert "\n;;;###autoload"))
     ;; beg-end check forms
     (insert (concat "
 \(defun py-forward-" ele " (&optional orig bol)

@@ -85,7 +85,6 @@ See also `py-down-block-or-clause'."
   (interactive)
   (py-forward-block-or-clause nil t))
 
-;;;###autoload
 (defun py-forward-class (&optional orig bol)
   "Go to end of class.
 
@@ -120,7 +119,6 @@ See also `py-down-clause'."
   (interactive)
   (py-forward-clause nil t))
 
-;;;###autoload
 (defun py-forward-def (&optional orig bol)
   "Go to end of def.
 
@@ -138,7 +136,6 @@ See also `py-down-def'."
   (interactive)
   (py-forward-def nil t))
 
-;;;###autoload
 (defun py-forward-def-or-class (&optional orig bol)
   "Go to end of def-or-class.
 

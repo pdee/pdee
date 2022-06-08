@@ -78,7 +78,6 @@
 (defalias 'py-previous-statement 'py-backward-statement)
 (defalias 'py-markup-region-as-section 'py-sectionize-region)
 
-;;;###autoload
 (define-derived-mode py-auto-completion-mode python-mode "Pac"
   "Run auto-completion"
   ;; disable company
@@ -104,7 +103,6 @@
   (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
   )
 
-;;;###autoload
 (define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
