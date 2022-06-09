@@ -575,40 +575,7 @@ class asdf:
     (forward-line -1)
     (should (eq 4 (current-indentation)))))
 
-(ert-deftest indent-region-lp-997958-lp-1426903-no-arg-test-1-2H3ET7 ()
-  "Indent line-by-line as first line is okay "
-  (py-test-with-temp-buffer
-   "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-def foo ():
-if True:
-    print(123)
-
-with file(\"foo\" + zeit + \".ending\", 'w') as datei:
-    for i in range(anzahl):
-        bar.dosomething()
-        datei.write(str(baz[i]) + \"\\n\")
-"
-   (goto-char (point-max))
-   (push-mark)
-   (search-backward "True")
-   (save-excursion
-     (py-indent-region (line-beginning-position) (point-max) t))
-   (should (eq 4 (current-indentation)))))
-
-(ert-deftest py-ert-indent-try-test-zg6QYI ()
-  (py-test-with-temp-buffer-point-min
-      "#! /usr/bin/env python
-
-import sys
-import os
-
-        try:"
-    (goto-char (point-min) )
-    (search-forward "try")
-    (should (eq 0 (py-compute-indentation)))))
-
-(ert-deftest py-ert-async-backward-block-test-OdiTDQ ()
+(ert-deftest py-ert-async-backward-block-test-aAFOA0 () ()
   (py-test-with-temp-buffer
       "async def coro(name, lock):
     print('coro {}: waiting for lock'.format(name))
@@ -619,33 +586,6 @@ import os
     (goto-char (point-max))
     (py-backward-block)
     (should (looking-at "async with"))))
-
-(ert-deftest py-ert-async-backward-def-test-lF1w7S ()
-  (py-test-with-temp-buffer
-      "async def coro(name, lock):
-    print('coro {}: waiting for lock'.format(name))
-    async with lock:
-        print('coro {}: holding the lock'.format(name))
-        await asyncio.sleep(1)
-        print('coro {}: releasing the lock'.format(name))"
-    (goto-char (point-max))
-    (py-backward-def)
-    (should (looking-at "async def"))))
-
-(ert-deftest py-ert-async-indent-test-MFS8IW ()
-  (py-test-with-temp-buffer-point-min
-      "async def coro(name, lock):
-
-    print('coro {}: waiting for lock'.format(name))
-    async with lock:
-        print('coro {}: holding the lock'.format(name))
-        await asyncio.sleep(1)
-        print('coro {}: releasing the lock'.format(name))"
-    (goto-char (point-min) )
-    (forward-line 1)
-    (should (eq 4 (py-compute-indentation)))
-    (forward-line 3)
-    (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-indent-try-test-zg6QYI ()
   (py-test-with-temp-buffer-point-min
@@ -961,8 +901,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "case")
     (should (eq 4  (py-compute-indentation)))
     ))
-
-
 
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here

@@ -1,6 +1,5 @@
 ;;; py-ert-scope-tests.el --- testing python-mode.el  -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
 
@@ -619,30 +618,6 @@ my_list = [
     (goto-char (point-max))
     (let ((py-closing-list-dedents-bos nil))
       (should (eq 4 (py-compute-indentation))))))
-
-(ert-deftest py-ert-multiple-decorators-test-1-KyE0zL ()
-  (py-test-with-temp-buffer
-      "@blah
-@blub
-def foo():
-    pass
-"
-    (goto-char (point-max))
-    (let ((py-mark-decorators t))
-      (py-backward-def-or-class)
-      (should (bobp)))))
-
-(ert-deftest py-ert-multiple-decorators-test-2-D9kV8N ()
-  (py-test-with-temp-buffer
-      "@blah
-@blub
-def foo():
-    pass
-"
-    (goto-char (point-max))
-    (let* (py-mark-decorators
-           (erg (py-backward-def-or-class)))
-      (should (eq 13 erg)))))
 
 (ert-deftest py-ert-multiple-decorators-test-1-KyE0zL ()
   (py-test-with-temp-buffer

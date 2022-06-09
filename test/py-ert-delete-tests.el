@@ -407,16 +407,6 @@ x = {'abc':'def',
     (py-electric-backspace)
     (should (eq 4 (current-indentation)))))
 
-(ert-deftest extra-trailing-space-yC7gXH ()
-  (py-test-with-temp-buffer
-      "def bar():
-    x = 7
-            "
-    (goto-char (point-max))
-    (when py-debug-p (whitespace-mode))
-    (py-electric-backspace)
-    (should (eq 4 (current-indentation)))))
-
 (ert-deftest py-electric-backspace-after-colon-yC7gXH ()
   (py-test-with-temp-buffer
       "def test():          a = 'a'"

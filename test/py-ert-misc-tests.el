@@ -187,26 +187,7 @@ GeomSim."
       (goto-char (point-max))
       (should (string= "pdb" (py--pdb-versioned))))))
 
-(ert-deftest py-multline-arguments-with-literal-lists-79-test-7NWa5T ()
-  (py-test-with-temp-buffer
-      ;; Improper indentation for multline arguments with liiteral lists (#79)
-      "def foo():
-    bar = dosomething([
-                       x <- point"
-    (goto-char (point-max))
-    (search-backward "x")
-    (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest lines-after-return-80-Ahdpe8 ()
-  (py-test-with-temp-buffer
-      "def empty():
-    return
-    yield"
-    (goto-char (point-max))
-    (beginning-of-line)
-    (should (eq 4 (py-compute-indentation)))
-    (search-backward "return")
-    (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-ert-copy-indent-test-UbzMto ()
   (py-test-with-temp-buffer-point-min

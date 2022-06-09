@@ -3058,22 +3058,6 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (py-backward-clause)
     (should (looking-at "if True"))))
 
-(ert-deftest py-backward-clause-test-p52Dcj ()
-  (py-test-with-temp-buffer
-      "def foo():
-    if True:
-        def bar():
-            pass
-    elif False:
-        def baz():
-            pass"
-    (goto-char (point-max))
-    (search-backward "elif")
-    (skip-chars-backward " \t\r\n\f")
-    (py-backward-clause)
-    (py-backward-clause)
-    (should (looking-at "if True"))))
-
 (ert-deftest py-backward-clause-test-hPywHz ()
   (py-test-with-temp-buffer
       "def foo():
@@ -3108,13 +3092,6 @@ print(\"%(language)s has %(number)03d quote types.\" %
     (goto-char (point-max))
     (should (py-backward-assignment))))
 
-(ert-deftest py-forward-assignment-test-nnyBdy()
-    (py-test-with-temp-buffer-point-min
-	"a, b, c = (1, 2, 3)"
-	(goto-char (point-min))
-      (py-forward-assignment)
-      (should (eq (char-before) ?\)))))
-
 (ert-deftest py-forward-assignment-test-wQIiGk ()
     (py-test-with-temp-buffer-point-min
 	"a, b, c = (1, 2, 3)"
@@ -3123,26 +3100,12 @@ print(\"%(language)s has %(number)03d quote types.\" %
       (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
-(ert-deftest py-forward-assignment-test-2ptHP0()
-    (py-test-with-temp-buffer
-	"a, b, c = (1, 2, 3)
-asdf = []"
-	(search-backward "2")
-      (py-forward-assignment)
-      (should (eq (char-before) ?\)))))
-
-(ert-deftest py-backward-assignment-test-nnyBdy()
+(ert-deftest py-backward-assignment-test-jKYSCX ()
   (py-test-with-temp-buffer
       "print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})"
     (goto-char (point-max))
     (should-not (py-backward-assignment))))
-
-(ert-deftest py-backward-assignment-test-nnyBdy()
-  (py-test-with-temp-buffer
-      "a, b, c = (1, 2, 3)"
-    (goto-char (point-max))
-    (should (py-backward-assignment))))
 
 (ert-deftest py-backward-assignment-bol-test-ZZ2Txq()
   (py-test-with-temp-buffer
@@ -3161,14 +3124,6 @@ asdf = []"
       (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
-(ert-deftest py-forward-assignment-test-wQIiGk()
-    (py-test-with-temp-buffer-point-min
-	"a, b, c = (1, 2, 3)"
-	(goto-char (point-min))
-	(search-forward "b")
-      (py-forward-assignment)
-      (should (eq (char-before) ?\)))))
-
 (ert-deftest py-forward-assignment-test-2ptHP0()
     (py-test-with-temp-buffer
 	"a, b, c = (1, 2, 3)
@@ -3177,7 +3132,7 @@ asdf = []"
       (py-forward-assignment)
       (should (eq (char-before) ?\)))))
 
-(ert-deftest py-forward-assignment-test-2ptHP0()
+(ert-deftest py-forward-assignment-test-GI44tz ()
     (py-test-with-temp-buffer
 	"a, b, c = (1, 2, 3)
 asdf = []"

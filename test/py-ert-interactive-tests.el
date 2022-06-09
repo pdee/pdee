@@ -277,7 +277,7 @@ file.close()"
     (py-test-with-temp-buffer
 	"#! /usr/bin/env python2
 print()"
-      (goto-char (point-max)) 
+      (goto-char (point-max))
       (beginning-of-line)
       (sit-for 0.1)
       (should (eq (face-at-point) 'py-builtins-face)))))
@@ -761,9 +761,6 @@ import os"
     (goto-char (point-max))
     (should (py-execute-import-or-reload))))
 
-(ert-deftest py-shell-dedicated-buffer-test-t3Sizn ()
-  (let ((buffer (py-shell nil nil t)))
-  (should (buffer-live-p buffer))))
 
 (ert-deftest py-master-file-not-honored-lp-794850-test-P6QZmU ()
   (py-test-with-temp-buffer

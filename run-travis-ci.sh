@@ -67,16 +67,14 @@ TEST9=$TESTDIR/py-ert-delete-tests.el
 TEST10=$TESTDIR/py-ert-execute-region-test.el
 TEST11=$TESTDIR/py-execute-region-commandp-test.el
 TEST12=$TESTDIR/py-ert-fill-tests.el
-TEST13=$TESTDIR/py-ert-forward-tests.el
-TEST14=$TESTDIR/py-extra-tests.el
-TEST15=$TESTDIR/py-ert-hide-tests.el
-TEST16=$TESTDIR/py-ert-font-lock-test.el
-TEST17=$TESTDIR/py-executable-python-tests.el
-TEST18=$TESTDIR/py-split-window-on-execute-test
-TEST19=$TESTDIR/py-split-just-two-window-on-execute-test.el
-TEST20=$TESTDIR/py-non-ert-tests.el
-TEST21=$TESTDIR/py-ert-interactive-tests.el
-TEST22=$HOME/emacs/test/lisp/progmodes/python-tests.el
+TEST13=$TESTDIR/py-extra-tests.el
+TEST14=$TESTDIR/py-ert-hide-tests.el
+TEST15=$TESTDIR/py-ert-font-lock-test.el
+TEST16=$TESTDIR/py-executable-python-tests.el
+TEST17=$TESTDIR/py-split-window-on-execute-test
+TEST18=$TESTDIR/py-split-just-two-window-on-execute-test.el
+TEST19=$TESTDIR/py-ert-interactive-tests.el
+TEST20=$HOME/emacs/test/lisp/progmodes/python-tests.el
 
 echo "\$EMACS: $EMACS"
 
@@ -460,8 +458,8 @@ if [ $WERKSTATT -eq 0 ]; then
 	    i) echo "h18: Lade \$TEST18: \"$TEST18\"";h18;;
 	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
 	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
-	    l) echo "h21: Lade \$TEST21: \"$TEST21\"";h21;;
-	    m) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
+	    #  l) echo "h21: Lade \$TEST21: \"$TEST21\"";h21;;
+	    #  m) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
 	    n) echo "Lade Testumgebung ‘hier’";hier;;
 
 	esac
