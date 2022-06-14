@@ -1363,12 +1363,13 @@ def baz():
       (forward-line 2)
       (should (py-empty-line-p)))))
 
-(ert-deftest py--fast-send-string-no-output-VxbcvH ()
+(ert-deftest py-fast-send-string-no-output-VxbcvH ()
   (py-test-with-temp-buffer
       "print(234)"
     (py--fast-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
     (set-buffer "*Python3 Fast*")
-    (when py-debug-p (switch-to-buffer (current-buffer)))
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer "*Python3 Fast*"))
     (should (eq 1 (point-max)))))
 
 (ert-deftest py-pdbtrack-test-H6CpKY ()

@@ -306,7 +306,10 @@ sign in chained assignment."
         (match-beginning 2))            ; limit the search until the assignment
       nil
       (1 py-variable-name-face)))
-    (,(lambda (limit)
+    (
+     ;; "(closure (t) (limit) (let ((re \"\\(?:self\\)*\\([._[:word:]]+\\)[[:space:]]*\\(?:,[[:space:]]*[._[:word:]]+[[:space:]]*\\)*\\(?:%=\\|&=\\|\\*\\(?:\\*?=\\)\\|\\+=\\|-=\\|/\\(?:/?=\\)\\|\\(?:<<\\|>>\\|[|^]\\)=\\|[:=]\\)\") (res nil)) (while (and (setq res (re-search-forward re limit t)) (goto-char (match-end 1)) (nth 1 (parse-partial-sexp (point-min) (point))))) res))"     . (1 py-variable-name-face nil nil)
+
+     ,(lambda (limit)
         (let ((re (rx (* "self")(group (+ (any word ?. ?_))) (* space)
                       (* ?, (* space) (+ (any word ?. ?_)) (* space))
                       (or ":" "=" "+=" "-=" "*=" "/=" "//=" "%=" "**=" ">>=" "<<=" "&=" "^=" "|=")))
@@ -315,11 +318,16 @@ sign in chained assignment."
                       (goto-char (match-end 1))
                       (nth 1 (parse-partial-sexp (point-min) (point)))
                       ;; (python-syntax-context 'paren)
-		      ))
-          res)) . (1 py-variable-name-face nil nil))
+        	      ))
+          res))
+     . (1 py-variable-name-face nil nil))
+
+
     ;; Numbers
     ;;        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
-    (,(rx symbol-start (1+ digit) symbol-end) . py-number-face))
+    ("\\_<[[:digit:]]+\\_>" . py-number-face))
+     ;; ,(rx symbol-start (1+ digit) symbol-end)
+
   "Keywords matching font-lock")
 
 (provide 'python-components-font-lock)

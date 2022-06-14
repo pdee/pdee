@@ -83,6 +83,12 @@
 (require 'tramp)
 (require 'tramp-sh)
 (require 'org-loaddefs)
+(unless (functionp 'mapcan)
+  (require 'cl-extra)
+  ;; mapcan doesn't exist in Emacs 25
+  (defalias 'mapcan 'cl-mapcan)
+  )
+
 ;; (require 'org)
 
 (defgroup python-mode nil
@@ -6054,10 +6060,12 @@ process buffer for a list of commands.)"
 		    (if (executable-find shell)
 			shell
 		      (error (concat "py-shell: Can't see an executable for `"shell "' on your system. Maybe needs a link?")))
-		    (py-choose-shell)))
+		  (py-choose-shell)))
 	 (args (or args (py--provide-command-args shell fast)))
+         ;; Make sure a new one is created if required
 	 (buffer-name
 	  (or buffer
+              (and python-mode-v5-behavior-p (get-buffer-create "*Python Output*"))
 	      (py--choose-buffer-name shell dedicated fast)))
 	 (proc (get-buffer-process buffer-name))
 	 (done nil)
@@ -6078,8 +6086,8 @@ process buffer for a list of commands.)"
 		 (apply #'make-comint-in-buffer shell buffer-name
 			shell nil args))))))
 	 ;; (py-shell-prompt-detect-p (or (string-match "^\*IP" buffer) py-shell-prompt-detect-p))
-	 )
-    (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p py-output-buffer buffer)))
+         )
+    (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p (get-buffer  "*Python Output*") buffer)))
     (unless done
       (with-current-buffer buffer
 	(setq delay (py--which-delay-process-dependent buffer-name))
@@ -6091,7 +6099,7 @@ process buffer for a list of commands.)"
 		   (message "Waiting according to `py-python3-send-delay:' %s" delay))))
 	  (setq py-modeline-display (py--update-lighter buffer-name))
 	  ;; (sit-for delay t)
-	  )))
+          )))
     (if (setq proc (get-buffer-process buffer))
 	(progn
 	  (with-current-buffer buffer

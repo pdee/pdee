@@ -105,25 +105,48 @@ print()"
       (should (get-buffer-process erg)))))
 
 (ert-deftest py-reuse-existing-shell-test-bSPpqY ()
-  (py-test-with-temp-buffer
-      (let ((python-mode-v5-behavior-p t))
-	"foo"
-	;; kill existing shells
-	;; (py--kill-buffer-unconditional "*Python3*")
-	;; (py--kill-buffer-unconditional "*IPython*")
-	;; (py--kill-buffer-unconditional "*Python*<2>")
-	;; (py--kill-buffer-unconditional "*IPython*<2>")
-	(python3)
-	(ipython3)
-	(sit-for 0.1 t)
-	;; this should not open a "*Python*<2>"
-	(python3)
-	(ipython3)
-	(sit-for 0.1 t)
-	(should (not (buffer-live-p (get-buffer "*Python3*<2>"))))
-	(should (not (buffer-live-p (get-buffer "*IPython3*<2>"))))
-	(should (buffer-live-p (get-buffer "*Python3*")))
-	(should (buffer-live-p (get-buffer "*IPython3*"))))))
+  (let ((python-mode-v5-behavior-p nil))
+    "foo"
+    ;; kill existing shells
+    ;; (py--kill-buffer-unconditional "*Python3*")
+    ;; (py--kill-buffer-unconditional "*IPython*")
+    ;; (py--kill-buffer-unconditional "*Python*<2>")
+    ;; (py--kill-buffer-unconditional "*IPython*<2>")
+    (python3)
+    (ipython3)
+    (sit-for 0.1 t)
+    ;; this should not open a "*Python*<2>"
+    (python3)
+    (ipython3)
+    (sit-for 0.1 t)
+    (should (not (buffer-live-p (get-buffer "*Python3*<2>"))))
+    (should (not (buffer-live-p (get-buffer "*IPython3*<2>"))))
+    (should (buffer-live-p (get-buffer "*Python3*")))
+    (should (buffer-live-p (get-buffer "*IPython3*")))))
+
+(ert-deftest py-python-mode-v5-behavior-test-bSPpqY ()
+  (let ((python-mode-v5-behavior-p t))
+    (python3)
+    ;; (ipython3)
+    (sit-for 0.1)
+    (should (buffer-live-p (get-buffer "*Python Output*")))
+    (should (not (buffer-live-p (get-buffer "*Python3*<2>"))))
+    (should (not (buffer-live-p (get-buffer "*IPython3*<2>"))))
+    (should (not (buffer-live-p (get-buffer "*Python3*"))))
+    (should (not (buffer-live-p (get-buffer "*IPython3*"))))
+    ))
+
+(ert-deftest py-python-mode-v5-behavior-test-2n0wbL ()
+  (let ((python-mode-v5-behavior-p t))
+    ;; (python3)
+    (ipython3)
+    (sit-for 0.1 t)
+    (should (buffer-live-p (get-buffer "*Python Output*")))
+    (should (not (buffer-live-p (get-buffer "*Python3*<2>"))))
+    (should (not (buffer-live-p (get-buffer "*IPython3*<2>"))))
+    (should (not (buffer-live-p (get-buffer "*Python3*"))))
+    (should (not (buffer-live-p (get-buffer "*IPython3*"))))
+    ))
 
 (provide 'py-executable-python-tests)
 ;;; py-executable-python-tests.el ends here
