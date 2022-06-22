@@ -2874,13 +2874,15 @@ See `py-no-outdent-re-raw' for better readable content")
 (defconst py-minor-block-re-raw (list
 				      "async for"
 				      "async with"
+                                      "case"
 				      "except"
 				      "for"
 				      "if"
+                                      "match"
 				      "try"
 				      "with"
 				      )
-  "Matches the beginning of an `for', `if', `try', `except' or `with' block.")
+  "Matches the beginning of an case `for', `if', `try', `except' or `with' block.")
 
 (defconst py-minor-block-re
   (concat

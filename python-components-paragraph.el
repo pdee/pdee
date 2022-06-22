@@ -337,7 +337,7 @@ See lp:1066489 "
       ;; at the start.
       (goto-char thisbeg)
       (py--skip-raw-string-front-fence)
-      (skip-chars-forward "\'\"")
+      (skip-chars-forward "'\"")
       (when
 	  (car delimiters-style)
 	(unless (or (py-empty-line-p)(eolp))

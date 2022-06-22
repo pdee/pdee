@@ -155,15 +155,40 @@ def foo3(bar):
     (search-backward "name" nil t 2)
     (should (eq (face-at-point) 'py-variable-name-face))))
 
-(ert-deftest py-110-Support-PEP-634-structural-pattern-matching-P6QZmU ()
+;; (ert-deftest py-110-Support-PEP-634-structural-pattern-matching-P6QZmU ()
+;;   (py-test-with-temp-buffer
+;;       "def sort(seq):
+;;     match seq:
+;;         case [] | [_]:
+;;             return seq"
+;;     (goto-char (point-max))
+;;     (search-backward "case")
+;;     (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))
+;;     (search-backward "match")
+;;     (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))))
+
+(ert-deftest py-110-Support-PEP-634-structural-pattern-matching-s0UJcE ()
   (py-test-with-temp-buffer
-      "def sort(seq):
-    match seq:
-        case [] | [_]:
-            return seq"
+      "def simplify_expr(tokens):
+    match tokens:
+        case \[('('|'\[') as l, *expr, (')'|']') as r] if (l+r) in ('()', '\[]'):
+            return simplify_expr(expr)
+        case \[0, ('+'|'-') as op, right]:
+            return UnaryOp(op, right)
+        case \[(int() | float() as left) | Num(left), '+', (int() | float() as right) | Num(right)]:
+            return Num(left + right)
+        case \[(int() | float()) as value]:
+            return Num(value)"
     (goto-char (point-max))
+    (search-backward "return")
+    (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))
+    (search-backward "as")
+    (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))
+    (search-backward "case")
+    (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))
+    (search-backward "case")
+    (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))
     (search-backward "match")
-    (should (eq (face-at-point) 'py-variable-name-face))
     (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))))
 
 (ert-deftest py-keywords-in-identifiers-highlighted-incorrectly-lp-888338-test ()

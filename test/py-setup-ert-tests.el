@@ -104,7 +104,7 @@
 (defmacro py-test-with-temp-buffer (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
- at the beginning of buffer."
+ at the end of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
@@ -118,7 +118,7 @@ BODY is code to be executed within the temp buffer.  Point is
 (defmacro py-test-with-temp-buffer-point-min (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.
 BODY is code to be executed within the temp buffer.  Point is
- at the end of buffer."
+ at the beginning of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)

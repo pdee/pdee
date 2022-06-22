@@ -359,15 +359,16 @@ if __name__ == \"__main__\":
 
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-2-rq3mat ()
   (py-test-with-temp-buffer-point-min
-  (let ((py-docstring-style 'pep-257-nn))
-     "class MyClass(object):
+              "class MyClass(object):
     def my_method(self):
         \"\"\"Some long line with more than 70 characters in the docstring. Some more text.\"\"\"
 "
-    (search-forward "\"\"\"")
-    (fill-paragraph)
-    (search-forward "\"\"\"")
-    (should (eq 8 (current-indentation))))))
+      (let ((py-docstring-style 'pep-257-nn))
+        (goto-char (point-min))
+        (search-forward "\"\"\"")
+        (fill-paragraph)
+        (search-forward "\"\"\"")
+        (should (eq 8 (current-indentation))))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-1-raqbPv ()
   (py-test-with-temp-buffer-point-min
