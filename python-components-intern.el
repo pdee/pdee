@@ -40,23 +40,49 @@
       (current-indentation)
     (+ (current-indentation) py-indent-offset)))
 
-(defun py-compute-indentation--according-to-list-style ()
-   "See `py-indent-list-style'
+;; (defun py-compute-indentation--according-to-list-style ()
+;;    "See `py-indent-list-style'
+
+;; Choices are:
+
+;; \\='line-up-with-first-element (default)
+;; \\='one-level-to-beginning-of-statement
+;; \\='one-level-from-opener"
+;;   (save-excursion
+;;     (pcase py-indent-list-style
+;;       (`line-up-with-first-element
+;;        (1+ (current-column)))
+;;       (`one-level-to-beginning-of-statement
+;;        (py-backward-statement)
+;;        (+ py-indent-offset (current-indentation)))
+;;       (`one-level-from-first-element
+;;        (+ 1 py-indent-offset (current-column))))))
+
+(defun py-compute-indentation--according-to-list-style (pps)
+  "See `py-indent-list-style'
 
 Choices are:
 
 \\='line-up-with-first-element (default)
 \\='one-level-to-beginning-of-statement
-\\='one-level-from-opener"
-  (save-excursion
-    (pcase py-indent-list-style
-      (`line-up-with-first-element
-       (1+ (current-column)))
-      (`one-level-to-beginning-of-statement
-       (py-backward-statement)
-       (+ py-indent-offset (current-indentation)))
-      (`one-level-from-first-element
-       (+ 1 py-indent-offset (current-column))))))
+\\='one-level-from-opener
+
+See also py-closing-list-dedents-bos"
+  (goto-char (nth 1 pps))
+  (cond
+   ((and (looking-back py-assignment-re (line-beginning-position))
+         ;; flexible-indentation-lp-328842
+         (not (eq (match-beginning 0) (line-beginning-position))))
+    (+ (current-indentation) py-indent-offset))
+   (py-closing-list-dedents-bos
+    (current-indentation))
+   (t (pcase py-indent-list-style
+        (`line-up-with-first-element
+         (1+ (current-column)))
+        (`one-level-to-beginning-of-statement
+         (+ (current-indentation) py-indent-offset))
+        (`one-level-from-first-element
+         (+ 1 (current-column) py-indent-offset))))))
 
 (defun py-compute-indentation-closing-list (pps)
   (cond
@@ -68,13 +94,14 @@ Choices are:
    ;; just close an maybe outer list
    ((eq 1 (nth 0 pps))
     (goto-char (nth 1 pps))
-    (py-compute-indentation--according-to-list-style))))
+    (py-compute-indentation--according-to-list-style pps))))
 
 (defun py-compute-list-indent--according-to-circumstance (pps line origline)
   (and (nth 1 pps) (goto-char (nth 1 pps)))
   (if (looking-at "[({\\[][ \t]*$")
-      (min (+ (current-indentation) py-indent-offset)
-	   (1+ (current-column)))
+      (py-close-according-to-style pps)
+      ;; (min (+ (current-indentation) py-indent-offset)
+      ;;      (1+ (current-column)))
     (if (or line (< (py-count-lines) origline))
 	(py-compute-indentation--according-to-list-style))))
 
@@ -87,7 +114,7 @@ Choices are:
 	  (t (when (looking-back "[ \t]*\\(\\s(\\)" (line-beginning-position))
 	       (goto-char (match-beginning 1))
 	       (setq pps (parse-partial-sexp (point-min) (point))))
-	     (py-compute-list-indent--according-to-circumstance pps line origline)))))
+	     (py-compute-indentation--according-to-list-style pps)))))
 
 (defun py-compute-comment-indentation (pps iact orig origline closing line nesting repeat indent-offset liep)
   (cond ((nth 8 pps)
@@ -127,32 +154,23 @@ Choices are:
         ((and (eq 11 (syntax-after (point))) line py-indent-honors-inline-comment)
          (current-column))))
 
-(defun py-close-according-to-style (pps)
-  (goto-char (nth 1 pps))
-  (if py-closing-list-dedents-bos
-      (current-indentation)
-    (pcase py-indent-list-style
-      (`line-up-with-first-element
-       (1+ (current-column)))
-      (`one-level-to-beginning-of-statement
-       (+ (current-indentation) py-indent-offset))
-      (`one-level-from-first-element
-       (+ 1 (current-column) py-indent-offset)))))
-
 (defun py-compute-indentation--at-closer-maybe (pps)
   (save-excursion
     (when (looking-back "^[ \t]*\\(\\s)\\)" (line-beginning-position))
       (forward-char -1)
       (setq pps (parse-partial-sexp (point-min) (point))))
     (when (and (nth 1 pps)
-               (looking-at "[ \t]*\\(\\s)\\)")(nth 0 pps))
-      (if
-          ;; beyond list start?
-           (< (progn (unless (bobp) (forward-line -1) (line-beginning-position))) (nth 1 pps))
-          (py-close-according-to-style pps)
-        (if py-closing-list-dedents-bos
-            (- (current-indentation) py-indent-offset)
-          (current-indentation))))))
+               (looking-at "[ \t]*\\(\\s)\\)") (nth 0 pps))
+      (cond
+       ;; no indent at empty argument (list
+       ((progn (skip-chars-backward " \t\r\n\f") (ignore-errors (eq 4 (car (syntax-after (1- (point)))))))
+        (current-indentation))
+       ;; beyond list start?
+       ((ignore-errors (< (progn (unless (bobp) (forward-line -1) (line-beginning-position))) (nth 1 (setq pps (parse-partial-sexp (point-min) (point))))))
+        (py-close-according-to-style pps))
+       (py-closing-list-dedents-bos
+        (- (current-indentation) py-indent-offset))
+       (t (current-indentation))))))
 
 (defun py-compute-indentation (&optional iact orig origline closing line nesting repeat indent-offset liep)
   "Compute Python indentation.
@@ -191,6 +209,7 @@ LIEP stores line-end-position at point-of-interest
              (closing
               (or closing
                   ;; returns update pps
+                  ;; (and line (py-compute-indentation--at-closer-maybe pps))
                   (py-compute-indentation--at-closer-maybe pps)))
              ;; in a recursive call already
              (repeat (if repeat
@@ -213,7 +232,7 @@ LIEP stores line-end-position at point-of-interest
               (error "`py-compute-indentation' reached loops max.")
             (setq nesting (nth 0 pps))
             (setq indent
-                  (cond (closing)
+                  (cond ;; closing)
                         ((bobp)
 			 (cond ((eq liep (line-end-position))
                                 0)
@@ -263,6 +282,15 @@ LIEP stores line-end-position at point-of-interest
 			;; lists
 			((nth 1 pps)
 			 (if (< (nth 1 pps) (line-beginning-position))
+                             ;; Compute according to `py-indent-list-style'
+
+                             ;; Choices are:
+
+                             ;; \\='line-up-with-first-element (default)
+                             ;; \\='one-level-to-beginning-of-statement
+                             ;; \\='one-level-from-opener"
+
+                             ;; See also py-closing-list-dedents-bos
 			     (py-compute-indentation-in-list pps line closing orig origline)
 			   (back-to-indentation)
 			   (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep)))
@@ -306,12 +334,12 @@ LIEP stores line-end-position at point-of-interest
 				;; (and (py--backward-regexp 'py-block-or-clause-re) (current-indentation)))
 			       	(and (py--go-to-keyword 'py-block-or-clause-re nil nil t) (current-indentation)))
 			       ((bobp) 0)
-			       (t (save-excursion  
+			       (t (save-excursion
 				    ;; (skip-chars-backward " \t\r\n\f")
-						  (if (py-backward-block) 
-						      ;; (py--backward-regexp 'py-block-or-clause-re)
-						      (+ py-indent-offset (current-indentation))
-						    0)))))
+				    (if (py-backward-block)
+					;; (py--backward-regexp 'py-block-or-clause-re)
+					(+ py-indent-offset (current-indentation))
+				      0)))))
 			((looking-at py-extended-block-or-clause-re)
 			 (cond ((and (not line)
 				     (eq liep (line-end-position)))

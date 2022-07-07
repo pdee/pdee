@@ -244,15 +244,15 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
 
-(ert-deftest py-flycheck-mode-5Yz7A2 ()
-  (py-test-with-temp-buffer
-   ""
-   (py-flycheck-mode -1)
-   (should-not flycheck-mode)
-   (py-flycheck-mode 1)
-   (should flycheck-mode)
-   (py-flycheck-mode -1)
-   (should-not flycheck-mode)))
+;; (ert-deftest py-flycheck-mode-5Yz7A2 ()
+;;   (py-test-with-temp-buffer
+;;    ""
+;;    (py-flycheck-mode -1)
+;;    (should-not flycheck-mode)
+;;    (py-flycheck-mode 1)
+;;    (should flycheck-mode)
+;;    (py-flycheck-mode -1)
+;;    (should-not flycheck-mode)))
 
 (ert-deftest py-face-lp-1454858-python3-1-test-3lRWI6 ()
   (py-test-with-temp-buffer

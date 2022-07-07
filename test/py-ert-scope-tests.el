@@ -591,32 +591,8 @@ my_list = [
     ]"
     (goto-char (point-max))
     (beginning-of-line)
-    (let ((py-closing-list-dedents-bos nil))
-      (should (eq 4 (py-compute-indentation))))))
-
-(ert-deftest py-ert-bracket-closing-5-Ql1NmS ()
-  ""
-  (py-test-with-temp-buffer
-      "
-my_list = [
-    1, 2, 3,
-    4, 5, 6,
-    ]"
-    (goto-char (point-max))
-    (forward-char -1)
-    (let ((py-closing-list-dedents-bos nil))
-      (should (eq 4 (py-compute-indentation))))))
-
-(ert-deftest py-ert-bracket-closing-6-ItzhYL ()
-  ""
-  (py-test-with-temp-buffer
-      "
-my_list = [
-    1, 2, 3,
-    4, 5, 6,
-    ]"
-    (goto-char (point-max))
-    (let ((py-closing-list-dedents-bos nil))
+    (let ((py-closing-list-dedents-bos nil)
+          (py-indent-list-style 'one-level-to-beginning-of-statement))
       (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-multiple-decorators-test-1-KyE0zL ()

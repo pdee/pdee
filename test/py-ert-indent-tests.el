@@ -298,30 +298,36 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-1-ld9am7 ()
+  "d = {'a':{'b':3,
+             'c':4}}"
   (py-test-with-temp-buffer
       "
 asdf = {
     'a':{"
     (goto-char(point-max))
     (beginning-of-line)
-    (should (eq 4 (py-compute-indentation)))))
+    (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-2-Pg4yts ()
+  "d = {'a':{'b':3,
+             'c':4}}"
   (py-test-with-temp-buffer
       "
 asdf = {
     'a':{"
     (goto-char(point-max))
     (forward-char -2)
-    (should (eq 4 (py-compute-indentation)))))
+    (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-3-EH1WJl ()
-  (py-test-with-temp-buffer
-      "
-asdf = {
-    'a':{"
-    (goto-char(point-max))
-    (should (eq 4 (py-compute-indentation)))))
+;; (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-3-EH1WJl ()
+;;   "d = {'a':{'b':3,
+;;              'c':4}}"
+;;   (py-test-with-temp-buffer
+;;       "
+;; asdf = {
+;;     'a':{"
+;;     (goto-char(point-max))
+;;     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-4-2qSrrt ()
   (py-test-with-temp-buffer
@@ -332,7 +338,7 @@ asdf = {
          'c':4"
     (goto-char(point-max))
     (beginning-of-line)
-    (should (eq 8 (py-compute-indentation)))))
+    (should (eq 9 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-5-CNMePW ()
   (py-test-with-temp-buffer
@@ -342,17 +348,17 @@ asdf = {
          'b':3,
          'c':4"
     (goto-char(point-max))
-    (should (eq 8 (py-compute-indentation)))))
+    (should (eq 9 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-6-I73t1i ()
   (py-test-with-temp-buffer
       "
 asdf = {
     'a':{
-         'b':3,
-         'c':4"
+         'b':4,
+         'c':5"
     (goto-char(point-max))
-    (should (eq 8 (py-compute-indentation)))))
+    (should (eq 9 (py-compute-indentation)))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-7-9UP0Kr ()
   (py-test-with-temp-buffer
@@ -365,7 +371,7 @@ asdf = {
     (goto-char(point-max))
     (beginning-of-line)
     (let ((py-closing-list-dedents-bos nil))
-      (should (eq 9 (py-compute-indentation))))))
+      (should (eq 8 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-8-ABORqFr ()
   (py-test-with-temp-buffer
@@ -378,7 +384,7 @@ asdf = {
     (goto-char(point-max))
     (forward-char -1)
     (let ((py-closing-list-dedents-bos nil))
-      (should (eq 9 (py-compute-indentation))))))
+      (should (eq 8 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-9-NzoaiZ ()
   (py-test-with-temp-buffer
@@ -390,7 +396,7 @@ asdf = {
          }"
     (goto-char(point-max))
     (let ((py-closing-list-dedents-bos nil))
-      (should (eq 9 (py-compute-indentation))))))
+      (should (eq 8 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-10-uGdWJg ()
   (py-test-with-temp-buffer
@@ -465,9 +471,10 @@ asdf = {
       "packed_entry = (long, sequence, of_items,
 that, needs, to_be, wrapped)"
     (goto-char(point-max))
-    (let ((py-indent-list-style 'one-level-from-first-element))
+    (search-backward "d")
+    (let ((py-indent-list-style 'line-up-with-first-element))
       (indent-line-to (py-compute-indentation))
-      (should  (eq 20 (current-indentation))))))
+      (should  (eq 16 (current-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-5-umQ6Tk ()
   (py-test-with-temp-buffer
@@ -482,6 +489,7 @@ that, needs, to_be, wrapped)"
   (py-test-with-temp-buffer
       "def foo (a,\n):"
     (goto-char(point-max))
+    (search-backward ")")
     (let ((py-indent-list-style 'line-up-with-first-element))
       (indent-line-to  (py-compute-indentation))
       (should (eq 9 (current-indentation))))))
@@ -599,7 +607,18 @@ import os
     (search-forward "try")
     (should (eq 0 (py-compute-indentation)))))
 
-(ert-deftest py-ert-indent-closing-tx8E5Q-m4T4xF ()
+(ert-deftest py-ert-indent-closing-tx8E5Q ()
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]
+"
+    (goto-char (point-max))
+    (should (eq 0 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-closing-OUClAx ()
   (py-test-with-temp-buffer
       "
 my_list = [
@@ -607,7 +626,33 @@ my_list = [
     4, 5, 6,
     ]"
     (goto-char (point-max))
-    (should (eq 4 (py-compute-indentation)))))
+    (search-backward "]")
+    ;; line-up-with-first-element (default)
+    (should (eq 11 (py-compute-indentation)))))
+
+(ert-deftest py-ert-indent-closing-vmqBXD ()
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]"
+    (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
+      (goto-char (point-max))
+      (search-backward "]")
+      (should (eq 4 (py-compute-indentation))))))
+
+(ert-deftest py-ert-indent-closing-0yQS1n ()
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6,
+    ]"
+    (let ((py-closing-list-dedents-bos t))
+      (goto-char (point-max))
+      (search-backward "]")
+      (should (eq 0 (py-compute-indentation))))))
 
 (ert-deftest py-ert-async-indent-test-MFS8IW ()
   (py-test-with-temp-buffer-point-min
@@ -768,7 +813,7 @@ else: "
 
 (ert-deftest py-multline-arguments-with-literal-lists-79-test-7NWa5T ()
   (py-test-with-temp-buffer
-      ;; Improper indentation for multline arguments with liiteral lists (#79)
+      ;; Improper indentation for multline arguments with literal lists (#79)
       "def foo():
     bar = dosomething([
                        x <- point"
@@ -901,6 +946,13 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "case")
     (should (eq 4  (py-compute-indentation)))
     ))
+
+(ert-deftest py-indent-on-first-line-i1nySM ()
+  (py-test-with-temp-buffer
+      "test()"
+    (goto-char (point-max))
+    (search-backward ")")
+    (should (eq 0 (py-compute-indentation)))))
 
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here

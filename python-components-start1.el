@@ -831,7 +831,8 @@ def foo():
   :type '(choice
           (const :tag "line-up-with-first-element" line-up-with-first-element)
           (const :tag "one-level-to-beginning-of-statement" one-level-to-beginning-of-statement)
-          (const :tag "one-level-from-first-element" one-level-from-first-element))
+          (const :tag "one-level-from-first-element" one-level-from-first-element)
+          )
   :tag "py-indent-list-style"
   :group 'python-mode)
 (make-variable-buffer-local 'py-indent-list-style)
@@ -858,6 +859,7 @@ my_list = [
     1, 2, 3,
     4, 5, 6
     ]
+
 result = some_function_that_takes_arguments(
     \\='a\\=', \\='b\\=', \\='c\\=',
     \\='d\\=', \\='e\\=', \\='f\\='

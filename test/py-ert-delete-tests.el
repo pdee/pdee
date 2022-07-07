@@ -417,5 +417,16 @@ x = {'abc':'def',
     (should (eq (char-before) ?:))
     (should (eq (char-after) 32))))
 
+
+
+(ert-deftest py-incompatibility-with-electric-pair-mode-133-OJeEWO ()
+  (py-test-with-temp-buffer
+      "test()"
+    (let ((electric-pair-mode t))
+      (goto-char (point-max))
+      (search-backward ")")
+      (py-electric-backspace)
+      (should-not (eq (char-after) 41)))))
+
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
