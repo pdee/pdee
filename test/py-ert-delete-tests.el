@@ -428,5 +428,23 @@ x = {'abc':'def',
       (py-electric-backspace)
       (should-not (eq (char-after) 41)))))
 
+(ert-deftest py-incompatibility-with-electric-pair-mode-133-WpGhqV ()
+  (py-test-with-temp-buffer
+      "\"\""
+    (let ((electric-pair-mode t))
+      (goto-char (point-max))
+      (backward-char) 
+      (py-electric-backspace)
+      (should-not (eq (char-after) 34)))))
+
+(ert-deftest py-incompatibility-with-electric-pair-mode-133-VY1yk7 ()
+  (py-test-with-temp-buffer
+      "''"
+    (let ((electric-pair-mode t))
+      (goto-char (point-max))
+      (backward-char) 
+      (py-electric-backspace)
+      (should-not (eq (char-after) ?')))))
+
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

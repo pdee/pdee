@@ -186,9 +186,14 @@ At no-whitespace character, delete one before point.
 	  (indent (py-compute-indentation))
 	  done)
       (cond
-       ((and electric-pair-mode (ignore-errors (eq 4 (car (syntax-after (1- (point)))))))
+       ;; electric-pair-mode
+       ((and electric-pair-mode (or
+                                 (ignore-errors (eq 4 (car (syntax-after (1- (point))))))
+                                 (ignore-errors (eq 7 (car (syntax-after (1- (point))))))
+                                 ))
         (delete-char 1)
         (backward-delete-char-untabify 1))
+
        ((eq 4 (prefix-numeric-value arg))
 	(backward-delete-char-untabify 1))
        ((use-region-p)

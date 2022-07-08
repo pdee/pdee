@@ -40,25 +40,7 @@
       (current-indentation)
     (+ (current-indentation) py-indent-offset)))
 
-;; (defun py-compute-indentation--according-to-list-style ()
-;;    "See `py-indent-list-style'
-
-;; Choices are:
-
-;; \\='line-up-with-first-element (default)
-;; \\='one-level-to-beginning-of-statement
-;; \\='one-level-from-opener"
-;;   (save-excursion
-;;     (pcase py-indent-list-style
-;;       (`line-up-with-first-element
-;;        (1+ (current-column)))
-;;       (`one-level-to-beginning-of-statement
-;;        (py-backward-statement)
-;;        (+ py-indent-offset (current-indentation)))
-;;       (`one-level-from-first-element
-;;        (+ 1 py-indent-offset (current-column))))))
-
-(defun py-compute-indentation--according-to-list-style (pps)
+(defun py-compute-indentation-according-to-list-style (pps)
   "See `py-indent-list-style'
 
 Choices are:
@@ -94,27 +76,18 @@ See also py-closing-list-dedents-bos"
    ;; just close an maybe outer list
    ((eq 1 (nth 0 pps))
     (goto-char (nth 1 pps))
-    (py-compute-indentation--according-to-list-style pps))))
-
-(defun py-compute-list-indent--according-to-circumstance (pps line origline)
-  (and (nth 1 pps) (goto-char (nth 1 pps)))
-  (if (looking-at "[({\\[][ \t]*$")
-      (py-close-according-to-style pps)
-      ;; (min (+ (current-indentation) py-indent-offset)
-      ;;      (1+ (current-column)))
-    (if (or line (< (py-count-lines) origline))
-	(py-compute-indentation--according-to-list-style))))
+    (py-compute-indentation-according-to-list-style pps))))
 
 (defun py-compute-indentation-in-list (pps line closing orig origline)
   (if closing
       (py-compute-indentation-closing-list pps)
     (cond ((and (not line) (looking-back py-assignment-re (line-beginning-position)))
 	   (py--fetch-indent-statement-above orig))
-	  ;; (py-compute-indentation--according-to-list-style pps iact orig origline line nesting repeat indent-offset liep)
+	  ;; (py-compute-indentation-according-to-list-style pps iact orig origline line nesting repeat indent-offset liep)
 	  (t (when (looking-back "[ \t]*\\(\\s(\\)" (line-beginning-position))
 	       (goto-char (match-beginning 1))
 	       (setq pps (parse-partial-sexp (point-min) (point))))
-	     (py-compute-indentation--according-to-list-style pps)))))
+	     (py-compute-indentation-according-to-list-style pps)))))
 
 (defun py-compute-comment-indentation (pps iact orig origline closing line nesting repeat indent-offset liep)
   (cond ((nth 8 pps)
@@ -167,7 +140,7 @@ See also py-closing-list-dedents-bos"
         (current-indentation))
        ;; beyond list start?
        ((ignore-errors (< (progn (unless (bobp) (forward-line -1) (line-beginning-position))) (nth 1 (setq pps (parse-partial-sexp (point-min) (point))))))
-        (py-close-according-to-style pps))
+        (py-compute-indentation-according-to-list-style pps))
        (py-closing-list-dedents-bos
         (- (current-indentation) py-indent-offset))
        (t (current-indentation))))))
