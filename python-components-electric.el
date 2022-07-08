@@ -189,10 +189,16 @@ At no-whitespace character, delete one before point.
        ;; electric-pair-mode
        ((and electric-pair-mode (or
                                  (ignore-errors (eq 4 (car (syntax-after (1- (point))))))
-                                 (ignore-errors (eq 7 (car (syntax-after (1- (point))))))
-                                 ))
-        (delete-char 1)
-        (backward-delete-char-untabify 1))
+                                 (ignore-errors (eq 5 (car (syntax-after (1- (point))))))
+                                 (ignore-errors (eq 7 (car (syntax-after (1- (point))))))))
+        (cond
+         ((or
+           (ignore-errors (eq 5 (car (syntax-after (point)))))
+           (ignore-errors (eq 7 (car (syntax-after (point))))))
+          (delete-char 1)
+          (backward-delete-char-untabify 1))
+         ;; behind both delimiters
+         (t (backward-delete-char-untabify 2))))
 
        ((eq 4 (prefix-numeric-value arg))
 	(backward-delete-char-untabify 1))

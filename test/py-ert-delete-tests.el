@@ -417,8 +417,6 @@ x = {'abc':'def',
     (should (eq (char-before) ?:))
     (should (eq (char-after) 32))))
 
-
-
 (ert-deftest py-incompatibility-with-electric-pair-mode-133-OJeEWO ()
   (py-test-with-temp-buffer
       "test()"
@@ -428,23 +426,68 @@ x = {'abc':'def',
       (py-electric-backspace)
       (should-not (eq (char-after) 41)))))
 
+(ert-deftest py-incompatibility-with-electric-pair-mode-133-8exKMk ()
+  (py-test-with-temp-buffer
+      "test()"
+    (let ((electric-pair-mode t))
+      (goto-char (point-max))
+      (py-electric-backspace)
+      (should-not (eq (char-after) 41))
+      (should (eq (char-before) ?t))
+      )))
+
 (ert-deftest py-incompatibility-with-electric-pair-mode-133-WpGhqV ()
   (py-test-with-temp-buffer
       "\"\""
     (let ((electric-pair-mode t))
       (goto-char (point-max))
-      (backward-char) 
+      (backward-char)
       (py-electric-backspace)
       (should-not (eq (char-after) 34)))))
+
+
+(ert-deftest py-incompatibility-with-electric-pair-mode-133-mwooPu ()
+  (py-test-with-temp-buffer
+      "\"\""
+    (let ((electric-pair-mode t))
+      (goto-char (point-max))
+      (py-electric-backspace)
+      (should-not (eq (char-after) 34))
+      (should-not (eq (char-before) 34))
+      )))
+
+
+(ert-deftest py-incompatibility-with-electric-pair-mode-133-Jgj06W ()
+  (py-test-with-temp-buffer
+      "asdf\"\""
+    (let ((electric-pair-mode t))
+      (goto-char (point-max))
+      (py-electric-backspace)
+      (should (eq (char-before) ?f))
+      )))
 
 (ert-deftest py-incompatibility-with-electric-pair-mode-133-VY1yk7 ()
   (py-test-with-temp-buffer
       "''"
     (let ((electric-pair-mode t))
       (goto-char (point-max))
-      (backward-char) 
+      (backward-char)
       (py-electric-backspace)
-      (should-not (eq (char-after) ?')))))
+      (should-not (eq (char-after) ?'))
+      (should-not (eq (char-before) ?'))
+      )))
+
+
+(ert-deftest py-incompatibility-with-electric-pair-mode-133-MnlR0p ()
+  (py-test-with-temp-buffer
+      "asdf''"
+    (let ((electric-pair-mode t))
+      (goto-char (point-max))
+      (backward-char)
+      (py-electric-backspace)
+      (should (eq (char-before) ?f))
+      )))
+
 
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
