@@ -5892,5 +5892,120 @@ class CFG(object):
     (should
      (looking-at "if nr_leftcorner_words"))))
 
+(ert-deftest py-beginning-of-def-vxF0Fo ()
+  "bar closed at column 4, reach foo from col 3"
+  (py-test-with-temp-buffer
+  "def foo():
+    def bar():
+        pass
+   "
+  (goto-char (point-max))
+  (py-backward-def)
+  (should (looking-at "def foo():"))))
+
+(ert-deftest py-beginning-of-def-bbGMdl ()
+  "bar closed at column 4, reach foo from col 3"
+  (py-test-with-temp-buffer
+  "def foo():
+    def bar():
+
+        pass
+   "
+  (goto-char (point-max))
+  (search-backward "pass")
+  (forward-line -1)
+  (py-backward-def)
+  (should (looking-at "def bar():"))))
+
+(ert-deftest py-beginning-of-def-7ZHlQ6 ()
+  "bar closes at column 4, but also by pass, reach foo from col 4"
+  (py-test-with-temp-buffer
+  "def foo():
+    def bar():
+        pass
+    "
+  (goto-char (point-max))
+  (py-backward-def)
+  (should (looking-at "def foo():"))))
+
+(ert-deftest py-beginning-of-def-rmDlg1 ()
+  "bar closed by pass"
+  (py-test-with-temp-buffer
+  "def foo():
+    def bar():
+        pass
+     "
+  (goto-char (point-max))
+  (py-backward-def)
+  (should (looking-at "def foo():"))))
+
+(ert-deftest py-beginning-of-def-iOjuaG ()
+  "bar closed by pass"
+  (py-test-with-temp-buffer
+  "def foo():
+    def bar():
+        pass
+     "
+  (goto-char (point-max))
+  (search-backward "s")
+  (py-backward-def)
+  (should (looking-at "def bar():"))))
+
+(ert-deftest py-beginning-of-def-CS5LMY ()
+  "bar closed at column 4, reach foo from col 3"
+  (py-test-with-temp-buffer
+      "def foo():
+    def bar():
+
+        print(\"\")
+   "
+    (goto-char (point-max))
+    (search-backward "print(\"\")")
+    (forward-line -1)
+    (py-backward-def)
+    (should (looking-at "def bar():"))))
+
+(ert-deftest py-beginning-of-def-A2o390 ()
+  "bar closes at column 4, reach it from col 4"
+  (py-test-with-temp-buffer
+      "def foo():
+    def bar():
+        print(\"\")
+         "
+    (goto-char (point-max))
+    (search-backward "p")
+    (forward-line 1)
+    (forward-char 9)
+    (py-backward-def)
+    (should (looking-at "def bar():"))))
+
+(ert-deftest py-beginning-of-def-MRIsfc ()
+  "bar closes at column 4, reach it from col 4"
+  (py-test-with-temp-buffer
+      "def foo():
+    def bar():
+        print(\"\")
+         "
+    (goto-char (point-max))
+    (search-backward "p")
+    (forward-line 1)
+    (forward-char 4)
+    (py-backward-def)
+    (should (looking-at "def foo():"))))
+
+(ert-deftest py-beginning-of-def-or-class-test-mjHsgR ()
+  (py-test-with-temp-buffer
+      "
+class C:
+
+    def \+
+\
+            m(self):
+        pass
+"
+    (goto-char (point-max))
+    (py-backward-def-or-class)
+    (should (looking-at "class C:"))))
+
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

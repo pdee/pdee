@@ -78,7 +78,7 @@ See also py-closing-list-dedents-bos"
     (goto-char (nth 1 pps))
     (py-compute-indentation-according-to-list-style pps))))
 
-(defun py-compute-indentation-in-list (pps line closing orig origline)
+(defun py-compute-indentation-in-list (pps line closing orig)
   (if closing
       (py-compute-indentation-closing-list pps)
     (cond ((and (not line) (looking-back py-assignment-re (line-beginning-position)))
@@ -264,7 +264,7 @@ LIEP stores line-end-position at point-of-interest
                              ;; \\='one-level-from-opener"
 
                              ;; See also py-closing-list-dedents-bos
-			     (py-compute-indentation-in-list pps line closing orig origline)
+			     (py-compute-indentation-in-list pps line closing orig)
 			   (back-to-indentation)
 			   (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep)))
 			((and (eq (char-after) (or ?\( ?\{ ?\[)) line)
@@ -303,7 +303,13 @@ LIEP stores line-end-position at point-of-interest
 			;; (car (py--clause-lookup-keyword py-elif-re -1 nil origline)))
 			((and (looking-at py-minor-clause-re) (not line)
                               (eq liep (line-end-position)))
-			 (cond ((looking-at py-outdent-re)
+
+
+			 (cond
+                          ((looking-at py-case-re)
+                           (py--backward-regexp 'py-match-re) (+ (current-indentation) py-indent-offset))
+
+                          ((looking-at py-outdent-re)
 				;; (and (py--backward-regexp 'py-block-or-clause-re) (current-indentation)))
 			       	(and (py--go-to-keyword 'py-block-or-clause-re nil nil t) (current-indentation)))
 			       ((bobp) 0)

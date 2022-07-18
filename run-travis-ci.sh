@@ -94,6 +94,7 @@ h1() {
 --eval "(setq py-install-dir \"$PDIR\")" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST1 \
 -f ert-run-tests-batch-and-exit
@@ -106,6 +107,7 @@ h2() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST2 \
 -f ert-run-tests-batch-and-exit
@@ -118,6 +120,7 @@ h3() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST3 \
 -f ert-run-tests-batch-and-exit
@@ -130,6 +133,7 @@ h4() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST4 \
 -f ert-run-tests-batch-and-exit
@@ -142,6 +146,7 @@ h5() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST5 \
 -f ert-run-tests-batch-and-exit
@@ -154,6 +159,7 @@ h6() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST6 \
 -f ert-run-tests-batch-and-exit
@@ -166,6 +172,7 @@ h7() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST7 \
 -f ert-run-tests-batch-and-exit
@@ -178,6 +185,7 @@ h8() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST8 \
 -f ert-run-tests-batch-and-exit
@@ -190,6 +198,7 @@ h9() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST9 \
 -f ert-run-tests-batch-and-exit
@@ -202,6 +211,7 @@ h10() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST10 \
 -f ert-run-tests-batch-and-exit
@@ -214,6 +224,7 @@ h11() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST11 \
 -f ert-run-tests-batch-and-exit
@@ -226,6 +237,7 @@ h12() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST12 \
 -f ert-run-tests-batch-and-exit
@@ -238,6 +250,7 @@ h13() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST13 \
 -f ert-run-tests-batch-and-exit
@@ -250,6 +263,7 @@ h14() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST14 \
 -f ert-run-tests-batch-and-exit
@@ -262,6 +276,7 @@ h15() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST15 \
 -f ert-run-tests-batch-and-exit
@@ -274,6 +289,7 @@ h16() {
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST16 \
 -f ert-run-tests-batch-and-exit
@@ -301,6 +317,7 @@ h19() {
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST19 \
 -f ert-run-tests-batch-and-exit
@@ -311,6 +328,7 @@ h20() {
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST20 \
 -f ert-run-tests-batch-and-exit
@@ -321,6 +339,7 @@ h21() {
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST21 \
 -f ert-run-tests-batch-and-exit
@@ -331,6 +350,7 @@ h22() {
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST22 \
 -f ert-run-tests-batch-and-exit
@@ -341,6 +361,7 @@ h23() {
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST23 \
 --eval "(py-in-list-indent-test-XnIq9d1)"
@@ -352,6 +373,7 @@ hierv5() {
 --eval "(setq py-debug-p nil)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST1 \
 -l $TEST2 \
@@ -375,6 +397,7 @@ extrav5() {
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
+-load $SETUP \
 -load $PYTHONMODE \
 -l $TEST16 \
 -f ert-run-tests-batch-and-exit
@@ -387,8 +410,7 @@ extra() {
 --eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
--load $PYTHONMODE \
--l $TEST16 \
+-l $TEST1 \
 -f ert-run-tests-batch-and-exit
 }
 

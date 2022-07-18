@@ -2801,6 +2801,7 @@ for options to pass to the DOCNAME interpreter. \"
 
 (defcustom py-outdent-re-raw
   (list
+   "case"
    "elif"
    "else"
    "except"
@@ -2898,6 +2899,12 @@ See `py-minor-block-re-raw' for better readable content")
 
 (defconst py-try-re "[ \t]*\\_<try\\_>[: \n\t]"
   "Matches the beginning of a `try' block.")
+
+(defconst py-case-re "[ \t]*\\_<case\\_>[: \t][^:]*:"
+  "Matches a `case' clause.")
+
+(defconst py-match-re "[ \t]*\\_<match\\_>[: \t][^:]*:"
+  "Matches a `case' clause.")
 
 (defconst py-for-re "[ \t]*\\_<\\(async for\\|for\\)\\_> +[[:alpha:]_][[:alnum:]_]* +in +[[:alpha:]_][[:alnum:]_()]* *[: \n\t]"
   "Matches the beginning of a `try' block.")
@@ -3766,7 +3773,7 @@ Return and move to match-beginning if successful"
     (let* (pps
 	   (regexpvalue (or regexpvalue (symbol-value regexp)))
 	   (indent (or indent (current-indentation)))
-	   (condition (or condition '<))
+	   (condition (or condition '<=))
 	   (orig (or orig (point))))
       (if (eq (current-indentation) (current-column))
 	  (while (and
@@ -3784,7 +3791,7 @@ Return and move to match-beginning if successful"
                        (setq pps (nth 8 (parse-partial-sexp (point-min) (point))))
                        (goto-char pps))
 		      ;; needed by py-backward-clause
-                      (and indent
+                      (and (not (eq (current-column) 0)) indent
 		      	   (funcall condition indent (current-indentation))))))
 	(back-to-indentation)
 	(and
@@ -4679,7 +4686,7 @@ Optional IGNOREINDENT: find next keyword at any indentation"
     ;;    (when (py-empty-line-p) (skip-chars-backward " \t\r\n\f"))
     (let* ((orig (point))
 	   (condition
-	    (or condition '<))
+	    (or condition (if (eq regexp 'py-clause-re) '< '<=)))
 	   ;; py-clause-re would not match block
 	   (regexp (if (eq regexp 'py-clause-re) 'py-extended-block-or-clause-re regexp))
 	   (regexpvalue (symbol-value regexp))
@@ -4688,11 +4695,13 @@ Optional IGNOREINDENT: find next keyword at any indentation"
 		;; just a big value
 		9999
 	      (or maxindent
-		  (if
-		      (or (looking-at regexpvalue) (eq 0 (current-indentation)))
-		      (current-indentation)
-		    (abs
-		     (- (current-indentation) py-indent-offset))))))
+		  ;; (if
+		  ;;     (or (looking-at regexpvalue) (eq 0 (current-indentation)))
+		  ;;     (current-indentation)
+		  ;;   (abs
+		  ;;    (- (current-indentation) py-indent-offset)))
+                  (min (current-column) (current-indentation)))))
+           (lep (line-end-position))
 	   erg)
       (unless (py-beginning-of-statement-p)
 	(py-backward-statement))
@@ -4701,6 +4710,12 @@ Optional IGNOREINDENT: find next keyword at any indentation"
 	(if (eq (point) orig)
 	    (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue))
 	  (setq erg (point))))
+       ((looking-at py-block-closing-keywords-re)
+        ;; maybe update maxindent, if already behind the form closed here
+        (unless ;; do not update if still starting line
+            (eq (line-end-position) lep)
+          (setq maxindent (min maxindent (- (current-indentation) py-indent-offset))))
+        (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue)))
        (t (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue))))
       (when erg (setq erg (cons (current-indentation) erg)))
       (list (car erg) (cdr erg) (py--end-base-determine-secondvalue regexp)))))
