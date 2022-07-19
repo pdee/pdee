@@ -63,7 +63,7 @@ class kugel(object):
     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))
     ))
 
-(ert-deftest py-ert-hide-clause-test ()
+(ert-deftest py-ert-hide-clause-test-qsv8kt ()
   (py-test-with-temp-buffer-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -85,6 +85,23 @@ class kugel(object):
     (should (string-match "overlay from 222 to 319" (prin1-to-string (car (overlays-at (point))))))
     (py-show)
     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))
+    ))
+
+
+(ert-deftest py-ert-hide-clause-test-rO7k4k ()
+  (py-test-with-temp-buffer "if 0 < treffer:
+    if 18 < treffer:
+        ausgabe[6] = treffer
+    else:
+        ausgabe[7] = treffer
+"
+    (font-lock-fontify-buffer)
+    (goto-char (point-max))
+    (search-backward "6")
+    (py-hide-clause)
+    ;; (should (search-forward "else"))
+    (should-not (string-match (prin1-to-string (car (overlays-at (point)))) "overlay from 21 to 105" ))
+    (should-not (string-match (prin1-to-string (car (overlays-at (point)))) "overlay from 21 to 65" ))
     ))
 
 (ert-deftest py-ert-hide-block-test ()

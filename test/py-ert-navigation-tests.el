@@ -6007,5 +6007,18 @@ class C:
     (py-backward-def-or-class)
     (should (looking-at "class C:"))))
 
+(ert-deftest py-forward-clause-test-NJ7sie ()
+  (py-test-with-temp-buffer-point-min
+      "if 0 < treffer:
+    if 18 < treffer:
+        ausgabe[6] = treffer
+    else:
+        ausgabe[7] = treffer
+"
+    (goto-char (point-min))
+    (search-forward "i" nil nil 2)
+    (py-forward-clause)
+    (should (looking-back "ausgabe\\[6] = treffer" (line-beginning-position) t))))
+
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

@@ -37,7 +37,7 @@ Arg REGEXP, a symbol"
 	(unless (py-beginning-of-statement-p)
 	  (py-backward-statement))
 	(let* (;; when at block-start, be specific
-	       (regexp (py--refine-regexp-maybe regexp))
+	       ;; (regexp (py--refine-regexp-maybe regexp))
                (regexpvalue (symbol-value regexp))
                ;; (regexp (or regexp (symbol-value 'py-extended-block-or-clause-re)))
 	       (repeat (if repeat (1+ repeat) 0))

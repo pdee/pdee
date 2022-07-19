@@ -3352,7 +3352,8 @@ See also `py-object-reference-face'"
 
 (defface py-object-reference-face
   '((t (:inherit py-pseudo-keyword-face)))
-  "Face when referencing object members from its class resp. method., commonly \"cls\" and \"self\""
+  "Face when referencing object members from its class resp. method.,
+commonly \"cls\" and \"self\""
   :tag "py-object-reference-face"
   :group 'python-mode)
 
@@ -4462,7 +4463,6 @@ If non-nil, return a list composed of
       erg)))
 
 (defun py-toggle-local-default-use ()
-  (interactive)
   "Toggle boolean value of `py-use-local-default'.
 
 Returns `py-use-local-default'
@@ -4470,6 +4470,7 @@ Returns `py-use-local-default'
 See also `py-install-local-shells'
 Installing named virualenv shells is the preffered way,
 as it leaves your system default unchanged."
+  (interactive)
   (setq py-use-local-default (not py-use-local-default))
   (when (called-interactively-p 'any) (message "py-use-local-default set to %s" py-use-local-default))
   py-use-local-default)
@@ -4811,6 +4812,17 @@ Return and move to match-beginning if successful"
 		    (t regexp)))
       regexp)))
 
+(defun py-forward-clause-intern (indent)
+  (end-of-line)
+  (let (last)
+    (while
+        (and
+         (py-forward-statement)
+         (save-excursion (py-backward-statement) (< indent (current-indentation)))
+         (setq last (point))
+         ))
+    (when last (goto-char last))))
+
 (defun py--down-according-to-indent (regexp secondvalue &optional indent use-regexp)
   "Return position if moved, nil otherwise.
 
@@ -4821,11 +4833,13 @@ Optional ENFORCE-REGEXP: search for regexp only."
 	   done
 	   (regexpvalue (if (member regexp (list 'py-def-re 'py-def-or-class-re 'py-class-re))
 			    (concat (symbol-value regexp) "\\|" (symbol-value 'py-decorator-re))
-			    (symbol-value regexp)))
+			  (symbol-value regexp)))
 	   (lastvalue (and secondvalue
 			   (pcase regexp
 			     (`py-try-re py-finally-re)
 			     (`py-if-re py-else-re)))))
+      (if (eq regexp 'py-clause-re)
+          (py-forward-clause-intern indent)
       (while
 	  (and
 	   (not done)
@@ -4841,8 +4855,8 @@ Optional ENFORCE-REGEXP: search for regexp only."
 	       (and (looking-at regexpvalue) (setq done t))
 	       ;; py-forward-def-or-class-test-3JzvVW
 	       ;; (setq done t)
-	       )))
-      (and (< orig (point)) (point)))))
+               )))
+      (and (< orig (point)) (point))))))
 
 (defun py--backward-empty-lines-or-comment ()
   "Travel backward"

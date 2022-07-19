@@ -229,8 +229,8 @@ of the first definition found."
     (nreverse index-alist)))
 
 (defun py--imenu-create-index-new (&optional beg end)
-  (interactive)
   "`imenu-create-index-function' for Python. "
+  (interactive)
   (set (make-local-variable 'imenu-max-items) py-imenu-max-items)
   (let ((orig (point))
         (beg (or beg (point-min)))
