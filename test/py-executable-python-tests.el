@@ -142,9 +142,13 @@ print()"
     (ipython3)
     (sit-for 1)
     (should (buffer-live-p (get-buffer "*Python Output*")))
+    (sit-for 0.1)
     (should (not (buffer-live-p (get-buffer "*Python3*<2>"))))
+    (sit-for 0.1)
     (should (not (buffer-live-p (get-buffer "*IPython3*<2>"))))
+    (sit-for 0.1)
     (should (not (buffer-live-p (get-buffer "*Python3*"))))
+    (sit-for 0.1) 
     (should (not (buffer-live-p (get-buffer "*IPython3*"))))
     ))
 
