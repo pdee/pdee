@@ -524,5 +524,15 @@ x = {'abc':'def',
       (should (eq (char-before) ?f))
       )))
 
+(ert-deftest py-compute-indentation-crasher-breaks-editing-136-HUiwu9 ()
+  (py-test-with-temp-buffer
+      "def my_func(self):
+    this_line() # is bad
+"
+    (goto-char (point-max))
+    (search-backward "#")
+    (py-electric-backspace)
+    (should (eq (char-before) 41))))
+
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here
