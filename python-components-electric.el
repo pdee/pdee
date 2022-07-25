@@ -183,7 +183,7 @@ At no-whitespace character, delete one before point.
   (interactive "*P")
   (unless (bobp)
     (let ((backward-delete-char-untabify-method 'untabify)
-	  (indent (py-compute-indentation))
+	  indent
 	  done)
       (cond
        ;; electric-pair-mode
@@ -208,6 +208,7 @@ At no-whitespace character, delete one before point.
 	(backward-delete-char-untabify 1))
        ;; before code
        ((looking-back "^[ \t]+" (line-beginning-position))
+        (setq indent (py-compute-indentation))
 	(cond ((< indent (current-indentation))
 	       (back-to-indentation)
 	       (delete-region (line-beginning-position) (point))

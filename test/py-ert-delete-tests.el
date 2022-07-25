@@ -528,6 +528,9 @@ x = {'abc':'def',
   (py-test-with-temp-buffer
       "def my_func(self):
     this_line() # is bad
+
+    if condition:
+        pass
 "
     (goto-char (point-max))
     (search-backward "#")

@@ -964,5 +964,17 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (goto-char(point-max))
     (should (eq 5 (py-compute-indentation)))))
 
+(ert-deftest py-compute-indent-crasher-136-i1nySM ()
+  (py-test-with-temp-buffer
+      "def my_func(self):
+    this_line() # is bad
+
+    if condition:
+        pass
+"
+    (goto-char (point-max))
+    (search-backward "#")
+    (should (eq 4  (py-compute-indentation)))))
+
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here
