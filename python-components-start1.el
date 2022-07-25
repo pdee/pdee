@@ -807,6 +807,10 @@ Default is t - keep relative position."
 (defcustom py-indent-list-style 'line-up-with-first-element
   "Sets the basic indentation style of lists.
 
+The term ‘list’ here is seen from Emacs Lisp editing purpose.
+A list symbolic expression means everything delimited by
+brackets, parentheses or braces.
+
 Setting here might be ignored in case of canonical indent.
 
 `line-up-with-first-element' indents to 1+ column
@@ -814,6 +818,12 @@ of opening delimiter
 
 def foo (a,
          b):
+
+but ‘one-level-to-beginning-of-statement’ in case of EOL at list-start
+
+def foo (
+    a,
+    b):
 
 `one-level-to-beginning-of-statement' adds
 `py-indent-offset' to beginning

@@ -60,7 +60,19 @@ See also py-closing-list-dedents-bos"
     (current-indentation))
    (t (pcase py-indent-list-style
         (`line-up-with-first-element
-         (1+ (current-column)))
+         (if (and (eq (car (syntax-after (point))) 4) (save-excursion (forward-char 1) (eolp)))
+             ;; asdf = {
+             ;;     'a':{
+             ;;          'b':3,
+             ;;          'c':4"
+             ;;
+             ;; b is at col 9
+             ;; (+ (current-indentation) py-indent-offset) would yield 8
+             ;; EOL-case dedent starts if larger at least 2
+             (cond ((< 1 (- (1+ (current-column))(+ (current-indentation) py-indent-offset)))
+                   (min (+ (current-indentation) py-indent-offset)(1+ (current-column))))
+                   (t (1+ (current-column))))
+           (1+ (current-column))))
         (`one-level-to-beginning-of-statement
          (+ (current-indentation) py-indent-offset))
         (`one-level-from-first-element
