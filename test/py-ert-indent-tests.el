@@ -976,5 +976,17 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "#")
     (should (eq 4  (py-compute-indentation)))))
 
+(ert-deftest bug-56742-indendation-problem-after-comment-hOliT8 ()
+  (py-test-with-temp-buffer
+    "def test(n):
+    if n < 0:
+        return -1
+    # test
+    else:
+        return 0"
+    (goto-char (point-max))
+    (search-backward "else")
+    (should (eq 4  (current-indentation)))))
+
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here
