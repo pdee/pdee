@@ -988,5 +988,27 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "else")
     (should (eq 4  (current-indentation)))))
 
+(ert-deftest match-case-indent-137-XVkUIJ ()
+  (py-test-with-temp-buffer
+      "def http_error(status):
+    match status:
+    case 400:
+        return \"Bad request\"
+"
+    (goto-char (point-max))
+    (search-backward "case")
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest match-case-indent-137-b1Kuye ()
+  (py-test-with-temp-buffer
+      "def http_error(status):
+    match status:
+        case 400:
+        return \"Bad request\"
+"
+    (goto-char (point-max))
+    (search-backward "return")
+    (should (eq 12 (py-compute-indentation)))))
+
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here

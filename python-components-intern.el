@@ -318,7 +318,7 @@ LIEP stores line-end-position at point-of-interest
 
 		    (cond
                      ((looking-at py-case-re)
-                      (py--backward-regexp 'py-match-re) (+ (current-indentation) py-indent-offset))
+                      (py--backward-regexp 'py-match-case-re) (+ (current-indentation) py-indent-offset))
                      ((looking-at py-outdent-re)
 		      ;; (and (py--backward-regexp 'py-block-or-clause-re) (current-indentation)))
 		      (and (py--go-to-keyword 'py-block-or-clause-re (current-indentation) '< t) (current-indentation)))

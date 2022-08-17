@@ -287,7 +287,8 @@ print()"
       "#! /usr/bin/env python3
 print()"
     (let ((py-python-edit-version ""))
-      (beginning-of-line)
+      (goto-char (point-max)) 
+      (search-backward "print")
       (sit-for 0.1)
       (should (eq (face-at-point) 'py-builtins-face)))))
 
