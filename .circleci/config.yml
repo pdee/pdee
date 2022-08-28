@@ -28,7 +28,7 @@ jobs:
             --eval "(setq python-indent-guess-indent-offset nil)" \
             --eval "(setq python-indent-guess-indent-offset-verbose nil)" \
             --eval "(add-to-list 'load-path (getenv \"PWD\"))" \
-            --eval "(load \"/root/pdee/test/thing-at-point-utils-setup-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-setup-ert-tests.el\")" \
             --eval "(setq py-debug-p nil)" \
             --eval "(sit-for 1)" \
             -f ert-run-tests-batch-and-exit
