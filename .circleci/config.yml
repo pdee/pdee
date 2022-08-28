@@ -28,6 +28,7 @@ jobs:
             --eval "(setq python-indent-guess-indent-offset nil)" \
             --eval "(setq python-indent-guess-indent-offset-verbose nil)" \
             --eval "(add-to-list 'load-path (getenv \"PWD\"))" \
+            --eval "(load \"/root/pdee/python-components-mode.el\")" \
             --eval "(load \"/root/pdee/test/py-setup-ert-tests.el\")" \
             --eval "(setq py-debug-p nil)" \
             --eval "(load \"/root/pdee/test/py-ert-indent-tests.el\")" \
