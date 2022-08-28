@@ -1,0 +1,40 @@
+version: 2.1
+
+aktion:
+  echo "Gebe Umgebung aus" 
+  ls -lart
+
+jobs:
+  pdee:
+    docker:
+      # - image: ubuntu-2004:202010-01
+      - image: silex/emacs:27.2
+    working_directory: ~/pdee
+    steps:
+      - run: apt update && apt install -y git ssh emacs
+      - checkout
+      - run:
+          name: Umgebung
+          command:
+            echo "Gebe Umgebung aus"; ls -lart
+
+      - run:
+          name: ERT tests
+          command: |
+            emacs -Q --batch \
+            --eval "(message (emacs-version))" \
+            --eval "(message (getenv \"PWD\"))" \
+            --eval "(setq python-indent-offset 4)" \
+            --eval "(setq python-indent-guess-indent-offset nil)" \
+            --eval "(setq python-indent-guess-indent-offset-verbose nil)" \
+            --eval "(add-to-list 'load-path (getenv \"PWD\"))" \
+            --eval "(load \"/root/pdee/test/thing-at-point-utils-setup-tests.el\")" \
+            --eval "(setq py-debug-p nil)" \
+            --eval "(sit-for 1)" \
+            -f ert-run-tests-batch-and-exit
+
+
+workflows:
+  pdee-workflow:
+    jobs:
+      - pdee  
