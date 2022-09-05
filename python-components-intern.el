@@ -289,7 +289,9 @@ LIEP stores line-end-position at point-of-interest
                           (py--fetch-indent-line-above orig)
 			(if (looking-at "from +\\([^ \t\n]+\\) +import")
 			    py-backslashed-lines-indent-offset
-                          (+ (current-indentation) py-continuation-offset)))))
+                          (if (< 20 (line-end-position))
+                              8
+                          (+ (current-indentation) py-continuation-offset))))))
 		   ((and (looking-at py-block-closing-keywords-re)
                          (eq liep (line-end-position)))
 		    (skip-chars-backward "[ \t\r\n\f]")
