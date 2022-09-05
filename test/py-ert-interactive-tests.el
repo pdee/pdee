@@ -287,7 +287,7 @@ print()"
       "#! /usr/bin/env python3
 print()"
     (let ((py-python-edit-version ""))
-      (goto-char (point-max)) 
+      (goto-char (point-max))
       (search-backward "print")
       (sit-for 0.1)
       (should (eq (face-at-point) 'py-builtins-face)))))
@@ -763,7 +763,6 @@ import os"
     (goto-char (point-max))
     (should (py-execute-import-or-reload))))
 
-
 (ert-deftest py-master-file-not-honored-lp-794850-test-P6QZmU ()
   (py-test-with-temp-buffer
 
@@ -815,6 +814,19 @@ def baz():
       (search-forward "\"\"\"")
       (forward-line -1)
       (should (not (py-empty-line-p))))))
+
+(ert-deftest py-run-python-test-QDE84k ()
+  "Test built-in python.el."
+  (let ((python-indend-offset 4))
+    (run-python)
+    (should (buffer-live-p (get-buffer "*Python*")))))
+
+(ert-deftest py--pdb-versioned-test-Ft0557-OoVDWm ()
+  (let ((py-shell-name "python3"))
+    (py-test-with-temp-buffer
+	""
+      (goto-char (point-max))
+      (should (string= "pdb3" (py--pdb-versioned))))))
 
 (provide 'py-ert-interactive-tests)
 ;;; py-ert-interactive-tests.el ends here

@@ -976,7 +976,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "#")
     (should (eq 4  (py-compute-indentation)))))
 
-(ert-deftest bug-56742-indendation-problem-after-comment-hOliT8 ()
+(ert-deftest py-bug-56742-indendation-problem-after-comment-hOliT8 ()
   (py-test-with-temp-buffer
     "def test(n):
     if n < 0:
@@ -988,7 +988,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "else")
     (should (eq 4  (current-indentation)))))
 
-(ert-deftest match-case-indent-137-XVkUIJ ()
+(ert-deftest py-match-case-indent-137-XVkUIJ ()
   (py-test-with-temp-buffer
       "def http_error(status):
     match status:
@@ -999,7 +999,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "case")
     (should (eq 8 (py-compute-indentation)))))
 
-(ert-deftest match-case-indent-137-b1Kuye ()
+(ert-deftest py-match-case-indent-137-b1Kuye ()
   (py-test-with-temp-buffer
       "def http_error(status):
     match status:
@@ -1009,6 +1009,18 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (goto-char (point-max))
     (search-backward "return")
     (should (eq 12 (py-compute-indentation)))))
+
+(ert-deftest py-emacs-bug-57262-indent-test-8iPIh0 ()
+  (py-test-with-temp-buffer
+      "for long_variable_name \\
+        in (1, 2):
+    print(long_variable_name)
+"
+    (goto-char (point-max))
+    (search-backward "print")
+    (should (eq 4 (py-compute-indentation)))
+    (search-backward "in")
+    (should (eq 8 (py-compute-indentation)))))
 
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here

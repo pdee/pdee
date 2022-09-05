@@ -81,6 +81,7 @@ TEST17=$TESTDIR/py-split-window-on-execute-test
 TEST18=$TESTDIR/py-split-just-two-window-on-execute-test.el
 TEST19=$TESTDIR/py-ert-interactive-tests.el
 TEST20=$HOME/emacs/test/lisp/progmodes/python-tests.el
+TEST21=$TESTDIR/py-ert-ipython-tests.el
 
 echo "\$EMACS: $EMACS"
 
@@ -459,6 +460,7 @@ hier() {
 -l $TEST13 \
 -l $TEST16 \
 -l $TEST19 \
+-l $TEST21 \
 -f ert-run-tests-batch-and-exit
 }
 

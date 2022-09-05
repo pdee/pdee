@@ -394,10 +394,9 @@ See also `py--bounds-of-statements'"
       (setq beg (line-beginning-position))
       ;; look upward first
       (while (and
-              (progn
-                (unless (py--beginning-of-statement-p)
+              (or 
+                (py--beginning-of-statement-p)
                   (py-backward-statement))
-                (line-beginning-position))
               (py-backward-statement)
               (not (py--beginning-of-block-p))
               (eq (current-indentation) orig-indent))

@@ -173,21 +173,12 @@ GeomSim."
     ;; (sit-for 0.1)
     (should (eq (char-before) ?.))))
 
-(ert-deftest py--pdb-versioned-test-Ft0557-OoVDWm ()
-  (let ((py-shell-name "python3"))
-    (py-test-with-temp-buffer
-	""
-      (goto-char (point-max))
-      (should (string= "pdb3" (py--pdb-versioned))))))
-
 (ert-deftest py--pdb-versioned-test-QoHSpJ-oNuvXf ()
   (let ((py-shell-name "python"))
     (py-test-with-temp-buffer
 	""
       (goto-char (point-max))
       (should (string= "pdb" (py--pdb-versioned))))))
-
-
 
 (ert-deftest py-ert-copy-indent-test-UbzMto ()
   (py-test-with-temp-buffer-point-min
@@ -313,27 +304,6 @@ GeomSim."
     (call-interactively 'ipython)
     (should (buffer-live-p (get-buffer "*IPython*")))
     (py-kill-buffer-unconditional (get-buffer "*IPython*"))))
-
-(ert-deftest py-run-python-test-QDE84k ()
-  "Test built-in python.el."
-  (let ((python-indend-offset 4))
-    (run-python)
-    (should (buffer-live-p (get-buffer "*Python*")))))
-
-(ert-deftest py-honor-py-python-command-7JbtYW ()
-  (py-test-with-temp-buffer
-      "print(123)"
-    (let ((py-python-command "ipython3")
-	  (py-return-result-p t))
-      (py-execute-buffer)
-      (should (buffer-live-p (get-buffer  "*IPython3*")))
-      (should (string= "123" py-result)))))
-
-(ert-deftest py-honor-py-python-command-kroygP ()
-  (py-test-with-temp-buffer
-      "print(123)"
-    (let ((py-python-command "ipython3"))
-      (py-shell))))
 
 (ert-deftest py-buffer-check-7JbtYW ()
   (with-temp-buffer
