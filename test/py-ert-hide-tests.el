@@ -193,5 +193,29 @@ class kugel(object):
     (py-show)
     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
 
+(ert-deftest py-ert-hide-block-test-dTRpuQ ()
+  (py-test-with-temp-buffer
+      "def f(first, second):
+
+    if first    == 1:
+        return 11
+    elif first  == 2:
+        return 22
+
+    if second   == 12:
+        return 211
+    elif second == 22:
+        return 244
+    else:
+        return 25
+"
+    (goto-char (point-max))
+    (should (search-backward "else"))
+    (py-hide-block)
+    (should (string-match "overlay from 109 to 216" (prin1-to-string (car (overlays-at (point))))))
+
+    ))
+
+
 (provide 'py-ert-hide-tests)
 ;;; py-ert-hide-tests.el ends here

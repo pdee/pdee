@@ -1534,6 +1534,33 @@ else:
     (py-backward-block)
     (should (eq (char-after) ?i))))
 
+(ert-deftest py-backward-block-test-yxzNay ()
+  (py-test-with-temp-buffer
+      "def f(first, second):
+    if first == 1:
+        return 11
+    elif first == 2:
+        return 22
+"
+    (goto-char (point-max))
+    (search-backward "ret")
+    (py-backward-block)
+    (should (eq (char-after) ?i))))
+
+(ert-deftest py-backward-block-test-y0Urin ()
+  (py-test-with-temp-buffer
+      "def f(first, second):
+    if first == 1:
+        return 11
+    elif first == 2:
+        return 22
+"
+    (goto-char (point-max))
+    (search-backward "elif")
+    (beginning-of-line) 
+    (py-backward-block)
+    (should (eq (char-after) ?i))))
+
 (ert-deftest py-forward-def-or-class-test-C3L8jg ()
   (py-test-with-temp-buffer-point-min
       "def find_function(funcname, filename):

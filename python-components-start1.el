@@ -4699,7 +4699,7 @@ Optional IGNOREINDENT: find next keyword at any indentation"
     ;;    (when (py-empty-line-p) (skip-chars-backward " \t\r\n\f"))
     (let* ((orig (point))
 	   (condition
-	    (or condition (if (eq regexp 'py-clause-re) '< '<=)))
+	    (or condition (if (member regexp (list 'py-block-re 'py-clause-re)) '< '<=)))
 	   ;; py-clause-re would not match block
 	   (regexp (if (eq regexp 'py-clause-re) 'py-extended-block-or-clause-re regexp))
 	   (regexpvalue (symbol-value regexp))
@@ -4708,12 +4708,9 @@ Optional IGNOREINDENT: find next keyword at any indentation"
 		;; just a big value
 		9999
 	      (or maxindent
-		  ;; (if
-		  ;;     (or (looking-at regexpvalue) (eq 0 (current-indentation)))
-		  ;;     (current-indentation)
-		  ;;   (abs
-		  ;;    (- (current-indentation) py-indent-offset)))
-                  (min (current-column) (current-indentation)))))
+                  ;; (min (current-column) (current-indentation))
+                  (if (py-empty-line-p) (current-column) (current-indentation))
+                  )))
            (lep (line-end-position))
 	   erg)
       (unless (py-beginning-of-statement-p)
