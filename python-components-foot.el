@@ -375,6 +375,10 @@ may want to re-add custom functions to it using the
 (defalias 'py-hungry-delete-forward 'c-hungry-delete-forward)
 (defalias 'py-hungry-delete-backwards 'c-hungry-delete-backwards)
 
+;; https://gitlab.com/python-mode-devs/python-mode/-/issues/105#note_1095808557
+(puthash "python-"
+         (append (gethash "python" definition-prefixes) '("python-mode"))
+         definition-prefixes)
 ;;;
 (provide 'python-components-foot)
 
