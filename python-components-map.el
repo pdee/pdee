@@ -79,6 +79,7 @@ Default is t")
         (define-key map [(control meta h)] 'py-mark-def-or-class)
         (define-key map [(control c) (control k)] 'py-mark-block-or-clause)
         (define-key map [(control c) (.)] 'py-expression)
+        (define-key map [(control c) (?,)] 'py-partial-expression)
         ;; Miscellaneous
         ;; (define-key map [(super q)] 'py-copy-statement)
         (define-key map [(control c) (control d)] 'py-pdbtrack-toggle-stack-tracking)

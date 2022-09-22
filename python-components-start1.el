@@ -2669,15 +2669,17 @@ Remember source buffer where error might occur.")
 (defvar py-not-expression-chars " #\t\r\n\f"
   "Chars indicated probably will not compose a `py-expression'.")
 
-(defvar py-partial-expression-backward-chars "^] .=,\"'()[{}:#\t\r\n\f"
-  "Chars indicated possibly compose a `py-partial-expression', skip it.")
-;; (setq py-partial-expression-backward-chars "^] .=,\"'()[{}:#\t\r\n\f")
+;; (defvar py-partial-expression-stop-backward-chars "^] .=,\"'()[{}:#\t\r\n\f"
+(defvar py-partial-expression-stop-backward-chars "^] .=,\"'()[{}:#\t\r\n\f"
+    "Chars indicated which not possibly compose a `py-partial-expression',
+stop at it.")
+;; (setq py-partial-expression-stop-backward-chars "^] .=,\"'()[{}:#\t\r\n\f")
 
 (defvar py-partial-expression-forward-chars "^ .\"')}]:#\t\r\n\f")
 ;; (setq py-partial-expression-forward-chars "^ .\"')}]:#\t\r\n\f")
 
-(defvar py-partial-expression-re (concat "[" py-partial-expression-backward-chars (substring py-partial-expression-forward-chars 1) "]+"))
-(setq py-partial-expression-re (concat "[" py-partial-expression-backward-chars "]+"))
+(defvar py-partial-expression-re (concat "[" py-partial-expression-stop-backward-chars (substring py-partial-expression-forward-chars 1) "]+"))
+(setq py-partial-expression-re (concat "[" py-partial-expression-stop-backward-chars "]+"))
 
 (defvar py-statement-re py-partial-expression-re)
 (defvar py-indent-re ".+"

@@ -24,20 +24,36 @@
 
 (require 'py-setup-ert-tests)
 
-(ert-deftest py-partial-expression-test-1-2JmcBn ()
+(ert-deftest py-partial-expression-test-2JmcBn ()
   (py-test-with-temp-buffer-point-min
       "foo=1"
     (goto-char (point-min))
     (and (should (string= "foo" (py-partial-expression)))
 	 (py-kill-buffer-unconditional (current-buffer)))))
 
-(ert-deftest py-partial-expression-test-2-yS2wLf ()
+(ert-deftest py-partial-expression-test-yS2wLf ()
   (py-test-with-temp-buffer-point-min
       "print(root.getchildren()[0])"
     (goto-char (point-min))
     (search-forward "getchildren")
     (and (should (string= "getchildren()[0]" (py-partial-expression)))
 	 (py-kill-buffer-unconditional (current-buffer)))))
+
+(ert-deftest py-partial-expression-test-TmqVoM ()
+  (py-test-with-temp-buffer-point-min
+      "print(root.getchildren()[0])"
+    (goto-char (point-min))
+    (search-forward "ro")
+    (and (should (string= "root" (py-partial-expression)))
+	 (py-kill-buffer-unconditional (current-buffer)))))
+
+
+(ert-deftest py-partial-expression-test-HS6qOA ()
+  (py-test-with-temp-buffer
+      "def __init__(self):"
+    (goto-char (point-max))
+    (search-backward "_")
+    (should (string= "__init__" (py-partial-expression)))))
 
 (ert-deftest py-ert-which-def-or-class-test-1-0u94OU ()
   (py-test-with-temp-buffer-point-min
