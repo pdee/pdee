@@ -294,7 +294,7 @@ class bar:
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-partial-expression)
-    (should (eq (char-after) ?r))))
+    (should (eq (char-after) ?a))))
 
 (ert-deftest py-ert-beginning-of-block-bol-test ()
   (py-test-with-temp-buffer

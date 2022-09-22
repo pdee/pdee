@@ -697,9 +697,6 @@
 (ert-deftest py-ert-output-buffer-test-XQWHzv ()
   (should (boundp 'py-output-buffer)))
 
-(ert-deftest py-ert-partial-expression-backward-chars-test-59bP9v ()
-  (should (boundp 'py-partial-expression-backward-chars)))
-
 (ert-deftest py-ert-partial-expression-forward-chars-test-bcP0Hw ()
   (should (boundp 'py-partial-expression-forward-chars)))
 

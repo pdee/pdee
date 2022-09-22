@@ -252,8 +252,7 @@ REPEAT - count and consider repeats"
 (defun py-backward-partial-expression ()
   "Backward partial-expression."
   (interactive)
-  (let ((orig (point))
-	erg)
+  (let ((orig (point)))
     (and (< 0 (abs (skip-chars-backward " \t\r\n\f")))(not (bobp))(forward-char -1))
     (when (py--in-comment-p)
       (py-backward-comment)
@@ -263,12 +262,11 @@ REPEAT - count and consider repeats"
       (forward-char -1))
     (skip-chars-backward py-partial-expression-stop-backward-chars)
     (when (< 0 (abs (skip-chars-backward py-partial-expression-stop-backward-chars)))
-      (while (and (not (bobp)) (py--in-comment-p)(< 0 (abs (skip-chars-backward py-partial-expression-stop-backward-chars))))))
+      (while (and (not (bobp)) (py--in-comment-p) (< 0 (abs (skip-chars-backward py-partial-expression-stop-backward-chars))))))
     (when (< (point) orig)
       (unless
 	  (and (bobp) (member (char-after) (list ?\ ?\t ?\r ?\n ?\f)))
-	(setq erg (point))))
-    erg))
+	(point)))))
 
 (defun py-forward-partial-expression ()
   "Forward partial-expression.
