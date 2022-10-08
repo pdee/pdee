@@ -364,16 +364,21 @@ See lp:1066489 "
 	(newline 1)
 	))))
 
-(defun py--fill-paragraph-in-docstring (beg)
+(defun py--fill-paragraph-in-docstring (beg &optional done)
   ;; (goto-char innerbeg)
   (let* ((fill-column (- fill-column (current-indentation)))
 	 (parabeg (max beg (py--beginning-of-paragraph-position)))
-	 (paraend (copy-marker (py--end-of-paragraph-position))))
+	 (paraend (copy-marker (py--end-of-paragraph-position)))
+         (done done))
     ;; if paragraph is a substring, take it
     (goto-char parabeg)
-    (py--fill-docstring-first-line parabeg paraend)
-    (unless (or (< paraend (point))(eobp))
-      (py--fill-paragraph-in-docstring (point)))))
+    (unless done (py--fill-docstring-first-line parabeg paraend))
+    (end-of-line) 
+    (skip-chars-forward " \t\r\n\f")
+    (unless (or 
+             ;; (< paraend (point))
+             (eobp))
+      (py--fill-paragraph-in-docstring (point) t))))
 
 (defun py--fill-docstring (justify style docstring orig py-current-indent &optional beg end)
   ;; Delete spaces after/before string fencge

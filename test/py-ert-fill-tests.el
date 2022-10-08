@@ -212,5 +212,38 @@ def foo(rho, x):
     (call-interactively 'fill-paragraph)
     (should (eq 4 (current-indentation)))))
 
+(ert-deftest filling-docstring-paragraphs-gibberish-140-test-DqgSN7 ()
+  (py-test-with-temp-buffer
+      "def _bless_my_loader(module_globals):
+    \"\"\"Helper function implementing the current module loader policy\.
+
+    In Python 3\.14, the end state is to require and use the module's
+    __spec__\.loader and ignore any __loader__ attribute on the
+    module\.
+
+   * If you have a __loader__ and a __spec__\.loader but they are not the
+     same, in Python 3\.12 we issue a DeprecationWarning and fall back to
+     __loader__ for backward compatibility\.  In Python 3\.14, we'll flip
+     this case to ignoring __loader__ entirely, without error\.
+
+   * If you do not have a __spec__ or __spec__\.loader, we also issue a
+     DeprecationWarning and fall back to __loader__\.  In Python 3\.14,
+     we'll make this case fail with an AttributeError, and ignore
+     __loader__\.
+
+   * In Python 3\.12 and beyond, if you do not have a __loader__, we don't
+     care as long as you still have a __spec__\.loader, otherwise you get
+     an AttributeError, telling you to add a __spec__\.loader\.
+
+    See GH#97850 for details\.
+    \"\"\"
+    pass"
+    (let ((py-docstring-style 'pep-257-nn))
+      (goto-char (point-max))
+      (search-backward "attribute")
+      (fill-paragraph)
+
+)))
+
 (provide 'py-ert-fill-tests)
 ;;; py-ert-fill-tests.el ends here
