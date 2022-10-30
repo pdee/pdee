@@ -437,6 +437,7 @@ $EMACS -Q -L . --batch \
 -f ert-run-tests-batch-and-exit
 }
 
+#  -l $TEST12 \
 hier() {
     date; $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
@@ -456,7 +457,6 @@ hier() {
 -l $TEST9 \
 -l $TEST10 \
 -l $TEST11 \
--l $TEST12 \
 -l $TEST13 \
 -l $TEST16 \
 -l $TEST19 \

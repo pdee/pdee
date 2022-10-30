@@ -99,20 +99,23 @@ Travel this INDENT forward"
     (setq erg (py-forward-statement))
     erg))
 
-(defun py-forward-indent ()
+(defun py-forward-indent (&optional stop-at-empty-line)
   "Go to the end of a section of equal indentation.
 
 If already at the end, go down to next indent in buffer
 Returns final position when moved, nil otherwise"
-  (interactive)
+  (interactive "P")
+  (skip-chars-forward " \t\r\n\f") 
   (let (done
 	(orig (line-beginning-position))
 	(indent (current-indentation))
 	(last (progn (back-to-indentation) (point))))
     (while (and (not (eobp)) (not done)
-		(progn (forward-line 1) (back-to-indentation) (or (py-empty-line-p) (and (<= indent (current-indentation))(< last (point))))))
+		(progn (forward-line 1) (back-to-indentation) (or (and (py-empty-line-p)(not stop-at-empty-line)) (and (<= indent (current-indentation))(< last (point))))))
       (unless (py-empty-line-p) (skip-chars-forward " \t\r\n\f")(setq last (point)))
-      (and (not (py-empty-line-p))(< (current-indentation) indent)(setq done t)))
+      (when (or (and (py-empty-line-p)stop-at-empty-line) (and (not (py-empty-line-p))(< (current-indentation) indent)))
+                 (setq done t))
+      )
     (goto-char last)
     (end-of-line)
     (skip-chars-backward " \t\r\n\f")

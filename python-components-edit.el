@@ -656,7 +656,7 @@ Returns the string inserted."
   (delete-region py--docbeg py--docend)
   (insert-buffer-substring py-edit-buffer))
 
-(defun py-edit--intern (buffer-name mode &optional beg end prefix suffix action)
+(defun py-edit--intern (buffer-name mode &optional beg end prefix suffix)
   "Edit string or active region in `python-mode'.
 
 arg BUFFER-NAME: a string.
@@ -667,9 +667,8 @@ arg MODE: which buffer-mode used in edit-buffer"
       (window-configuration-to-register py--edit-register)
       (setq py--oldbuf (current-buffer))
       (let* ((orig (point))
-	     (bounds (or (and beg end)(py--edit-set-vars)))
-	     relpos editstrg
-	     erg)
+	     (bounds (or (and beg end) (py--edit-set-vars)))
+	     relpos editstrg)
 	(setq py--docbeg (or beg (car bounds)))
 	(setq py--docend (or end (cdr bounds)))
 	;; store relative position in editstrg
@@ -682,10 +681,6 @@ arg MODE: which buffer-mode used in edit-buffer"
 	(insert editstrg)
 	(when suffix (insert suffix))
 	(funcall mode)
-	(when action
-	  (setq erg (funcall action))
-	  (erase-buffer)
-	  (insert erg))
 	(local-set-key [(control c) (control c)] 'py--write-edit)
 	(goto-char relpos)
 	(message "%s" "Type C-c C-c writes contents back")))))

@@ -856,41 +856,41 @@
 (ert-deftest py-ert-delete-minor-block-functionp-test-cjBlON ()
   (should (functionp 'py-delete-minor-block)))
 
-(ert-deftest py-ert-fill-string-django-functionp-test-quCIFx ()
-  (should (functionp 'py-fill-string-django)))
+;; (ert-deftest py-ert-fill-string-django-functionp-test-quCIFx ()
+;;   (should (functionp 'py-fill-string-django)))
 
-(ert-deftest py-ert-fill-string-onetwo-functionp-test-Ibzpwh ()
-  (should (functionp 'py-fill-string-onetwo)))
+;; (ert-deftest py-ert-fill-string-onetwo-functionp-test-Ibzpwh ()
+;;   (should (functionp 'py-fill-string-onetwo)))
 
-(ert-deftest py-ert-fill-string-pep-257-functionp-test-aygrm1 ()
-  (should (functionp 'py-fill-string-pep-257)))
+;; (ert-deftest py-ert-fill-string-pep-257-functionp-test-aygrm1 ()
+;;   (should (functionp 'py-fill-string-pep-257)))
 
-(ert-deftest py-ert-fill-string-pep-257-nn-functionp-test-yqP98K ()
-  (should (functionp 'py-fill-string-pep-257-nn)))
+;; (ert-deftest py-ert-fill-string-pep-257-nn-functionp-test-yqP98K ()
+;;   (should (functionp 'py-fill-string-pep-257-nn)))
 
-(ert-deftest py-ert-fill-string-symmetric-functionp-test-AveTXu ()
-  (should (functionp 'py-fill-string-symmetric)))
+;; (ert-deftest py-ert-fill-string-symmetric-functionp-test-AveTXu ()
+;;   (should (functionp 'py-fill-string-symmetric)))
 
-(ert-deftest py-ert-set-nil-docstring-style-functionp-test-gF1gJe ()
-  (should (functionp 'py-set-nil-docstring-style)))
+;; (ert-deftest py-ert-set-nil-docstring-style-functionp-test-gF1gJe ()
+;;   (should (functionp 'py-set-nil-docstring-style)))
 
-(ert-deftest py-ert-set-pep-257-nn-docstring-style-functionp-test-eouNvY ()
-  (should (functionp 'py-set-pep-257-nn-docstring-style)))
+;; (ert-deftest py-ert-set-pep-257-nn-docstring-style-functionp-test-eouNvY ()
+;;   (should (functionp 'py-set-pep-257-nn-docstring-style)))
 
-(ert-deftest py-ert-set-pep-257-docstring-style-functionp-test-M3JGeI ()
-  (should (functionp 'py-set-pep-257-docstring-style)))
+;; (ert-deftest py-ert-set-pep-257-docstring-style-functionp-test-M3JGeI ()
+;;   (should (functionp 'py-set-pep-257-docstring-style)))
 
-(ert-deftest py-ert-set-django-docstring-style-functionp-test-qqo0Xr ()
-  (should (functionp 'py-set-django-docstring-style)))
+;; (ert-deftest py-ert-set-django-docstring-style-functionp-test-qqo0Xr ()
+;;   (should (functionp 'py-set-django-docstring-style)))
 
-(ert-deftest py-ert-set-symmetric-docstring-style-functionp-test-gHuvOc ()
-  (should (functionp 'py-set-symmetric-docstring-style)))
+;; (ert-deftest py-ert-set-symmetric-docstring-style-functionp-test-gHuvOc ()
+;;   (should (functionp 'py-set-symmetric-docstring-style)))
 
-(ert-deftest py-ert-set-onetwo-docstring-style-functionp-test-eYonDX ()
-  (should (functionp 'py-set-onetwo-docstring-style)))
+;; (ert-deftest py-ert-set-onetwo-docstring-style-functionp-test-eYonDX ()
+;;   (should (functionp 'py-set-onetwo-docstring-style)))
 
-(ert-deftest py-ert-fill-comment-functionp-test-yq3wtI ()
-  (should (functionp 'py-fill-comment)))
+;; (ert-deftest py-ert-fill-comment-functionp-test-yq3wtI ()
+;;   (should (functionp 'py-fill-comment)))
 
 (ert-deftest py-ert-fill-labelled-string-functionp-test-ysNVft ()
   (should (functionp 'py-fill-labelled-string)))
@@ -904,23 +904,23 @@
 (ert-deftest py-ert--fill-fix-end-functionp-test-M5IhuJ ()
   (should (functionp 'py--fill-fix-end)))
 
-(ert-deftest py-ert--fill-docstring-base-functionp-test-IpZrbu ()
-  (should (functionp 'py--fill-docstring-base)))
+;; (ert-deftest py-ert--fill-docstring-final-functionp-test-IpZrbu ()
+;;   (should (functionp 'py--fill-docstring-final)))
 
-(ert-deftest py-ert--fill-docstring-last-line-functionp-test-muOXPe ()
-  (should (functionp 'py--fill-docstring-last-line)))
+;; (ert-deftest py-ert--fill-docstring-last-line-functionp-test-muOXPe ()
+;;   (should (functionp 'py--fill-docstring-last-line)))
 
-(ert-deftest py-ert--fill-docstring-first-line-functionp-test-qWOksZ ()
-  (should (functionp 'py--fill-docstring-first-line)))
+;; (ert-deftest py-ert--fill-docstring-first-line-functionp-test-qWOksZ ()
+;;   (should (functionp 'py--fill-docstring-first-line)))
 
-(ert-deftest py-ert--fill-docstring-functionp-test-uW8Q0J ()
-  (should (functionp 'py--fill-docstring)))
+;; (ert-deftest py-ert--fill-docstring-functionp-test-uW8Q0J ()
+;;   (should (functionp 'py--fill-docstring)))
 
-(ert-deftest py-ert-fill-string-functionp-test-iiS8wu ()
-  (should (functionp 'py-fill-string)))
+;; (ert-deftest py-ert-fill-string-functionp-test-iiS8wu ()
+;;   (should (functionp 'py-fill-string)))
 
-(ert-deftest py-ert-fill-paragraph-functionp-test-e4M60e ()
-  (should (functionp 'py-fill-paragraph)))
+;; (ert-deftest py-ert-fill-paragraph-functionp-test-e4M60e ()
+;;   (should (functionp 'py-fill-paragraph)))
 
 (ert-deftest py-ert-insert-default-shebang-functionp-test-kvspuZ ()
   (should (functionp 'py-insert-default-shebang)))

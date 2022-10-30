@@ -2642,9 +2642,20 @@ Remember source buffer where error might occur.")
 (defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
   "When looking at beginning of string.")
 
-(defvar py-labelled-re "[ \\t]*:[[:graph:]]+"
+(defvar py-star-labelled-re "[ \\t]*[\\*-] +[[:graph:]]"
+  "When looking at a star label.")
+
+(defvar py-colon-labelled-re "[ \\t]*[[:graph:]]* *: *[[:graph:]]+"
+  "When looking at a colon label.")
+;; (setq py-colon-labelled-re "[ \\t]*[[:graph:]]* *: *[[:graph:]]+\\|[ \\t]*[\\*-] +[[:graph:]]")
+
+(defvar py-labelled-re (concat py-colon-labelled-re "\\|" py-star-labelled-re)
   "When looking at label.")
-;; (setq py-labelled-re "[ \\t]*:[[:graph:]]+")
+
+;; "[ \t]+\\c.+"
+(defvar py-symbol-re "[ \t]*\\c.+[ \t]*$"
+  "Matching lines only containing symbols.")
+(setq py-symbol-re "[ \t]*\\c.+[ \t]*")
 
 (defvar py-expression-skip-regexp "[^ (=:#\t\r\n\f]"
   "Expression possibly composing a `py-expression'.")
@@ -3831,7 +3842,9 @@ Return and move to match-beginning if successful"
       (current-indentation))))
 
 (defun py--docstring-p (pos)
-  "Check to see if there is a docstring at POS."
+  "Check to see if there is a docstring at POS.
+
+If succesful, returns beginning of docstring position in buffer"
   (save-excursion
     (let ((erg
 	   (progn

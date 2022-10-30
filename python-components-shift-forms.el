@@ -1,4 +1,4 @@
-;;; python-components-shift-forms.el --- Move forms left or right -*- lexical-binding: t; -*- 
+;;; python-components-shift-forms.el --- Move forms left or right -*- lexical-binding: t; -*-
 
 
 ;; URL: https://gitlab.com/python-mode-devs
@@ -49,7 +49,8 @@ Optional END: region end"
 
 (defun py--shift-intern (count &optional start end)
   (save-excursion
-    (let* ((inhibit-point-motion-hooks t)
+    (let* (;; obsolete
+           ;; (inhibit-point-motion-hooks t)
            deactivate-mark
            (beg (cond (start)
                       ((use-region-p)
@@ -355,4 +356,3 @@ Return outmost indentation reached."
 
 (provide 'python-components-shift-forms)
 ;;; python-components-shift-forms.el ends here
- 

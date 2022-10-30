@@ -26,8 +26,8 @@
       "def f():
     r\"\"\" This is the docstring for my function.It's a raw docstring because I want to type \\t here, and maybe \\n,for example in LaTeX code like \\tau or \\nu.
 
-More docstring here.
-\"\"\"
+    More docstring here.
+    \"\"\"
  pass"
     (goto-char (point-min) )
     (let ((py-docstring-style 'pep-257-nn))
@@ -215,35 +215,304 @@ def foo(rho, x):
 (ert-deftest filling-docstring-paragraphs-gibberish-140-test-DqgSN7 ()
   (py-test-with-temp-buffer
       "def _bless_my_loader(module_globals):
-    \"\"\"Helper function implementing the current module loader policy\.
+    \"\"\"
+    In Python 3.14, the end state is to require and use the module's
+    __spec__.loader and ignore any __loader__ attribute on the
+    module.
 
-    In Python 3\.14, the end state is to require and use the module's
-    __spec__\.loader and ignore any __loader__ attribute on the
-    module\.
+    * If you have a __loader__ and a __spec__.loader but they are not the
+    same, in Python 3.12 we issue a DeprecationWarning and fall back to
+    __loader__ for backward compatibility.  In Python 3.14, we'll flip
+    this case to ignoring __loader__ entirely, without error.
 
-   * If you have a __loader__ and a __spec__\.loader but they are not the
-     same, in Python 3\.12 we issue a DeprecationWarning and fall back to
-     __loader__ for backward compatibility\.  In Python 3\.14, we'll flip
-     this case to ignoring __loader__ entirely, without error\.
+    * If you do not have a __spec__ or __spec__.loader, we also issue a
+    DeprecationWarning and fall back to __loader__.  In Python 3.14,
+    we'll make this case fail with an AttributeError, and ignore
+    __loader__.
 
-   * If you do not have a __spec__ or __spec__\.loader, we also issue a
-     DeprecationWarning and fall back to __loader__\.  In Python 3\.14,
-     we'll make this case fail with an AttributeError, and ignore
-     __loader__\.
+    * In Python 3.12 and beyond, if you do not have a __loader__, we don't
+    care as long as you still have a __spec__.loader, otherwise you get
+    an AttributeError, telling you to add a __spec__.loader.
 
-   * In Python 3\.12 and beyond, if you do not have a __loader__, we don't
-     care as long as you still have a __spec__\.loader, otherwise you get
-     an AttributeError, telling you to add a __spec__\.loader\.
-
-    See GH#97850 for details\.
+    See GH#97850 for details.
     \"\"\"
     pass"
     (let ((py-docstring-style 'pep-257-nn))
       (goto-char (point-max))
       (search-backward "attribute")
       (fill-paragraph)
+      (forward-line -1)
+      (should-not (py-empty-line-p))
 
 )))
+
+(ert-deftest filling-docstring-paragraphs-gibberish-140-test-G9xLBO ()
+  (py-test-with-temp-buffer
+      "def _bless_my_loader(module_globals):
+    \"\"\"
+    In Python 3.14, the end state is to require and use the module's
+    __spec__.loader and ignore any __loader__ attribute on the
+    module.
+
+    * If you have a __loader__ and a __spec__.loader but they are not the
+    same, in Python 3.12 we issue a DeprecationWarning and fall back to
+    __loader__ for backward compatibility.  In Python 3.14, we'll flip
+    this case to ignoring __loader__ entirely, without error.
+
+    * If you do not have a __spec__ or __spec__.loader, we also issue a
+    DeprecationWarning and fall back to __loader__.  In Python 3.14,
+    we'll make this case fail with an AttributeError, and ignore
+    __loader__.
+
+    * In Python 3.12 and beyond, if you do not have a __loader__, we don't
+    care as long as you still have a __spec__.loader, otherwise you get
+    an AttributeError, telling you to add a __spec__.loader.
+
+    See GH#97850 for details.
+    \"\"\"
+    pass"
+    (let ((py-docstring-style 'pep-257-nn))
+      (goto-char (point-max))
+      (search-backward "__loader__ and a __spec__")
+      (fill-paragraph)
+      (forward-line 1)
+      (back-to-indentation)
+      (should (eq (current-column) 6)))))
+
+(ert-deftest fill-docstring-paragraphs-test-9vhmQx ()
+  (py-test-with-temp-buffer
+      "class DataFrame(NDFrame, OpsMixin):
+    \"\"\"
+    Two-dimensional, size-mutable, potentially heterogeneous tabular data\.
+
+    Data structure also contains labeled axes (rows and columns)\.
+    Arithmetic operations align on both row and column labels\. Can be
+    thought of as a dict-like container for Series objects\. The primary
+    pandas data structure\.
+
+    Parameters
+    ----------
+    data : ndarray (structured or homogeneous), Iterable, dict, or DataFrame
+        Dict can contain Series, arrays, constants, dataclass or list-like objects\. If
+        data is a dict, column order follows insertion-order\. If a dict contains Series
+        which have an index defined, it is aligned by its index\.
+
+        \.\. versionchanged:: 0\.25\.0
+           If data is a list of dicts, column order follows insertion-order\.
+
+    index : Index or array-like
+        Index to use for resulting frame\. Will default to RangeIndex if
+        no indexing information part of input data and no index provided\.
+    columns : Index or array-like
+        Column labels to use for resulting frame when data does not have them,
+        defaulting to RangeIndex(0, 1, 2, \.\.\., n)\. If data contains column labels,
+        will perform column selection instead\.
+    dtype : dtype, default None
+        Data type to force\. Only a single dtype is allowed\. If None, infer\.
+    copy : bool or None, default None
+        Copy data from inputs\.
+        For dict data, the default of None behaves like \`\`copy=True\`\`\.  For DataFrame
+        or 2d ndarray input, the default of None behaves like \`\`copy=False\`\`\.
+        If data is a dict containing one or more Series (possibly of different dtypes),
+        \`\`copy=False\`\` will ensure that these inputs are not copied\.
+
+        \.\. versionchanged:: 1\.3\.0
+
+    See Also
+    --------
+    DataFrame\.from_records : Constructor from tuples, also record arrays\.
+    DataFrame\.from_dict : From dicts of Series, arrays, or dicts\.
+    read_csv : Read a comma-separated values (csv) file into DataFrame\.
+    read_table : Read general delimited file into DataFrame\.
+    read_clipboard : Read text from clipboard into DataFrame\.
+
+    Notes
+    -----
+    Please reference the :ref:\`User Guide <basics\.dataframe>\` for more information\.
+
+    Examples
+    --------
+    Constructing DataFrame from a dictionary\.
+
+    >>> d = {'col1': \[1, 2], 'col2': \[3, 4]}
+    >>> df = pd\.DataFrame(data=d)
+    >>> df
+       col1  col2
+    0     1     3
+    1     2     4
+
+    Notice that the inferred dtype is int64\.
+
+    >>> df\.dtypes
+    col1    int64
+    col2    int64
+    dtype: object
+
+    To enforce a single dtype:
+
+    >>> df = pd\.DataFrame(data=d, dtype=np\.int8)
+    >>> df\.dtypes
+    col1    int8
+    col2    int8
+    dtype: object
+
+    Constructing DataFrame from a dictionary including Series:
+
+    >>> d = {'col1': \[0, 1, 2, 3], 'col2': pd\.Series(\[2, 3], index=\[2, 3])}
+    >>> pd\.DataFrame(data=d, index=\[0, 1, 2, 3])
+       col1  col2
+    0     0   NaN
+    1     1   NaN
+    2     2   2\.0
+    3     3   3\.0
+
+    Constructing DataFrame from numpy ndarray:
+
+    >>> df2 = pd\.DataFrame(np\.array(\[\[1, 2, 3], \[4, 5, 6], \[7, 8, 9]]),
+    \.\.\.                    columns=\['a', 'b', 'c'])
+    >>> df2
+       a  b  c
+    0  1  2  3
+    1  4  5  6
+    2  7  8  9
+
+    Constructing DataFrame from a numpy ndarray that has labeled columns:
+
+    >>> data = np\.array(\[(1, 2, 3), (4, 5, 6), (7, 8, 9)],
+    \.\.\.                 dtype=\[(\"a\", \"i4\"), (\"b\", \"i4\"), (\"c\", \"i4\")])
+    >>> df3 = pd\.DataFrame(data, columns=\['c', 'a'])
+    \.\.\.
+    >>> df3
+       c  a
+    0  3  1
+    1  6  4
+    2  9  7
+
+    Constructing DataFrame from dataclass:
+
+    >>> from dataclasses import make_dataclass
+    >>> Point = make_dataclass(\"Point\", \[(\"x\", int), (\"y\", int)])
+    >>> pd\.DataFrame(\[Point(0, 0), Point(0, 3), Point(2, 3)])
+       x  y
+    0  0  0
+    1  0  3
+    2  2  3
+    \"\"\"
+    pass"
+    (goto-char (point-max))
+    (search-backward "data : ndarray")
+    (py-fill-paragraph)
+    (search-forward "Dict")
+    (should (eq 8 (current-indentation)))
+    ))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-onetwo-KWl8aD ()
+  (let ((py-docstring-style 'onetwo))
+    (py-test-with-temp-buffer-point-min
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char (point-min))
+      (font-lock-fontify-region (point-min)(point-max))
+      (goto-char 49)
+      (fill-paragraph)
+      (search-backward "\"\"\"")
+      (goto-char (match-end 0))
+      (forward-line 1)
+      (end-of-line)
+      (should (<= (current-column) 72)))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-onetwo-6v2Vqe ()
+  (let ((py-docstring-style 'onetwo))
+    (py-test-with-temp-buffer-point-min
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char (point-min))
+      (font-lock-fontify-region (point-min)(point-max))
+      (goto-char 49)
+      (fill-paragraph)
+      (search-backward "\"\"\"")
+      (goto-char (match-end 0))
+      (forward-line 1)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (search-forward "\"\"\"")
+      (forward-line -1)
+      (fill-paragraph)
+      (forward-line 1)
+      (should (py-empty-line-p)))))
+
+
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-4M7aUK ()
+  (let ((py-docstring-style 'pep-257))
+    (py-test-with-temp-buffer-point-min
+	"# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+      (goto-char (point-min))
+      (font-lock-fontify-region (point-min)(point-max))
+      (goto-char 49)
+      (fill-paragraph)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (forward-line 2)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (forward-line 1)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (forward-line 1)
+      (end-of-line)
+      (should (<= (current-column) 72))
+      (search-forward "\"\"\"")
+      (forward-line -1)
+      (fill-paragraph)
+      (forward-line -1)
+      (should (py-empty-line-p))
+      )))
+
+;;   \"\"\"Process foo, return bar\.
+
+;;   If processing fails throw ProcessingError\.
+;;   \"\"\"
+(ert-deftest py-ert-pep-257-mtab2Q ()
+  (py-test-with-temp-buffer-point-min
+      "class DataFrame(NDFrame, OpsMixin):
+    \"\"\"
+
+    index : Index or array-like
+        Index to use for resulting frame\. Will default to RangeIndex if
+        no indexing information part of input data and no index provided\.
+    \"\"\"
+    pass"
+    (let ((py-docstring-style 'pep-257))
+      (search-forward "index")
+      (fill-paragraph)
+      (goto-char (point-max))
+      (search-backward "\"")
+      (forward-char 1)
+      (should (eolp))
+      (forward-line -2)
+      (should (empty-line-p)))))
 
 (provide 'py-ert-fill-tests)
 ;;; py-ert-fill-tests.el ends here

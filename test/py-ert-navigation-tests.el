@@ -950,64 +950,6 @@
     (py-newline-and-indent)
     (should (eq 4 (current-indentation)))))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-4M7aUK ()
-  (let ((py-docstring-style 'pep-257))
-    (py-test-with-temp-buffer-point-min
-	"# r1416
-
-def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-
-    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-      (goto-char (point-min))
-      (font-lock-fontify-region (point-min)(point-max))
-      (goto-char 49)
-      (fill-paragraph)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (forward-line 2)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (forward-line 1)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (forward-line 1)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (search-forward "\"\"\"")
-      (forward-line -1)
-      (should (py-empty-line-p))
-      )))
-
-(ert-deftest py-ert-moves-up-fill-paragraph-onetwo-KWl8aD ()
-  (let ((py-docstring-style 'onetwo))
-    (py-test-with-temp-buffer-point-min
-	"# r1416
-
-def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-
-    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-      (goto-char (point-min))
-      (font-lock-fontify-region (point-min)(point-max))
-      (goto-char 49)
-      (fill-paragraph)
-      (search-backward "\"\"\"")
-      (goto-char (match-end 0))
-      (eolp)
-      (forward-line 1)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (search-forward "\"\"\"")
-      (forward-line -1)
-      (should (py-empty-line-p)))))
-
 (ert-deftest py-ert-moves-up-forward-expression-test-oDlMW8 ()
     (py-test-with-temp-buffer-point-min
 	"class kugel(object):
@@ -1557,7 +1499,7 @@ else:
 "
     (goto-char (point-max))
     (search-backward "elif")
-    (beginning-of-line) 
+    (beginning-of-line)
     (py-backward-block)
     (should (eq (char-after) ?i))))
 
@@ -3306,6 +3248,43 @@ ausgabe = kugel.ausgabe"
     (end-of-line)
     (py-forward-indent)
     (should (eq (char-before) ?'))))
+
+(ert-deftest py-forward-indent-Yxy0mr ()
+  (py-test-with-temp-buffer-point-min
+    "def foo():
+    pass
+
+def bar():
+    print("")
+"
+    (goto-char (point-min))
+    (py-forward-indent 'stop-at-empty-line)
+    (should (eq (char-before) ?s))))
+
+(ert-deftest py-forward-indent-sYiLyT ()
+  (py-test-with-temp-buffer-point-min
+    "def foo():
+    pass
+
+def bar():
+    print(\"\")
+"
+    (goto-char (point-min))
+    (py-forward-indent)
+    (should (eq (char-before) ?\)))))
+
+(ert-deftest py-forward-indent-MfzsBG ()
+  (py-test-with-temp-buffer-point-min
+    "def foo():
+    pass
+
+def bar():
+    print(\"\")
+"
+    (goto-char (point-max))
+    (search-backward "pass")
+    (py-forward-indent)
+    (should (eq (char-before) ?s))))
 
 (ert-deftest py-TQS-tWBEjf ()
   (py-test-with-temp-buffer-point-min
