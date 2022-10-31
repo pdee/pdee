@@ -6156,6 +6156,7 @@ process buffer for a list of commands.)"
 	(setq delay (py--which-delay-process-dependent buffer-name))
 	(unless fast
 	  (when interactivep
+            (setq py-shell-mode-syntax-table python-mode-syntax-table)
 	    (cond ((string-match "^.I" buffer-name)
 		   (message "Waiting according to `py-ipython-send-delay:' %s" delay))
 		  ((string-match "^.+3" buffer-name)
