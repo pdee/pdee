@@ -447,6 +447,16 @@ Default is nil"
   :tag "py-hide-show-minor-mode-p"
   :group 'python-mode)
 
+(defcustom py-do-completion-p t
+  "Permits disabling all python-mode native completion.
+
+Default is ‘t’.
+See #144, how to disable process spawn for autocompletion"
+
+  :type 'boolean
+  :tag "py-do-completion-p"
+  :group 'python-mode)
+
 (defcustom py-load-skeletons-p nil
   "If skeleton definitions should be loaded, default is nil.
 

@@ -245,10 +245,10 @@ in (I)Python shell-modes `py-shell-complete'"
 	     (member (char-before) (list 9 10 12 13 32 ?: ?\) ?\] ?\}))
 	     (not (looking-at "[ \t]*$")))
 	 (py-indent-line))
-	((comint-check-proc (current-buffer))
+	((and py-do-completion-p (comint-check-proc (current-buffer)))
 	 ;; (let* ((shell (process-name (get-buffer-process (current-buffer)))))
 	 (ignore-errors (completion-at-point)))
-	(t
+	((and py-do-completion-p t)
 	 (when py-debug-p (message "py-indent-or-complete: %s" "calling `t'-clause"))
 	 ;; (py-fast-complete)
 	 (completion-at-point))))
