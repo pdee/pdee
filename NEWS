@@ -4,6 +4,9 @@ Python Mode News
 Prepared for version 6.3.2
 -----------------------
 
+- Customizable boolean ‘py-do-completion-p’ 
+  permits disabling python-mode native completion.
+
 - `isympy3', am IPython console for SymPy
 
 

@@ -735,7 +735,7 @@ i.e. the limit on how far back to scan."
   "List dealing with usage and developing python-mode.
 
 Also accepts submission of bug reports, whilst a ticket at
-http://launchpad.net/python-mode
+‘https://gitlab.com/python-mode-devs/python-mode/-/issues’
 is preferable for that. ")
 
 ;;  Utilities
