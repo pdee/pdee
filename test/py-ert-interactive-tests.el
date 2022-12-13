@@ -567,67 +567,7 @@ py_if_name_main_permission_test()
      (sit-for 0.1)
      (should (search-backward "run" nil t)))))
 
-(ert-deftest py-comment-shouldnt-outdent-109-test-vkJNom ()
-  (py-test-with-temp-buffer
-      "def addProductToShopify(sample)
-    try:
-        a = sample
-    except NoResultFound as e:
-        return False
 
-    # comment 1
-    # comment 2
-    # comment 3
-    return True
-"
-    (goto-char (point-max))
-    (search-backward "comment" nil t 2)
-    (py-indent-line)
-    (should (eq 4 (current-indentation)))
-    ))
-
-(ert-deftest py-comment-shouldnt-outdent-109-test-gZKk9W ()
-  (py-test-with-temp-buffer
-"def addProductToShopify(sample)
-	try:
-		a = sample
-	except NoResultFound as e:
-		return False
-
-	# comment 1
-	# comment
-	# comment 3
-	return True
-"
-    (goto-char (point-max))
-    (search-backward "comment" nil t 2)
-    (py-indent-line)
-    (should (eq 4 (current-indentation)))
-    (beginning-of-line)
-    (should (eq (char-after) 9))
-    ))
-
-(ert-deftest py-comment-shouldnt-outdent-109-test-P6QZmU ()
-  (py-test-with-temp-buffer
-      "def addProductToShopify(sample)
-	try:
-		a = sample
-	except NoResultFound as e:
-		return False
-
-	# comment 1
-# comment
-	# comment 3
-	return True
-"
-    (let ((py-indent-tabs-mode t))
-      (goto-char (point-max))
-      (search-backward "comment" nil t 2)
-      (py-indent-line)
-      (should (eq 4 (current-indentation)))
-      (beginning-of-line)
-      (should (eq (char-after) 32))
-      )))
 
 (ert-deftest py-in-list-indent-test-LEON2Q ()
   (py-test-with-temp-buffer
