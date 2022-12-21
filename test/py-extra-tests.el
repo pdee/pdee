@@ -168,16 +168,6 @@ finally:
     (sit-for 0.1 t)
     (should (or (looking-back "print.?" (line-beginning-position))))))
 
-(ert-deftest py-ert-execute-statement-python2-fast-1-7RNU3c ()
-  (py-test-with-temp-buffer-point-min
-   "print(1)"
-   (let ((py-fast-process-p t)
-	 (py-return-result-p t)
-	 py-result
-	 (py-store-result-p t))
-     (py-execute-statement "python2")
-     (should (string= "1" py-result)))))
-
 (ert-deftest py-ert-execute-statement-fast-2-7XrRee ()
   (py-test-with-temp-buffer-point-min
       "print(2)"
@@ -1408,7 +1398,9 @@ def main():
       "foo: int = 1"
     (goto-char (point-max))
     (search-backward "foo")
-    (should (equal (face-at-point) 'py-variable-name-face))))
+    (let ((erg (face-at-point)))
+      (sit-for 0.1)
+      (should (equal erg 'py-variable-name-face)))))
 
 (provide 'py-extra-tests)
 ;;; py-extra-tests.el ends here

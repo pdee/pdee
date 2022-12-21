@@ -24,22 +24,6 @@
 
 (require 'py-setup-ert-tests)
 
-(ert-deftest py-ert-always-split-dedicated-lp-1361531-python2-test-DuoIzY ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python2
-# -*- coding: utf-8 -*-
-print(\"I'm the py-always-split-dedicated-lp-1361531-python2-test\")"
-    (delete-other-windows)
-    (let* ((py-split-window-on-execute 'always)
-	   (erg1 (progn (py-execute-statement-python2-dedicated) py-output-buffer))
-	   (erg2 (progn (py-execute-statement-python2-dedicated) py-output-buffer)))
-      (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
-      (should (< 2 (count-windows)))
-      (py-kill-buffer-unconditional erg1)
-      (py-kill-buffer-unconditional erg2)
-      (py-restore-window-configuration))))
-
 (ert-deftest py-ert-fill-paragraph-lp-1291493-JPuJd3 ()
   (py-test-with-temp-buffer-point-min
       "if True:
@@ -138,18 +122,6 @@ def foo():
 	     (search-forward "py-execute-line-test" nil t 1)))
 	   (py-kill-buffer-unconditional (current-buffer))))))
 
-(ert-deftest py-ert-execute-statement-python2-test-Z1bsHy ()
-  (py-test-with-temp-buffer-point-min
-      "print(\"I'm the py-execute-statement-python2-test\")"
-    (when py-debug-p (switch-to-buffer (current-buffer))
-	  (jit-lock-fontify-now))
-    (py-execute-statement-python2)
-    (set-buffer "*Python2*")
-    (goto-char (point-max))
-    (sit-for 0.2 t)
-    (and (should (search-backward "py-execute-statement-python2-test" nil t 1))
-	 (py-kill-buffer-unconditional (current-buffer)))))
-
 (ert-deftest py-ert-always-reuse-lp-1361531-test-dJBO5C ()
   (py-test-with-temp-buffer
     "#! /usr/bin/env python
@@ -168,27 +140,7 @@ print(\"I'm the py-always-reuse-lp-1361531-test\")"
       (should (eq 3 (count-windows)))
       (py-restore-window-configuration))))
 
-(ert-deftest py-ert-execute-region-python2-test-XOPWqH ()
-  (py-test-with-temp-buffer
-      "print(\"I'm the py-ert-execute-region-python2-test\")"
-    (let (py-result
-	  (py-store-result-p t))
-      (goto-char (point-max))
-      (push-mark)
-      (goto-char (point-min))
-      (py-execute-region-python2 (region-beginning) (region-end))
-      (sit-for 0.1 t)
-      (should (string-match "py-ert-execute-region-python2-test" py-result)))))
 
-(ert-deftest py-ert-ipython-lp-1398530-test-7re3GL ()
-  (py-test-with-temp-buffer
-      ""
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    (when (buffer-live-p (get-buffer "*IPython*"))(py-kill-buffer-unconditional "*IPython*"))
-    (let ((py-shell-name "ipython"))
-      (py-shell)
-      (sit-for 0.1 t)
-      (should (buffer-live-p (get-buffer "*IPython*"))))))
 
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-ipython-test-zGlzYP ()
   (py-test-with-temp-buffer
@@ -271,16 +223,6 @@ file.close()"
       (goto-char (point-max))
       (beginning-of-line)
       (should-not (face-at-point)))))
-
-(ert-deftest py-face-lp-1454858-python3-3-test-xPEpuc ()
-  (let ((py-python-edit-version "python3"))
-    (py-test-with-temp-buffer
-	"#! /usr/bin/env python2
-print()"
-      (goto-char (point-max))
-      (beginning-of-line)
-      (sit-for 0.1)
-      (should (eq (face-at-point) 'py-builtins-face)))))
 
 (ert-deftest py-face-lp-1454858-python3-4-test-dHIVmf ()
   (py-test-with-temp-buffer
@@ -567,8 +509,6 @@ py_if_name_main_permission_test()
      (sit-for 0.1)
      (should (search-backward "run" nil t)))))
 
-
-
 (ert-deftest py-in-list-indent-test-LEON2Q ()
   (py-test-with-temp-buffer
       "def foo():
@@ -626,22 +566,6 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 	   (erg1 (progn (py-execute-statement-python3-dedicated) py-output-buffer))
 	   (erg2 (progn (py-execute-statement-python3-dedicated) py-output-buffer)))
       (sit-for 1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
-      (should (eq 2 (count-windows)))
-      (py-kill-buffer-unconditional erg1)
-      (py-kill-buffer-unconditional erg2)
-      (py-restore-window-configuration))))
-
-(ert-deftest py-ert-just-two-split-dedicated-lp-1361531-python2-test ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python2
-# -*- coding: utf-8 -*-
-print(\"I'm the py-just-two-split-dedicated-lp-1361531-python2-test\")"
-    (delete-other-windows)
-    (let* ((py-split-window-on-execute 'just-two)
-	   (erg1 (progn (py-execute-statement-python2-dedicated) py-output-buffer))
-	   (erg2 (progn (py-execute-statement-python2-dedicated) py-output-buffer)))
-      ;; (sit-for 1 t)
       (when py-debug-p (message "(count-windows) %s" (count-windows)))
       (should (eq 2 (count-windows)))
       (py-kill-buffer-unconditional erg1)

@@ -34,18 +34,6 @@ print(\"two\")"
       (goto-char (point-max))
       (should (search-backward "two")))))
 
-(ert-deftest py-ert-execute-region-python2-test ()
-  (py-test-with-temp-buffer
-      "print(\"one\")
-print(\"two\")"
-    (let ((buffer (py--choose-buffer-name "python2")))
-      (py-execute-region-python2 (point-min) (point-max))
-      ;; (sit-for 0.5 t)
-      (set-buffer buffer)
-      (goto-char (point-max))
-
-      (should (search-backward "two")))))
-
 (ert-deftest py-ert-execute-region-python3-test ()
   (py-test-with-temp-buffer
       "print(\"one\")

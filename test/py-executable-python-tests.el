@@ -64,37 +64,6 @@
       (sit-for 0.1 t)
       (should (buffer-live-p (get-buffer "*Python2*"))))))
 
-(ert-deftest py-face-lp-1454858-python2-1-test-cBoEWe ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python2
-file.close()"
-    (goto-char(point-max))
-    (let ((py-python-edit-version ""))
-      (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1)
-      (should (eq (face-at-point) 'py-builtins-face)))))
-
-;; Setting of py-python-edit-version should precede
-(ert-deftest py-face-lp-1454858-python2-2-test-VGqacZ ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python3
-file.close()"
-    (goto-char(point-max))
-    (let ((py-python-edit-version "python2"))
-      (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1)
-      (should (eq (face-at-point) 'py-builtins-face)))))
-
-(ert-deftest py-face-lp-1454858-python2-3-test-X7oyjk ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python2
-print()"
-    (goto-char(point-max))
-    (let ((py-python-edit-version ""))
-      (font-lock-fontify-region (point-min) (point-max))
-      (forward-line 1)
-      (should (eq (face-at-point) 'font-lock-keyword-face)))))
-
 (ert-deftest py-ipython-shell-test-nqjTml ()
   ""
   (if (not (executable-find "ipython"))
