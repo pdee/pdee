@@ -23,93 +23,13 @@
 ;;
 
 ;;; Code:
-;; (require 'python)
-
-;; (defconst rx--builtin-symbols
-;;   (append '(nonl not-newline any anychar anything unmatchable
-;;             bol eol line-start line-end
-;;             bos eos string-start string-end
-;;             bow eow word-start word-end
-;;             symbol-start symbol-end
-;;             point word-boundary not-word-boundary not-wordchar)
-;;           (mapcar #'car rx--char-classes))
-;;   "List of built-in rx variable-like symbols.")
-
-;; (defconst rx--builtin-forms
-;;   '(seq sequence : and or | any in char not-char not intersection
-;;     repeat = >= **
-;;     zero-or-more 0+ *
-;;     one-or-more 1+ +
-;;     zero-or-one opt optional \?
-;;     *? +? \??
-;;     minimal-match maximal-match
-;;     group submatch group-n submatch-n backref
-;;     syntax not-syntax category
-;;     literal eval regexp regex)
-;;   "List of built-in rx function-like symbols.")
-
-;; (defconst rx--builtin-names
-;;   (append rx--builtin-forms rx--builtin-symbols)
-;;   "List of built-in rx names.  These cannot be redefined by the user.")
-
-;; (defun rx--make-binding (name tail)
-;;   "Make a definitions entry out of TAIL.
-;; TAIL is on the form ([ARGLIST] DEFINITION)."
-;;   (unless (symbolp name)
-;;     (error "Bad `rx' definition name: %S" name))
-;;   ;; FIXME: Consider using a hash table or symbol property, for speed.
-;;   (when (memq name rx--builtin-names)
-;;     (error "Cannot redefine built-in rx name `%s'" name))
-;;   (pcase tail
-;;     (`(,def)
-;;      (list def))
-;;     (`(,args ,def)
-;;      (unless (and (listp args) (rx--every #'symbolp args))
-;;        (error "Bad argument list for `rx' definition %s: %S" name args))
-;;      (list args def))
-;;     (_ (error "Bad `rx' definition of %s: %S" name tail))))
-
-;; (defun rx--make-named-binding (bindspec)
-;;   "Make a definitions entry out of BINDSPEC.
-;; BINDSPEC is on the form (NAME [ARGLIST] DEFINITION)."
-;;   (unless (consp bindspec)
-;;     (error "Bad `rx-let' binding: %S" bindspec))
-;;   (cons (car bindspec)
-;;         (rx--make-binding (car bindspec) (cdr bindspec))))
-
-;; ;;;###autoload
-;; (defmacro rx-let (bindings &rest body)
-;;   "Evaluate BODY with local BINDINGS for `rx'.
-;; BINDINGS is an unevaluated list of bindings each on the form
-;; (NAME [(ARGS...)] RX).
-;; They are bound lexically and are available in `rx' expressions in
-;; BODY only.
-
-;; For bindings without an ARGS list, NAME is defined as an alias
-;; for the `rx' expression RX.  Where ARGS is supplied, NAME is
-;; defined as an `rx' form with ARGS as argument list.  The
-;; parameters are bound from the values in the (NAME ...) form and
-;; are substituted in RX.  ARGS can contain `&rest' parameters,
-;; whose values are spliced into RX where the parameter name occurs.
-
-;; Any previous definitions with the same names are shadowed during
-;; the expansion of BODY only.
-;; For local extensions to `rx-to-string', use `rx-let-eval'.
-;; To make global rx extensions, use `rx-define'.
-;; For more details, see Info node `(elisp) Extending Rx'.
-
-;; \(fn BINDINGS BODY...)"
-;;   (declare (indent 1) (debug (sexp body)))
-;;   (let ((prev-locals (cdr (assq :rx-locals macroexpand-all-environment)))
-;;         (new-locals (mapcar #'rx--make-named-binding bindings)))
-;;     (macroexpand-all (cons 'progn body)
-;;                      (cons (cons :rx-locals (append new-locals prev-locals))
-;;                            macroexpand-all-environment))))
 
 (defmacro py-rx (&rest regexps)
   "Python mode specialized rx macro.
 This variant of `rx' supports common Python named REGEXPS."
-  `(rx-let ((block-start       (seq symbol-start
+  `(rx-let ((sp-bsnl (or space (and ?\\ ?\n)))
+            (sp-nl (or space (and (? ?\\) ?\n)))
+            (block-start       (seq symbol-start
                                     (or "def" "class" "if" "elif" "else" "try"
                                         "except" "finally" "for" "while" "with"
                                         ;; Python 3.10+ PEP634
@@ -147,7 +67,7 @@ This variant of `rx' supports common Python named REGEXPS."
             (close-paren       (or "}" "]" ")"))
             (simple-operator   (any ?+ ?- ?/ ?& ?^ ?~ ?| ?* ?< ?> ?= ?%))
             (not-simple-operator (not (or simple-operator ?\n)))
-            (operator          (or "==" ">=" "is" "not"
+            (operator          (or "==" ">="
                                    "**" "//" "<<" ">>" "<=" "!="
                                    "+" "-" "/" "&" "^" "~" "|" "*" "<" ">"
                                    "=" "%"))
@@ -177,9 +97,22 @@ This variant of `rx' supports common Python named REGEXPS."
                                  (: "vim:" (* space) "set" (+ space)
                                     "fileencoding" (* space) ?= (* space)
                                     (group-n 1 (+ (or word ?-)))
-                                    (* space) ":")))))
+                                    (* space) ":"))))
+            (bytes-escape-sequence
+             (seq (not "\\")
+                  (group (or "\\\\" "\\'" "\\a" "\\b" "\\f"
+                             "\\n" "\\r" "\\t" "\\v"
+                             (seq "\\" (** 1 3 (in "0-7")))
+                             (seq "\\x" hex hex)))))
+            (string-escape-sequence
+             (or bytes-escape-sequence
+                 (seq (not "\\")
+                      (or (group-n 1 "\\u" (= 4 hex))
+                          (group-n 1 "\\U" (= 8 hex))
+                          (group-n 1 "\\N{" (*? anychar) "}"))))))
      (rx ,@regexps)))
 
+;; lifted from python.el
 (defun py-font-lock-assignment-matcher (regexp)
   "Font lock matcher for assignments based on REGEXP.
 Search for next occurrence if REGEXP matched within a `paren'
@@ -250,7 +183,8 @@ sign in chained assignment."
               "FileExistsError" "FileNotFoundError" "InterruptedError"
               "IsADirectoryError" "NotADirectoryError" "PermissionError"
               "ProcessLookupError" "TimeoutError")
-          word-end) . py-exception-name-face)
+          word-end)
+     . py-exception-name-face)
     ;; Builtins
     (,(rx
        (or space line-start (not (any ".")))
@@ -266,63 +200,66 @@ sign in chained assignment."
                   "ord" "pow" "property" "range" "raw_input" "reduce"
                   "reload" "repr" "reversed" "round" "set" "setattr" "slice"
                   "sorted" "staticmethod" "str" "sum" "super" "tuple" "type"
-                  "unichr" "unicode" "vars" "xrange" "zip")) symbol-end) . (1 py-builtins-face))
-    ;; #104, GNU bug 44568 font lock of assignments with type hints
-    ;; ("\\([._[:word:]]+\\)\\(?:\\[[^]]+]\\)?[[:space:]]*\\(?:\\(?:\\*\\*\\|//\\|<<\\|>>\\|[%&*+/|^-]\\)?=\\)"
-    ;;  (1 py-variable-name-face nil nil))
-    ;; https://emacs.stackexchange.com/questions/55184/
-    ;; how-to-highlight-in-different-colors-for-variables-inside-fstring-on-python-mo
-    ;;
-    ;; this is the full string.
-    ;; group 1 is the quote type and a closing quote is matched
-    ;; group 2 is the string part
-    ("f\\(['\"]\\{1,3\\}\\)\\([^\\1]+?\\)\\1"
-     ;; these are the {keywords}
-     ("{[^}]*?}"
-      ;; Pre-match form
-      (progn (goto-char (match-beginning 0)) (match-end 0))
-      ;; Post-match form
-      (goto-char (match-end 0))
-      ;; face for this match
-      ;; (0 font-lock-variable-name-face t)))
-      (0 py-variable-name-face t)))
-    ;; assignment
-    ;; a, b, c = (1, 2, 3)
-    ;; a, *b, c = range(10)
-    ;; inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
-    ;; (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+                  "unichr" "unicode" "vars" "xrange" "zip"))
+       symbol-end)
+     . (1 py-builtins-face))
+    ;; lifted from python.el
+        ;; multiple assignment
+    ;; (note that type hints are not allowed for multiple assignments)
+    ;;   a, b, c = 1, 2, 3
+    ;;   a, *b, c = 1, 2, 3, 4, 5
+    ;;   [a, b] = (1, 2)
+    ;;   (l[1], l[2]) = (10, 11)
+    ;;   (a, b, c, *d) = *x, y = 5, 6, 7, 8, 9
+    ;;   (a,) = 'foo'
+    ;;   (*a,) = ['foo', 'bar', 'baz']
+    ;;   d.x, d.y[0], *d.z = 'a', 'b', 'c', 'd', 'e'
+    ;; and variants thereof
+    ;; the cases
+    ;;   (a) = 5
+    ;;   [a] = 5,
+    ;;   [*a] = 5, 6
+    ;; are handled separately below
     (,(py-font-lock-assignment-matcher
-       (py-rx line-start (* space) (? (or "[" "("))
-                  grouped-assignment-target (* space) ?, (* space)
-                  (* assignment-target (* space) ?, (* space))
-                  (? assignment-target (* space))
-                  (? ?, (* space))
-                  (? (or ")" "]") (* space))
-                  (group assignment-operator)))
+        (py-rx (? (or "[" "(") (* sp-nl))
+                   grouped-assignment-target (* sp-nl) ?, (* sp-nl)
+                   (* assignment-target (* sp-nl) ?, (* sp-nl))
+                   (? assignment-target (* sp-nl))
+                   (? ?, (* sp-nl))
+                   (? (or ")" "]") (* sp-bsnl))
+                   (group assignment-operator)))
      (1 py-variable-name-face)
+     (2 'font-lock-operator-face)
      (,(py-rx grouped-assignment-target)
       (progn
         (goto-char (match-end 1))       ; go back after the first symbol
         (match-beginning 2))            ; limit the search until the assignment
       nil
       (1 py-variable-name-face)))
-    (
-     ;; "(closure (t) (limit) (let ((re \"\\(?:self\\)*\\([._[:word:]]+\\)[[:space:]]*\\(?:,[[:space:]]*[._[:word:]]+[[:space:]]*\\)*\\(?:%=\\|&=\\|\\*\\(?:\\*?=\\)\\|\\+=\\|-=\\|/\\(?:/?=\\)\\|\\(?:<<\\|>>\\|[|^]\\)=\\|[:=]\\)\") (res nil)) (while (and (setq res (re-search-forward re limit t)) (goto-char (match-end 1)) (nth 1 (parse-partial-sexp (point-min) (point))))) res))"     . (1 py-variable-name-face nil nil)
-
-     ,(lambda (limit)
-        (let ((re (rx (* "self")(group (+ (any word ?. ?_))) (* space)
-                      (* ?, (* space) (+ (any word ?. ?_)) (* space))
-                      (or ":" "=" "+=" "-=" "*=" "/=" "//=" "%=" "**=" ">>=" "<<=" "&=" "^=" "|=")))
-              (res nil))
-          (while (and (setq res (re-search-forward re limit t))
-                      (goto-char (match-end 1))
-                      (nth 1 (parse-partial-sexp (point-min) (point)))
-                      ;; (python-syntax-context 'paren)
-        	      ))
-          res))
-     . (1 py-variable-name-face nil nil))
-
-
+    ;; single assignment with type hints, e.g.
+    ;;   a: int = 5
+    ;;   b: Tuple[Optional[int], Union[Sequence[str], str]] = (None, 'foo')
+    ;;   c: Collection = {1, 2, 3}
+    ;;   d: Mapping[int, str] = {1: 'bar', 2: 'baz'}
+    (,(py-font-lock-assignment-matcher
+       (py-rx (or line-start ?\;) (* sp-bsnl)
+                  grouped-assignment-target (* sp-bsnl)
+                  (? ?: (* sp-bsnl) (+ not-simple-operator) (* sp-bsnl))
+                  (group assignment-operator)))
+     (1 py-variable-name-face)
+     (2 'font-lock-operator-face))
+    ;; special cases
+    ;;   (a) = 5
+    ;;   [a] = 5,
+    ;;   [*a] = 5, 6
+    (,(py-font-lock-assignment-matcher
+       (py-rx (or line-start ?\; ?=) (* sp-bsnl)
+                  (or "[" "(") (* sp-nl)
+                  grouped-assignment-target (* sp-nl)
+                  (or ")" "]") (* sp-bsnl)
+                  (group assignment-operator)))
+     (1 py-variable-name-face)
+     (2 'font-lock-operator-face))
     ;; Numbers
     ;;        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
     ("\\_<[[:digit:]]+\\_>" . py-number-face))

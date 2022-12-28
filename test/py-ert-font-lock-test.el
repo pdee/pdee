@@ -148,8 +148,8 @@ def foo3(bar):
     name: str = \"\"   ## <--- 'name' is not given the variable face (keeps default)
     idnum: int = 0
 "
-    (goto-char (point-max))
     (font-lock-fontify-buffer)
+    (goto-char (point-max))
     (search-backward "idnum")
     (should (eq (face-at-point) 'py-variable-name-face))
     (search-backward "name" nil t 2)
@@ -180,6 +180,7 @@ def foo3(bar):
         case \[(int() | float()) as value]:
             return Num(value)"
     (goto-char (point-max))
+    (font-lock-fontify-buffer)
     (search-backward "return")
     (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))
     (search-backward "as")
@@ -289,7 +290,33 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     (search-backward "y")
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
     (search-backward "x")
+    (sit-for 0.1)
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))))
+
+(ert-deftest py-142-variable-name-face-test-hOUm6Y ()
+  (py-test-with-temp-buffer
+      "while foo <= 0:
+    foo = float(input(\"You can't play for free! Buy some chips: $\"))"
+    (goto-char (point-max))
+    (font-lock-fontify-buffer)
+    (sit-for 0.1)
+    (search-backward "foo")
+    (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    (search-backward "0")
+    (should-not (eq (get-char-property (point) 'face) 'py-variable-name-face))
+    ))
+
+(ert-deftest py-142-variable-name-face-test-PkoU08 ()
+  (py-test-with-temp-buffer
+      "while bet > money:
+        bet = float(
+            input(f\"Insufficient funds! Maximum bet allowed ${money}\\nPlace your bet $\")
+        )"
+    (font-lock-fontify-buffer)
+    (goto-char (point-max))
+    (search-backward "money:")
+    (sit-for 0.1) 
+    (should-not (eq (get-char-property (point) 'face) 'py-variable-name-face))))
 
 (provide 'py-ert-font-lock-test)
 ;;; py-ert-font-lock-test.el here
