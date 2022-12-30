@@ -37,6 +37,9 @@ elif
 elif
     [ $1 == e29 ];then
     export EMACS=$(echo $(alias $1) | sed "s,alias [^~]*.\([^ ]*\).*,$HOME\1,g")
+elif
+    [ $1 == e30 ];then
+    export EMACS=$(echo $(alias $1) | sed "s,alias [^~]*.\([^ ]*\).*,$HOME\1,g")
 else
     EMACS=emacs
 fi

@@ -260,6 +260,22 @@ sign in chained assignment."
                   (group assignment-operator)))
      (1 py-variable-name-face)
      (2 'font-lock-operator-face))
+    ;; https://emacs.stackexchange.com/questions/55184/
+    ;; how-to-highlight-in-different-colors-for-variables-inside-fstring-on-python-mo
+    ;;
+    ;; this is the full string.
+    ;; group 1 is the quote type and a closing quote is matched
+    ;; group 2 is the string part
+    ;; ("f\\(['\"]\\{1,3\\}\\)\\([^\\1]+?\\)\\1"
+    ;;  ;; these are the {keywords}
+    ;;  ("{[^}]*?}"
+    ;;   ;; Pre-match form
+    ;;   (progn (goto-char (match-beginning 0)) (match-end 0))
+    ;;   ;; Post-match form
+    ;;   (goto-char (match-end 0))
+    ;;   ;; face for this match
+    ;;   ;; (0 font-lock-variable-name-face t)))
+    ;;   (0 py-variable-name-face t)))
     ;; Numbers
     ;;        (,(rx symbol-start (or (1+ digit) (1+ hex-digit)) symbol-end) . py-number-face)
     ("\\_<[[:digit:]]+\\_>" . py-number-face))

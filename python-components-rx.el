@@ -252,20 +252,20 @@ Left-fold the list L, starting with X, by the binary function F."
     (setq l (cdr l)))
   x)
 
-(defun rx--normalise-or-arg (form)
+(defun rx--normalize-or-arg (form)
   "Normalize the `or' argument FORM.
 Characters become strings, user-definitions and `eval' forms are expanded,
 and `or' forms are normalized recursively."
   (cond ((characterp form)
          (char-to-string form))
         ((and (consp form) (memq (car form) '(or |)))
-         (cons (car form) (mapcar #'rx--normalise-or-arg (cdr form))))
+         (cons (car form) (mapcar #'rx--normalize-or-arg (cdr form))))
         ((and (consp form) (eq (car form) 'eval))
-         (rx--normalise-or-arg (rx--expand-eval (cdr form))))
+         (rx--normalize-or-arg (rx--expand-eval (cdr form))))
         (t
          (let ((expanded (rx--expand-def form)))
            (if expanded
-               (rx--normalise-or-arg expanded)
+               (rx--normalize-or-arg expanded)
              form)))))
 
 (defun rx--all-string-or-args (body)
@@ -300,7 +300,7 @@ Return (REGEXP . PRECEDENCE)."
    ((null (cdr body))              ; Single item.
     (rx--translate (car body)))
    (t
-    (let* ((args (mapcar #'rx--normalise-or-arg body))
+    (let* ((args (mapcar #'rx--normalize-or-arg body))
            (all-strings (catch 'rx--nonstring (rx--all-string-or-args args))))
       (cond
        (all-strings                       ; Only strings.

@@ -2513,6 +2513,9 @@ Syntax or has word syntax and isn't a letter.")
           (modify-syntax-entry ?\_ "_" table))
         table))
 
+(defvar py-shell-mode-syntax-table nil
+  "Set from py-shell")
+
 (defvar py-ipython-completion-command-string nil
   "Select command according to IPython version.
 
@@ -6133,7 +6136,7 @@ process buffer for a list of commands.)"
 		      (_ (if (executable-find shell)
 			     shell
 		           (error (concat "py-shell: Can't see an executable for `"shell "' on your system. Maybe needs a link?")))))
-		         (py-choose-shell)))
+		  (py-choose-shell)))
 	 (args (or args (py--provide-command-args shell fast)))
          ;; Make sure a new one is created if required
 	 (buffer-name
