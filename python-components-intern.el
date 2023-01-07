@@ -955,34 +955,35 @@ Returns position successful, nil otherwise"
 
 Of compound statement or definition at point.
 
-Also honor a delimited form -- string or list.
+When inside a string, list or comment, jump to its end.
 Repeated call from there will behave like down-list.
 
 Returns position if successful, nil otherwise"
   (interactive)
-  (let* ((orig (point))
-         erg
-         (indent (or
-                  indent
-                  (if
-                      (py--beginning-of-statement-p)
-                      (current-indentation)
-                    (progn
-                      (py-backward-statement)
-                      (current-indentation))))))
-    (while (and (py-forward-statement) (py-forward-statement) (py-backward-statement) (> (current-indentation) indent)))
-    (cond ((= indent (current-indentation))
-           (setq erg (point)))
-          ((< (point) orig)
-           (goto-char orig))
-          ((and (eq (point) orig)
-                (progn (forward-char 1)
-                       (skip-chars-forward "^\"'[({" (line-end-position))
-                       (member (char-after) (list ?\( ?\" ?\' ?\[ ?\{)))
-                (setq erg (point)))))
-    (unless erg
-      (goto-char orig))
-    erg))
+  (let ((orig (point))
+        (pps (parse-partial-sexp (point-min) (point))))
+    (cond ((nth 4 pps)
+           (py-forward-comment))
+          ((nth 3 pps)
+           (goto-char (nth 8 pps))
+           (forward-sexp))
+          ((nth 1 pps)
+           (goto-char (nth 1 pps))
+           (forward-sexp))
+          ((or (eq (car (syntax-after orig)) 15)(eq (car (syntax-after orig)) 4))
+           (forward-sexp))
+          ((py--beginning-of-class-p)
+           (py-forward-class))
+          ((py--beginning-of-def-p)
+           (py-forward-def))
+          ((py--beginning-of-block-p)
+           (py-forward-block))
+          ((py--beginning-of-clause-p)
+           (py-forward-clause))
+          (t
+           (py-forward-statement)))
+    (and (< orig (point)) (point))))
+
 
 (defun py--thing-at-point (form &optional mark-decorators)
   "Returns buffer-substring of string-argument FORM as cons.

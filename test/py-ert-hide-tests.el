@@ -33,7 +33,7 @@
 ;;             # print \"0, Gruen\"
 ;;             datei.write(str(spiel[i]) + \"\\n\")
 ;; "
-;;     (font-lock-fontify-buffer)
+;;     (font-lock-ensure)
 ;;     (search-forward "+ \"")
 ;;     (py-hide-partial-expression)
 ;;     (should (string-match "overlay from 315 to 317" (prin1-to-string (car (overlays-at (point))))))
@@ -55,7 +55,7 @@ class kugel(object):
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (search-forward "+ \"")
     (py-hide-expression)
     (should (string-match "overlay from 286 to 319" (prin1-to-string (car (overlays-at (point))))))
@@ -77,7 +77,7 @@ class kugel(object):
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (search-forward "+ \"")
 
 
@@ -95,7 +95,7 @@ class kugel(object):
     else:
         ausgabe[7] = treffer
 "
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "6")
     (py-hide-clause)
@@ -118,7 +118,7 @@ class kugel(object):
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (search-forward "+ \"")
 
     (py-hide-block)
@@ -141,7 +141,7 @@ class kugel(object):
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (search-forward "+ \"")
     (py-hide-def)
     (should (string-match "overlay from 73 to 319" (prin1-to-string (car (overlays-at (point))))))
@@ -164,7 +164,7 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
     (switch-to-buffer (current-buffer))
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (search-forward "+ \"")
     (py-hide-class)
     (should (string-match "overlay from 2 to 319" (prin1-to-string (car (overlays-at (point))))))
@@ -186,7 +186,7 @@ class kugel(object):
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (search-forward "+ \"")
     (py-hide-indent)
     (should (string-match "overlay from 255 to 348" (prin1-to-string (car (overlays-at (point))))))

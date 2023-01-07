@@ -2330,8 +2330,8 @@ Set `py-keep-windows-configuration' onto \\'force
 Default is nil"
 
   :type '(choice
-          (const :tag "nil" nil)
-          (const :tag "t" t)
+          (const :tag "nil" 'nil)
+          (const :tag "t" 't)
           (const :tag "force" 'force))
   :tag "py-keep-windows-configuration"
   :group 'python-mode)
@@ -3517,24 +3517,14 @@ TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
      (and (eq (char-before (point)) ?\\ )
           (py-escaped-p))))
 
-(defun py--skip-to-comment-or-semicolon (done)
-  "Returns position if comment or semicolon found. "
+(defun py--skip-to-comment-or-semicolon ()
+  "Returns position if point was moved."
   (let ((orig (point)))
-    (cond ((and done (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-                (member (char-after) (list ?# ?\;)))
-           (when (eq ?\; (char-after))
-             (skip-chars-forward ";" (line-end-position))))
-          ((and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-                (member (char-after) (list ?# ?\;)))
-           (when (eq ?\; (char-after))
-             (skip-chars-forward ";" (line-end-position))))
-          ((not done)
-           (end-of-line)))
-    (skip-chars-backward " \t" (line-beginning-position))
-    (and (< orig (point))(setq done (point))
-         done)))
+    (cond ((while (and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
+                       ;; (sit-for 1) 
+                       (and (nth 8 (parse-partial-sexp (point-min) (point))) (skip-chars-forward "#;" (line-end-position)))))))
+    (and (< orig (point))(point))))
 
-;;  Statement
 (defun py-forward-statement (&optional orig done repeat)
   "Go to the last char of current statement.
 
@@ -3574,11 +3564,12 @@ REPEAT - count and consider repeats"
 		(goto-char orig)))))
        ;; in comment
        ((and comment-start (looking-at (concat " *" comment-start)))
-	(goto-char (match-end 0))
-	(py-forward-statement orig done repeat))
+        (py--end-of-comment-intern (point)))
+       ;; (goto-char (match-end 0))
+       ;; (py-forward-statement orig done repeat))
        ((nth 4 pps)
 	(py--end-of-comment-intern (point))
-	(py--skip-to-comment-or-semicolon done)
+	(py--skip-to-comment-or-semicolon)
 	(while (and (eq (char-before (point)) ?\\)
 		    (py-escaped-p) (setq last (point)))
 	  (forward-line 1) (end-of-line))
@@ -3615,16 +3606,16 @@ REPEAT - count and consider repeats"
 	  (skip-chars-backward " \t\r\n\f" orig))
 	;; point at orig due to a trailing whitespace
 	(and (eq (point) orig) (skip-chars-forward " \t\r\n\f"))
-	(setq done t)
+	;; (setq done t)
 	(py-forward-statement orig done repeat))
        ((eq (current-indentation) (current-column))
-	(py--skip-to-comment-or-semicolon done)
+	(py--skip-to-comment-or-semicolon)
 	(setq pps (parse-partial-sexp orig (point)))
 	(if (nth 1 pps)
 	    (py-forward-statement orig done repeat)
 	  (unless done
 	    (py-forward-statement orig done repeat))))
-       ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon done))
+       ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon))
 	(py-forward-statement orig done repeat)))
       (unless
 	  (or
@@ -4321,16 +4312,29 @@ Returns `t' if point was moved"
       (< 0 (abs (skip-chars-backward "^;" (or limit (line-beginning-position)))))
     (skip-chars-forward " \t" (line-end-position))))
 
+;; (defun py-forward-comment ()
+;;   "Go to the end of comment at point."
+;;   (let ((orig (point))
+;;         last)
+;;     (while (and (not (eobp)) (nth 4 (parse-partial-sexp (line-beginning-position) (point))) (setq last (line-end-position)))
+;;       (forward-line 1)
+;;       (end-of-line))
+;;     (when
+;;         (< orig last)
+;;       (goto-char last)(point))))
+
 (defun py-forward-comment ()
-  "Go to the end of comment at point."
-  (let ((orig (point))
+  "Go to the end of commented section at point."
+  (interactive)
+  (let ((pps (parse-partial-sexp (point-min) (point)))
         last)
-    (while (and (not (eobp)) (nth 4 (parse-partial-sexp (line-beginning-position) (point))) (setq last (line-end-position)))
+    (while (and (not (eobp))(or (eq (char-after) ?#) (nth 4 pps) (py-empty-line-p)))
+      (setq last (line-end-position))
       (forward-line 1)
       (end-of-line))
-    (when
-        (< orig last)
-      (goto-char last)(point))))
+    (unless (nth 4 (parse-partial-sexp (point-min) (point)))
+      (when last (goto-char last)))
+    ))
 
 (defun py--forward-string-maybe (&optional start)
   "Go to the end of string.

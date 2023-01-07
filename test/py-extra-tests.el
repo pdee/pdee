@@ -1346,7 +1346,7 @@ def baz():
     \"\"\"
     return 7
 "
-      ;; (font-lock-fontify-buffer)
+      ;; (font-lock-ensure)
       (goto-char 49)
       (fill-paragraph)
       (search-forward "multiline" nil t 3)

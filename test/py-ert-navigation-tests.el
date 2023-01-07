@@ -1285,7 +1285,7 @@ if __name__ == \"__main__\":
                     finally:
                         pass"
     (goto-char (point-max))
-    (py-up-clause)
+    00(py-up-clause)
     (should (looking-at "else:"))))
 
 (ert-deftest py-backward-statement-test-1-QcNOgE ()
@@ -3162,6 +3162,142 @@ ausgabe = kugel.ausgabe"
     (py-down-statement)
     (should (eq (char-after) ?d))))
 
+(ert-deftest py-down-list-test-zsvwPG ()
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)"
+    (goto-char (point-max))
+    (search-backward "keeps")
+    (py-down)
+    (should (eq (char-before) 34))))
+
+(ert-deftest py-down-list-test-5Sc1gJ ()
+  (py-test-with-temp-buffer-point-min
+      "[a, b, c] = 1, 2, 3"
+    (goto-char (point-min))
+    (font-lock-ensure)
+    (py-down)
+    (should (eq (char-before) ?\]))))
+
+(ert-deftest py-forward-commend-test-zsvwPG ()
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    # def __init__(self, d={}):
+    #    self._keys = d.keys()
+    #    dict.__init__(self, d)
+
+    # def usage():
+    #     print(\"\"\"Fehler: %s
+    # Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
+    # 'python roulette.py 1, 'python roulette.py 2', ... 'python roulette.py n'.
+    # \"\"\" % (
+    #           os.path.basename(sys.argv[0])))"
+    (goto-char (point-max))
+    (search-backward "def" nil nil 2)
+    (py-forward-comment)
+    (should (eq 41 (char-before (1- (point)))))
+    ))
+
+(ert-deftest py-down-comment-test-zsvwPG ()
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    # def __init__(self, d={}):
+    #    self._keys = d.keys()
+    #    dict.__init__(self, d)
+
+    # def usage():
+    #     print(\"\"\"Fehler: %s
+    # Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
+    # 'python roulette.py 1, 'python roulette.py 2', ... 'python roulette.py n'.
+    # \"\"\" % (
+    #           os.path.basename(sys.argv[0])))"
+    (goto-char (point-max))
+    (search-backward "def" nil nil 2)
+    (py-down)
+    (backward-char)
+    (sit-for 0.1)
+    (should (eq 41 (char-before)))))
+
+(ert-deftest py-down-string-test-zsvwPG ()
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    # def __init__(self, d={}):
+    #    self._keys = d.keys()
+    #    dict.__init__(self, d)"
+    (goto-char (point-max))
+    (search-backward "This")
+    (py-down)
+    (should (eq 34 (char-before)))
+    ;; (should (eobp))
+    ;; (should (eolp))
+    ;; (sit-for 0.1)
+    ;; (should (eq (char-after) 10))
+    ))
+
+(ert-deftest py-down-string-test-826iF9 ()
+  (py-test-with-temp-buffer
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    # def __init__(self, d={}):
+    #    self._keys = d.keys()
+    #    dict.__init__(self, d)"
+    (font-lock-ensure)
+    (goto-char (point-max))
+    (search-backward "\"\"\"" nil nil 2)
+    (py-down)
+    (sit-for 0.1)
+    (should (eq 34 (char-before)))))
+
+(ert-deftest py-down-class-test-826iF9 ()
+  (py-test-with-temp-buffer-point-min
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    # def __init__(self, d={}):
+    #    self._keys = d.keys()
+    #    dict.__init__(self, d)
+"
+    (font-lock-ensure)
+    (end-of-line)
+    (py-down)
+    (should (eq (char-before) 10))
+    ;; (should (eobp))
+    ;; (should (eolp))
+    ;; (sit-for 0.1)
+    ;; (should (eq (char-after) 10))
+    ))
+
+
+
 (ert-deftest py-backward-minor-block-test-1-OLNs0Y ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
@@ -3432,7 +3568,7 @@ def example3():
     (goto-char (point-min))
     (search-forward "CONN_ID)")
     (py-forward-statement)
-    (should (looking-back "file_name)" (line-beginning-position)))))
+    (should (looking-back "file_name) " (line-beginning-position)))))
 
 (ert-deftest py-forward-class-test-dr9XSR ()
   (py-test-with-temp-buffer-point-min
@@ -4803,10 +4939,252 @@ class CFG(object):
 ]
 "
     (goto-char (point-max))
-    (search-backward "p")
+    (search-backward (char-to-string 40))
     (py-up)
     (should
      (looking-at "return"))))
+
+(ert-deftest py-up-class-test-qqK08x ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "p")
+    (py-up)
+    (should (eq (char-after) 40))
+     ))
+
+(ert-deftest py-up-class-test-IX87h4 ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (search-backward "return")
+    (py-up)
+    (should
+     (looking-at "start, productions"))))
 
 (ert-deftest py-up-class-test-Og0K4A ()
   (py-test-with-temp-buffer
@@ -4927,7 +5305,7 @@ class CFG(object):
     (search-backward "return")
     (py-up)
     (should
-     (looking-at "def fromstring(cls, input, encoding=None):"))))
+     (looking-at "start, productions = read_grammar("))))
 
 (ert-deftest py-up-class-test-Se4t1J ()
   (py-test-with-temp-buffer
@@ -5044,11 +5422,133 @@ class CFG(object):
         return cls(start, productions)
 ]
 "
+    (font-lock-ensure)
     (goto-char (point-max))
-    (search-backward "encoding")
+    (search-backward "read_grammar")
     (py-up)
     (should
      (looking-at "start, productions = read_grammar("))))
+
+(ert-deftest py-up-class-test-N990tk ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (font-lock-ensure)
+    (goto-char (point-max))
+    (search-backward "encoding")
+    (py-up)
+    (should (eq (char-after) 40))))
 
 (ert-deftest py-up-class-test-7dtO1U ()
   (py-test-with-temp-buffer
@@ -5185,6 +5685,39 @@ class CFG(object):
     can use a subclass to implement it.
     \"\"\"
 
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+"
+    (goto-char (point-max))
+    (font-lock-ensure)
+    (search-backward ":param")
+    (py-up)
+    (should (eq (char-after) 34))
+    (should (eq (char-before) 32))
+    ))
+
+(ert-deftest py-up-class-test-FxaOqw ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
     def __init__(self, start, productions, calculate_leftcorners=True):
         \"\"\"
         Create a new context-free grammar, from the given start state
@@ -5288,7 +5821,8 @@ class CFG(object):
 ]
 "
     (goto-char (point-max))
-    (search-backward ":param")
+    (search-backward "\"\"\"" nil nil 2)
+    ;; (goto-char (match-beginning 0))
     (py-up)
     (should
      (looking-at "def fromstring(cls, input, encoding=None):"))))
@@ -5412,7 +5946,7 @@ class CFG(object):
     (search-backward "@classmethod")
     (py-up)
     (should
-     (looking-at "class CFG(object):"))))
+     (looking-at "lc.update(self."))))
 
 (ert-deftest py-up-class-test-xDsoCr ()
   (py-test-with-temp-buffer
@@ -5529,8 +6063,130 @@ class CFG(object):
         return cls(start, productions)
 ]
 "
+    (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "left, set")
+    (py-up)
+    (should (eq (char-after) 40))))
+
+(ert-deftest py-up-class-test-v0jtdP ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (font-lock-ensure)
+    (goto-char (point-max))
+    (search-backward "update")
     (py-up)
     (should
      (looking-at "lc.update(self._immediate_leftcorner_words"))))
@@ -5654,7 +6310,7 @@ class CFG(object):
     (search-backward "for left")
     (py-up)
     (should
-     (looking-at "for cat in self._leftcorners:"))))
+     (looking-at "lc = self._leftcorner_"))))
 
 (ert-deftest py-up-class-test-44LI5k ()
   (py-test-with-temp-buffer
@@ -5893,7 +6549,129 @@ class CFG(object):
 ]
 "
     (goto-char (point-max))
+    (font-lock-ensure)
     (search-backward "In that case it is better")
+    (py-up)
+    (should (eq (char-after) ?#))))
+
+(ert-deftest py-up-class-test-RVj9oG ()
+  (py-test-with-temp-buffer
+      "@python_2_unicode_compatible
+class CFG(object):
+    \"\"\"
+    A context-free grammar.  A grammar consists of a start state and
+    a set of productions.  The set of terminals and nonterminals is
+    implicitly specified by the productions.
+
+    If you need efficient key-based access to productions, you
+    can use a subclass to implement it.
+    \"\"\"
+
+    def __init__(self, start, productions, calculate_leftcorners=True):
+        \"\"\"
+        Create a new context-free grammar, from the given start state
+        and set of \`\`Production\`\`s.
+
+        :param start: The start symbol
+        :type start: Nonterminal
+        :param productions: The list of productions that defines the grammar
+        :type productions: list(Production)
+        :param calculate_leftcorners: False if we don't want to calculate the
+            leftcorner relation. In that case, some optimized chart parsers won't work.
+        :type calculate_leftcorners: bool
+        \"\"\"
+        if not is_nonterminal(start):
+            raise TypeError(
+                \"start should be a Nonterminal object,\"
+                \" not a %s\" % type(start).__name__
+            )
+
+        self._start = start
+        self._productions = productions
+        self._categories = set(prod.lhs() for prod in productions)
+        self._calculate_indexes()
+        self._calculate_grammar_forms()
+        if calculate_leftcorners:
+            self._calculate_leftcorners()
+
+    def _calculate_indexes(self):
+        self._lhs_index = {}
+        self._rhs_index = {}
+        self._empty_index = {}
+        self._lexical_index = {}
+        for prod in self._productions:
+            # Left hand side.
+            lhs = prod._lhs
+            if lhs not in self._lhs_index:
+                self._lhs_index\[lhs] = \[]
+            self._lhs_index\[lhs].append(prod)
+            if prod._rhs:
+                # First item in right hand side.
+                rhs0 = prod._rhs\[0]
+                if rhs0 not in self._rhs_index:
+                    self._rhs_index\[rhs0] = \[]
+                self._rhs_index\[rhs0].append(prod)
+            else:
+                # The right hand side is empty.
+                self._empty_index\[prod.lhs()] = prod
+            # Lexical tokens in the right hand side.
+            for token in prod._rhs:
+                if is_terminal(token):
+                    self._lexical_index.setdefault(token, set()).add(prod)
+
+    def _calculate_leftcorners(self):
+        # Calculate leftcorner relations, for use in optimized parsing.
+        self._immediate_leftcorner_categories = dict(
+            (cat, set(\[cat])) for cat in self._categories
+        )
+        self._immediate_leftcorner_words = dict(
+            (cat, set()) for cat in self._categories
+        )
+        for prod in self.productions():
+            if len(prod) > 0:
+                cat, left = prod.lhs(), prod.rhs()\[0]
+                if is_nonterminal(left):
+                    self._immediate_leftcorner_categories\[cat].add(left)
+                else:
+                    self._immediate_leftcorner_words\[cat].add(left)
+
+        lc = transitive_closure(self._immediate_leftcorner_categories, reflexive=True)
+        self._leftcorners = lc
+        self._leftcorner_parents = invert_graph(lc)
+
+        nr_leftcorner_categories = sum(
+            map(len, self._immediate_leftcorner_categories.values())
+        )
+        nr_leftcorner_words = sum(map(len, self._immediate_leftcorner_words.values()))
+        if nr_leftcorner_words > nr_leftcorner_categories > 10000:
+            # If the grammar is big, the leftcorner-word dictionary will be too large.
+            # In that case it is better to calculate the relation on demand.
+            self._leftcorner_words = None
+            return
+
+        self._leftcorner_words = {}
+        for cat in self._leftcorners:
+            lefts = self._leftcorners\[cat]
+            lc = self._leftcorner_words\[cat] = set()
+            for left in lefts:
+                lc.update(self._immediate_leftcorner_words.get(left, set()))
+
+    @classmethod
+    def fromstring(cls, input, encoding=None):
+        \"\"\"
+        Return the grammar instance corresponding to the input string(s).
+
+        :param input: a grammar, either in the form of a string or as a list of strings.
+        \"\"\"
+        start, productions = read_grammar(
+            input, standard_nonterm_parser, encoding=encoding
+        )
+        return cls(start, productions)
+]
+"
+    (goto-char (point-max))
+    (font-lock-ensure)
+    (search-backward "10000")
     (py-up)
     (should
      (looking-at "if nr_leftcorner_words"))))
@@ -6025,6 +6803,256 @@ class C:
     (search-forward "i" nil nil 2)
     (py-forward-clause)
     (should (looking-back "ausgabe\\[6] = treffer" (line-beginning-position) t))))
+
+(ert-deftest py-up-string-test-NJ7sie ()
+  (py-test-with-temp-buffer
+      "class M:
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+
+        In Python 3.14, the end state is to require and use the module's
+        __spec__.loader and ignore any __loader__ attribute on the
+        module.
+
+        * If you have a __loader__ and a __spec__.loader but they are not the
+        same, in Python 3.12 we issue a DeprecationWarning and fall back to
+        __loader__ for backward compatibility.  In Python 3.14, we'll flip
+        this case to ignoring __loader__ entirely, without error.
+
+        \"\"\"
+        self.a = 1
+        self.b = 2"
+    (font-lock-ensure)
+    (goto-char (point-max))
+    (search-backward "\"\"\"")
+    (py-up)
+    (should (eq (char-after) 34))
+    (should (eq (char-before) 32))))
+
+(ert-deftest py-up-string-test-DVKVO2 ()
+  (py-test-with-temp-buffer
+      "class M:
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+
+        In Python 3.14, the end state is to require and use the module's
+        __spec__.loader and ignore any __loader__ attribute on the
+        module.
+
+        * If you have a __loader__ and a __spec__.loader but they are not the
+        same, in Python 3.12 we issue a DeprecationWarning and fall back to
+        __loader__ for backward compatibility.  In Python 3.14, we'll flip
+        this case to ignoring __loader__ entirely, without error.
+
+        \"\"\"
+        self.a = 1
+        self.b = 2"
+    (goto-char (point-max))
+    (search-backward "error")
+    ;; (and py-debug-p (message "py-version: %s" py-version))
+    (font-lock-ensure)
+    ;; (sit-for 0.1)
+    (py-up)
+    (should (eq (char-after) 34))
+    (should (eq (char-before) 32))
+      ))
+
+(ert-deftest py-up-comment-test-4dAZaV ()
+  (py-test-with-temp-buffer
+      "class M:
+# foo
+# bar
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+
+        In Python 3.14, the end state is to require and use the module's
+        __spec__.loader and ignore any __loader__ attribute on the
+        module.
+
+        * If you have a __loader__ and a __spec__.loader but they are not the
+        same, in Python 3.12 we issue a DeprecationWarning and fall back to
+        __loader__ for backward compatibility.  In Python 3.14, we'll flip
+        this case to ignoring __loader__ entirely, without error.
+
+        \"\"\"
+        self.a = 1
+        self.b = 2"
+    (goto-char (point-max))
+    (search-backward "bar")
+    (py-up)
+    (should (eq (char-after) ?#))
+    (should (eq (char-before) 10))
+      ))
+
+(ert-deftest py-down-class-test-4dAZaV ()
+  (py-test-with-temp-buffer-point-min
+      "class M:
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+
+        See GH#97850 for details.
+        \"\"\"
+        self.a = 1
+        self.b = 2
+"
+    (goto-char (point-min))
+    (py-down)
+    (should (eq (char-before) ?2))))
+
+(ert-deftest py-down-def-test-4dAZaV ()
+  (py-test-with-temp-buffer
+      "class M:
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+
+        See GH#97850 for details.
+        \"\"\"
+        self.a = 1
+        self.b = 2
+"
+    (goto-char (point-max))
+    (search-backward "def")
+    (py-down)
+    (should (eq (char-before) ?2))))
+
+(ert-deftest py-down-test-4dAZaV ()
+  (py-test-with-temp-buffer-point-min
+      "def example3\(\):
+    list\(map\(lambda tpl: print\(f\"{tpl\[0\]} {tpl\[1\]}\"\), enumerate\(\[\"yellow\",\"blue\",\"red\"\]\)\)\)
+
+# Ruby
+# def deliver\(from: \"A\", to: nil, via: \"mail\"\)
+#  \"Sending from #{from} to #{to} via #{via}\"
+
+# from typing import Mapping, Tuple, Sequence
+var1: int = 5
+"
+    (font-lock-ensure)
+    (goto-char (point-min))
+    (search-forward "red")
+    (end-of-line)
+    (py-down)
+    (should (eq (char-before) ?5))))
+
+(ert-deftest py-up-test-NnVYMF ()
+  (py-test-with-temp-buffer
+      "[a, b, c] = 1, 2, 3
+a, *b, c = range(10)
+inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
+(a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+
+class M:
+    def __init__\(self\):
+        \"\"\"Helper function implementing the current module loader policy.1
+
+        In Python 3.14, the end state is to require and use the module's
+        __spec__.loader and ignore any __loader__ attribute on the
+        module.
+
+        See GH#97850 for details.
+        \"\"\"
+        self.a = 1
+        self.b = 2
+"
+    (font-lock-ensure)
+    (goto-char (point-max))
+    (search-backward "def")
+    (py-up)
+    (should (looking-at "class"))))
+
+(ert-deftest py-down-test-NnVYMF ()
+  (py-test-with-temp-buffer
+      "def main\(\):
+    if len\(sys.argv\) == 1:
+        usage\(\)
+        # sys.exit\(\)
+
+    class asdf\(object\):
+        zeit = time.strftime\('%Y%m%d\-\-%H\-%M\-%S'\)
+"
+    (font-lock-ensure)
+    (goto-char (point-max))
+    (search-backward "'")
+    (py-down)
+    (should (eq (char-before) ?'))
+    (py-down)
+    (should (eq (char-before) 41))
+    ))
+
+(ert-deftest py-forward-statement-test-NnVYMF ()
+  (py-test-with-temp-buffer
+      "class kugel\(object\):
+    zeit = time.strftime\('%Y%m%d\-\-%H\-%M\-%S'\)
+    # zeit = time.strftime\('%Y\-%m\-%d\-\-%H\-%M\-%S'\)
+    spiel = \[\]
+    gruen = \[0\]
+    rot = \[1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36\]
+    schwarz = \[2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35\]
+    ausgabe = \[\]
+    treffer = None
+    fertig = ''
+    treffer = random.randint\(0, 36\)
+
+    def pylauf\(self\):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = \[\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"\]
+
+        ausgabe\[0\] = treffer
+        fertig = ''
+#        print\(\"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"\)
+        if treffer in gruen:
+
+            ausgabe\[1\] = treffer
+            ausgabe\[2\] = treffer
+            ausgabe\[3\] = treffer
+            ausgabe\[4\] = treffer
+            ausgabe\[5\] = treffer
+            ausgabe\[6\] = treffer
+            ausgabe\[7\] = treffer
+
+        elif treffer in schwarz:
+
+            ausgabe\[1\] = treffer
+
+        elif treffer in rot:
+
+            ausgabe\[3\] = treffer
+
+        self.geradheit = treffer % 2
+
+        if 0 < self.geradheit:
+
+            ausgabe\[5\] = treffer
+        else:
+            if 0 < treffer:
+
+                ausgabe\[4\] = treffer
+
+        if 0 < treffer:
+            if 18 < treffer:
+
+                ausgabe\[6\] = treffer
+            else:
+
+                ausgabe\[7\] = treffer
+        ausgabe\[8\] = str\(i+1\)
+#        print\(\"ausgabe: %s \" % ausgabe\)
+#        print\(\"len\(ausgabe\): %s \" % len\(ausgabe\)\)
+        for laenge in range\(len\(ausgabe\)\):
+            fertig = fertig + \"\;\" + str\(\(ausgabe\[laenge\]\)\)
+        fertig = fertig\[1:\]
+#        print\(\"fertig: %s \" % fertig\)
+        spiel.append\(fertig\)
+        print\(\"treffer: %s \" % treffer\)
+        return treffer
+"
+    (goto-char (point-max))
+    (search-backward "ausgabe" nil nil 2)
+    (end-of-line)
+    (py-forward-statement)
+    (font-lock-ensure)
+    (sit-for 0.1)
+    (should (eq (char-before) 41))))
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

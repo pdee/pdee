@@ -105,7 +105,7 @@ Travel this INDENT forward"
 If already at the end, go down to next indent in buffer
 Returns final position when moved, nil otherwise"
   (interactive "P")
-  (skip-chars-forward " \t\r\n\f") 
+  (skip-chars-forward " \t\r\n\f")
   (let (done
 	(orig (line-beginning-position))
 	(indent (current-indentation))
@@ -477,24 +477,39 @@ Return position of successful, nil of not started from inside."
 ;; 	(and beg (setq erg (py--forward-assignment-intern)))
 ;; 	erg))))
 
-
 (defun py-up ()
+  "Go to the beginning of current syntactic form in buffer.
+
+If in string or comment, reach the beginning.
+Respective if inside a list, statement, block etc.
+
+If already at the beginning of a block, move these form upward."
   (interactive)
-  (cond
-   ((py--beginning-of-class-p)
-	 (py-up-class (current-indentation)))
-   ((py--beginning-of-def-p)
-	 (py-up-def (current-indentation)))
-   ((py--beginning-of-block-p)
-	 (py-up-block (current-indentation)))
-   ((py--beginning-of-clause-p)
-	 (py-backward-block))
-   ((py-beginning-of-statement-p)
-	 (py-backward-block-or-clause))
-   (t (py-backward-statement))
-   ))
-
-
+  (let ((pps (parse-partial-sexp (point-min) (point)))
+        last)
+    (cond
+     ((nth 8 pps)
+      (while (nth 8 pps)
+        (goto-char (nth 8 pps))
+        (setq last (point))
+        (skip-chars-backward " \t\r\n\f")
+        (setq pps (parse-partial-sexp (point-min) (point))))
+      (when last (goto-char last)))
+     ((nth 1 pps)
+      (goto-char (nth 1 pps)))
+     (t (py-backward-statement)))))
+     ;; ((py-beginning-of-statement-p)
+     ;;  (py-backward-statement))
+     ;; ((py--beginning-of-class-p)
+     ;;  (py-up-class (current-indentation)))
+     ;; ((py--beginning-of-def-p)
+     ;;  (py-up-def (current-indentation)))
+     ;; ((py--beginning-of-block-p)
+     ;;  (py-up-block (current-indentation)))
+     ;; ((py--beginning-of-clause-p)
+     ;;  (py-backward-block))
+     ;; ((py-beginning-of-statement-p)
+     ;;  (py-backward-block-or-clause))
 
 
 (provide 'python-components-move)

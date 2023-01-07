@@ -40,7 +40,7 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
 	'sword': ['cutlass', 'rapier']
     }
 ]"
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "Sequence" nil nil 2)
     (should (eq (face-at-point) nil))
@@ -123,7 +123,7 @@ def foo3(bar):
     return eggs
 "
     (goto-char (point-max))
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (search-backward "spam" nil t 2)
     (should (eq (face-at-point) 'py-variable-name-face))
     (search-backward "spam" nil t 2)
@@ -148,7 +148,7 @@ def foo3(bar):
     name: str = \"\"   ## <--- 'name' is not given the variable face (keeps default)
     idnum: int = 0
 "
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "idnum")
     (should (eq (face-at-point) 'py-variable-name-face))
@@ -180,7 +180,7 @@ def foo3(bar):
         case \[(int() | float()) as value]:
             return Num(value)"
     (goto-char (point-max))
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (search-backward "return")
     (should (face-equal 'font-lock-keyword-face (get-char-property (point) 'face)))
     (search-backward "as")
@@ -200,7 +200,7 @@ def possibly_break():
     pass"
     (goto-char (point-max))
     (search-backward "bly")
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (sit-for 1)
     (should (eq (get-char-property (point) 'face) 'py-def-face))))
 
@@ -222,7 +222,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
 (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
 "
     (goto-char (point-max))
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (sit-for 0.1)
     (search-backward "d")
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
@@ -255,7 +255,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
 (ert-deftest py-variable-name-face-test-FFVt1i ()
   (py-test-with-temp-buffer
       "weight = 23"
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (sit-for 0.1)
     (goto-char (point-max))
     (search-backward "w")
@@ -268,7 +268,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         \"\"\"asdf\"\"\"
         self.a = 1
         self.b = 2"
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (sit-for 0.1)
     (goto-char (point-max))
     (search-backward "b")
@@ -285,7 +285,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
 (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
 "
     (goto-char (point-max))
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (sit-for 0.1)
     (search-backward "y")
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
@@ -298,7 +298,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
       "while foo <= 0:
     foo = float(input(\"You can't play for free! Buy some chips: $\"))"
     (goto-char (point-max))
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (sit-for 0.1)
     (search-backward "foo")
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))
@@ -312,7 +312,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         bet = float(
             input(f\"Insufficient funds! Maximum bet allowed ${money}\\nPlace your bet $\")
         )"
-    (font-lock-fontify-buffer)
+    (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "money:")
     (sit-for 0.1) 

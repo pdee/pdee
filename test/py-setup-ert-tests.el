@@ -108,6 +108,7 @@ BODY is code to be executed within the temp buffer.  Point is
   (declare (indent 1) (debug t))
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
+       ;; (and (featurep 'python) (unload-feature 'python))
        (python-mode)
        (insert ,contents)
        (when py-debug-p
