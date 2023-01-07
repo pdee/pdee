@@ -271,10 +271,9 @@ thus remember line of source buffer"
 		  (insert (concat "    File " (buffer-name exception-buffer) ", line "
 				  (prin1-to-string origline)))))
 	      ;; these are let-bound as `tempbuf'
-	      (and (boundp 'tempbuf)
-		   ;; (message "%s" tempbuf)
-		   (search-forward (buffer-name tempbuf) nil t)
-		   (delete-region (line-beginning-position) (1+ (line-end-position))))
+	      ;; (and (boundp 'tempbuf)
+	      ;;      (search-forward (buffer-name tempbuf) nil t)
+	      ;;      (delete-region (line-beginning-position) (1+ (line-end-position))))
 	      ;; if no buffer-file exists, signal "Buffer", not "File(when
 	      (when erg
 		(goto-char erg)

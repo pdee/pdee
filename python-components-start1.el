@@ -1806,7 +1806,8 @@ Else /usr/bin/python"
 "
   :group 'python-mode)
 
-(defvaralias 'py-shell-name 'py-python-command)
+(defvar py-shell-name py-python-command)
+;; (defvaralias 'py-shell-name 'py-python-command)
 
 (defcustom py-python-command-args '("-i")
   "String arguments to be used when starting a Python shell."
@@ -2330,9 +2331,9 @@ Set `py-keep-windows-configuration' onto \\'force
 Default is nil"
 
   :type '(choice
-          (const :tag "nil" 'nil)
-          (const :tag "t" 't)
-          (const :tag "force" 'force))
+          (const :tag "nil" nil)
+          (const :tag "t" t)
+          (const :tag "force" force))
   :tag "py-keep-windows-configuration"
   :group 'python-mode)
 
@@ -3521,7 +3522,7 @@ TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
   "Returns position if point was moved."
   (let ((orig (point)))
     (cond ((while (and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
-                       ;; (sit-for 1) 
+                       ;; (sit-for 1)
                        (and (nth 8 (parse-partial-sexp (point-min) (point))) (skip-chars-forward "#;" (line-end-position)))))))
     (and (< orig (point))(point))))
 

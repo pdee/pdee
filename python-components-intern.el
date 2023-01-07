@@ -950,7 +950,7 @@ Returns position successful, nil otherwise"
       (setq erg (point)))
     erg))
 
-(defun py-down (&optional indent)
+(defun py-down ()
   "Go to beginning one level below.
 
 Of compound statement or definition at point.
@@ -1109,19 +1109,19 @@ If no further element at same level, go one level up."
                          (py-backward-same-level))))))
     erg))
 
-(defun py-forward-same-level ()
-  "Go form forward keeping indent level if possible.
+;; (defun py-forward-same-level ()
+;;   "Go form forward keeping indent level if possible.
 
-If inside a delimited form --string or list-- go to its beginning.
-If not at beginning of a statement or block, go to its beginning.
-If at beginning of a statement or block, go to previous beginning.
-If no further element at same level, go one level up."
-  (interactive)
-  (let (erg)
-    (unless (py-beginning-of-statement-p)
-      (py-backward-statement))
-    (setq erg (py-down (current-indentation)))
-    erg))
+;; If inside a delimited form --string or list-- go to its beginning.
+;; If not at beginning of a statement or block, go to its beginning.
+;; If at beginning of a statement or block, go to previous beginning.
+;; If no further element at same level, go one level up."
+;;   (interactive)
+;;   (let (erg)
+;;     (unless (py-beginning-of-statement-p)
+;;       (py-backward-statement))
+;;     (setq erg (py-down (current-indentation)))
+;;     erg))
 
 (defun py--end-of-buffer-p ()
   "Returns position, if cursor is at the end of buffer, nil otherwise. "

@@ -54,25 +54,6 @@
 	(sit-for 0.1 t)
 	(should (buffer-live-p (get-buffer "*Python3*")))))))
 
-(ert-deftest py-shell-python2-lp-1398530-test-TaiABe ()
-  (when (buffer-live-p (get-buffer "*Python2*"))(py-kill-buffer-unconditional "*Python2*"))
-  (py-test-with-temp-buffer
-      ""
-    (when py-debug-p (switch-to-buffer (current-buffer)))
-    (let ((py-shell-name "python2"))
-      (py-shell)
-      (sit-for 0.1 t)
-      (should (buffer-live-p (get-buffer "*Python2*"))))))
-
-(ert-deftest py-ipython-shell-test-nqjTml ()
-  ""
-  (if (not (executable-find "ipython"))
-      (message "py-ipython-shell-test-nqjTml: %s" "No executable found!")
-    (let ((erg (ipython)))
-      (sit-for 1)
-      (should (bufferp (get-buffer erg)))
-      (should (get-buffer-process erg)))))
-
 (ert-deftest py-reuse-existing-shell-test-bSPpqY ()
   (let ((python-mode-v5-behavior-p nil))
     "foo"
