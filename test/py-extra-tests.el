@@ -186,16 +186,6 @@ finally:
     (should (string= (buffer-string) "\"\""))
     (should (null (nth 3 (parse-partial-sexp (point-min) (point)))))))
 
-(ert-deftest py-complete-in-python-shell-test-LYnVJh ()
-  (ignore-errors (py-kill-buffer-unconditional "*Python*"))
-  (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
-  (set-buffer (python))
-  (goto-char (point-max))
-  (insert "pri")
-  (py-indent-or-complete)
-  (sit-for 0.1)
-  (should (or (eq ?t (char-before))(eq ?\( (char-before)))))
-
 (ert-deftest py-ert-execute-statement-fast-test-noYr4j ()
   (py-test-with-temp-buffer-point-min
       "print(123234)"

@@ -292,7 +292,7 @@ problem as best as we can determine."
 
             (t (format "Not found: %s(), %s" funcname filename))))))
 
-(defun py--pdbtrack-grub-for-buffer (funcname lineno)
+(defun py--pdbtrack-grub-for-buffer (funcname)
   "Find most recent buffer itself named or having function funcname.
 
 We walk the buffer-list history for python-mode buffers that are
@@ -310,9 +310,9 @@ named for funcname or define a function funcname."
                    (string-match (concat "^\\s-*\\(def\\|class\\)\\s-+"
                                          funcname "\\s-*(")
                                  (save-excursion
-                                   (with-current-buffer  buf
-                                   (buffer-substring (point-min)
-                                                     (point-max)))))))
+                                   (with-current-buffer buf
+                                     (buffer-substring (point-min)
+                                                       (point-max)))))))
           (setq got buf)))
     got))
 
@@ -322,7 +322,7 @@ named for funcname or define a function funcname."
 Internally it uses the `py-pdbtrack-tracked-buffer' variable.
 Returns the tracked buffer."
   (let* ((file-name-prospect (concat (file-remote-p default-directory)
-                              file-name))
+                                     file-name))
          (file-buffer (get-file-buffer file-name-prospect)))
     (if file-buffer
         (setq py-pdbtrack-tracked-buffer file-buffer)

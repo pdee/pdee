@@ -6826,6 +6826,7 @@ class C:
     (goto-char (point-max))
     (search-backward "\"\"\"")
     (py-up)
+    (sit-for 0.1) 
     (should (eq (char-after) 34))
     (should (eq (char-before) 32))))
 
