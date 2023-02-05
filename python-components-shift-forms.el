@@ -26,22 +26,22 @@
 
 
 (defun py-shift-left (&optional count start end)
-  "Dedent region according to `py-indent-offset' by COUNT times.
+  "Dedent region according to ‘py-indent-offset’ by COUNT times.
 
 If no region is active, current line is dedented.
 Return indentation reached
-Optional COUNT: COUNT times `py-indent-offset'
+Optional COUNT: COUNT times ‘py-indent-offset’
 Optional START: region beginning
 Optional END: region end"
   (interactive "p")
   (py--shift-intern (- count) start end))
 
 (defun py-shift-right (&optional count beg end)
-  "Indent region according to `py-indent-offset' by COUNT times.
+  "Indent region according to ‘py-indent-offset’ by COUNT times.
 
 If no region is active, current line is indented.
 Return indentation reached
-Optional COUNT: COUNT times `py-indent-offset'
+Optional COUNT: COUNT times ‘py-indent-offset’
 Optional BEG: region beginning
 Optional END: region end"
   (interactive "p")
@@ -97,7 +97,7 @@ Optional END: region end"
 (defun py-shift-block-right (&optional arg)
   "Indent block by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -107,7 +107,7 @@ Return outmost indentation reached."
 (defun py-shift-block-left (&optional arg)
   "Dedent block by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -117,7 +117,7 @@ Return outmost indentation reached."
 (defun py-shift-block-or-clause-right (&optional arg)
   "Indent block-or-clause by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -127,7 +127,7 @@ Return outmost indentation reached."
 (defun py-shift-block-or-clause-left (&optional arg)
   "Dedent block-or-clause by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -137,7 +137,7 @@ Return outmost indentation reached."
 (defun py-shift-class-right (&optional arg)
   "Indent class by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -147,7 +147,7 @@ Return outmost indentation reached."
 (defun py-shift-class-left (&optional arg)
   "Dedent class by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -157,7 +157,7 @@ Return outmost indentation reached."
 (defun py-shift-clause-right (&optional arg)
   "Indent clause by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -167,7 +167,7 @@ Return outmost indentation reached."
 (defun py-shift-clause-left (&optional arg)
   "Dedent clause by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -177,7 +177,7 @@ Return outmost indentation reached."
 (defun py-shift-comment-right (&optional arg)
   "Indent comment by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -187,7 +187,7 @@ Return outmost indentation reached."
 (defun py-shift-comment-left (&optional arg)
   "Dedent comment by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -197,7 +197,7 @@ Return outmost indentation reached."
 (defun py-shift-def-right (&optional arg)
   "Indent def by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -207,7 +207,7 @@ Return outmost indentation reached."
 (defun py-shift-def-left (&optional arg)
   "Dedent def by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -217,7 +217,7 @@ Return outmost indentation reached."
 (defun py-shift-def-or-class-right (&optional arg)
   "Indent def-or-class by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -227,7 +227,7 @@ Return outmost indentation reached."
 (defun py-shift-def-or-class-left (&optional arg)
   "Dedent def-or-class by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -237,7 +237,7 @@ Return outmost indentation reached."
 (defun py-shift-indent-right (&optional arg)
   "Indent indent by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -247,7 +247,7 @@ Return outmost indentation reached."
 (defun py-shift-indent-left (&optional arg)
   "Dedent indent by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -257,7 +257,7 @@ Return outmost indentation reached."
 (defun py-shift-minor-block-right (&optional arg)
   "Indent minor-block by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -267,7 +267,7 @@ Return outmost indentation reached."
 (defun py-shift-minor-block-left (&optional arg)
   "Dedent minor-block by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -277,7 +277,7 @@ Return outmost indentation reached."
 (defun py-shift-paragraph-right (&optional arg)
   "Indent paragraph by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -287,7 +287,7 @@ Return outmost indentation reached."
 (defun py-shift-paragraph-left (&optional arg)
   "Dedent paragraph by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -297,7 +297,7 @@ Return outmost indentation reached."
 (defun py-shift-region-right (&optional arg)
   "Indent region by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -307,7 +307,7 @@ Return outmost indentation reached."
 (defun py-shift-region-left (&optional arg)
   "Dedent region by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -317,7 +317,7 @@ Return outmost indentation reached."
 (defun py-shift-statement-right (&optional arg)
   "Indent statement by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -327,7 +327,7 @@ Return outmost indentation reached."
 (defun py-shift-statement-left (&optional arg)
   "Dedent statement by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -337,7 +337,7 @@ Return outmost indentation reached."
 (defun py-shift-top-level-right (&optional arg)
   "Indent top-level by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
@@ -347,7 +347,7 @@ Return outmost indentation reached."
 (defun py-shift-top-level-left (&optional arg)
   "Dedent top-level by COUNT spaces.
 
-COUNT defaults to `py-indent-offset',
+COUNT defaults to ‘py-indent-offset’,
 use \[universal-argument] to specify a different value.
 
 Return outmost indentation reached."

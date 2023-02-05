@@ -26,7 +26,7 @@
 
 (defmacro py-rx (&rest regexps)
   "Python mode specialized rx macro.
-This variant of `rx' supports common Python named REGEXPS."
+This variant of ‘rx’ supports common Python named REGEXPS."
   `(rx-let ((sp-bsnl (or space (and ?\\ ?\n)))
             (sp-nl (or space (and (? ?\\) ?\n)))
             (block-start       (seq symbol-start
@@ -115,7 +115,7 @@ This variant of `rx' supports common Python named REGEXPS."
 ;; lifted from python.el
 (defun py-font-lock-assignment-matcher (regexp)
   "Font lock matcher for assignments based on REGEXP.
-Search for next occurrence if REGEXP matched within a `paren'
+Search for next occurrence if REGEXP matched within a ‘paren’
 context (to avoid, e.g., default values for arguments or passing
 arguments by name being treated as assignments) or is followed by
 an '=' sign (to avoid '==' being treated as an assignment.  Set

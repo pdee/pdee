@@ -34,13 +34,13 @@ This is for compatibility with Emacs < 24.4."
 (defun py-shell-accept-process-output (process &optional timeout regexp)
   "Accept PROCESS output with TIMEOUT until REGEXP is found.
 Optional argument TIMEOUT is the timeout argument to
-`accept-process-output' calls.  Optional argument REGEXP
+‘accept-process-output’ calls.  Optional argument REGEXP
 overrides the regexp to match the end of output, defaults to
-`comint-prompt-regexp'.  Returns non-nil when output was
+‘comint-prompt-regexp’.  Returns non-nil when output was
 properly captured.
 
 This utility is useful in situations where the output may be
-received in chunks, since `accept-process-output' gives no
+received in chunks, since ‘accept-process-output’ gives no
 guarantees they will be grabbed in a single call.  An example use
 case for this would be the CPython shell start-up, where the
 banner and the initial prompt are received separately."
@@ -72,7 +72,7 @@ completion."
                       "^'\\|^\"\\|;\\|'$\\|\"$" t)))))
 
 (defun py-shell-completion-at-point (&optional process)
-  "Function for `completion-at-point-functions' in `py-shell-mode'.
+  "Function for ‘completion-at-point-functions’ in ‘py-shell-mode’.
 Optional argument PROCESS forces completions to be retrieved
 using that one instead of current buffer's process."
   ;; (setq process (or process (get-buffer-process (current-buffer))))
@@ -110,7 +110,7 @@ using that one instead of current buffer's process."
             process import-statement)))))
 
 (defun py-comint-watch-for-first-prompt-output-filter (output)
-  "Run `py-shell-first-prompt-hook' when first prompt is found in OUTPUT."
+  "Run ‘py-shell-first-prompt-hook’ when first prompt is found in OUTPUT."
   (when (not py-shell--first-prompt-received)
     (set (make-local-variable 'py-shell--first-prompt-received-output-buffer)
          (concat py-shell--first-prompt-received-output-buffer
@@ -150,7 +150,7 @@ using that one instead of current buffer's process."
 (defmacro py-shell-font-lock-with-font-lock-buffer (&rest body)
   "Execute the forms in BODY in the font-lock buffer.
 The value returned is the value of the last form in BODY.  See
-also `with-current-buffer'."
+also ‘with-current-buffer’."
   (declare (indent 0) (debug t))
   `(save-current-buffer
      (when (not (and py-shell--font-lock-buffer
@@ -292,9 +292,9 @@ With argument MSG show activation/deactivation message."
 
 (when (featurep 'comint-mime)
   (defun comint-mime-setup-py-shell ()
-    "Enable `comint-mime'.
+    "Enable ‘comint-mime’.
 
-Setup code specific to `py-shell-mode'."
+Setup code specific to ‘py-shell-mode’."
     (interactive)
     ;; (if (not py-shell--first-prompt-received)
     ;; (add-hook 'py-shell-first-prompt-hook #'comint-mime-setup-py-shell nil t)

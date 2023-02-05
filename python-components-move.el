@@ -164,7 +164,7 @@ REPEAT - count and consider repeats"
           (orig (or orig (point)))
           erg)
       (if (< py-max-specpdl-size repeat)
-	  (error "`py-backward-expression' reached loops max")
+	  (error "‘py-backward-expression’ reached loops max")
 	(cond
 	 ;; comments
 	 ((nth 8 pps)
@@ -206,7 +206,7 @@ REPEAT - count and consider repeats"
           (orig (or orig (point)))
           erg)
       (if (< py-max-specpdl-size repeat)
-	  (error "`py-forward-expression' reached loops max")
+	  (error "‘py-forward-expression’ reached loops max")
 	(cond
 	 ;; in comment
 	 ((nth 4 pps)
@@ -290,9 +290,9 @@ Return position reached."
 ;; Partial- or Minor Expression
 ;;  Line
 (defun py-backward-line ()
-  "Go to `beginning-of-line', return position.
+  "Go to ‘beginning-of-line’, return position.
 
-If already at `beginning-of-line' and not at BOB,
+If already at ‘beginning-of-line’ and not at BOB,
 go to beginning of previous line."
   (interactive)
   (unless (bobp)
@@ -305,9 +305,9 @@ go to beginning of previous line."
       erg)))
 
 (defun py-forward-line ()
-  "Go to `end-of-line', return position.
+  "Go to ‘end-of-line’, return position.
 
-If already at `end-of-line' and not at EOB, go to end of next line."
+If already at ‘end-of-line’ and not at EOB, go to end of next line."
   (interactive)
   (unless (eobp)
     (let ((orig (point)))
@@ -320,7 +320,7 @@ If already at `end-of-line' and not at EOB, go to end of next line."
 
 With \\[universal-argument] (programmatically, optional argument ARG), do it that many times.
 IACT - if called interactively
-A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
+A ‘nomenclature’ is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
   (or arg (setq arg 1))
   (let ((case-fold-search nil)
@@ -370,7 +370,7 @@ A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
 With optional ARG, move that many times.  If ARG is negative, move
 forward.
 
-A `nomenclature' is a fancy way of saying AWordWithMixedCaseNotUnderscores."
+A ‘nomenclature’ is a fancy way of saying AWordWithMixedCaseNotUnderscores."
   (interactive "p")
   (setq arg (or arg 1))
   (py-forward-into-nomenclature (- arg)))
@@ -463,7 +463,7 @@ Return position of successful, nil of not started from inside."
 ;;     (if (eq last-command 'py-backward-assignment)
 ;; 	;; assume at start of an assignment
 ;; 	(py--forward-assignment-intern)
-;;       ;; `py-backward-assignment' here, avoid `py--beginning-of-assignment-p' a second time
+;;       ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time
 ;;       (let* (last
 ;; 	     (beg
 ;; 	      (or (py--beginning-of-assignment-p)

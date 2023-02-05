@@ -30,7 +30,7 @@
 Default is t")
 
 (defvar py-menu nil
-  "Make a dynamically bound variable `py-menu'.")
+  "Make a dynamically bound variable ‘py-menu’.")
 
 
 (setq python-mode-map
@@ -53,7 +53,7 @@ Default is t")
         ;; (define-key map [(meta i)] 'py-indent-forward-line)
         ;; (define-key map [(control j)] 'py-newline-and-indent)
 	(define-key map (kbd "C-j") 'newline)
-        ;; Most Pythoneers expect RET `py-newline-and-indent'
+        ;; Most Pythoneers expect RET ‘py-newline-and-indent’
 	;; which is default of var py-return-key’
         (define-key map (kbd "RET") py-return-key)
         ;; (define-key map (kbd "RET") 'newline)
@@ -171,7 +171,7 @@ Default is t")
   "Used inside a Python-shell.")
 
 (defvar py-ipython-shell-mode-map py-python-shell-mode-map
-  "Copy `py-python-shell-mode-map' here.")
+  "Copy ‘py-python-shell-mode-map’ here.")
 
 (defvar py-shell-map py-python-shell-mode-map)
 

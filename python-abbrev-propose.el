@@ -21,14 +21,14 @@
 
 ;;; Commentary:
 
-;; A slightly modified `add-mode-abbrev' providing a
+;; A slightly modified ‘add-mode-abbrev’ providing a
 ;; proposal for new abbrevs. Proposal is composed from
 ;; the initial character(s) of the expansion.
 
 ;;; Code:
 
 (defun py-edit-abbrevs ()
-  "Jumps to `python-mode-abbrev-table'."
+  "Jumps to ‘python-mode-abbrev-table’."
   (interactive)
   (save-excursion
     (let ((mat (abbrev-table-name local-abbrev-table)))

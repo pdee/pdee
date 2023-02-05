@@ -85,7 +85,7 @@
 (defun py-execute-block-python (&optional dedicated fast split switch proc)
   "Send block at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'block 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -93,7 +93,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-block-python-dedicated (&optional fast split switch proc)
   "Send block at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'block 'python t switch nil nil nil fast proc wholebuf split)))
@@ -185,7 +185,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-block-or-clause-python (&optional dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'block-or-clause 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -193,7 +193,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-block-or-clause-python-dedicated (&optional fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'block-or-clause 'python t switch nil nil nil fast proc wholebuf split)))
@@ -327,7 +327,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-buffer-python (&optional dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
         (wholebuf t)
@@ -342,7 +342,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-buffer-python-dedicated (&optional fast split switch proc)
   "Send buffer at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((py-master-file (or py-master-file (py-fetch-py-master-file)))
         (wholebuf t)
@@ -497,7 +497,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-class-python (&optional dedicated fast split switch proc)
   "Send class at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'class 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -505,7 +505,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-class-python-dedicated (&optional fast split switch proc)
   "Send class at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'class 'python t switch nil nil nil fast proc wholebuf split)))
@@ -597,7 +597,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-clause-python (&optional dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'clause 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -605,7 +605,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-clause-python-dedicated (&optional fast split switch proc)
   "Send clause at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'clause 'python t switch nil nil nil fast proc wholebuf split)))
@@ -697,7 +697,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-def-python (&optional dedicated fast split switch proc)
   "Send def at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'def 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -705,7 +705,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-def-python-dedicated (&optional fast split switch proc)
   "Send def at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'def 'python t switch nil nil nil fast proc wholebuf split)))
@@ -797,7 +797,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-def-or-class-python (&optional dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'def-or-class 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -805,7 +805,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-def-or-class-python-dedicated (&optional fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'def-or-class 'python t switch nil nil nil fast proc wholebuf split)))
@@ -897,7 +897,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-expression-python (&optional dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'expression 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -905,7 +905,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-expression-python-dedicated (&optional fast split switch proc)
   "Send expression at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'expression 'python t switch nil nil nil fast proc wholebuf split)))
@@ -997,7 +997,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-indent-python (&optional dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'indent 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -1005,7 +1005,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-indent-python-dedicated (&optional fast split switch proc)
   "Send indent at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'indent 'python t switch nil nil nil fast proc wholebuf split)))
@@ -1097,7 +1097,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-line-python (&optional dedicated fast split switch proc)
   "Send line at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'line 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -1105,7 +1105,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-line-python-dedicated (&optional fast split switch proc)
   "Send line at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'line 'python t switch nil nil nil fast proc wholebuf split)))
@@ -1197,7 +1197,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-minor-block-python (&optional dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'minor-block 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -1205,7 +1205,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-minor-block-python-dedicated (&optional fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'minor-block 'python t switch nil nil nil fast proc wholebuf split)))
@@ -1297,7 +1297,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-paragraph-python (&optional dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'paragraph 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -1305,7 +1305,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-paragraph-python-dedicated (&optional fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'paragraph 'python t switch nil nil nil fast proc wholebuf split)))
@@ -1397,7 +1397,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-partial-expression-python (&optional dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'partial-expression 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -1405,7 +1405,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-partial-expression-python-dedicated (&optional fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'partial-expression 'python t switch nil nil nil fast proc wholebuf split)))
@@ -1497,7 +1497,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-region-python (beg end &optional dedicated fast split switch proc)
   "Send region at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive "r")
   (let ((wholebuf nil))
     (py--execute-prepare 'region 'python dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
@@ -1505,7 +1505,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-region-python-dedicated (beg end &optional fast split switch proc)
   "Send region at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive "r")
   (let ((wholebuf nil))
     (py--execute-prepare 'region 'python t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
@@ -1597,7 +1597,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-statement-python (&optional dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'statement 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -1605,7 +1605,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-statement-python-dedicated (&optional fast split switch proc)
   "Send statement at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'statement 'python t switch nil nil nil fast proc wholebuf split)))
@@ -1697,7 +1697,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-top-level-python (&optional dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'top-level 'python dedicated switch nil nil nil fast proc wholebuf split)))
@@ -1705,7 +1705,7 @@ For `default' see value of `py-shell-name'"
 (defun py-execute-top-level-python-dedicated (&optional fast split switch proc)
   "Send top-level at point to a python3 unique interpreter.
 
-For `default' see value of `py-shell-name'"
+For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
     (py--execute-prepare 'top-level 'python t switch nil nil nil fast proc wholebuf split)))

@@ -93,7 +93,7 @@ For example:
   (file-exists-p (concat dir "/bin/activate")))
 
 (defun virtualenv-workon-complete ()
-  "Return available completions for `virtualenv-workon'."
+  "Return available completions for ‘virtualenv-workon’."
   (let
       ;;Varlist
       ((filelist (directory-files virtualenv-workon-home t)))

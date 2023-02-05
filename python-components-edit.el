@@ -50,7 +50,7 @@
   "Indent the current line to the outmost reasonable indent.
 
 With optional \\[universal-argument] ARG, unconditionally insert an indent of
-`py-indent-offset' length."
+‘py-indent-offset’ length."
   (interactive "*P")
   (cond
    ((eq 4 (prefix-numeric-value arg))
@@ -80,7 +80,7 @@ With optional \\[universal-argument] ARG, unconditionally insert an indent of
 ;; TODO: the following function can fall into an infinite loop.
 ;; See https://gitlab.com/python-mode-devs/python-mode/-/issues/99
 (defun py--indent-fix-region-intern (beg end)
-  "Used when `py-tab-indents-region-p' is non-nil.
+  "Used when ‘py-tab-indents-region-p’ is non-nil.
 
 Requires BEG, END as the boundery of region"
   (save-excursion
@@ -200,17 +200,17 @@ ignore dedenting rules for block closing statements
 \(e.g. return, raise, break, continue, pass)
 
 An optional \\[universal-argument] followed by a numeric argument
-neither 1 nor 4 will switch off `py-smart-indentation' for this execution.
+neither 1 nor 4 will switch off ‘py-smart-indentation’ for this execution.
 This permits to correct allowed but unwanted indents. Similar to
-`py-toggle-smart-indentation' resp. `py-smart-indentation-off' followed by TAB.
+‘py-toggle-smart-indentation’ resp. ‘py-smart-indentation-off’ followed by TAB.
 
 OUTMOST-ONLY stops circling possible indent.
 
-When `py-tab-shifts-region-p' is t, not just the current line,
+When ‘py-tab-shifts-region-p’ is t, not just the current line,
 but the region is shiftet that way.
 
-If `py-tab-indents-region-p' is t and first TAB doesn't shift
---as indent is at outmost reasonable--, `indent-region' is called.
+If ‘py-tab-indents-region-p’ is t and first TAB doesn't shift
+--as indent is at outmost reasonable--, ‘indent-region’ is called.
 
 Optional arg DEDENT: force dedent.
 
@@ -263,7 +263,7 @@ Optional arg DEDENT: force dedent.
 (defun py--delete-trailing-whitespace (orig)
   "Delete trailing whitespace.
 
-Either `py-newline-delete-trailing-whitespace-p'
+Either ‘py-newline-delete-trailing-whitespace-p’
 or `
 py-trailing-whitespace-smart-delete-p' must be t.
 
@@ -319,9 +319,9 @@ Returns column."
       (indent-to (- (py-compute-indentation) py-indent-offset)))))
 
 (defun py-toggle-indent-tabs-mode ()
-  "Toggle `indent-tabs-mode'.
+  "Toggle ‘indent-tabs-mode’.
 
-Returns value of `indent-tabs-mode' switched to."
+Returns value of ‘indent-tabs-mode’ switched to."
   (interactive)
   (when
       (setq indent-tabs-mode (not indent-tabs-mode))
@@ -330,10 +330,10 @@ Returns value of `indent-tabs-mode' switched to."
   indent-tabs-mode)
 
 (defun py-indent-tabs-mode (arg)
-  "With positive ARG switch `indent-tabs-mode' on.
+  "With positive ARG switch ‘indent-tabs-mode’ on.
 
-With negative ARG switch `indent-tabs-mode' off.
-Returns value of `indent-tabs-mode' switched to.
+With negative ARG switch ‘indent-tabs-mode’ off.
+Returns value of ‘indent-tabs-mode’ switched to.
 
 If IACT is provided, message result"
   (interactive "p")
@@ -346,19 +346,19 @@ If IACT is provided, message result"
   indent-tabs-mode)
 
 (defun py-indent-tabs-mode-on (arg)
-  "Switch `indent-tabs-mode' according to ARG."
+  "Switch ‘indent-tabs-mode’ according to ARG."
   (interactive "p")
   (py-indent-tabs-mode (abs arg)))
 
 (defun py-indent-tabs-mode-off (arg)
-  "Switch `indent-tabs-mode' according to ARG."
+  "Switch ‘indent-tabs-mode’ according to ARG."
   (interactive "p")
   (py-indent-tabs-mode (- (abs arg))))
 
 ;;  Guess indent offset
 
 (defun py--comment-indent-function ()
-  "Python version of `comment-indent-function'."
+  "Python version of ‘comment-indent-function’."
   ;; This is required when filladapt is turned off.  Without it, when
   ;; filladapt is not used, comments which start in column zero
   ;; cascade one character to the right
@@ -381,7 +381,7 @@ If IACT is provided, message result"
 Indented same level, which don't open blocks.
 Typically declarations resp. initialisations of variables following
 a class or function definition.
-See also `py--bounds-of-statements'"
+See also ‘py--bounds-of-statements’"
   (let* ((orig-indent (progn
                         (back-to-indentation)
                         (unless (py--beginning-of-statement-p)
@@ -438,7 +438,7 @@ Move in current level which don't open blocks."
 
 Forms don't open blocks or start with a keyword.
 
-See also `py-statements'."
+See also ‘py-statements’."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (beg (car bounds))
@@ -453,7 +453,7 @@ See also `py-statements'."
 (defun py-kill-declarations ()
   "Delete variables declared in current level.
 
-Store deleted variables in `kill-ring'"
+Store deleted variables in ‘kill-ring’"
   (interactive "*")
   (let* ((bounds (py--bounds-of-declarations))
          (beg (car bounds))
@@ -529,7 +529,7 @@ Indented same level, which don't open blocks."
 
 These statements don't open blocks.
 
-More general than `py-declarations'."
+More general than ‘py-declarations’."
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))
@@ -544,7 +544,7 @@ More general than `py-declarations'."
 (defun py-kill-statements ()
   "Delete statements declared in current level.
 
-Store deleted statements in `kill-ring'"
+Store deleted statements in ‘kill-ring’"
   (interactive "*")
   (let* ((bounds (py--bounds-of-statements))
          (beg (car bounds))
@@ -657,7 +657,7 @@ Returns the string inserted."
   (insert-buffer-substring py-edit-buffer))
 
 (defun py-edit--intern (buffer-name mode &optional beg end prefix suffix)
-  "Edit string or active region in `python-mode'.
+  "Edit string or active region in ‘python-mode’.
 
 arg BUFFER-NAME: a string.
 arg MODE: which buffer-mode used in edit-buffer"
@@ -686,7 +686,7 @@ arg MODE: which buffer-mode used in edit-buffer"
 	(message "%s" "Type C-c C-c writes contents back")))))
 
 (defun py-edit-docstring ()
-  "Edit docstring or active region in `python-mode'."
+  "Edit docstring or active region in ‘python-mode’."
   (interactive "*")
   (py-edit--intern "Edit docstring" 'python-mode))
 
@@ -719,7 +719,7 @@ arg MODE: which buffer-mode used in edit-buffer"
     (insert erg)))
 
 (defun py-prettyprint-assignment ()
-  "Prettyprint assignment in `python-mode'."
+  "Prettyprint assignment in ‘python-mode’."
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
   (save-excursion

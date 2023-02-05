@@ -13,7 +13,7 @@ Worked nicely here with Python 3.3.0
 
 This will create `build/python.texi`.
 
-Afterwards run `makeinfo' at the texi-file. 
+Afterwards run ‘makeinfo’ at the texi-file. 
 
 In order to get them recognised by Emacs info-reader,
 maybe copy the info-files into a known info-directory
@@ -26,7 +26,7 @@ should appear in $INFOPATH.
 
 ######
 
-`info-lookup-symbol' needs patched python-info.el available at
+‘info-lookup-symbol’ needs patched python-info.el available at
 http://bitbucket.org/andreas_roehler/pydoc-info
 
 Thanks Jonathan Waltman providing the original python-info.el:

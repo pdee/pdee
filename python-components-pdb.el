@@ -59,7 +59,7 @@ Optional LINE FILE CONDITION"
     (py-execute-string (concat "import pdb;pdb.break('" line "')"))))
 
 (defun py--pdb-versioned ()
-  "Guess existing pdb version from `py-shell-name'.
+  "Guess existing pdb version from ‘py-shell-name’.
 
 Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
   (interactive)
@@ -79,8 +79,8 @@ Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
 The directory containing FILE becomes the initial working directory
 and source-file directory for your debugger.
 
-At GNU Linux required pdb version should be detected by `py--pdb-version'
-at Windows configure `py-python-ms-pdb-command'
+At GNU Linux required pdb version should be detected by ‘py--pdb-version’
+at Windows configure ‘py-python-ms-pdb-command’
 
 lp:963253
 Argument COMMAND-LINE TBD."
@@ -97,14 +97,14 @@ Argument COMMAND-LINE TBD."
   (pdb command-line))
 
 (defun py--pdb-current-executable ()
-  "When `py-pdb-executable' is set, return it.
+  "When ‘py-pdb-executable’ is set, return it.
 
-Otherwise return resuslt from `executable-find'"
+Otherwise return resuslt from ‘executable-find’"
   (or py-pdb-executable
       (executable-find "pdb")))
 
 (defun py-update-gud-pdb-history ()
-  "Put pdb file name at the head of `gud-pdb-history'.
+  "Put pdb file name at the head of ‘gud-pdb-history’.
 
 If pdb is called at a Python buffer."
   (interactive)
@@ -168,16 +168,16 @@ If pdb is called at a Python buffer."
   "Show the file indicated by the pdb stack entry line, in a separate window.
 
 Activity is disabled if the buffer-local variable
-`py-pdbtrack-do-tracking-p' is nil.
+‘py-pdbtrack-do-tracking-p’ is nil.
 
-We depend on the pdb input prompt matching `py-pdbtrack-input-prompt'
+We depend on the pdb input prompt matching ‘py-pdbtrack-input-prompt’
 at the beginning of the line.
 
 If the traceback target file path is invalid, we look for the most
 recently visited python-mode buffer which either has the name of the
 current function \(or class) or which defines the function \(or
-class).  This is to provide for remote scripts, eg, Zope's 'Script
-\(Python)' - put a _copy_ of the script in a buffer named for the
+class).  This is to provide for remote scripts, eg, Zope's ‘Script
+\(Python)’ - put a _copy_ of the script in a buffer named for the
 script, and set to python-mode, and pdbtrack will find it.)"
   ;; Instead of trying to piece things together from partial text
   ;; (which can be almost useless depending on Emacs version), we
@@ -187,7 +187,7 @@ script, and set to python-mode, and pdbtrack will find it.)"
   ;; Also, we're very conservative about clearing the overlay arrow,
   ;; to minimize residue.  This means, for instance, that executing
   ;; other pdb commands wipe out the highlight.  You can always do a
-  ;; 'where' (aka 'w') command to reveal the overlay arrow.
+  ;; ‘where’ (aka ‘w’) command to reveal the overlay arrow.
   (let* ((origbuf (current-buffer))
          (currproc (get-buffer-process origbuf)))
 
@@ -319,7 +319,7 @@ named for funcname or define a function funcname."
 ;; pdbtrack functions
 (defun py-pdbtrack-set-tracked-buffer (file-name)
   "Set the buffer for FILE-NAME as the tracked buffer.
-Internally it uses the `py-pdbtrack-tracked-buffer' variable.
+Internally it uses the ‘py-pdbtrack-tracked-buffer’ variable.
 Returns the tracked buffer."
   (let* ((file-name-prospect (concat (file-remote-p default-directory)
                                      file-name))
@@ -338,7 +338,7 @@ Returns the tracked buffer."
     file-buffer))
 
 (defun py-pdbtrack-toggle-stack-tracking (arg)
-  "Set variable `py-pdbtrack-do-tracking-p'. "
+  "Set variable ‘py-pdbtrack-do-tracking-p’. "
   (interactive "P")
   ;; (if (not (get-buffer-process (current-buffer)))
   ;; (error "No process associated with buffer '%s'" (current-buffer)))

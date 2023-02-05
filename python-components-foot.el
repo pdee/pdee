@@ -112,9 +112,9 @@
   "Major mode for editing Python files.
 
 To submit a report, enter `\\[py-submit-bug-report]'
-from a`python-mode' buffer.
+from a‘python-mode’ buffer.
 Do `\\[py-describe-mode]' for detailed documentation.
-To see what version of `python-mode' you are running,
+To see what version of ‘python-mode’ you are running,
 enter `\\[py-version]'.
 
 This mode knows about Python indentation,
@@ -123,9 +123,9 @@ Paragraphs are separated by blank lines only.
 
 COMMANDS
 
-`py-shell'\tStart an interactive Python interpreter in another window
-`py-execute-statement'\tSend statement at point to Python default interpreter
-`py-backward-statement'\tGo to the initial line of a simple statement
+‘py-shell’\tStart an interactive Python interpreter in another window
+‘py-execute-statement’\tSend statement at point to Python default interpreter
+‘py-backward-statement’\tGo to the initial line of a simple statement
 
 etc.
 
@@ -133,10 +133,10 @@ See available commands listed in files commands-python-mode at directory doc
 
 VARIABLES
 
-`py-indent-offset'	indentation increment
-`py-shell-name'		shell command to invoke Python interpreter
-`py-split-window-on-execute'		When non-nil split windows
-`py-switch-buffers-on-execute-p'	When non-nil switch to the Python output buffer
+‘py-indent-offset’	indentation increment
+‘py-shell-name’		shell command to invoke Python interpreter
+‘py-split-window-on-execute’		When non-nil split windows
+‘py-switch-buffers-on-execute-p’	When non-nil switch to the Python output buffer
 
 \\{python-mode-map}"
   :group 'python-mode
@@ -161,7 +161,7 @@ VARIABLES
            '(python-font-lock-keywords nil nil nil nil
 				       (font-lock-syntactic-keywords
 					. py-font-lock-syntactic-keywords)))))
-  ;; avoid to run py-choose-shell again from `py--fix-start'
+  ;; avoid to run py-choose-shell again from ‘py--fix-start’
   (cond ((string-match "ython3" py-python-edit-version)
 	 (font-lock-add-keywords 'python-mode
 				 '(("\\<print\\>" . 'py-builtins-face)
@@ -201,6 +201,8 @@ VARIABLES
   (and py-load-skeletons-p (py-load-skeletons))
   (and py-guess-py-install-directory-p (py-set-load-path))
   (and py-autopair-mode
+       (declare-function autopair-python-triple-quote-action "autopair" ())
+       (declare-function autopair-default-handle-action "autopair" ())
        (load-library "autopair")
        (add-hook 'python-mode-hook
                  #'(lambda ()
@@ -275,17 +277,17 @@ VARIABLES
   "Major mode for Python shell process.
 
 Variables
-`py-shell-prompt-regexp',
-`py-shell-prompt-output-regexp',
+‘py-shell-prompt-regexp’,
+‘py-shell-prompt-output-regexp’,
 `py-shell-input-prompt-2-regexp',
-`py-shell-fontify-p',
-`py-completion-setup-code',
-`py-shell-completion-string-code',
+‘py-shell-fontify-p’,
+‘py-completion-setup-code’,
+‘py-shell-completion-string-code’,
 can customize this mode for different Python interpreters.
 
-This mode resets `comint-output-filter-functions' locally, so you
+This mode resets ‘comint-output-filter-functions’ locally, so you
 may want to re-add custom functions to it using the
-`py-shell-mode-hook'.
+‘py-shell-mode-hook’.
 
 \(Type \\[describe-mode] in the process buffer for a list of commands.)"
   (setq mode-line-process '(":%s"))
@@ -370,7 +372,7 @@ may want to re-add custom functions to it using the
 (unless (member '("!#[          ]*/.*[jp]ython[0-9.]*" . python-mode) magic-mode-alist)
   (push '("!#[ \\t]*/.*[jp]ython[0-9.]*" . python-mode) magic-mode-alist))
 
-;;  lp:1355458, what about using `magic-mode-alist'?
+;;  lp:1355458, what about using ‘magic-mode-alist’?
 
 (defalias 'py-hungry-delete-forward 'c-hungry-delete-forward)
 (defalias 'py-hungry-delete-backwards 'c-hungry-delete-backwards)

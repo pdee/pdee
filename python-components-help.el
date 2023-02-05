@@ -28,7 +28,7 @@
 (eval-when-compile (require 'info))
 
 (defun py-info-lookup-symbol ()
-  "Call `info-lookup-symbol'.
+  "Call ‘info-lookup-symbol’.
 
 Sends help if stuff is missing."
   (interactive)
@@ -47,7 +47,7 @@ Sends help if stuff is missing."
 
 Tries to take account of versioned Python Info files, e.g. Debian's
 python2.5-ref.info.gz.
-Used with `eval-after-load'."
+Used with ‘eval-after-load’."
   (let* ((version (let ((s (shell-command-to-string (concat py-python-command
 							    " -V"))))
 		    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
@@ -59,7 +59,7 @@ Used with `eval-after-load'."
 	    ;; First look for Info files corresponding to the version
 	    ;; of the interpreter we're running.
 	    (condition-case ()
-		;; Don't use `info' because it would pop-up a *info* buffer.
+		;; Don't use ‘info’ because it would pop-up a *info* buffer.
 		(progn
 		  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
 					  version))
@@ -151,7 +151,7 @@ Useful for newly defined symbol, not known to python yet."
 Use Python compatible dotted expression syntax
 Optional argument INCLUDE-TYPE indicates to include the type of the defun.
 This function is compatible to be used as
-`add-log-current-defun-function' since it returns nil if point is
+‘add-log-current-defun-function’ since it returns nil if point is
 not inside a defun."
   (interactive)
   (let ((names '())
@@ -258,7 +258,7 @@ If symbol is defined in current buffer, jump to it's definition"
       (help-print-return-message))))
 
 (defun py-describe-mode ()
-  "Dump long form of `python-mode' docs."
+  "Dump long form of ‘python-mode’ docs."
   (interactive)
   (py--dump-help-string "Major mode for editing Python files.
 Knows about Python indentation, tokens, comments and continuation lines.
@@ -285,7 +285,7 @@ variable docs begin with ->.
 
 @VARIABLES
 
-py-install-directory\twherefrom `python-mode' looks for extensions
+py-install-directory\twherefrom ‘python-mode’ looks for extensions
 py-indent-offset\tindentation increment
 py-block-comment-prefix\tcomment string used by comment-region
 
@@ -341,8 +341,8 @@ computing the proper indentation for the next line.
 
 Continuation Lines and Statements
 
-The `python-mode' commands generally work on statements instead of on
-individual lines, where a `statement' is a comment or blank line, or a
+The ‘python-mode’ commands generally work on statements instead of on
+individual lines, where a ‘statement’ is a comment or blank line, or a
 code line and all of its following continuation lines (if any)
 considered as a single logical unit.  The commands in this mode
 generally (when it makes sense) automatically move to the start of the
@@ -366,7 +366,7 @@ Primarily for reindenting existing code:
 
 Unlike most programming languages, Python uses indentation, and only
 indentation, to specify block structure.  Hence the indentation supplied
-automatically by `python-mode' is just an educated guess:  only you know
+automatically by ‘python-mode’ is just an educated guess:  only you know
 the block structure you intend, so only you can supply correct
 indentation.
 
@@ -374,7 +374,7 @@ The \\[indent-for-tab-command] and \\[py-newline-and-indent] keys try to suggest
 the indentation of preceding statements.  E.g., assuming
 py-indent-offset is 4, after you enter
 \tif a > 0: \\[py-newline-and-indent]
-the cursor will be moved to the position of the `_' (_ is not a
+the cursor will be moved to the position of the ‘_’ (_ is not a
 character in the file, it's just used here to indicate the location of
 the cursor):
 \tif a > 0:
@@ -384,11 +384,11 @@ to
 \tif a > 0:
 \t c = d
 \t _
-`python-mode' cannot know whether that's what you intended, or whether
+‘python-mode’ cannot know whether that's what you intended, or whether
 \tif a > 0:
 \t c = d
 \t_
-was your intent.  In general, `python-mode' either reproduces the
+was your intent.  In general, ‘python-mode’ either reproduces the
 indentation of the (closest code or indenting-comment) preceding
 statement, or adds an extra py-indent-offset blanks if the preceding
 statement has `:' as its last significant (non-whitespace and non-
@@ -400,7 +400,7 @@ suggested indentation, change it to something you do like, and Python-
 mode will strive to indent later lines of the statement in the same way.
 
 If a line is a continuation line by virtue of being in an unclosed
-paren/bracket/brace structure (`list', for short), the suggested
+paren/bracket/brace structure (‘list’, for short), the suggested
 indentation depends on whether the current line contains the first item
 in the list.  If it does, it's indented py-indent-offset columns beyond
 the indentation of the line containing the open bracket.  If you don't
@@ -427,7 +427,7 @@ structure you intend.
 The next function may be handy when editing code you didn't write:
 %c:py-guess-indent-offset
 
-The remaining `indent' functions apply to a region of Python code.  They
+The remaining ‘indent’ functions apply to a region of Python code.  They
 assume the block structure (equals indentation, in Python) of the region
 is correct, and alter the indentation in various ways while preserving
 the block structure:
@@ -459,7 +459,7 @@ the block structure:
 The first two move to one statement beyond the statement that contains
 point.  A numeric prefix argument tells them to move that many
 statements instead.  Blank lines, comment lines, and continuation lines
-do not count as `statements' for these commands.  So, e.g., you can go
+do not count as ‘statements’ for these commands.  So, e.g., you can go
 to the first code statement in a file by entering
 \t\\[beginning-of-buffer]\t to move to the top of the file
 \t\\[py-next-statement]\t to skip over initial comments and blank lines
@@ -474,7 +474,7 @@ Or do \\[py-previous-statement] with a huge prefix argument.
 
 \\[indent-new-comment-line] is handy for entering a multi-line comment.
 
-\\[set-selective-display] with a `small' prefix arg is ideally suited for viewing the
+\\[set-selective-display] with a ‘small’ prefix arg is ideally suited for viewing the
 overall class and def structure of a module.
 
 `\\[back-to-indentation]' moves point to a line's first non-blank character.
@@ -484,7 +484,7 @@ overall class and def structure of a module.
 @OTHER EMACS HINTS
 
 If you don't like the default value of a variable, change its value to
-whatever you do like by putting a `setq' line in your .emacs file.
+whatever you do like by putting a ‘setq’ line in your .emacs file.
 E.g., to set the indentation increment to 4, put this line in your
 .emacs:
 \t(setq py-indent-offset 4)
@@ -493,13 +493,13 @@ name at the prompt.
 
 When entering a key sequence like `C-c C-n', it is not necessary to
 release the CONTROL key after doing the `C-c' part -- it suffices to
-press the CONTROL key, press and release `c' (while still holding down
-CONTROL), press and release `n' (while still holding down CONTROL), &
+press the CONTROL key, press and release ‘c’ (while still holding down
+CONTROL), press and release ‘n’ (while still holding down CONTROL), &
 then release CONTROL.
 
 Entering Python mode calls with no arguments the value of the variable
-`python-mode-hook', if that value exists and is not nil; for backward
-compatibility it also tries `py-mode-hook'; see the ‘Hooks' section of
+‘python-mode-hook’, if that value exists and is not nil; for backward
+compatibility it also tries ‘py-mode-hook’; see the ‘Hooks' section of
 the Elisp manual for details.
 
 Obscure:  When python-mode is first loaded, it looks for all bindings
@@ -843,11 +843,11 @@ Default on the file currently visited."
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-;;  After `sgml-validate-command'.
+;;  After ‘sgml-validate-command’.
 (defun py-check-command (command)
   "Check a Python file (default current buffer's file).
-Runs COMMAND, a shell command, as if by `compile'.
-See `py-check-command' for the default."
+Runs COMMAND, a shell command, as if by ‘compile’.
+See ‘py-check-command’ for the default."
   (interactive
    (list (read-string "Checker command: "
                       (concat py-check-command " "
@@ -927,7 +927,7 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
 ;;  from string-strip.el --- Strip CHARS from STRING
 
 (defun py-nesting-level (&optional pps)
-  "Accepts the output of `parse-partial-sexp' - PPS."
+  "Accepts the output of ‘parse-partial-sexp’ - PPS."
   (interactive)
   (let* ((pps (or (ignore-errors (nth 0 pps))
                   (if (featurep 'xemacs)
@@ -944,7 +944,7 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
 Takes NAME COMMAND"
   (unless (string-match "pyflakespep8" name)
     (unless (executable-find name)
-      (when py-verbose-p (message "Don't see %s. Use `easy_install' %s? " name name))))
+      (when py-verbose-p (message "Don't see %s. Use ‘easy_install’ %s? " name name))))
   (if (py--buffer-filename-remote-maybe)
       (let* ((temp-file (if (functionp 'flymake-proc-init-create-temp-buffer-copy)
 			    (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
@@ -957,10 +957,10 @@ Takes NAME COMMAND"
             (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-proc-allowed-file-name-masks)
 	  (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-proc-allowed-file-name-masks))
         (list command (list local-file)))
-    (message "%s" "flymake needs a `file-name'. Please save before calling.")))
+    (message "%s" "flymake needs a ‘file-name’. Please save before calling.")))
 
 (defun pylint-flymake-mode ()
-  "Toggle `pylint' `flymake-mode'."
+  "Toggle ‘pylint’ ‘flymake-mode’."
   (interactive)
   (if flymake-mode
       ;; switch off
@@ -969,7 +969,7 @@ Takes NAME COMMAND"
     (flymake-mode 1)))
 
 (defun pyflakes-flymake-mode ()
-  "Toggle `pyflakes' `flymake-mode'."
+  "Toggle ‘pyflakes’ ‘flymake-mode’."
   (interactive)
   (if flymake-mode
       ;; switch off
@@ -978,7 +978,7 @@ Takes NAME COMMAND"
     (flymake-mode)))
 
 (defun pychecker-flymake-mode ()
-  "Toggle `pychecker' `flymake-mode'."
+  "Toggle ‘pychecker’ ‘flymake-mode’."
   (interactive)
   (if flymake-mode
       ;; switch off
@@ -987,7 +987,7 @@ Takes NAME COMMAND"
     (flymake-mode)))
 
 (defun pep8-flymake-mode ()
-  "Toggle `pep8’ `flymake-mode'."
+  "Toggle `pep8’ ‘flymake-mode’."
   (interactive)
   (if flymake-mode
       ;; switch off
@@ -996,7 +996,7 @@ Takes NAME COMMAND"
     (flymake-mode)))
 
 (defun pyflakespep8-flymake-mode ()
-  "Toggle `pyflakespep8’ `flymake-mode'.
+  "Toggle `pyflakespep8’ ‘flymake-mode’.
 
 Joint call to pyflakes and pep8 as proposed by
 Keegan Carruthers-Smith"
@@ -1008,7 +1008,7 @@ Keegan Carruthers-Smith"
     (flymake-mode)))
 
 (defun py-display-state-of-variables ()
-  "Read the state of `python-mode' variables.
+  "Read the state of ‘python-mode’ variables.
 
 Assumes vars are defined in current source buffer"
   (interactive)

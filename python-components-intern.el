@@ -41,7 +41,7 @@
     (+ (current-indentation) py-indent-offset)))
 
 (defun py-compute-indentation-according-to-list-style (pps)
-  "See `py-indent-list-style'
+  "See ‘py-indent-list-style’
 
 Choices are:
 
@@ -160,15 +160,15 @@ See also py-closing-list-dedents-bos"
 (defun py-compute-indentation (&optional iact orig origline closing line nesting repeat indent-offset liep)
   "Compute Python indentation.
 
-When HONOR-BLOCK-CLOSE-P is non-nil, statements such as `return',
-`raise', `break', `continue', and `pass' force one level of dedenting.
+When HONOR-BLOCK-CLOSE-P is non-nil, statements such as ‘return’,
+‘raise’, ‘break’, ‘continue’, and ‘pass’ force one level of dedenting.
 
 ORIG keeps original position
 ORIGLINE keeps line where compute started
 CLOSING is t when started at a char delimiting a list as \"]})\"
 LINE indicates being not at origline now
 NESTING is currently ignored, if executing from inside a list
-REPEAT counter enables checks against `py-max-specpdl-size'
+REPEAT counter enables checks against ‘py-max-specpdl-size’
 INDENT-OFFSET allows calculation of block-local values
 LIEP stores line-end-position at point-of-interest
 "
@@ -214,7 +214,7 @@ LIEP stores line-end-position at point-of-interest
               (python-mode)
               (setq indent (py-compute-indentation)))
           (if (< py-max-specpdl-size repeat)
-              (error "`py-compute-indentation' reached loops max.")
+              (error "‘py-compute-indentation’ reached loops max.")
             (setq nesting (nth 0 pps))
             (setq indent
                   (cond ;; closing)
@@ -267,7 +267,7 @@ LIEP stores line-end-position at point-of-interest
 		   ;; lists
 		   ((nth 1 pps)
 		    (if (< (nth 1 pps) (line-beginning-position))
-                        ;; Compute according to `py-indent-list-style'
+                        ;; Compute according to ‘py-indent-list-style’
 
                         ;; Choices are:
 
@@ -383,7 +383,7 @@ LIEP stores line-end-position at point-of-interest
 		   ((and (eq liep (line-end-position))
                          (save-excursion
 			   (and (setq erg (py--go-to-keyword 'py-extended-block-or-clause-re (* py-indent-offset 99)))
-				;; maybe Result: (nil nil nil), which evaluates to `t'
+				;; maybe Result: (nil nil nil), which evaluates to ‘t’
 				(not (bobp))
 				(if (and (not indent-offset) py-smart-indentation) (setq indent-offset (py-guess-indent-offset)) t)
 				(ignore-errors (< orig (or (py-forward-block-or-clause) (point)))))))
@@ -430,7 +430,7 @@ Optional DEDICATED: with \\\\[universal-argument] start in a new
 dedicated shell.
 Optional ARGS overriding `py-" ele "-command-args'.
 
-Calls `py-shell'
+Calls ‘py-shell’
 \"
   (interactive \"p\") (py-shell dedicated args nil \""ele"\"))")))))))
   (when (functionp (car (read-from-string (car-safe py-known-shells))))
@@ -465,7 +465,7 @@ module-qualified names."
       (setq ele (cdr ele)))
     (if erg
         (message "%s" erg)
-      (message "%s" "pdb.py not found, please customize `py-pdb-path'"))
+      (message "%s" "pdb.py not found, please customize ‘py-pdb-path’"))
     erg))
 
 (if py-mode-output-map
@@ -501,7 +501,7 @@ module-qualified names."
   (py-toggle-comment-auto-fill -1))
 
 (defun py--set-auto-fill-values ()
-  "Internal use by `py--run-auto-fill-timer'"
+  "Internal use by ‘py--run-auto-fill-timer’"
   (let ((pps (parse-partial-sexp (point-min) (point))))
     (cond ((and (nth 4 pps)(numberp py-comment-fill-column))
            (setq fill-column py-comment-fill-column))
@@ -512,7 +512,7 @@ module-qualified names."
 (defun py--run-auto-fill-timer ()
   "Set fill-column to values according to environment.
 
-`py-docstring-fill-column' resp. to `py-comment-fill-column'."
+‘py-docstring-fill-column’ resp. to ‘py-comment-fill-column’."
   (when py-auto-fill-mode
     (unless py-autofill-timer
       (setq py-autofill-timer
@@ -522,7 +522,7 @@ module-qualified names."
 
 ;;  unconditional Hooks
 ;;  (orgstruct-mode 1)
-
+(declare-function py-complete "pycomplete" ())
 (defun py-complete-auto ()
   "Auto-complete function using py-complete. "
   ;; disable company
@@ -578,17 +578,17 @@ For stricter sense specify regexp. "
 (defun py--statement-opens-class-p ()
   "If the statement opens a functions or class.
 
-Return `t', nil otherwise. "
+Return ‘t’, nil otherwise. "
   (py--statement-opens-base py-class-re))
 
 (defun py--statement-opens-def-p ()
   "If the statement opens a functions or class.
-Return `t', nil otherwise. "
+Return ‘t’, nil otherwise. "
   (py--statement-opens-base py-def-re))
 
 (defun py--statement-opens-def-or-class-p ()
   "If the statement opens a functions or class definition.
-Return `t', nil otherwise. "
+Return ‘t’, nil otherwise. "
   (py--statement-opens-base py-def-or-class-re))
 
 (defun py--down-top-level (&optional regexp)
@@ -657,11 +657,11 @@ If succesful return position. "
 (defun py-current-defun ()
   "Go to the outermost method or class definition in current scope.
 
-Python value for `add-log-current-defun-function'.
+Python value for ‘add-log-current-defun-function’.
 This tells add-log.el how to find the current function/method/variable.
 Returns name of class or methods definition, if found, nil otherwise.
 
-See customizable variables `py-current-defun-show' and `py-current-defun-delay'."
+See customizable variables ‘py-current-defun-show’ and ‘py-current-defun-delay’."
   (interactive)
   (save-restriction
     (widen)
@@ -743,8 +743,8 @@ is preferable for that. ")
 (defun py-install-local-shells (&optional local)
   "Builds Python-shell commands from executable found in LOCAL.
 
-If LOCAL is empty, shell-command `find' searches beneath current directory.
-Eval resulting buffer to install it, see customizable `py-extensions'. "
+If LOCAL is empty, shell-command ‘find’ searches beneath current directory.
+Eval resulting buffer to install it, see customizable ‘py-extensions’. "
   (interactive)
   (let* ((local-dir (if local
                         (expand-file-name local)
@@ -811,12 +811,12 @@ Eval resulting buffer to install it, see customizable `py-extensions'. "
 	(process-mark process)))))
 
 (defun py-which-def-or-class (&optional orig)
-  "Returns concatenated `def' and `class' names.
+  "Returns concatenated ‘def’ and ‘class’ names.
 
 In hierarchical order, if cursor is inside.
 
 Returns \"???\" otherwise
-Used by variable `which-func-functions' "
+Used by variable ‘which-func-functions’ "
   (interactive)
   (let* ((orig (or orig (point)))
          (backindent 99999)
@@ -883,7 +883,7 @@ Used by variable `which-func-functions' "
     erg))
 
 (defun py--fetch-first-python-buffer ()
-  "Returns first (I)Python-buffer found in `buffer-list'"
+  "Returns first (I)Python-buffer found in ‘buffer-list’"
   (let ((buli (buffer-list))
         erg)
     (while (and buli (not erg))
@@ -991,7 +991,7 @@ Returns position if successful, nil otherwise"
   "Returns buffer-substring of string-argument FORM as cons.
 
 Text properties are stripped.
-If PY-MARK-DECORATORS, `def'- and `class'-forms include decorators
+If PY-MARK-DECORATORS, ‘def’- and ‘class’-forms include decorators
 If BOL is t, from beginning-of-line"
   (interactive)
   (let* ((begform (intern-soft (concat "py-backward-" form)))
@@ -1034,7 +1034,7 @@ If BOL is t, from beginning-of-line"
 (defun py--mark-base (form &optional mark-decorators)
   "Returns boundaries of FORM, a cons.
 
-If PY-MARK-DECORATORS, `def'- and `class'-forms include decorators
+If PY-MARK-DECORATORS, ‘def’- and ‘class’-forms include decorators
 If BOL is t, mark from beginning-of-line"
   (let* ((begform (intern-soft (concat "py-backward-" form)))
          (endform (intern-soft (concat "py-forward-" form)))
@@ -1160,7 +1160,7 @@ Use current region unless optional args BEG END are delivered."
             (if shell
                 (funcall (car (read-from-string (concat "py-execute-region-" shell))) start (point))
               (py-execute-region start (point))))
-        (error "Can't see `py-section-start' resp. `py-section-end'")))))
+        (error "Can't see ‘py-section-start’ resp. ‘py-section-end’")))))
 
 (defun py--narrow-prepare (name)
   "Used internally. "
@@ -1183,7 +1183,7 @@ Use current region unless optional args BEG END are delivered."
     res))
 
 (defun py-toggle-shell-fontification (msg)
-  "Toggles value of `py-shell-fontify-p'. "
+  "Toggles value of ‘py-shell-fontify-p’. "
   (interactive "p")
 
   (if (setq py-shell-fontify-p (not py-shell-fontify-p))

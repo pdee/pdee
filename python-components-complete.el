@@ -51,7 +51,7 @@ Takes END"
 
 (defun py--shell-insert-completion-maybe (completion input)
   (cond ((eq completion t)
-	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "`t' is returned, not completion. Might be a bug.")))
+	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "‘t’ is returned, not completion. Might be a bug.")))
 	((null completion)
 	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "Don't see a completion")))
 	((and completion
@@ -107,7 +107,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   )
 
 (defun py--try-completion (input completion)
-  "Repeat `try-completion' as long as match are found.
+  "Repeat ‘try-completion’ as long as match are found.
 
 Interal used. Takes INPUT COMPLETION"
   (let ((erg nil)
@@ -142,7 +142,7 @@ completions on the current context."
 	  (py--fast-completion-get-completions input process code buffer)))
     (sit-for 0.1)
     (cond ((eq completion t)
-	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "`t' is returned, not completion. Might be a bug.")))
+	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "‘t’ is returned, not completion. Might be a bug.")))
 	  ((null completion)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "Don't see a completion"))
 	   (set-window-configuration py-last-window-configuration))
@@ -214,7 +214,7 @@ completions on the current context."
 (defun py-fast-complete (&optional shell word imports)
   "Complete word before point, if any.
 
-Use `py-fast-process' "
+Use ‘py-fast-process’ "
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
   (setq py-last-window-configuration
@@ -227,19 +227,19 @@ Use `py-fast-process' "
   "Complete or indent depending on the context.
 
 If cursor is at end of a symbol, try to complete
-Otherwise call `py-indent-line'
+Otherwise call ‘py-indent-line’
 
 If `(use-region-p)' returns t, indent region.
 Use `C-q TAB' to insert a literally TAB-character
 
-In `python-mode' `py-complete-function' is called,
-in (I)Python shell-modes `py-shell-complete'"
+In ‘python-mode’ ‘py-complete-function’ is called,
+in (I)Python shell-modes ‘py-shell-complete’"
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
   ;; (setq py-last-window-configuration
   ;;       (current-window-configuration))
   (cond ((use-region-p)
-	 (when py-debug-p (message "py-indent-or-complete: %s" "calling `use-region-p'-clause"))
+	 (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘use-region-p’-clause"))
 	 (py-indent-region (region-beginning) (region-end)))
 	((or (bolp)
 	     (member (char-before) (list 9 10 12 13 32 ?: ?\) ?\] ?\}))
@@ -249,7 +249,7 @@ in (I)Python shell-modes `py-shell-complete'"
 	 ;; (let* ((shell (process-name (get-buffer-process (current-buffer)))))
 	 (ignore-errors (completion-at-point)))
 	((and py-do-completion-p t)
-	 (when py-debug-p (message "py-indent-or-complete: %s" "calling `t'-clause"))
+	 (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘t’-clause"))
 	 ;; (py-fast-complete)
 	 (completion-at-point))))
 

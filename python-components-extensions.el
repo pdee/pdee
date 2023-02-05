@@ -25,7 +25,7 @@
   "Indent and move line forward to next indentation.
 Returns column of line reached.
 
-If `py-kill-empty-line' is non-nil, delete an empty line.
+If ‘py-kill-empty-line’ is non-nil, delete an empty line.
 
 With \\[universal argument] just indent.
 "
@@ -55,13 +55,13 @@ With \\[universal argument] just indent.
   (end-of-line))
 
 (defun py-dedent (&optional arg)
-  "Dedent line according to `py-indent-offset'.
+  "Dedent line according to ‘py-indent-offset’.
 
 With arg, do it that many times.
 If point is between indent levels, dedent to next level.
 Return indentation reached, if dedent done, nil otherwise.
 
-Affected by `py-dedent-keep-relative-column'. "
+Affected by ‘py-dedent-keep-relative-column’. "
   (interactive "*p")
   (or arg (setq arg 1))
   (let ((orig (copy-marker (point)))

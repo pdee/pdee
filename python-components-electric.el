@@ -31,8 +31,8 @@ non-electrically.
 Electric behavior is inhibited inside a string or
 comment or by universal prefix \\[universal-argument].
 
-Switched by `py-electric-colon-active-p', default is nil
-See also `py-electric-colon-greedy-p'"
+Switched by ‘py-electric-colon-active-p’, default is nil
+See also ‘py-electric-colon-greedy-p’"
   (interactive "*P")
   (cond
    ((not py-electric-colon-active-p)
@@ -75,7 +75,7 @@ See also `py-electric-colon-greedy-p'"
 
 It is it's sure, it's no longer needed, i.e. when inserting a space.
 
-Works around a bug in `choose-completion'."
+Works around a bug in ‘choose-completion’."
 
   (interactive "*P")
   (cond
@@ -92,7 +92,7 @@ Works around a bug in `choose-completion'."
 
 ;; TODO: PRouleau: describe the electric behavior of '#'.
 ;;       This description should be in docstring of the
-;;       `py-electric-comment-p' user option and be referred to here.
+;;       ‘py-electric-comment-p’ user option and be referred to here.
 ;;       I currently don't understand what it should be and prefer not
 ;;       having to infer it from code.
 ;;       - From what I saw, the intent is to align the comment being
@@ -164,14 +164,14 @@ string or comment."
 ;;       - Also, the mapping for [backspace] in python-mode-map only works in
 ;;         graphics mode, it does not work when Emacs runs in terminal mode.
 ;;         It would be nice to have a binding that works in terminal mode too.
-;; keep-one handed over form `py-electric-delete' maybe
+;; keep-one handed over form ‘py-electric-delete’ maybe
 (defun py-electric-backspace (&optional arg)
   "Delete one or more of whitespace chars left from point.
 Honor indentation.
 
 If called at whitespace below max indentation,
 
-Delete region when both variable `delete-active-region' and `use-region-p'
+Delete region when both variable ‘delete-active-region’ and ‘use-region-p’
 are non-nil.
 
 With \\[universal-argument], deactivate electric-behavior this time,
@@ -243,7 +243,7 @@ At no-whitespace character, delete one before point.
   "Delete one or more of whitespace chars right from point.
 Honor indentation.
 
-Delete region when both variable `delete-active-region' and `use-region-p'
+Delete region when both variable ‘delete-active-region’ and ‘use-region-p’
 are non-nil.
 
 With \\[universal-argument], deactivate electric-behavior this time,
@@ -310,8 +310,8 @@ At no-whitespace char, delete one char at point.
 ;;       Is this a feature to keep?  Was it used?  I can see a benefit for it.
 ;;       Why is it currently disabled?
 (defun py-electric-yank (&optional arg)
-  "Perform command `yank' followed by an `indent-according-to-mode'.
-Pass ARG to the command `yank'."
+  "Perform command ‘yank’ followed by an ‘indent-according-to-mode’.
+Pass ARG to the command ‘yank’."
   (interactive "P")
   (cond
    (py-electric-yank-active-p

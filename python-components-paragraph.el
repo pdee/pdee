@@ -38,7 +38,7 @@
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-docstring-style'
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
   (py-fill-string justify 'django t))
@@ -55,7 +55,7 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
 
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-docstring-style'
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
   (py-fill-string justify 'onetwo t))
@@ -71,7 +71,7 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
 
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-docstring-style'
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
   (py-fill-string justify 'pep-257 t))
@@ -86,7 +86,7 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-docstring-style'
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
   (py-fill-string justify 'pep-257-nn t))
@@ -102,7 +102,7 @@ See available styles at `py-fill-paragraph' or var `py-docstring-style'
     If processing fails throw ProcessingError.
     \"\"\"
 
-See available styles at `py-fill-paragraph' or var `py-docstring-style'
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
   (py-fill-string justify 'symmetric t))
@@ -361,10 +361,10 @@ See lp:1066489 "
             (split-line)))))))
 
 (defun py-fill-string (&optional justify docstring pps)
-  "String fill function for `py-fill-paragraph'.
-JUSTIFY should be used (if applicable) as in `fill-paragraph'.
+  "String fill function for ‘py-fill-paragraph’.
+JUSTIFY should be used (if applicable) as in ‘fill-paragraph’.
 
-Fill according to `py-docstring-style' "
+Fill according to ‘py-docstring-style’ "
   (interactive "*")
   (let* ((justify (or justify (if current-prefix-arg 'full t)))
 	 ;; (style (or style py-docstring-style))

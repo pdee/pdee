@@ -75,7 +75,7 @@
 Using these values will result in smaller Imenu lists, as arguments to
 functions are not listed.
 
-See the variable `py-imenu-show-method-args-p' for more
+See the variable ‘py-imenu-show-method-args-p’ for more
 information.")
 
 (defvar py-imenu-method-arg-parens '(2 7)
@@ -83,7 +83,7 @@ information.")
 Using these values will result in large Imenu lists, as arguments to
 functions are listed.
 
-See the variable `py-imenu-show-method-args-p' for more
+See the variable ‘py-imenu-show-method-args-p’ for more
 information.")
 
 ;; Note that in this format, this variable can still be used with the
@@ -98,7 +98,7 @@ information.")
     )
    py-imenu-method-no-arg-parens)
   "Generic Python expression which may be used directly with Imenu.
-Used by setting the variable `imenu-generic-expression' to this value.
+Used by setting the variable ‘imenu-generic-expression’ to this value.
 Also, see the function \\[py--imenu-create-index] for a better
 alternative for finding the index.")
 
@@ -230,7 +230,7 @@ of the first definition found."
     (nreverse index-alist)))
 
 (defun py--imenu-create-index-new (&optional beg end)
-  "`imenu-create-index-function' for Python. "
+  "‘imenu-create-index-function’ for Python. "
   (interactive)
   (set (make-local-variable 'imenu-max-items) py-imenu-max-items)
   (let ((orig (point))
