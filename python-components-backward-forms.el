@@ -86,7 +86,6 @@ Return beginning of `block' if successful, nil otherwise"
   (and (py-backward-block)
        (progn (beginning-of-line)(point))))
 
-;;;###autoload
 (defun py-backward-class-bol ()
   "Go to beginning of `class', go to BOL.
 If already at beginning, go one `class' backward.
@@ -95,7 +94,6 @@ Return beginning of `class' if successful, nil otherwise"
   (and (py-backward-class)
        (progn (beginning-of-line)(point))))
 
-;;;###autoload
 (defun py-backward-def-bol ()
   "Go to beginning of `def', go to BOL.
 If already at beginning, go one `def' backward.
@@ -104,7 +102,6 @@ Return beginning of `def' if successful, nil otherwise"
   (and (py-backward-def)
        (progn (beginning-of-line)(point))))
 
-;;;###autoload
 (defun py-backward-def-or-class-bol ()
   "Go to beginning of `def-or-class', go to BOL.
 If already at beginning, go one `def-or-class' backward.

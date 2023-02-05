@@ -1,21 +1,5 @@
 ;;; python-components-start2.el --- Edit, debug, develop, run Python programs. -*- lexical-binding: t; -*-
 
-;; Version: 6.2.3
-
-;; Keywords: languages, processes, python, oop
-
-;; URL: https://gitlab.com/groups/python-mode-devs
-
-;; Package-Requires: ((emacs "24"))
-
-;; Author: 2015-2021 https://gitlab.com/groups/python-mode-devs
-;;         2003-2014 https://launchpad.net/python-mode
-;;         1995-2002 Barry A. Warsaw
-;;         1992-1994 Tim Peters
-;; Maintainer: python-mode@python.org
-;; Created:    Feb 1992
-;; Keywords:   python languages oop
-
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or

@@ -2,13 +2,11 @@
 
 ;; Version: 6.3.1
 
-;; Keywords: languages, processes, python, oop
-
 ;; URL: https://gitlab.com/groups/python-mode-devs
 
 ;; Package-Requires: ((emacs "24"))
 
-;; Author: 2015-2021 https://gitlab.com/groups/python-mode-devs
+;; Author: 2015-2023 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
 ;;         1992-1994 Tim Peters
@@ -4258,14 +4256,14 @@ Does not delete the prompt."
 (defun py-in-comment-p ()
   "Return the beginning of current line's comment, if inside. "
   (interactive)
-  (let* ((pps (parse-partial-sexp (point-min) (point)))
-         (erg (and (nth 4 pps) (nth 8 pps))))
-    erg))
+  (let ((pps (parse-partial-sexp (point-min) (point))))
+    (and (nth 4 pps) (nth 8 pps))))
+
 ;;
 (defun py-in-string-or-comment-p ()
   "Returns beginning position if inside a string or comment, nil otherwise. "
   (or (nth 8 (parse-partial-sexp (point-min) (point)))
-      (when (or (looking-at "\"")(looking-at "[ \t]*#[ \t]*"))
+      (when (or (looking-at "\"") (looking-at "[ \t]*#[ \t]*"))
         (point))))
 
 (defvar python-mode-map nil)
@@ -4783,6 +4781,7 @@ Return and move to match-beginning if successful"
       (unless
 	  (nth 8 (parse-partial-sexp (point-min) (point)))
         erg))))
+
 (defun py--forward-regexp-keep-indent (regexp &optional indent)
   "Search forward next regexp not in string or comment.
 
@@ -4884,23 +4883,23 @@ Optional ENFORCE-REGEXP: search for regexp only."
 			     (`py-if-re py-else-re)))))
       (if (eq regexp 'py-clause-re)
           (py-forward-clause-intern indent)
-      (while
-	  (and
-	   (not done)
-	   (progn (end-of-line)
-		  (cond (use-regexp
-			 ;; using regexpvalue might stop behind global settings, missing the end of form
-			 (re-search-forward (concat "^ \\{0,"(format "%s" indent) "\\}"regexpvalue) nil 'move 1))
-			(t (re-search-forward (concat "^ \\{"(format "0,%s" indent) "\\}[[:alnum:]_@]+") nil 'move 1))))
-	   (or (nth 8 (parse-partial-sexp (point-min) (point)))
-	       (progn (back-to-indentation) (py--forward-string-maybe (nth 8 (parse-partial-sexp orig (point)))))
-	       (and secondvalue (looking-at secondvalue))
-	       (and lastvalue (looking-at lastvalue))
-	       (and (looking-at regexpvalue) (setq done t))
-	       ;; py-forward-def-or-class-test-3JzvVW
-	       ;; (setq done t)
-               )))
-      (and (< orig (point)) (point))))))
+        (while
+	    (and
+	     (not done)
+	     (progn (end-of-line)
+		    (cond (use-regexp
+			   ;; using regexpvalue might stop behind global settings, missing the end of form
+			   (re-search-forward (concat "^ \\{0,"(format "%s" indent) "\\}"regexpvalue) nil 'move 1))
+			  (t (re-search-forward (concat "^ \\{"(format "0,%s" indent) "\\}[[:alnum:]_@]+") nil 'move 1))))
+	     (or (nth 8 (parse-partial-sexp (point-min) (point)))
+	         (progn (back-to-indentation) (py--forward-string-maybe (nth 8 (parse-partial-sexp orig (point)))))
+	         (and secondvalue (looking-at secondvalue))
+	         (and lastvalue (looking-at lastvalue))
+	         (and (looking-at regexpvalue) (setq done t))
+	         ;; py-forward-def-or-class-test-3JzvVW
+	         ;; (setq done t)
+                 )))
+        (and (< orig (point)) (point))))))
 
 (defun py--backward-empty-lines-or-comment ()
   "Travel backward"

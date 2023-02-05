@@ -6826,7 +6826,7 @@ class C:
     (goto-char (point-max))
     (search-backward "\"\"\"")
     (py-up)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (should (eq (char-after) 34))
     (should (eq (char-before) 32))))
 
@@ -7054,6 +7054,27 @@ class M:
     (font-lock-ensure)
     (sit-for 0.1)
     (should (eq (char-before) 41))))
+
+(ert-deftest py-down-test-qxWVpK ()
+  (py-test-with-temp-buffer
+      "var5: Sequence[Mapping[str, Sequence[str]]] = [
+    {
+	'red': ['scarlet', 'vermilion', 'ruby'],
+	'green': ['emerald', 'aqua']
+    },
+    {
+	'sword': ['cutlass', 'rapier']
+    }
+]
+"
+    (goto-char (point-max))
+    (search-backward "{" nil nil 2)
+    (py-down)
+    (font-lock-ensure)
+    (sit-for 0.1) 
+    (should (eq (char-before) ?}))
+    (should (eq (char-after) ?,))
+    ))
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

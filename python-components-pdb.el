@@ -272,7 +272,7 @@ problem as best as we can determine."
             ((file-exists-p (py--pdbtrack-map-filename filename))
              (list lineno (find-file-noselect (py--pdbtrack-map-filename filename))))
 
-            ((setq funcbuffer (py--pdbtrack-grub-for-buffer funcname lineno))
+            ((setq funcbuffer (py--pdbtrack-grub-for-buffer funcname))
              (if (string-match "/Script (Python)$" filename)
                  ;; Add in number of lines for leading '##' comments:
                  (setq lineno
