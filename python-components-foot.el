@@ -222,9 +222,6 @@ VARIABLES
     (imenu-add-to-menubar "PyIndex"))
   (when py-trailing-whitespace-smart-delete-p
     (add-hook 'before-save-hook 'delete-trailing-whitespace nil 'local))
-  ;; this should go into interactive modes
-  ;; (when py-pdbtrack-do-tracking-p
-  ;;   (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file))
   (py-shell-prompt-set-calculated-regexps)
   (setq comint-prompt-regexp py-shell--prompt-calculated-input-regexp)
   (cond

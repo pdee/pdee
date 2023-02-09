@@ -74,6 +74,8 @@ Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
 	       (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
       "pdb")))
 
+(declare-function gud-query-cmdline "gud" ())
+
 (defun py-pdb (command-line)
   "Run pdb on program FILE in buffer `*gud-FILE*'.
 The directory containing FILE becomes the initial working directory
@@ -352,9 +354,9 @@ Returns the tracked buffer."
          (setq py-pdbtrack-do-tracking-p t)))
   ;; (if py-pdbtrack-do-tracking-p
   ;;     (progn
-  ;;       (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
-  ;;       (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file t))
-  ;;   (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
+  ;;       (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file)
+  ;;       (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file))
+  ;;   (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file)
   ;;   )
   (message "%sabled Python's pdbtrack"
            (if py-pdbtrack-do-tracking-p "En" "Dis")))
@@ -370,8 +372,8 @@ Returns the tracked buffer."
 
 
 (if pdb-track-stack-from-shell-p
-    (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t)
-  (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file t))
+    (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file)
+  (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file))
 
 
 (defun py-pdbtrack-comint-output-filter-function (output)

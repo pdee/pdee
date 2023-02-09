@@ -5236,24 +5236,25 @@ In source-buffer, this will deliver the exception-buffer again.")
 
 (defun py--jump-to-exception (perr origline &optional file)
   "Jump to the PERR Python code at ORIGLINE in optional FILE."
-  (let (
-        (inhibit-point-motion-hooks t)
-        (file (or file (car perr)))
-        (act (nth 2 perr)))
-    (cond ((and py-exception-buffer
-                (buffer-live-p py-exception-buffer))
-           ;; (pop-to-buffer procbuf)
-           (py--jump-to-exception-intern act py-exception-buffer origline))
-          ((ignore-errors (file-readable-p file))
-           (find-file file)
-           (py--jump-to-exception-intern act (get-buffer (file-name-nondirectory file)) origline))
-          ((buffer-live-p (get-buffer file))
-           (set-buffer file)
-           (py--jump-to-exception-intern act file origline))
-          (t (setq file (find-file (read-file-name "Exception file: "
-                                                   nil
-                                                   file t)))
-             (py--jump-to-exception-intern act file origline)))))
+  (with-silent-modifications
+    (let (
+          ;; (inhibit-point-motion-hooks t)
+          (file (or file (car perr)))
+          (act (nth 2 perr)))
+      (cond ((and py-exception-buffer
+                  (buffer-live-p py-exception-buffer))
+             ;; (pop-to-buffer procbuf)
+             (py--jump-to-exception-intern act py-exception-buffer origline))
+            ((ignore-errors (file-readable-p file))
+             (find-file file)
+             (py--jump-to-exception-intern act (get-buffer (file-name-nondirectory file)) origline))
+            ((buffer-live-p (get-buffer file))
+             (set-buffer file)
+             (py--jump-to-exception-intern act file origline))
+            (t (setq file (find-file (read-file-name "Exception file: "
+                                                     nil
+                                                     file t)))
+               (py--jump-to-exception-intern act file origline))))))
 
 (defun py-goto-exception (&optional file line)
   "Go to FILE and LINE indicated by the traceback."
