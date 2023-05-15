@@ -514,5 +514,18 @@ def baz():
       (forward-line -2)
       (should (empty-line-p)))))
 
+(ert-deftest py-ert-pep-257-9HrXY7 ()
+  (py-test-with-temp-buffer
+      "a='123'"
+    (goto-char (point-max))
+    (search-backward "2")
+    (py-fill-string)
+    (forward-char -2)
+    (should (eq (char-after) ?'))
+    (beginning-of-buffer)
+    (should (eq (char-after) ?a))
+    (end-of-buffer)
+    (should (eq (char-before) ?'))))
+
 (provide 'py-ert-fill-tests)
 ;;; py-ert-fill-tests.el ends here

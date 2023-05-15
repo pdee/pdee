@@ -227,11 +227,11 @@ VARIABLES
   (cond
    (py-complete-function
     (add-hook 'completion-at-point-functions
-              py-complete-function))
+              py-complete-function nil 'local))
    (py-load-pymacs-p
     (add-hook 'completion-at-point-functions
               'py-complete-completion-at-point nil 'local))
-   (t
+   (py-do-completion-p
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
   ;; #'python-shell-completion-at-point nil 'local)))

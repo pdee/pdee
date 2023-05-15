@@ -248,8 +248,8 @@ in (I)Python shell-modes ‘py-shell-complete’"
 	((and py-do-completion-p (comint-check-proc (current-buffer)))
 	 ;; (let* ((shell (process-name (get-buffer-process (current-buffer)))))
 	 (ignore-errors (completion-at-point)))
-	((and py-do-completion-p t)
-	 (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘t’-clause"))
+	(py-do-completion-p
+	 (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘(completion-at-point)’"))
 	 ;; (py-fast-complete)
 	 (completion-at-point))))
 

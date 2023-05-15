@@ -3472,15 +3472,17 @@ REGEXP defaults to \"[ \\t\\n\\r]+\"."
 TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
   (py--string-trim-left (py--string-trim-right strg trim-right) trim-left))
 
-(defsubst string-blank-p (strg)
-  "Check whether STRING is either empty or only whitespace."
-  (string-match-p "\\`[ \t\n\r]*\\'" strg))
+;; subr-x
+;; (defsubst string-blank-p (strg)
+;;   "Check whether STRING is either empty or only whitespace."
+;;   (string-match-p "\\`[ \t\n\r]*\\'" strg))
 
-(defsubst string-remove-prefix (prefix strg)
-  "Remove PREFIX from STRING if present."
-  (if (string-prefix-p prefix strg)
-      (substring strg (length prefix))
-    strg))
+;; subr-x
+;; (defsubst string-remove-prefix (prefix strg)
+;;   "Remove PREFIX from STRING if present."
+;;   (if (string-prefix-p prefix strg)
+;;       (substring strg (length prefix))
+;;     strg))
 
 (defun py-toggle-imenu-create-index ()
   "Toggle value of ‘py--imenu-create-index-p’."
