@@ -109,9 +109,10 @@ BODY is code to be executed within the temp buffer.  Point is
   `(with-temp-buffer
      (let (hs-minor-mode py--imenu-create-index-p)
        ;; (and (featurep 'python) (unload-feature 'python))
-       (python-mode)
        (insert ,contents)
+       (python-mode)
        (when py-debug-p
+         ;; (message "py-python-edit-version: %s" py-python-edit-version)
 	 (switch-to-buffer (current-buffer))
 	 (font-lock-fontify-region (point-min) (point-max)))
        ,@body)))

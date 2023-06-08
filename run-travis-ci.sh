@@ -276,7 +276,7 @@ h14() {
 h15() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
+--eval "(setq py-debug-p t)" \
 --eval "(require 'ert)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \

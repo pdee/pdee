@@ -2109,10 +2109,8 @@ If ‘py-use-local-default’ is non-nil."
   :tag "py-shell-local-path"
   :group 'python-mode)
 
-(defcustom py-python-edit-version ""
-  "When not empty, fontify according to Python version specified.
-
-Default is the empty string, a useful value \"python3\" maybe.
+(defcustom py-python-edit-version "python3"
+  "Default is \"python3\".
 
 When empty, version is guessed via ‘py-choose-shell’."
 

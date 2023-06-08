@@ -315,8 +315,122 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "money:")
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (should-not (eq (get-char-property (point) 'face) 'py-variable-name-face))))
+
+(ert-deftest py-149-font-lock-test-TzOTcJ ()
+  (let ((py-underscore-word-syntax-p t)
+        (py-python-edit-version "python2"))
+    (py-test-with-temp-buffer
+        "print(\"asdf\")"
+      (font-lock-ensure)
+      (goto-char (point-max))
+      (search-backward "print")
+      (sit-for 0.1)
+      (when py-debug-p
+        (message "py-python-edit-version: %s" py-python-edit-version)
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+      (should (eq (get-char-property (point) 'face) 'font-lock-keyword-face)))))
+
+(ert-deftest py-149-font-lock-test-zS5Cyr ()
+  (let ((py-underscore-word-syntax-p t)
+        (py-python-edit-version "python3"))
+    (py-test-with-temp-buffer
+        "print(\"asdf\")"
+      (font-lock-ensure)
+      (goto-char (point-max))
+      (search-backward "print")
+      (sit-for 0.1)
+      (when py-debug-p
+        (message "py-python-edit-version: %s" py-python-edit-version)
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p)
+        )
+      (should (eq (get-char-property (point) 'face) 'py-builtins-face)))))
+
+(ert-deftest py-149-font-lock-test-FiJp14 ()
+  (let ((py-underscore-word-syntax-p nil)
+        (py-python-edit-version "python2"))
+    (py-test-with-temp-buffer
+        "print(\"asdf\")"
+      (font-lock-ensure)
+      (goto-char (point-max))
+      (search-backward "print")
+      (sit-for 0.1)
+      (when py-debug-p
+        (message "py-python-edit-version: %s" py-python-edit-version)
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+      (should (eq (get-char-property (point) 'face) 'font-lock-keyword-face)))))
+
+(ert-deftest py-149-font-lock-test-NuMpks ()
+  (let ((py-underscore-word-syntax-p nil)
+        (py-python-edit-version "python3"))
+    (py-test-with-temp-buffer
+        "print(\"asdf\")"
+      (font-lock-ensure)
+      (goto-char (point-max))
+      (search-backward "print")
+      (sit-for 0.1)
+      (when py-debug-p
+        (message "py-python-edit-version: %s" py-python-edit-version)
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+      (should (eq (get-char-property (point) 'face) 'py-builtins-face)))))
+
+(ert-deftest py-149-font-lock-test-b0C6F9 ()
+  (let ((py-underscore-word-syntax-p t)
+        (py-python-edit-version "python2"))
+    (py-test-with-temp-buffer
+        "_this_"
+      (font-lock-ensure)
+      (goto-char (point-max))
+      (search-backward "_this_")
+      (sit-for 0.1)
+      (when py-debug-p
+        (message "py-python-edit-version: %s" py-python-edit-version)
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+      (should (eq (get-char-property (point) 'face) nil)))))
+
+(ert-deftest py-149-font-lock-test-WuAgdG ()
+  (let ((py-underscore-word-syntax-p t)
+        (py-python-edit-version "python3"))
+    (py-test-with-temp-buffer
+        "_this_"
+      (font-lock-ensure)
+      (goto-char (point-max))
+      (search-backward "_this_")
+      (sit-for 0.1)
+      (when py-debug-p
+        (message "py-python-edit-version: %s" py-python-edit-version)
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p)
+        )
+      (should (eq (get-char-property (point) 'face) nil)))))
+
+(ert-deftest py-149-font-lock-test-owsRo3 ()
+  (let ((py-underscore-word-syntax-p nil)
+        (py-python-edit-version "python2"))
+    (py-test-with-temp-buffer
+        "_this_"
+      (font-lock-ensure)
+      (goto-char (point-max))
+      (search-backward "_this_")
+      (sit-for 0.1)
+      (when py-debug-p
+        (message "py-python-edit-version: %s" py-python-edit-version)
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+      (should (eq (get-char-property (point) 'face) nil)))))
+
+(ert-deftest py-149-font-lock-test-ksGdVu ()
+  (let ((py-underscore-word-syntax-p nil)
+        (py-python-edit-version "python3"))
+    (py-test-with-temp-buffer
+        "_this_"
+      (font-lock-ensure)
+      (goto-char (point-max))
+      (search-backward "_this_")
+      (sit-for 0.1)
+      (when py-debug-p
+        (message "py-python-edit-version: %s" py-python-edit-version)
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
+      (should (eq (get-char-property (point) 'face) nil)))))
 
 (provide 'py-ert-font-lock-test)
 ;;; py-ert-font-lock-test.el here
