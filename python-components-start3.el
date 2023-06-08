@@ -208,8 +208,7 @@ Unless DIRECTION is symbol \\='forward, go backward first"
 
 (defun py--execute-buffer-finally (strg proc procbuf origline filename fast wholebuf)
   (if (and filename wholebuf (not (buffer-modified-p)))
-      (unwind-protect
-	  (py--execute-file-base filename proc nil procbuf origline fast))
+      (py--execute-file-base filename proc nil procbuf origline fast)
     (let* ((tempfile (concat (expand-file-name py-temp-directory) py-separator-char "temp" (md5 (format "%s" (nth 3 (current-time)))) ".py")))
       (with-temp-buffer
 	(insert strg)
