@@ -235,7 +235,7 @@ At no-whitespace character, delete one before point.
        ;; 	       (delete-char 1))
 
        ((bolp)
-	(backward-delete-char 1))
+	(delete-char -1))
        (t
 	(py-indent-line nil t))))))
 
