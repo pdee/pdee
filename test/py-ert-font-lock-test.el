@@ -422,7 +422,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
   (let ((py-underscore-word-syntax-p nil)
         (py-python-edit-version "python3"))
     (py-test-with-temp-buffer
-        "_this_"
+        "def print_this_file(): pass"
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "_this_")
@@ -430,7 +430,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
       (when py-debug-p
         (message "py-python-edit-version: %s" py-python-edit-version)
         (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
-      (should (eq (get-char-property (point) 'face) nil)))))
+      (should (eq (get-char-property (point) 'face) 'py-def-face)))))
 
 (provide 'py-ert-font-lock-test)
 ;;; py-ert-font-lock-test.el here

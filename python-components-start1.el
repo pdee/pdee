@@ -3435,8 +3435,8 @@ commonly \"cls\" and \"self\""
 
 (defface py-def-face
   '((t (:inherit font-lock-function-name-face)))
-  "Face for classes."
-  :tag "py-class-name-face"
+  "Face for definitions."
+  :tag "py-def-face"
   :group 'python-mode)
 
 (defface py-exception-name-face

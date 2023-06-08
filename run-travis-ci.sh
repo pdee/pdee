@@ -450,20 +450,37 @@ hier() {
 -load $SETUP \
 -load $PYTHONMODE \
 -l $TEST1 \
+sleep \
 -l $TEST2 \
+sleep \
 -l $TEST3 \
+sleep \
 -l $TEST4 \
+sleep \
 -l $TEST5 \
+sleep \
 -l $TEST6 \
+sleep \
 -l $TEST7 \
+sleep \
+sleep 1 \
+sleep \
 -l $TEST8 \
+sleep \
 -l $TEST9 \
+sleep \
 -l $TEST10 \
+sleep \
 -l $TEST11 \
+sleep \
 -l $TEST13 \
+sleep \
 -l $TEST16 \
+sleep \
 -l $TEST19 \
+sleep \
 -l $TEST21 \
+sleep \
 -f ert-run-tests-batch-and-exit
 }
 
