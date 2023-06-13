@@ -267,15 +267,14 @@ GeomSim."
       (py-shift-region-right)
       (should (eq 4 (current-indentation))))))
 
-(ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
-  (py-test-with-temp-buffer
-      "range(len(list((1, 2, 3))))"
-    (goto-char (point-max))
-    ;; (goto-char (point-max))
-    (font-lock-fontify-region (point-min) (point-max))
-    (sit-for 0.1)
-    (search-backward "le")
-    (should (face-equal (face-at-point) 'py-builtins-face))))
+;; (ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
+;;   (py-test-with-temp-buffer
+;;       "range(len(list((1, 2, 3))))"
+;;     (font-lock-fontify-region (point-min) (point-max))
+;;     (goto-char (point-max))
+;;     (search-backward "e")
+;;     (sit-for 0.1)
+;;     (should (face-equal (face-at-point) 'py-builtins-face))))
 
 (ert-deftest py-named-shell-python3-794850-test-P6QZmU ()
   (py-test-mode-explizit

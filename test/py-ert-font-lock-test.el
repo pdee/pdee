@@ -55,11 +55,9 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
 (ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
   (py-test-with-temp-buffer
       "range(len(list((1, 2, 3))))"
-    (goto-char (point-max))
-    ;; (goto-char (point-max))
     (font-lock-fontify-region (point-min) (point-max))
-    (sit-for 0.1)
-    (search-backward "le")
+    ;; (sit-for 0.1)
+    (search-forward "l" )
     (should (face-equal (face-at-point) 'py-builtins-face))))
 
 (ert-deftest py-ert-exception-name-face-lp-1294742-7hEOh9 ()
@@ -83,9 +81,9 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
 (ert-deftest py-ert-builtins-face-lp-1294742-zvZYG5 ()
   (py-test-with-temp-buffer-point-min
       "_ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
-    (goto-char (point-min))
     (font-lock-fontify-region (point-min)(point-max))
-    (should (eq 'py-builtins-face (get-char-property (point) 'face)))))
+    (goto-char (point-min))
+    (should (eq (get-char-property (point) 'face) 'py-builtins-face ))))
 
 (ert-deftest py-ert-pseudo-keyword-face-lp-1294742-KgocNc ()
   (py-test-with-temp-buffer-point-min
@@ -375,7 +373,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
       (should (eq (get-char-property (point) 'face) 'py-builtins-face)))))
 
-(ert-deftest py-149-font-lock-test-b0C6F9 ()
+(ert-deftest py-149-font-lock-test-wbAtE2 ()
   (let ((py-underscore-word-syntax-p t)
         (py-python-edit-version "python2"))
     (py-test-with-temp-buffer
@@ -386,8 +384,9 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
       (sit-for 0.1)
       (when py-debug-p
         (message "py-python-edit-version: %s" py-python-edit-version)
-        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
-      (should (eq (get-char-property (point) 'face) nil)))))
+        (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p)
+        )
+      (should (eq (get-char-property (point) 'face) 'py-def-face)))))
 
 (ert-deftest py-149-font-lock-test-WuAgdG ()
   (let ((py-underscore-word-syntax-p t)
@@ -402,7 +401,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         (message "py-python-edit-version: %s" py-python-edit-version)
         (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p)
         )
-      (should (eq (get-char-property (point) 'face) nil)))))
+      (should (eq (get-char-property (point) 'face) 'py-def-face)))))
 
 (ert-deftest py-149-font-lock-test-owsRo3 ()
   (let ((py-underscore-word-syntax-p nil)
@@ -416,7 +415,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
       (when py-debug-p
         (message "py-python-edit-version: %s" py-python-edit-version)
         (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
-      (should (eq (get-char-property (point) 'face) nil)))))
+      (should (eq (get-char-property (point) 'face) 'py-def-face)))))
 
 (ert-deftest py-149-font-lock-test-ksGdVu ()
   (let ((py-underscore-word-syntax-p nil)

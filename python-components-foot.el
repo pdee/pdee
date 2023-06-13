@@ -108,6 +108,17 @@
   (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
   )
 
+(defun py--update-version-dependent-keywords ()
+  (let ((kw-py2 '(("\\<print\\>" . 'font-lock-keyword-face)
+                  ("\\<file\\>" . 'py-builtins-face)))
+        (kw-py3 '(("\\<print\\>" . 'py-builtins-face))))
+    (font-lock-remove-keywords 'python-mode kw-py3)
+    (font-lock-remove-keywords 'python-mode kw-py2)
+    ;; avoid to run py-choose-shell again from ‘py--fix-start’
+    (cond ((string-match "ython3" py-python-edit-version)
+           (font-lock-add-keywords 'python-mode kw-py3 t))
+          (t (font-lock-add-keywords 'python-mode kw-py2 t)))))
+
 (define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
@@ -161,14 +172,14 @@ VARIABLES
            '(python-font-lock-keywords nil nil nil nil
 				       (font-lock-syntactic-keywords
 					. py-font-lock-syntactic-keywords)))))
-  ;; avoid to run py-choose-shell again from ‘py--fix-start’
-  (cond ((string-match "ython3" py-python-edit-version)
-	 (font-lock-add-keywords 'python-mode
-				 '(("\\<print\\>" . 'py-builtins-face)
-				   ("\\<file\\>" . nil))))
-	(t (font-lock-add-keywords 'python-mode
-				   '(("\\<print\\>" . 'font-lock-keyword-face)
-				     ("\\<file\\>" . 'py-builtins-face)))))
+  (py--update-version-dependent-keywords)
+  ;; (cond ((string-match "ython3" py-python-edit-version)
+  ;;        (font-lock-add-keywords 'python-mode
+  ;;       			 '(("\\<print\\>" . 'py-builtins-face)
+  ;;       			   ("\\<file\\>" . nil))))
+  ;;       (t (font-lock-add-keywords 'python-mode
+  ;;       			   '(("\\<print\\>" . 'font-lock-keyword-face)
+  ;;       			     ("\\<file\\>" . 'py-builtins-face)))))
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'comment-use-syntax) t)
