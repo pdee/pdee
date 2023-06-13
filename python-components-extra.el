@@ -66,7 +66,8 @@ completion."
 	       (format
 		(concat py-completion-setup-code
 			"\nprint (" py-shell-completion-string-code ")")
-		input) process (buffer-name (current-buffer)))))))
+		input)
+               process (buffer-name (current-buffer)))))))
       (when (> (length completions) 2)
         (split-string completions
                       "^'\\|^\"\\|;\\|'$\\|\"$" t)))))

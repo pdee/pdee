@@ -379,7 +379,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
   (let ((py-underscore-word-syntax-p t)
         (py-python-edit-version "python2"))
     (py-test-with-temp-buffer
-        "_this_"
+        "def print_this_file(): pass"
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "_this_")
@@ -393,7 +393,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
   (let ((py-underscore-word-syntax-p t)
         (py-python-edit-version "python3"))
     (py-test-with-temp-buffer
-        "_this_"
+        "def print_this_file(): pass"
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "_this_")
@@ -408,7 +408,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
   (let ((py-underscore-word-syntax-p nil)
         (py-python-edit-version "python2"))
     (py-test-with-temp-buffer
-        "_this_"
+        "def print_this_file(): pass"
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "_this_")

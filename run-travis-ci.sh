@@ -55,6 +55,8 @@ echo "\$WERKSTATT: $WERKSTATT"
 TESTDIR=$PDIR/test
 export TESTDIR
 
+# EMACS_TEST_VERBOSE
+
 if [ -s $PDIR/python-mode.el ]; then
     PYTHONMODE=$PDIR/python-mode.el
 elif [ -s $PDIR/python-components-mode.el ]; then

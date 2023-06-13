@@ -68,20 +68,27 @@ print(\"two\")"
 
 
 (ert-deftest py-ert-execute-region-ipython3-test ()
-  (py-test-with-temp-buffer
-      "print(\"one\")
+  (let ((buffer (py--choose-buffer-name "ipython3"))
+	(inhibit-point-motion-hooks t)
+        (py-debug-p t))
+    (py-test-with-temp-buffer
+        "print(\"one\")
 print(\"two\")"
-    (let ((buffer (py--choose-buffer-name "ipython3"))
-	  (inhibit-point-motion-hooks t))
       (py-execute-region-ipython3 (point-min) (point-max))
       (set-buffer buffer)
-      (accept-process-output (get-buffer-process buffer) 0.1)
-      ;; (goto-char (point-max))
-      (switch-to-buffer (current-buffer))
-      (goto-char (point-max))
-      (font-lock-ensure) 
-      ;; (sit-for 2)
-      (should (search-backward "two")))))
+      (when py-debug-p (message "current-buffer0: %s" (current-buffer))
+            (sit-for 9)
+            ;; (accept-process-output (get-buffer-process buffer) 1)
+            (when py-debug-p (message "current-buffer1: %s" (current-buffer)))
+            ;; (goto-char (point-max))
+            (switch-to-buffer (current-buffer))
+            (when py-debug-p (message "current-buffer2: %s" (current-buffer)))
+            (goto-char (point-max))
+            (when py-debug-p (message "current-buffer3: %s" (current-buffer)))
+            (font-lock-ensure)
+            ;; (sit-for 2)
+            (when py-debug-p (message "current-buffer4: %s" (current-buffer)))
+            (should (search-backward "two"))))))
 
 (ert-deftest py-ert-execute-region-jython-test ()
   (py-test-with-temp-buffer
@@ -92,7 +99,7 @@ print(\"two\")"
       (set-buffer buffer)
       (switch-to-buffer (current-buffer))
       (goto-char (point-max))
-      (font-lock-ensure) 
+      (font-lock-ensure)
       (should (search-backward "two")))))
 
 (provide 'py-ert-execute-region-test)
