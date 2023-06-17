@@ -387,7 +387,7 @@ LIEP stores line-end-position at point-of-interest
 				(not (bobp))
 				(if (and (not indent-offset) py-smart-indentation) (setq indent-offset (py-guess-indent-offset)) t)
 				(ignore-errors (< orig (or (py-forward-block-or-clause) (point)))))))
-		    (+ (car erg) (if py-smart-indentation
+		    (+ (or (car erg) 0)(if py-smart-indentation
 				     (or indent-offset (py-guess-indent-offset))
 				   (or indent-offset py-indent-offset))))
 		   ((and (not line)

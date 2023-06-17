@@ -1040,5 +1040,17 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (should (eq 4 (py-compute-indentation)))
     ))
 
+(ert-deftest py-indent-test-NobJ29 ()
+  (py-test-with-temp-buffer
+      "for i in b:
+    c = len(foo)
+    print(\"asdf\")
+"
+    (goto-char (point-max))
+    (search-backward "print" nil t 1)
+    (should (eq 4 (py-compute-indentation)))
+    ))
+
+
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here

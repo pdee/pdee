@@ -4772,7 +4772,7 @@ REGEXP: a symbol"
 
 Argument REGEXP: a symbol.
 
-Return a list, whose car is indentation, cdr position.
+Return a list if found, whose car holds indentation, cdr position in buffer.
 
 Keyword detected from REGEXP
 Honor MAXINDENT if provided
