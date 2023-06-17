@@ -2536,7 +2536,7 @@ or `py-ipython0.11-completion-command-string'.
   "Detecting the shell in head of file.")
 
 (defvar py-temp-directory
-  (let ((ok '(lambda (x)
+  (let ((ok #'(lambda (x)
                (and x
                     (setq x (expand-file-name x)) ; always true
                     (file-directory-p x)
@@ -5413,13 +5413,17 @@ Avoids ‘recenter’ calls until OUTPUT is completely sent."
 (defmacro py-shell--add-to-path-with-priority (pathvar paths)
   "Modify PATHVAR and ensure PATHS are added only once at beginning."
   `(dolist (path (reverse ,paths))
-     (cl-delete path ,pathvar :test #'string=)
-     (cl-pushnew path ,pathvar :test #'string=)))
+     (setq ,pathvar (cons path (cl-delete path ,pathvar :test #'string=)))))
 
 (defun py-shell-tramp-refresh-remote-path (vec paths)
   "Update VEC's remote-path giving PATHS priority."
+  (cl-assert (featurep 'tramp))
+  (declare-function tramp-set-remote-path "tramp-sh")
+  (declare-function tramp-set-connection-property "tramp-cache")
+  (declare-function tramp-get-connection-property "tramp-cache")
   (let ((remote-path (tramp-get-connection-property vec "remote-path" nil)))
     (when remote-path
+      ;; FIXME: This part of the Tramp code still knows about Python!
       (py-shell--add-to-path-with-priority remote-path paths)
       (tramp-set-connection-property vec "remote-path" remote-path)
       (tramp-set-remote-path vec))))
@@ -5455,14 +5459,14 @@ Avoids ‘recenter’ calls until OUTPUT is completely sent."
       (tramp-send-command
        vec (format "unset %s" (mapconcat 'identity unset " ")) t))))
 
-(defun py-shell-calculate-pythonpath ()
-  "Calculate the PYTHONPATH using ‘py-shell-extra-pythonpaths’."
+(defun python-shell-calculate-pythonpath ()
+  "Calculate the PYTHONPATH using `python-shell-extra-pythonpaths'."
   (let ((pythonpath
          (split-string
           (or (getenv "PYTHONPATH") "") path-separator 'omit)))
-    (py-shell--add-to-path-with-priority
+    (python-shell--add-to-path-with-priority
      pythonpath py-shell-extra-pythonpaths)
-    (mapconcat 'identity pythonpath path-separator)))
+    (mapconcat #'identity pythonpath path-separator)))
 
 (defun py-shell-calculate-exec-path ()
   "Calculate ‘exec-path’.
