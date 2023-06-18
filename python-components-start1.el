@@ -5459,12 +5459,12 @@ Avoids ‘recenter’ calls until OUTPUT is completely sent."
       (tramp-send-command
        vec (format "unset %s" (mapconcat 'identity unset " ")) t))))
 
-(defun python-shell-calculate-pythonpath ()
+(defun py-shell-calculate-pythonpath ()
   "Calculate the PYTHONPATH using `python-shell-extra-pythonpaths'."
   (let ((pythonpath
          (split-string
           (or (getenv "PYTHONPATH") "") path-separator 'omit)))
-    (python-shell--add-to-path-with-priority
+    (py-shell--add-to-path-with-priority
      pythonpath py-shell-extra-pythonpaths)
     (mapconcat #'identity pythonpath path-separator)))
 

@@ -196,7 +196,7 @@ VARIABLES
     (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
     (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
   (set (make-local-variable 'comment-column) 40)
-  (set (make-local-variable 'comment-indent-function) #'py--comment-indent-function)
+  ;; (set (make-local-variable 'comment-indent-function) #'py--comment-indent-function)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
   (set (make-local-variable 'indent-line-function) 'py-indent-line)
   ;; introduced to silence compiler warning, no real setting

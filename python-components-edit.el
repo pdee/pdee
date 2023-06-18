@@ -357,20 +357,20 @@ If IACT is provided, message result"
 
 ;;  Guess indent offset
 
-(defun py--comment-indent-function ()
-  "Python version of ‘comment-indent-function’."
-  ;; This is required when filladapt is turned off.  Without it, when
-  ;; filladapt is not used, comments which start in column zero
-  ;; cascade one character to the right
-  (save-excursion
-    (beginning-of-line)
-    (let ((eol (line-end-position)))
-      (and comment-start-skip
-           (re-search-forward comment-start-skip eol t)
-           (setq eol (match-beginning 0)))
-      (goto-char eol)
-      (skip-chars-backward " \t")
-      (max comment-column (+ (current-column) (if (bolp) 0 1))))))
+;; (defun py--comment-indent-function ()
+;;   "Python version of ‘comment-indent-function’."
+;;   ;; This is required when filladapt is turned off.  Without it, when
+;;   ;; filladapt is not used, comments which start in column zero
+;;   ;; cascade one character to the right
+;;   (save-excursion
+;;     (beginning-of-line)
+;;     (let ((eol (line-end-position)))
+;;       (and comment-start-skip
+;;            (re-search-forward comment-start-skip eol t)
+;;            (setq eol (match-beginning 0)))
+;;       (goto-char eol)
+;;       (skip-chars-backward " \t")
+;;       (max comment-column (+ (current-column) (if (bolp) 0 1))))))
 
 ;; ;
 
