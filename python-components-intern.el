@@ -252,6 +252,16 @@ LIEP stores line-end-position at point-of-interest
 			  (skip-chars-backward " \t\r\n\f")
 			  (back-to-indentation)
 			  (current-indentation))))
+                     ;; string in list
+                     ((save-excursion (goto-char (nth 8 pps))(nth 0 (parse-partial-sexp (point-min) (point))))
+                      (if
+                          (or line (save-excursion (goto-char (nth 8 pps))(< (py-count-lines (point-min) (point)) origline)))
+                          (progn
+                            (goto-char (nth 8 pps)) (current-column))
+                      (goto-char (nth 8 pps))
+                      (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep)))
+                     ((or line (< (py-count-lines (point-min) (point)) origline))
+                      (goto-char (nth 8 pps))(current-indentation))
 		     (t 0)))
 		   ((and (looking-at "\"\"\"\\|'''") (not (bobp)))
 		    (py-backward-statement)
@@ -291,7 +301,7 @@ LIEP stores line-end-position at point-of-interest
 			    py-backslashed-lines-indent-offset
                           (if (< 20 (line-end-position))
                               8
-                          (+ (current-indentation) py-continuation-offset))))))
+                            (+ (current-indentation) py-continuation-offset))))))
 		   ((and (looking-at py-block-closing-keywords-re)
                          (eq liep (line-end-position)))
 		    (skip-chars-backward "[ \t\r\n\f]")
@@ -388,8 +398,8 @@ LIEP stores line-end-position at point-of-interest
 				(if (and (not indent-offset) py-smart-indentation) (setq indent-offset (py-guess-indent-offset)) t)
 				(ignore-errors (< orig (or (py-forward-block-or-clause) (point)))))))
 		    (+ (or (car erg) 0)(if py-smart-indentation
-				     (or indent-offset (py-guess-indent-offset))
-				   (or indent-offset py-indent-offset))))
+				           (or indent-offset (py-guess-indent-offset))
+				         (or indent-offset py-indent-offset))))
 		   ((and (not line)
                          (eq liep (line-end-position))
                          (py--beginning-of-statement-p))

@@ -982,9 +982,6 @@
 (ert-deftest py-ert-guess-indent-offset-functionp-test-eQPLcX ()
   (should (functionp 'py-guess-indent-offset)))
 
-(ert-deftest py-ert--comment-indent-function-functionp-test-GCMUVF ()
-  (should (functionp 'py--comment-indent-function)))
-
 (ert-deftest py-ert-backward-paragraph-functionp-test-uaQLCo ()
   (should (functionp 'py-backward-paragraph)))
 

@@ -757,7 +757,7 @@ Bar
 "
     (goto-char (point-max))
     (forward-line -3)
-    (should (eq 0 (py-compute-indentation)))))
+    (should (eq 10 (py-compute-indentation)))))
 
 (ert-deftest py--indent-line-by-line-lp-1621672-GmsSN3 ()
   (py-test-with-temp-buffer
@@ -1050,6 +1050,44 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "print" nil t 1)
     (should (eq 4 (py-compute-indentation)))
     ))
+
+(ert-deftest py-indent-bug63959-test-Lc2wzd ()
+  (py-test-with-temp-buffer
+      "for infix in [ # some description
+              \"_cdata\", \"_cmeta\", \"_corig\", \"_cpool\", \"_cvol\", \"_wcorig\",
+              \"indentation is broken here\", \"bar\"]:
+    print(infix)
+"
+    (goto-char (point-max))
+    (search-backward "is" nil t 1)
+    (should (eq 14 (py-compute-indentation)))
+    (search-backward "ata" nil t 1)
+    (should (eq 14 (py-compute-indentation)))
+
+    ))
+
+(ert-deftest py-indent-bug63959-test-SCEA4j ()
+  (py-test-with-temp-buffer
+      "data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}"
+    (goto-char (point-max))
+    (search-backward "name" nil t 1)
+    (should (eq 9 (py-compute-indentation)))
+    (search-backward "pk" nil t 1)
+    (should (eq 8 (py-compute-indentation)))
+    (search-backward "name" nil t 1)
+    (should (eq 9 (py-compute-indentation)))
+    (search-backward "pk" nil t 1)
+    (should (eq 8 (py-compute-indentation)))
+    (search-backward "obj" nil t 1)
+    (should (eq 4 (py-compute-indentation)))))
+
 
 
 (provide 'py-ert-indent-tests)

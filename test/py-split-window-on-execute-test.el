@@ -1,4 +1,4 @@
-;;; py-split-window-on-execute-lp-1361531-test.el --- Test splitting
+;;; py-split-window-on-execute-test.el --- Test splitting
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
@@ -99,5 +99,5 @@ print(\"I'm the py-split-window-on-execute-lp-1361531-python3-test\")"))
   (assert (eq 2 (count-windows)) nil "py-split-window-on-execute-lp-1361531-python3-test failed")
   (py-kill-buffer-unconditional (current-buffer)))
 
-(provide 'py-split-window-on-execute-lp-1361531-test)
-;;; py-split-window-on-execute-lp-1361531-test.el here
+(provide 'py-split-window-on-execute-test)
+;;; py-split-window-on-execute-test.el here
