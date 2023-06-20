@@ -747,18 +747,6 @@ def foo():
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
-(ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test-P19RGY ()
-  (py-test-with-temp-buffer
-      "def foo():
-    print(\"\"\"
-
-Bar
-\"\"\")
-"
-    (goto-char (point-max))
-    (forward-line -3)
-    (should (eq 10 (py-compute-indentation)))))
-
 (ert-deftest py--indent-line-by-line-lp-1621672-GmsSN3 ()
   (py-test-with-temp-buffer
       "def asdf()
@@ -1087,8 +1075,6 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (should (eq 8 (py-compute-indentation)))
     (search-backward "obj" nil t 1)
     (should (eq 4 (py-compute-indentation)))))
-
-
 
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here

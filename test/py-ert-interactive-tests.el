@@ -692,5 +692,17 @@ def baz():
       (goto-char (point-max))
       (should (string= "pdb3" (py--pdb-versioned))))))
 
+(ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test-P19RGY ()
+  (py-test-with-temp-buffer
+      "def foo():
+    print(\"\"\"
+
+Bar
+\"\"\")
+"
+    (goto-char (point-max))
+    (forward-line -3)
+    (should (eq 10 (py-compute-indentation)))))
+
 (provide 'py-ert-interactive-tests)
 ;;; py-ert-interactive-tests.el ends here

@@ -229,12 +229,6 @@ LIEP stores line-end-position at point-of-interest
                            (+ (or indent-offset (and py-smart-indentation (py-guess-indent-offset)) py-indent-offset) (current-indentation)))
                           (t
                            (current-indentation))))
-                   ;; (cond ((eq liep (line-end-position))
-                   ;;        0)
-                   ;;       ((looking-at py-outdent-re)
-                   ;;        (+ (or indent-offset (and py-smart-indentation (py-guess-indent-offset)) py-indent-offset) (current-indentation)))
-                   ;;       (t
-                   ;;        (current-indentation)))
 		   ;; in string
 		   ((and (nth 3 pps) (nth 8 pps))
 		    (cond

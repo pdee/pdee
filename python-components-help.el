@@ -920,9 +920,8 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
 (defun py-flake8-help ()
   "Display flake8 command line help messages."
   (interactive)
-  (set-buffer (get-buffer-create "*flake8-Help*"))
-  (erase-buffer)
-  (shell-command "flake8 --help" "*flake8-Help*"))
+  (with-help-window "*flake8-Help*"
+    (shell-command "flake8 --help" "*flake8-Help*")))
 
 ;;  from string-strip.el --- Strip CHARS from STRING
 
