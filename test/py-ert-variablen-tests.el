@@ -400,11 +400,8 @@
 (ert-deftest py-ert-pychecker-command-args-test-Ron12i ()
   (should (boundp 'py-pychecker-command-args)))
 
-(ert-deftest py-ert-pyflakes-command-test-jSes5d ()
-  (should (boundp 'py-pyflakes-command)))
-
-(ert-deftest py-ert-pyflakes-command-args-test-LNwt78 ()
-  (should (boundp 'py-pyflakes-command-args)))
+(ert-deftest py-ert-pyflakes3-command-args-test-LNwt78 ()
+  (should (boundp 'py-pyflakes3-command-args)))
 
 (ert-deftest py-ert-pyflakespep8-command-test-1ApQa4 ()
   (should (boundp 'py-pyflakespep8-command)))
@@ -715,8 +712,8 @@
 (ert-deftest py-ert-pydbtrack-input-prompt-test-RqZJ5y ()
   (should (boundp 'py-pydbtrack-input-prompt)))
 
-(ert-deftest py-ert-pyflakes-history-test-dbxVtz ()
-  (should (boundp 'py-pyflakes-history)))
+(ert-deftest py-ert-pyflakes3-history-test-dbxVtz ()
+  (should (boundp 'py-pyflakes3-history)))
 
 (ert-deftest py-ert-pyflakespep8-history-test-bpSBSz ()
   (should (boundp 'py-pyflakespep8-history)))

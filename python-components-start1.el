@@ -1415,18 +1415,18 @@ variable section, e.g.:
   :tag "py-pychecker-command-args"
   :group 'python-mode)
 
-(defcustom py-pyflakes-command "pyflakes"
-  "Shell command used to run Pyflakes."
+(defcustom py-pyflakes3-command "pyflakes3"
+  "Shell command used to run Pyflakes3."
   :type 'string
-  :tag "py-pyflakes-command"
+  :tag "py-pyflakes3-command"
   :group 'python-mode)
 
-(defcustom py-pyflakes-command-args ""
-  "String arguments to be passed to pyflakes.
+(defcustom py-pyflakes3-command-args ""
+  "String arguments to be passed to pyflakes3.
 
 Default is \"\""
   :type 'string
-  :tag "py-pyflakes-command-args"
+  :tag "py-pyflakes3-command-args"
   :group 'python-mode)
 
 (defcustom py-pep8-command "pep8"
@@ -2584,7 +2584,7 @@ can write into: the value (if any) of the environment variable TMPDIR,
 
 (defvar py-pychecker-history nil)
 
-(defvar py-pyflakes-history nil)
+(defvar py-pyflakes3-history nil)
 
 (defvar py-pep8-history nil)
 

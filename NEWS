@@ -4,6 +4,7 @@ Python Mode News
 Prepared for version 6.3.2
 -----------------------
 
+- Use ‘pyflakes3’
 - ‘py-python-edit-version’ now defaults to "python3",
 - ‘py-up’ as pythonic ‘backward-sexp’,
   ‘py-down’ as ‘forward-sexp’

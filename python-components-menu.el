@@ -1484,9 +1484,6 @@ Execute statement running pdb."]
 	:help " ‘pdb’
 Run pdb on program FILE in buffer `*gud-FILE*'."])
       ("Checks"
-       ["Pychecker run" py-pychecker-run
-	:help " ‘py-pychecker-run’
-*Run pychecker (default on the file currently visited)."]
        ("Pylint"
 	["Pylint run" py-pylint-run
 	 :help " ‘py-pylint-run’
@@ -1511,16 +1508,16 @@ Display pep8 command line help messages."]
 	["Pep8 flymake mode" pep8-flymake-mode
 	 :help " `pep8-flymake-mode'
 Toggle `pep8’ ‘flymake-mode’."])
-       ("Pyflakes"
-	["Pyflakes run" py-pyflakes-run
-	 :help " ‘py-pyflakes-run’
+       ("Pyflakes3"
+	["Pyflakes3 run" py-pyflakes3-run
+	 :help " ‘py-pyflakes3-run’
 *Run pyflakes (default on the file currently visited)."]
 
-	["Pyflakes help" py-pyflakes-help
-	 :help " ‘py-pyflakes-help’
-Display Pyflakes command line help messages."]
+	["Pyflakes3 help" py-pyflakes3-help
+	 :help " ‘py-pyflakes3-help’
+Display Pyflakes3 command line help messages."]
 
-	["Pyflakes flymake mode" pyflakes-flymake-mode
+	["Pyflakes3 flymake mode" pyflakes-flymake-mode
 	 :help " ‘pyflakes-flymake-mode’
 Toggle ‘pyflakes’ ‘flymake-mode’."])
        ("Flake8"
@@ -1532,14 +1529,15 @@ Flake8 is a wrapper around these tools:"]
 	 :help " `py-flake8-help'
 Display flake8 command line help messages."]
 	("Pyflakes-pep8"
-	 ["Pyflakes pep8 run" py-pyflakes-pep8-run
+	 ["Pyflakes pep8 run" py-pyflakes3-pep8-run
 	  :help " `py-pyflakes-pep8-run'"]
 
 	 ["Pyflakes pep8 help" py-pyflakes-pep8-help
 	  :help " `py-pyflakes-pep8-help'"]
 
 	 ["Pyflakes pep8 flymake mode" pyflakes-pep8-flymake-mode
-	  :help " `pyflakes-pep8-flymake-mode'"])))
+	  :help " `pyflakes-pep8-flymake-mode'"])
+        ))
       ("Customize"
 
        ["Python-mode customize group" (customize-group 'python-mode)

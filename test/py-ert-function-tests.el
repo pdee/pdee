@@ -1657,11 +1657,11 @@
 (ert-deftest py-ert-pylint-doku-functionp-test-uS6sE5 ()
   (should (functionp 'py-pylint-doku)))
 
-(ert-deftest py-ert-pyflakes-run-functionp-test-Gue4cX ()
-  (should (functionp 'py-pyflakes-run)))
+(ert-deftest py-ert-pyflakes3-run-functionp-test-Gue4cX ()
+  (should (functionp 'py-pyflakes3-run)))
 
-(ert-deftest py-ert-pyflakes-help-functionp-test-iuxwJO ()
-  (should (functionp 'py-pyflakes-help)))
+(ert-deftest py-ert-pyflakes3-help-functionp-test-iuxwJO ()
+  (should (functionp 'py-pyflakes3-help)))
 
 (ert-deftest py-ert-pyflakespep8-run-functionp-test-oNAJgG ()
   (should (functionp 'py-pyflakespep8-run)))
