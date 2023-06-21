@@ -665,9 +665,8 @@ Home-page: http://www.logilab.org/project/pylint"
 
 Let's have this until more Emacs-like help is prepared"
   (interactive)
-  (set-buffer (get-buffer-create "*Pylint-Help*"))
-  (erase-buffer)
-  (shell-command "pylint --long-help" "*Pylint-Help*"))
+  (with-help-window "*Pylint-Help*"
+    (shell-command "pylint --long-help" "*Pylint-Help*")))
 
 (defalias 'pylint-doku 'py-pylint-doku)
 (defun py-pylint-doku ()
