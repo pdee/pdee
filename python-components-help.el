@@ -655,7 +655,7 @@ Home-page: http://www.logilab.org/project/pylint"
     (save-some-buffers (not py-ask-about-save))
   (set-buffer (get-buffer-create "*Pylint*"))
   (erase-buffer)
-  (unless (file-readable-p (car (cddr (split-string command))))
+  (unless (file-readable-p (car (reverse (split-string command))))
     (message "Warning: %s" "pylint needs a file"))
   (shell-command command "*Pylint*"))
 
