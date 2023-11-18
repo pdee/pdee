@@ -46,12 +46,14 @@ fi
 
 echo "before shift \$EMACS: $EMACS"
 shift
+echo "after shift \$EMACS: $EMACS"
 echo "\$*: $*"
+echo "\$_: $_"
 PDIR=$PWD
 echo "\$PWD: $PWD"
-# WERKSTATT set in .bashrc, thus unset remotly
-WERKSTATT=${WERKSTATT:=1}
-echo "\$WERKSTATT: $WERKSTATT"
+# IFLOCAL set in .bashrc, thus unset remotly
+IFLOCAL=${IFLOCAL:=1}
+echo "\$IFLOCAL: $IFLOCAL"
 TESTDIR=$PDIR/test
 export TESTDIR
 
@@ -469,7 +471,7 @@ sleep 1 \
 -f ert-run-tests-batch-and-exit
 }
 
-if [ $WERKSTATT -eq 0 ]; then
+if [ $IFLOCAL -eq 0 ]; then
     while getopts 123456789abcdefghijklmnopqrstuvx option
     do
         case $option in
@@ -498,15 +500,13 @@ if [ $WERKSTATT -eq 0 ]; then
 	    n) echo "Lade Testumgebung ‘hier’";hier;;
 
 	esac
-	shift
 	echo "\$*: $*"
-	EMACS=$1
-	
+
     done
 
     else
     echo "entfernt"
-    echo "\$WERKSTATT: $WERKSTATT"
+    echo "\$IFLOCAL: $IFLOCAL"
     echo "Lade testumgebung \"ENTFERNT\""
     entfernt
 fi

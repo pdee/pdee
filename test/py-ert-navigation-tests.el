@@ -6828,7 +6828,7 @@ class C:
     (py-up)
     ;; (sit-for 1)
     (font-lock-fontify-buffer)
-    ;; (sit-for 1) 
+    ;; (sit-for 1)
     (should (eq (char-after) 34))
     (should (eq (char-before) 32))))
 
@@ -7077,6 +7077,28 @@ class M:
     (should (eq (char-before) ?}))
     (should (eq (char-after) ?,))
     ))
+
+(ert-deftest py-forward-top-level-test-W20rg3 ()
+  (py-test-with-temp-buffer-point-min
+      "for file in a:
+    pass
+
+# >>>"
+    (goto-char (point-min))
+    (py-forward-top-level)
+    (skip-chars-backward " \t\r\n\f")
+    (should (eq (char-before) ?s))))
+
+(ert-deftest py-backward-top-level-test-W20rg3 ()
+  (py-test-with-temp-buffer
+      "# >>>
+
+for file in a:
+    pass"
+    (goto-char (point-max))
+    (skip-chars-backward " \t\r\n\f")
+    (py-backward-top-level)
+    (should (eq (char-after) ?f))))
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here
