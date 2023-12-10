@@ -385,6 +385,9 @@ may want to re-add custom functions to it using the
 (defalias 'py-hungry-delete-forward 'c-hungry-delete-forward)
 (defalias 'py-hungry-delete-backwards 'c-hungry-delete-backwards)
 
+(defalias 'py-end-of-def-or-class 'py-forward-def-or-class)
+(defalias 'py-beginning-of-def-or-class 'py-backward-def-or-class)
+
 ;; https://gitlab.com/python-mode-devs/python-mode/-/issues/105#note_1095808557
 (puthash "python-"
          (append (gethash "python" definition-prefixes) '("python-mode"))
