@@ -1018,7 +1018,6 @@ commands ‘py-backward-top-level’, ‘py-forward-top-level’
 
           (const :tag "default" py-newline-and-indent)
           (const :tag "newline" newline)
-          (const :tag "py-newline-and-indent" py-newline-and-indent)
           (const :tag "py-newline-and-dedent" py-newline-and-dedent)
           )
   :tag "py-return-key"
@@ -1682,7 +1681,6 @@ See also ‘py-keep-windows-configuration’"
           (const :tag "default" just-two)
 	  (const :tag "reuse" t)
           (const :tag "no split" nil)
-	  (const :tag "just-two" just-two)
           (const :tag "always" always))
   :tag "py-split-window-on-execute"
   :group 'python-mode)
