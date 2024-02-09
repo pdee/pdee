@@ -43,11 +43,8 @@
 (ert-deftest py-ert-ipython-shell-mode-map-test-zr50XR ()
   (should (boundp 'py-ipython-shell-mode-map)))
 
-(ert-deftest py-ert-python-shell-mode-map-test-vAUJjK ()
-  (should (boundp 'py-python-shell-mode-map)))
-
 (ert-deftest py-ert-shell-map-test-zr6lBC ()
-  (should (boundp 'py-shell-map)))
+  (should (boundp 'py-shell-mode-map)))
 
 ;; (ert-deftest py-ert-eldoc-string-code-test-zOpVTu ()
 ;;   (should (boundp 'py-eldoc-string-code)))
