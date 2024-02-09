@@ -160,8 +160,8 @@ of the first definition found."
         looking-p
         def-name prev-name
         cur-indent def-pos
-        (class-paren (first py-imenu-generic-parens))
-        (def-paren (second py-imenu-generic-parens)))
+        (class-paren (car py-imenu-generic-parens))
+        (def-paren (cadr py-imenu-generic-parens)))
     ;; (switch-to-buffer (current-buffer))
     (setq looking-p
           (re-search-forward py-imenu-generic-regexp (point-max) t))

@@ -514,6 +514,12 @@ If already at the beginning of a block, move these form upward."
      ;; ((py-beginning-of-statement-p)
      ;;  (py-backward-block-or-clause))
 
+(defun py-nav-last-prompt ()
+  (interactive)
+  (goto-char (pos-bol))
+  (when
+      (re-search-backward comint-prompt-regexp nil t 1)
+    (comint-skip-prompt)))
 
 (provide 'python-components-move)
 ;;;  python-components-move.el ends here

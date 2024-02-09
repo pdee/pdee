@@ -1,6 +1,5 @@
 ;;; python-components-map.el --- Install a python-mode-map -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages
@@ -31,7 +30,6 @@ Default is t")
 
 (defvar py-menu nil
   "Make a dynamically bound variable ‘py-menu’.")
-
 
 (setq python-mode-map
       (let ((map (make-sparse-keymap)))
@@ -112,55 +110,45 @@ Default is t")
 	  (setq map (py-define-menu map)))
         map))
 
-(defvar py-python-shell-mode-map
+;; (defvar-keymap hypertext-mode-map "<down-mouse-3>" #'do-hyper-link)
+;; (defvar-keymap py-shell-mode-map "[(control c)(control r)]" #'py-nav-last-prompt))
+
+(defvar py-shell-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map "\C-c\C-r" 	  'py-nav-last-prompt)
     (define-key map (kbd "RET") 'comint-send-input)
-    (define-key map [(control c)(-)] 'py-up-exception)
-    (define-key map [(control c)(=)] 'py-down-exception)
     (define-key map (kbd "TAB") 'py-indent-or-complete)
-    (define-key map [(meta tab)] 'py-shell-complete)
-    (define-key map [(control c)(!)] 'py-shell)
-    (define-key map [(control c)(control t)] 'py-toggle-shell)
-    ;; electric keys
-    ;; (define-key map [(:)] 'py-electric-colon)
-    ;; (define-key map [(\#)] 'py-electric-comment)
-    ;; (define-key map [(delete)] 'py-electric-delete)
-    ;; (define-key map [(backspace)] 'py-electric-backspace)
-    ;; (define-key map [(control backspace)] 'py-hungry-delete-backwards)
-    ;; (define-key map [(control c) (delete)] 'py-hungry-delete-forward)
-    ;; (define-key map [(control y)] 'py-electric-yank)
-    ;; moving point
-    (define-key map [(control c)(control p)] 'py-backward-statement)
-    (define-key map [(control c)(control n)] 'py-forward-statement)
-    (define-key map [(control c)(control u)] 'py-backward-block)
-    (define-key map [(control c)(control q)] 'py-forward-block)
+    (define-key map [(control c) (!)] 'py-shell)
+    (define-key map [(control c) (-)] 'py-up-exception)
+    (define-key map [(control c) (.)] 'py-expression)
+    (define-key map [(control c) (:)] 'py-guess-indent-offset)
+    (define-key map [(control c) (<)] 'py-shift-left)
+    (define-key map [(control c) (=)] 'py-down-exception)
+    (define-key map [(control c) (>)] 'py-shift-right)
+    (define-key map [(control c) (\#)] 'py-comment-region)
+    (define-key map [(control c) (\?)] 'py-describe-mode)
+    (define-key map [(control c) (control b)] 'py-submit-bug-report)
+    (define-key map [(control c) (control d)] 'py-pdbtrack-toggle-stack-tracking)
+    (define-key map [(control c) (control e)] 'py-help-at-point)
+    (define-key map [(control c) (control k)] 'py-mark-block-or-clause)
+    (define-key map [(control c) (control l)] 'comint-dynamic-list-input-ring)
+    (define-key map [(control c) (control n)] 'py-forward-statement)
+    (define-key map [(control c) (control p)] 'py-backward-statement)
+    (define-key map [(control c) (control q)] 'py-forward-block)
+    (define-key map [(control c) (control t)] 'py-toggle-shell)
+    (define-key map [(control c) (control u)] 'py-backward-block)
+    (define-key map [(control c) (control v)] 'py-version)
+    (define-key map [(control c) (control w)] 'py-pychecker-run)
+    (define-key map [(control c) (tab)] 'py-indent-region)
+    (define-key map [(control j)] 'py-newline-and-indent)
     (define-key map [(control meta a)] 'py-backward-def-or-class)
     (define-key map [(control meta e)] 'py-forward-def-or-class)
-    (define-key map [(control j)] 'py-newline-and-indent)
-    (define-key map [(super backspace)] 'py-dedent)
-    ;; (define-key map [(control return)] 'py-newline-and-dedent)
-    ;; indentation level modifiers
-    (define-key map [(control c)(control l)] 'comint-dynamic-list-input-ring)
-    (define-key map [(control c)(control r)] 'comint-previous-prompt)
-    (define-key map [(control c)(<)] 'py-shift-left)
-    (define-key map [(control c)(>)] 'py-shift-right)
-    (define-key map [(control c)(tab)] 'py-indent-region)
-    (define-key map [(control c)(:)] 'py-guess-indent-offset)
-    ;; subprocess commands
     (define-key map [(control meta h)] 'py-mark-def-or-class)
-    (define-key map [(control c)(control k)] 'py-mark-block-or-clause)
-    (define-key map [(control c)(.)] 'py-expression)
-    ;; Miscellaneous
-    ;; (define-key map [(super q)] 'py-copy-statement)
-    (define-key map [(control c)(control d)] 'py-pdbtrack-toggle-stack-tracking)
-    (define-key map [(control c)(\#)] 'py-comment-region)
-    (define-key map [(control c)(\?)] 'py-describe-mode)
-    (define-key map [(control c)(control e)] 'py-help-at-point)
     (define-key map [(control x) (n) (d)] 'py-narrow-to-def-or-class)
-    ;; information
-    (define-key map [(control c)(control b)] 'py-submit-bug-report)
-    (define-key map [(control c)(control v)] 'py-version)
-    (define-key map [(control c)(control w)] 'py-pychecker-run)
+    (define-key map [(meta tab)] 'py-shell-complete)
+    (define-key map [(super backspace)] 'py-dedent)
+    ;; (define-key map "\C-c\C-r" 	  'comint-show-output)
+    ;; (define-key map [(control c)(control r)] 'py-nav-last-prompt)
     (substitute-key-definition 'complete-symbol 'completion-at-point
 			       map global-map)
     (substitute-key-definition 'backward-up-list 'py-up
@@ -170,10 +158,8 @@ Default is t")
     map)
   "Used inside a Python-shell.")
 
-(defvar py-ipython-shell-mode-map py-python-shell-mode-map
-  "Copy ‘py-python-shell-mode-map’ here.")
-
-(defvar py-shell-map py-python-shell-mode-map)
+(defvar py-ipython-shell-mode-map py-shell-mode-map
+  "Copy ‘py-shell-mode-map’ here.")
 
 (provide 'python-components-map)
 

@@ -271,7 +271,7 @@ VARIABLES
     (set (make-local-variable 'end-of-defun-function) 'py-forward-def-or-class)
     (define-key python-mode-map [(control meta a)] 'py-backward-def-or-class)
     (define-key python-mode-map [(control meta e)] 'py-forward-def-or-class))
-  (when py-sexp-use-expression-p
+    (when py-sexp-use-expression-p
     (define-key python-mode-map [(control meta f)] 'py-forward-expression)
     (define-key python-mode-map [(control meta b)] 'py-backward-expression))
 
@@ -323,6 +323,7 @@ may want to re-add custom functions to it using the
    (t
     (define-key py-shell-mode-map "\t"
 		'py-indent-or-complete)))
+  (define-key py-shell-mode-map [(control c) (control r)] 'py-nav-last-prompt)
   (make-local-variable 'py-pdbtrack-buffers-to-kill)
   (make-local-variable 'py-shell-fast-last-output)
   (set (make-local-variable 'py-shell--block-prompt) nil)

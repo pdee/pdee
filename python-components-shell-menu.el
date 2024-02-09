@@ -26,7 +26,7 @@
      ;; (easy-menu-define py-menu map "Python Tools"
      ;;           `("PyTools"
      (easy-menu-define
-       py-shell-menu py-python-shell-mode-map "Py-Shell Mode menu"
+       py-shell-menu py-shell-mode-map "Py-Shell Mode menu"
        `("Py-Shell"
          ("Edit"
           ("Shift"
