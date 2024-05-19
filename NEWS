@@ -20,6 +20,7 @@ Prepared for version 6.3.2
   permits disabling python-mode native completion.
 
 - `isympy3', am IPython console for SymPy
+- ‘run-travis-ci.sh’ renamed into generic ‘run-tests.sh’
 
 New in version 6.3.1
 -----------------------
