@@ -4,6 +4,10 @@ Python Mode News
 Prepared for version 6.3.2
 -----------------------
 
+- py-nav-last-prompt new command
+
+  Jump to last prompt as in comint-shell
+
 - Use ‘pyflakes3’
 - ‘py-python-edit-version’ now defaults to "python3",
 - ‘py-up’ as pythonic ‘backward-sexp’,
@@ -16,7 +20,6 @@ Prepared for version 6.3.2
   permits disabling python-mode native completion.
 
 - `isympy3', am IPython console for SymPy
-
 
 New in version 6.3.1
 -----------------------

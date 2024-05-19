@@ -515,6 +515,7 @@ If already at the beginning of a block, move these form upward."
      ;;  (py-backward-block-or-clause))
 
 (defun py-nav-last-prompt ()
+  "Move to previous prompt in py-shell."
   (interactive)
   (goto-char (pos-bol))
   (when

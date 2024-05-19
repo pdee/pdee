@@ -72,7 +72,10 @@ With optional \\[universal-argument] get a new dedicated shell."
 
 With optional \\[universal-argument] get a new dedicated shell."
   (interactive "p")
-  (py-shell argprompt args nil "python3" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))
+  ;; (with-current-buffer
+  (py-shell argprompt args nil "python3" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt))))
+  ;; (switch-to-buffer (current-buffer))
+  (funcall (lambda nil (window-configuration-to-register 121))))
 
 (defun pypy (&optional argprompt args buffer fast exception-buffer split)
   "Start an Pypy interpreter.
