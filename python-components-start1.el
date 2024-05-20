@@ -323,8 +323,11 @@ Return nil otherwise. "
 ;;  (setq strip-chars-before  "[ \t\r\n]*")
 (defun py--string-strip (str &optional chars-before chars-after)
   "Return a copy of STR, CHARS removed.
-`CHARS-BEFORE' and `CHARS-AFTER' default is \"[ \t\r\n]*\",
-i.e. spaces, tabs, carriage returns, newlines and newpages."
+
+Removed chars default to values of ‘py-chars-before’ and ‘py-chars-after’
+i.e. spaces, tabs, carriage returns, newlines and newpages
+
+Optional arguments `CHARS-BEFORE' and `CHARS-AFTER' override default"
   (let ((s-c-b (or chars-before
                    py-chars-before))
         (s-c-a (or chars-after
@@ -6261,7 +6264,7 @@ process buffer for a list of commands.)"
 	(progn
 	  (with-current-buffer buffer
             (setq buffer buffer)
-            (switch-to-buffer (current-buffer)) 
+            (switch-to-buffer (current-buffer))
             (when py-register-shell-buffer-p
               (funcall (lambda nil (window-configuration-to-register 121))))
 	    (unless (or done fast) (py-shell-mode))
