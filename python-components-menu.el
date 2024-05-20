@@ -2266,6 +2266,14 @@ Pymacs has been written by François Pinard and many others.
 See original source: http://pymacs.progiciels-bpi.caUse `M-x customize-variable' to set it permanently"
 	  :style toggle :selected py-load-pymacs-p]
 
+         ["Register shell buffer"
+	  (setq py-register-shell-buffer-p
+		(not py-register-shell-buffer-p))
+	  :help "If py-shell buffer should be registerd at start.
+
+Default is nil."
+	  :style toggle :selected py-register-shell-buffer-p]
+
 	 ["Verbose "
 	  (setq py-verbose-p
 		(not py-verbose-p))
