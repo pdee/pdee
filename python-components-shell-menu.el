@@ -590,7 +590,11 @@ the default"]
            ))
          ("Move"
           ("Backward"
-	   ["Beginning of block" py-beginning-of-block
+	   ["Go backward one prompt" py-nav-last-prompt
+	    :help " ‘py-nav-last-prompt’
+Like ‘comint-show-output’ known from in shell-mode"]
+
+           ["Beginning of block" py-beginning-of-block
 	    :help " ‘py-beginning-of-block’
 Go to beginning block, skip whitespace at BOL.
 

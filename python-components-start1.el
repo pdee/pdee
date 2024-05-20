@@ -123,6 +123,28 @@ Needed for completion and other environment stuff only."
   :group 'python-mode
   :safe 'booleanp)
 
+(defcustom py-register-shell-buffer-p nil
+  "If non-nil, register new py-shell according to py-register-char as REGISTER.
+
+Default is nil.
+See ‘window-configuration-to-register’"
+
+  :type 'boolean
+  :tag "py-register-shell-buffer-p"
+  :group 'python-mode
+  :safe 'booleanp)
+
+(defcustom py-register-char ?y
+  "Char used by py-register-shell-buffer-p
+
+Default is ‘y’.
+See also ‘window-configuration-to-register’"
+
+  :type 'char
+  :tag "py-register-char"
+  :group 'python-mode
+  :safe 'characterp)
+
 (defcustom py-pythonpath ""
   "Define $PYTHONPATH here, if needed.
 
@@ -6238,6 +6260,10 @@ process buffer for a list of commands.)"
     (if (setq proc (get-buffer-process buffer))
 	(progn
 	  (with-current-buffer buffer
+            (setq buffer buffer)
+            (switch-to-buffer (current-buffer)) 
+            (when py-register-shell-buffer-p
+              (funcall (lambda nil (window-configuration-to-register 121))))
 	    (unless (or done fast) (py-shell-mode))
 	    (and internal (set-process-query-on-exit-flag proc nil)))
 	  (when (or interactivep
