@@ -8,6 +8,12 @@ Prepared for version 6.3.2
 
   Jump to last prompt as in comint-shell
 
+- ‘py-register-shell-buffer-p’ new option
+  when customized to ‘t’, a py-shell gets a register key
+  according to ‘py-register-char’, default is ‘y’
+  C-x r j y
+  then should jump to the py-shell buffer
+  
 - Use ‘pyflakes3’
 - ‘py-python-edit-version’ now defaults to "python3",
 - ‘py-up’ as pythonic ‘backward-sexp’,
