@@ -2434,6 +2434,14 @@ virtualenv."
   :tag "py-shell-virtualenv-root"
   :group 'python-mode)
 
+(defcustom py-start-in-virtualenv-p nil
+  "When ‘py-shell-virtualenv-root’ is set, Emacs should start there."
+  :type 'boolean
+  :tag "py-start-in-virtualenv-p"
+  :group 'python-mode)
+
+(when py-start-in-virtualenv-p (dired py-shell-virtualenv-root))
+
 (defvar py-shell-completion-native-redirect-buffer
   " *Py completions redirect*"
   "Buffer to be used to redirect output of readline commands.")

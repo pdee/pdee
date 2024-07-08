@@ -4,6 +4,10 @@ Python Mode News
 Prepared for version 6.3.2
 -----------------------
 
+- New customizable ‘py-start-in-virtualenv-p’ 
+  When ‘py-shell-virtualenv-root’ is set, Emacs should start there.
+  Default is nil
+
 - ‘py-nav-last-prompt’ new command
 
   Jump to last prompt as in comint-shell
