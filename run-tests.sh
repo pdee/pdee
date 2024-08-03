@@ -15,7 +15,6 @@
 
 # Commentary:
 
-# run-travis-ci.sh -[OPTION]
 # selecting single test-files
 
 # This script tests functions from python-mode.el.
