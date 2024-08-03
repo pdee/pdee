@@ -297,7 +297,7 @@ With optional \\[universal-argument] print as string"
 print(\"\\nfoo: {}\"\.format(foo))"
   (interactive "*")
   (let ((name (py--string-strip (or strg (car kill-ring)))))
-    (insert (concat "print(\"" name ": {}\".format(" name "))"))))
+    (insert (concat "print(\"" name ": {}\\n\".format(" name "))"))))
 
 (defun py-line-to-printform-python2 ()
   "Transforms the item on current in a print statement. "
