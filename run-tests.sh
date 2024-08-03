@@ -15,6 +15,7 @@
 
 # Commentary:
 
+# run-tests.sh -[OPTION]
 # selecting single test-files
 
 # This script tests functions from python-mode.el.
