@@ -1,6 +1,5 @@
 ;;; python-components-shift-forms.el --- Move forms left or right -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
 
@@ -23,7 +22,6 @@
 ;; directory devel. Edits here might not be persistent.
 
 ;;; Code:
-
 
 (defun py-shift-left (&optional count start end)
   "Dedent region according to ‘py-indent-offset’ by COUNT times.
@@ -98,7 +96,7 @@ Optional END: region end"
   "Indent block by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -108,7 +106,7 @@ Return outmost indentation reached."
   "Dedent block by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -118,7 +116,7 @@ Return outmost indentation reached."
   "Indent block-or-clause by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -128,7 +126,7 @@ Return outmost indentation reached."
   "Dedent block-or-clause by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -138,7 +136,7 @@ Return outmost indentation reached."
   "Indent class by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -148,7 +146,7 @@ Return outmost indentation reached."
   "Dedent class by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -158,7 +156,7 @@ Return outmost indentation reached."
   "Indent clause by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -168,7 +166,7 @@ Return outmost indentation reached."
   "Dedent clause by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -178,7 +176,7 @@ Return outmost indentation reached."
   "Indent comment by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -188,7 +186,7 @@ Return outmost indentation reached."
   "Dedent comment by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -198,7 +196,7 @@ Return outmost indentation reached."
   "Indent def by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -208,7 +206,7 @@ Return outmost indentation reached."
   "Dedent def by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -218,7 +216,7 @@ Return outmost indentation reached."
   "Indent def-or-class by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -228,7 +226,7 @@ Return outmost indentation reached."
   "Dedent def-or-class by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -238,7 +236,7 @@ Return outmost indentation reached."
   "Indent indent by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -248,7 +246,7 @@ Return outmost indentation reached."
   "Dedent indent by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -258,7 +256,7 @@ Return outmost indentation reached."
   "Indent minor-block by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -268,7 +266,7 @@ Return outmost indentation reached."
   "Dedent minor-block by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -278,7 +276,7 @@ Return outmost indentation reached."
   "Indent paragraph by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -288,7 +286,7 @@ Return outmost indentation reached."
   "Dedent paragraph by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -298,7 +296,7 @@ Return outmost indentation reached."
   "Indent region by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -308,7 +306,7 @@ Return outmost indentation reached."
   "Dedent region by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -318,7 +316,7 @@ Return outmost indentation reached."
   "Indent statement by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -328,7 +326,7 @@ Return outmost indentation reached."
   "Dedent statement by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -338,7 +336,7 @@ Return outmost indentation reached."
   "Indent top-level by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")
@@ -348,7 +346,7 @@ Return outmost indentation reached."
   "Dedent top-level by COUNT spaces.
 
 COUNT defaults to ‘py-indent-offset’,
-use \[universal-argument] to specify a different value.
+use \\[universal-argument] to specify a different value.
 
 Return outmost indentation reached."
   (interactive "*P")

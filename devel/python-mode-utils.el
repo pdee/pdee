@@ -1504,7 +1504,7 @@ Optional END: region end\"
   \"Indent " ele " by COUNT spaces.
 
 COUNT defaults to `py-indent-offset',
-use \\[universal-argument] to specify a different value.
+use \\\\[universal-argument] to specify a different value.
 
 Return outmost indentation reached.\"
   (interactive \"\*P\")
@@ -1514,7 +1514,7 @@ Return outmost indentation reached.\"
   \"Dedent " ele " by COUNT spaces.
 
 COUNT defaults to `py-indent-offset',
-use \\[universal-argument] to specify a different value.
+use \\\\[universal-argument] to specify a different value.
 
 Return outmost indentation reached.\"
   (interactive \"\*P\")
