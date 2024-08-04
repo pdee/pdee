@@ -1,5 +1,8 @@
 [![MELPA](https://melpa.org/packages/python-mode-badge.svg)](https://melpa.org/#/python-mode)
 
+[![CircleCI PDEE](https://app.circleci.com/gh/andreas-roehler/pdee.svg?style=svg)]
+(https://app.circleci.com/pipelines/github/pdee)
+
 Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
 
