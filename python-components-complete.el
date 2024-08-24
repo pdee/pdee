@@ -245,6 +245,10 @@ in (I)Python shell-modes ‘py-shell-complete’"
 	     (member (char-before) (list 9 10 12 13 32 ?: ?\) ?\] ?\}))
 	     (not (looking-at "[ \t]*$")))
 	 (py-indent-line))
+        ;; (;; in comment
+        ;;  (or (nth 4 (parse-partial-sexp (point-min) (point)))
+        ;;      (looking-at py-comment-re))
+        ;;  (goto-char (nth 8 (parse-partial-sexp (point-min) (point))))
 	((and py-do-completion-p (comint-check-proc (current-buffer)))
 	 ;; (let* ((shell (process-name (get-buffer-process (current-buffer)))))
 	 (ignore-errors (completion-at-point)))

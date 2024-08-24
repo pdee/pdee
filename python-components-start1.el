@@ -2440,8 +2440,6 @@ virtualenv."
   :tag "py-start-in-virtualenv-p"
   :group 'python-mode)
 
-(when py-start-in-virtualenv-p (dired py-shell-virtualenv-root))
-
 (defvar py-shell-completion-native-redirect-buffer
   " *Py completions redirect*"
   "Buffer to be used to redirect output of readline commands.")
@@ -2838,11 +2836,11 @@ for options to pass to the DOCNAME interpreter. \"
 
 ;; Constants
 (defconst py-block-closing-keywords-re
-  "[ \t]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ \n\t]"
+  "[ \t]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ \n\t]*"
   "Matches the beginning of a class, method or compound statement.")
 
 (setq py-block-closing-keywords-re
-  "[ \t]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ \n\t]")
+  "[ \t]*\\_<\\(return\\|raise\\|break\\|continue\\|pass\\)\\_>[ \n\t]*")
 
 (defconst py-finally-re
   "[ \t]*\\_<finally:"
@@ -3108,7 +3106,7 @@ Second group grabs the name")
   :group 'python-mode
   )
 
-(defvar py-comment-re comment-start
+(defvar py-comment-re "#[ \t]*"
   "Needed for normalized processing.")
 
 (defconst py-block-keywords
