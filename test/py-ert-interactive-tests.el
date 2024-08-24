@@ -588,6 +588,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 (ert-deftest py-python3-shell-test-YW7ToN ()
   ""
   (let ((erg (python3)))
+    ;; (when py-debug-p (message "%s" erg))
+    ;; (when py-debug-p (message "buffperp: %s" (get-buffer erg)))
     (should (bufferp (get-buffer erg)))
     (should (get-buffer-process erg))))
 

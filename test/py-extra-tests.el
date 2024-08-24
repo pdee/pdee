@@ -34,14 +34,17 @@
 (ert-deftest py-ert-moves-up-execute-statement-test-RdqUKX ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
-    (goto-char (point-min))
-    (let ((py-shell-name "python2"))
-      (py-execute-statement)
-      (sit-for 0.1)
-      (set-buffer (get-buffer  "*Python2*"))
-      (goto-char (point-max))
-      (and (should (search-backward "py-execute-statement-test" nil t 1))
-	   (py-kill-buffer-unconditional (current-buffer))))))
+    (if (executable-find "python2")
+        (progn
+          (goto-char (point-min))
+          (let ((py-shell-name "python2"))
+            (py-execute-statement)
+            (sit-for 0.1)
+            (set-buffer (get-buffer "*Python2*"))
+            (goto-char (point-max))
+            (and (should (search-backward "py-execute-statement-test" nil t 1))
+	         (py-kill-buffer-unconditional (current-buffer)))))
+      (when py-debug-p (message "py-ert-moves-up-execute-statement-test-RdqUKX: %s" "Can't see python2")))))
 
 (ert-deftest py-complete-in-python3-shell-test-JtNakZ ()
   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))

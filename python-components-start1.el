@@ -4072,7 +4072,8 @@ Return nil, if no executable found."
       (let* (res
 	     done
 	     (erg
-	      (cond (py-force-py-shell-name-p
+	      (cond (py-shell-name)
+                    (py-force-py-shell-name-p
 		     (default-value 'py-shell-name))
 		    (py-use-local-default
 		     (if (not (string= "" py-shell-local-path))

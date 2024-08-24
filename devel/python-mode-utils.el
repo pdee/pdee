@@ -1287,63 +1287,10 @@ Include default forms "
 With optional \\\\[universal-argument] get a new dedicated "))
       (insert (concat "shell.\"
   (interactive \"p\")
-  (py-shell argprompt args nil \"" ele "\" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))\n\n"))))
-  ;; (insert ";; dedicated\n")
-  ;; (dolist (ele py-shells)
-  ;;   (unless (string= ele "")
-  ;;     (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-  ;;     (insert (concat "(defun " ele "-dedicated (&optional argprompt args buffer fast exception-buffer split)
-  ;; \"Start an unique "))
-  ;;     (insert (capitalize ele))
-  ;;     (pmu-fix-ipython ele)
-  ;;     (insert (concat " interpreter in another window.\"
-  ;; (interactive \"p\")\n"))
-  ;;     (insert (concat "  (py-shell argprompt args  t \"" ele "\" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt)))))\n\n"))))
-  ;; (insert ";; switch\n")
-  ;; (dolist (ele py-shells)
-;;     (unless (string= ele "")
-;;       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-;;       (insert (concat "(defun " ele "-switch (&optional argprompt args buffer fast exception-buffer split)
-;;   \"Switch to "))
-;;       (insert (capitalize ele))
-;;       (pmu-fix-ipython ele)
-;;       (insert (concat " interpreter in another window.
-
-;; Optional ARG \\\\[universal-argument] prompts for path to the"))
-;;       (insert (concat " interpreter.\"
-;;   (interactive \"p\")\n"))
-;;       (insert (concat "  (py-shell argprompt args nil \"" ele "\" buffer fast exception-buffer split t))\n\n"))))
-  ;; (insert ";; no-switch\n")
-  ;; (dolist (ele py-shells)
-;;     (unless (string= ele "")
-;;       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-;;       (insert (concat "(defun " ele "-no-switch (&optional argprompt args  buffer fast exception-buffer split)
-;;   \"Open an "))
-;;       (insert (capitalize ele))
-;;       (pmu-fix-ipython ele)
-;;       (insert (concat " interpreter in another window, but do not switch to it.
-
-;; Optional ARG \\\\[universal-argument] prompts for path to the"))
-
-;;       (insert (concat " interpreter.\"
-;;   (interactive \"p\")\n"))
-;;       (insert (concat "  (py-shell argprompt args nil \"" ele "\" buffer fast exception-buffer split))\n\n"))))
-  ;; (insert ";; dedicated switch\n")
-  ;; (dolist (ele py-shells)
-;;     (unless (string= ele "")
-;;       (setq ele (replace-regexp-in-string "\\\\" "" (prin1-to-string ele)))
-;;       (insert (concat "(defalias '" ele "-dedicated-switch '" ele "-switch-dedicated)\n"))
-;;       (insert (concat "(defun " ele "-switch-dedicated (&optional argprompt args buffer fast exception-buffer split)
-;;   \"Switch to an unique "))
-;;       (insert (capitalize ele))
-;;       (pmu-fix-ipython ele)
-;;       (insert (concat " interpreter in another window.
-
-;; Optional ARG \\\\[universal-argument] prompts for path to the"))
-;;       (insert " interpreter.\"
-;;   \(interactive \"p\")\n")
-;;       (insert (concat "  (py-shell argprompt args t \"" ele "\" buffer fast exception-buffer split t))\n\n"))))
-  ;; (py-shell &optional argprompt dedicated shell buffer-name fast exception-buffer)
+  (let ((buffer (py-shell argprompt args nil \"" ele "\" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt))))))
+    (funcall (lambda nil (window-configuration-to-register 121)))
+    (goto-char (point-max)) 
+    buffer))\n\n"))))
   (insert "(provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
 ")
