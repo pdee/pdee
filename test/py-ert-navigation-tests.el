@@ -1285,7 +1285,7 @@ if __name__ == \"__main__\":
                     finally:
                         pass"
     (goto-char (point-max))
-    00(py-up-clause)
+    (py-up-clause)
     (should (looking-at "else:"))))
 
 (ert-deftest py-backward-statement-test-1-QcNOgE ()
@@ -3036,7 +3036,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
         def baz():
             pass"
     (goto-char (point-max))
-    (sit-for 0.1)
+    ;; (sit-for 0.1)
     (search-backward "elif")
     (py-backward-clause)
     (should (looking-at "if True"))))
