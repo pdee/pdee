@@ -4,6 +4,8 @@ Python Mode News
 Prepared for version 6.3.2
 -----------------------
 
+- TAB calls ‘py-indent-line’ by default.
+
 - New customizable ‘py-start-in-virtualenv-p’ 
   When ‘py-shell-virtualenv-root’ is set, Emacs should start there.
   Default is nil

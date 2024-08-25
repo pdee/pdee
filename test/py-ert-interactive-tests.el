@@ -612,7 +612,7 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
       (py-execute-statement)
       (should (eq (window-height) full-height)))))
 
-(ert-deftest py-shell-fontify-test-t3Sizn ()
+(ert-deftest py-shell-test-t3Sizn ()
   (let ((buffer (py-shell nil nil t)))
     (with-current-buffer buffer
       (switch-to-buffer (current-buffer))

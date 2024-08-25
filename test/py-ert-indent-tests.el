@@ -1076,5 +1076,38 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (search-backward "obj" nil t 1)
     (should (eq 4 (py-compute-indentation)))))
 
+(ert-deftest py-backward-def-or-class-test-2bgJkT ()
+  (py-test-with-temp-buffer
+      "def main():
+    if len(sys.argv) == 1:
+        usage()
+        # sys.exit()
+
+    class asdf(object):
+        zeit = time.strftime('%Y%m%d--%H-%M-%S')
+
+        def foo():
+            pass
+
+        def bar():
+            pass
+
+        # def Utf8_Exists(filename) -> a[1:2]:
+        def Utf8_Exists(filename):
+            return os.path.exists(filename.encode('utf-8'))"
+    (goto-char (point-max))
+    (py-backward-def-or-class)
+    (should (char-equal (char-after) ?d))
+    (py-backward-def-or-class)
+    (should (char-equal (char-after) ?d))
+    (py-backward-def-or-class)
+    (should (char-equal (char-after) ?d))
+    (py-backward-def-or-class)
+    (should (char-equal (char-after) ?c))
+    (py-backward-def-or-class)
+    (should (char-equal (char-after) ?d))
+    ))
+
+
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here

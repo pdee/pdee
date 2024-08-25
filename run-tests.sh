@@ -455,6 +455,10 @@ sleep 1 \
 -f ert-run-tests-batch-and-exit
 }
 
+neu() {
+h1 & h2 & h3 & h4 & h5 & h6 & h7 & h8 & h9 & h10 & h11 & h13 & h16 & h19 & h21
+}
+
 if [ $IFLOCAL -eq 0 ]; then
     while getopts 123456789abcdefghijklmnopqrstuvx option
     do
@@ -479,7 +483,7 @@ if [ $IFLOCAL -eq 0 ]; then
 	    i) echo "h18: Lade \$TEST18: \"$TEST18\"";h18;;
 	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
 	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
-	    #  l) echo "h21: Lade \$TEST21: \"$TEST21\"";h21;;
+	    l) echo "h21: Lade neu: \"neu\"";neu;;
 	    #  m) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
 	    n) echo "Lade Testumgebung ‘hier’";hier;;
 

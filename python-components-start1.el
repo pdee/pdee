@@ -3882,7 +3882,8 @@ Return and move to match-beginning if successful"
 	   (indent (cond ((eq regexp 'py-match-case-re)
                           nil)
                        (t (or indent (current-indentation)))))
-	   (condition (or condition '<=))
+	   ;; (condition '<)
+            (condition (or condition '<=))
 	   (orig (or orig (point))))
       (if (eq (current-indentation) (current-column))
 	  (while (and
@@ -3901,7 +3902,7 @@ Return and move to match-beginning if successful"
                        (goto-char pps))
 		      ;; needed by py-backward-clause
                       (and (not (eq (current-column) 0)) indent
-		      	   (funcall condition indent (current-indentation))))))
+		      	   (funcall condition indent (current-indentation)))))))
 	(back-to-indentation)
 	(and
          (setq pps (nth 8 (parse-partial-sexp (point-min) (point))))
@@ -3909,7 +3910,7 @@ Return and move to match-beginning if successful"
 	(unless (and (< (point) orig) (looking-at regexpvalue))
 	  (py--backward-regexp regexp (current-indentation) condition orig)))
       (unless (or (eq (point) orig)(bobp)) (back-to-indentation))
-      (and (looking-at regexpvalue) (not (nth 8 (parse-partial-sexp (point-min) (point))))(point)))))
+      (and (looking-at regexpvalue) (not (nth 8 (parse-partial-sexp (point-min) (point))))(point))))
 
 (defun py--fetch-indent-statement-above (orig)
   "Report the preceding indent. "
@@ -4811,7 +4812,7 @@ Optional IGNOREINDENT: find next keyword at any indentation"
     ;;    (when (py-empty-line-p) (skip-chars-backward " \t\r\n\f"))
     (let* ((orig (point))
 	   (condition
-	    (or condition (if (member regexp (list 'py-block-re 'py-clause-re)) '< '<=)))
+	    (or condition (if (member regexp (list 'py-block-re 'py-clause-re 'py-def-or-class-re 'py-def-re 'py-class-re)) '< '<=)))
 	   ;; py-clause-re would not match block
 	   (regexp (if (eq regexp 'py-clause-re) 'py-extended-block-or-clause-re regexp))
 	   (regexpvalue (symbol-value regexp))
