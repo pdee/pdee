@@ -1169,7 +1169,7 @@ Use current region unless optional args BEG END are delivered."
                             (point)
                           (py-backward-statement-bol)))
                        ((funcall (car (read-from-string (concat "py--statement-opens-" name "-p")))))
-                       (t (funcall (car (read-from-string (concat "py-backward-" name "-bol"))))))))
+                       (t (funcall (car (read-from-string (concat "py-backward-" name))))))))
       (funcall (car (read-from-string (concat "py-forward-" name))))
       (narrow-to-region (point) start))))
 
