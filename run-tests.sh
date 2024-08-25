@@ -455,9 +455,9 @@ sleep 1 \
 -f ert-run-tests-batch-and-exit
 }
 
-neu() {
-h1 & h2 & h3 & h4 & h5 & h6 & h7 & h8 & h9 & h10 & h11 & h13 & h16 & h19 & h21
-}
+# neu() {
+# h1 & h2 & h3 & h4 & h5 & h6 & h7 & h8 & h9 & h10 & h11 & h13 & h16 & h19 & h21
+# }
 
 if [ $IFLOCAL -eq 0 ]; then
     while getopts 123456789abcdefghijklmnopqrstuvx option

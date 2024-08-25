@@ -3886,22 +3886,17 @@ Return and move to match-beginning if successful"
             (condition (or condition '<=))
 	   (orig (or orig (point))))
       (if (eq (current-indentation) (current-column))
-	  (while (and
-		  (not (bobp))
-		  ;; # class kugel(object) -> a[1:2]:
-		  ;; class kugel(object):
-		  ;; (re-search-backward regexpvalue nil 'move 1)
-		  ;; (re-search-backward (concat "^ \\{0,"(format "%s" indent) "\\}"regexpvalue) nil 'move 1)
+	  (while (and (not (bobp))
 		  (re-search-backward regexpvalue nil 'move 1)
-		  ;; (re-search-backward (concat "^" "def") nil 'move 1)
-		  ;; re-search-backward not greedy
 		  (not (and (looking-back "async *" (line-beginning-position))
 			    (goto-char (match-beginning 0))))
 		  (or (and
                        (setq pps (nth 8 (parse-partial-sexp (point-min) (point))))
                        (goto-char pps))
-		      ;; needed by py-backward-clause
                       (and (not (eq (current-column) 0)) indent
+                           ;; def foo(): pass
+                           ;; def bar(): pass_|_
+                           ;; need '<
 		      	   (funcall condition indent (current-indentation)))))))
 	(back-to-indentation)
 	(and
@@ -4798,7 +4793,7 @@ REGEXP: a symbol"
       (concat py-else-re "\\|" py-finally-re))
      ((looking-at py-finally-re))))))
 
-(defun py--go-to-keyword (regexp &optional maxindent condition ignoreindent)
+(defun py--go-to-keyword (regexp &optional maxindent ignoreindent)
   "Expects being called from beginning of a statement.
 
 Argument REGEXP: a symbol.
@@ -4811,8 +4806,8 @@ Optional IGNOREINDENT: find next keyword at any indentation"
   (unless (bobp)
     ;;    (when (py-empty-line-p) (skip-chars-backward " \t\r\n\f"))
     (let* ((orig (point))
-	   (condition
-	    (or condition (if (member regexp (list 'py-block-re 'py-clause-re 'py-def-or-class-re 'py-def-re 'py-class-re)) '< '<=)))
+	   ;; (condition
+	   ;;  (or condition (if (member regexp (list 'py-block-re 'py-clause-re 'py-def-or-class-re 'py-def-re 'py-class-re)) '< '<=)))
 	   ;; py-clause-re would not match block
 	   (regexp (if (eq regexp 'py-clause-re) 'py-extended-block-or-clause-re regexp))
 	   (regexpvalue (symbol-value regexp))
@@ -4829,17 +4824,34 @@ Optional IGNOREINDENT: find next keyword at any indentation"
       (unless (py-beginning-of-statement-p)
 	(py-backward-statement))
       (cond
-       ((looking-at (concat (symbol-value regexp)))
+       ((looking-at regexpvalue)
 	(if (eq (point) orig)
-	    (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue))
+	    (setq erg (py--backward-regexp regexp maxindent
+                                           ;; condition
+                                           (if (member regexp (list 'py-block-re 'py-clause-re 'py-def-or-class-re 'py-def-re 'py-class-re)) '< '<=)
+                                           orig regexpvalue))
 	  (setq erg (point))))
        ((looking-at py-block-closing-keywords-re)
         ;; maybe update maxindent, if already behind the form closed here
         (unless ;; do not update if still starting line
             (eq (line-end-position) lep)
           (setq maxindent (min maxindent (- (current-indentation) py-indent-offset))))
-        (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue)))
-       (t (setq erg (py--backward-regexp regexp maxindent condition orig regexpvalue))))
+        (setq erg
+              (py--backward-regexp regexp maxindent
+                                   ;; condition
+                                   '<=
+                                   orig regexpvalue)
+              ))
+       ((and (eq regexp 'py-block-re)
+                 (looking-at py-clause-re))
+        (py--backward-regexp regexp maxindent
+                             ;; condition
+                             '<
+                             ))
+       (t (setq erg (py--backward-regexp regexp maxindent
+                                         ;; condition
+                                         '<=
+                                         orig regexpvalue))))
       (when erg (setq erg (cons (current-indentation) erg)))
       (list (car erg) (cdr erg) (py--end-base-determine-secondvalue regexp)))))
 
@@ -4847,9 +4859,9 @@ Optional IGNOREINDENT: find next keyword at any indentation"
   "Expects a symbol as REGEXP like `'py-clause-re'"
   (unless (py-beginning-of-statement-p) (py-backward-statement))
   (unless (looking-at (symbol-value regexp))
-        (py--go-to-keyword regexp (or indent (current-indentation)) '<))
+        (py--go-to-keyword regexp (or indent (current-indentation))))
   ;; now from beginning-of-block go one indent level upwards
-  (py--go-to-keyword regexp (- (or indent (current-indentation)) py-indent-offset) '<))
+  (py--go-to-keyword regexp (- (or indent (current-indentation)) py-indent-offset)))
 
 (defun py--forward-regexp (regexp)
   "Search forward next regexp not in string or comment.

@@ -2919,7 +2919,6 @@ string.
         return wrapped_f
     return wwrap"
     (goto-char (point-max))
-    (goto-char (point-max))
     (search-backward "'")
     (forward-char 1)
     (py-forward-def-or-class)

@@ -65,7 +65,9 @@ Arg REGEXP, a symbol"
 		 ((eq 0 (current-indentation))
 		  (py--down-according-to-indent regexp nil 0 use-regexp))
 		 ;; look upward
-		 (t (py--go-to-keyword regexp))))
+		 (t (py--go-to-keyword regexp nil 
+                                       ;; (if (and (member regexp (list 'py-block-re 'py-clause-re 'py-def-or-class-re 'py-def-re 'py-class-re)) (looking-at (symbol-value regexp))) '< '<=)
+                                       ))))
 	       (secondvalue (ignore-errors (nth 2 res)))
 	       erg)
 	  ;; (py-for-block-p (looking-at py-for-re))

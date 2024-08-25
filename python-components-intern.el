@@ -207,17 +207,7 @@ LIEP stores line-end-position at point-of-interest
                          0))
                ;; nesting: started nesting a list
                (nesting nesting)
-               (cubuf (current-buffer))
                erg indent this-line)
-          ;; (if (and (< repeat 1)
-          ;;          (and (comint-check-proc (current-buffer))
-          ;;               (re-search-backward (concat py-shell-prompt-regexp "\\|" py-ipython-output-prompt-re "\\|" py-ipython-input-prompt-re) nil t 1)))
-          ;;     ;; common recursion not suitable because of prompt
-          ;;     (with-temp-buffer
-          ;;       ;; (switch-to-buffer (current-buffer))
-          ;;       (insert-buffer-substring cubuf (match-end 0) orig)
-          ;;       (python-mode)
-          ;;       (setq indent (py-compute-indentation)))
           (if (< py-max-specpdl-size repeat)
               (error "‘py-compute-indentation’ reached loops max.")
             (setq nesting (nth 0 pps))
@@ -332,7 +322,7 @@ LIEP stores line-end-position at point-of-interest
                       (py--backward-regexp 'py-match-case-re) (+ (current-indentation) py-indent-offset))
                      ((looking-at py-outdent-re)
 		      ;; (and (py--backward-regexp 'py-block-or-clause-re) (current-indentation)))
-		      (and (py--go-to-keyword 'py-block-or-clause-re (current-indentation) '< t) (current-indentation)))
+		      (and (py--go-to-keyword 'py-block-or-clause-re (current-indentation) t) (current-indentation)))
 		     ((bobp) 0)
 		     (t (save-excursion
 			  ;; (skip-chars-backward " \t\r\n\f")
