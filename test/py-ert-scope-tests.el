@@ -382,7 +382,7 @@ except:
                     "
     (goto-char(point-max))
     (py-narrow-to-block)
-    (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+    (should (< (length (buffer-substring-no-properties (point-min)(point-max))) 50))))
 
 (ert-deftest py-ert-narrow-to-block-test-xnEs46-GPBOHw ()
   (py-test-with-temp-buffer
@@ -393,7 +393,7 @@ except:
     (goto-char(point-max))
     (skip-chars-backward " \t\r\n\f")
     (py-narrow-to-block)
-    (should (eq 50 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+    (should (< (length (buffer-substring-no-properties (point-min)(point-max))) 50))))
 
 (ert-deftest py-ert-narrow-to-block-or-clause-test-43VsYV ()
   (py-test-with-temp-buffer

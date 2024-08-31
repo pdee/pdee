@@ -107,7 +107,7 @@ finally:
     print(a)"
     (let ((py-fast-process-p t)
 	  (py-return-result-p t)
-	  (py-debug-p t)
+	  ;; (py-debug-p t)
 	  py-result py-split-window-on-execute)
       (py-execute-block)
       (sit-for 0.3)
@@ -127,7 +127,7 @@ finally:
     (setq py-result "")
     (let ((py-fast-process-p nil)
 	  (py-return-result-p t)
-	  (py-debug-p t)
+	  ;; (py-debug-p t)
 	  py-split-window-on-execute)
       (py-execute-block)
       (sit-for 1)
@@ -137,13 +137,14 @@ finally:
 (ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test-zI51W7 ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
-    (let ((py-debug-p t)
+    (let (
+          ;; (py-debug-p t)
 	  py-store-result-p
 	  erg)
       (call-interactively 'py-execute-statement-python3-dedicated)
       ;; (sit-for 0.1 t)
       (set-buffer py-output-buffer)
-      (switch-to-buffer (current-buffer))
+      ;; (switch-to-buffer (current-buffer))
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 

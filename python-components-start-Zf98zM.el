@@ -47,6 +47,7 @@ Arg REGEXP, a symbol"
 			     (abs
 			      (- (current-indentation) py-indent-offset)))
 			 (current-indentation)))
+               (secondvalue (py--end-base-determine-secondvalue regexp))
 	       ;; when at block-start, be specific
 	       ;; return current-indentation, position and possibly needed clause-regexps (secondvalue)
 	       (res
@@ -59,39 +60,40 @@ Arg REGEXP, a symbol"
 				(py-down-def-or-class (current-indentation)))
 			   (and (member regexp (list 'py-minor-block-re 'py-if-re 'py-for-re 'py-try-re))
 				(looking-at py-minor-clause-re))))
-		  (list (current-indentation) (point) (py--end-base-determine-secondvalue regexp)))
+		  (list (current-indentation) (point) secondvalue))
 		 ((looking-at regexpvalue)
-		  (list (current-indentation) (point) (py--end-base-determine-secondvalue regexp)))
+		  (list (current-indentation) (point) secondvalue))
 		 ((eq 0 (current-indentation))
 		  (py--down-according-to-indent regexp nil 0 use-regexp))
 		 ;; look upward
-		 (t (py--go-to-keyword regexp nil 
+		 (t (py--go-to-keyword regexp (if (member regexp (list 'py-def-re 'py-class-re 'py-def-or-class-re)) '< '<=)
                                        ;; (if (and (member regexp (list 'py-block-re 'py-clause-re 'py-def-or-class-re 'py-def-re 'py-class-re)) (looking-at (symbol-value regexp))) '< '<=)
-                                       ))))
-	       (secondvalue (ignore-errors (nth 2 res)))
-	       erg)
+                                       )))))
 	  ;; (py-for-block-p (looking-at py-for-re))
-	  (setq indent (or (and res (car-safe res)) indent))
+	  ;; (setq indent (current-indentation))
 	  (cond
-	   (res (setq erg
-		      (and
-		       (py--down-according-to-indent regexp secondvalue (current-indentation))
-		       ;; (if (>= indent (current-indentation))
-		       (py--down-end-form)
-		       ;; (py--end-base regexp orig bol repeat)
-		       ;; )
-		       )))
+	   (res
+	    (and
+	     (py--down-according-to-indent regexp secondvalue (current-indentation))
+             (progn
+               (when (and secondvalue (looking-at secondvalue))
+                 ;; (when (looking-at py-else-re)
+                 (py--down-according-to-indent regexp secondvalue (current-indentation)))
+	       ;; (if (>= indent (current-indentation))
+	       (py--down-end-form))
+	     ;; (py--end-base regexp orig bol repeat)
+	     ;; )
+	     ))
 	   (t (unless (< 0 repeat) (goto-char orig))
 	      (py--forward-regexp (symbol-value regexp))
 	      (beginning-of-line)
-	      (setq erg (and
-			 (py--down-according-to-indent regexp secondvalue (current-indentation) t)
-			 (py--down-end-form)))))
+	      (and
+	       (py--down-according-to-indent regexp secondvalue (current-indentation) t)
+	       (py--down-end-form))))
 	  (cond ((< orig (point))
-		 (setq erg (point))
-		 (progn
-		   (and erg bol (setq erg (py--beginning-of-line-form)))
-		   (and erg (cons (current-indentation) erg))))
+		 (if bol
+                     (py--beginning-of-line-form)
+		   (point)))
 		((eq (point) orig)
 		 (unless (eobp)
 		   (cond

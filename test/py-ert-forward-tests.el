@@ -504,7 +504,7 @@ def foo():
                     else True:
                         pass
                     finally:
-                        pass
+                        print(\"asdf\")
         else True:
             pass
         finally:

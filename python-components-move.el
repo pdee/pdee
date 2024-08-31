@@ -153,7 +153,7 @@ Returns final position when called from inside section, nil otherwise"
 If already at the beginning or before a expression,
 go to next expression in buffer upwards
 
-ORIG - consider orignial position or point.
+ORIG - consider original position or point.
 DONE - transaktional argument
 REPEAT - count and consider repeats"
   (interactive)
@@ -195,7 +195,7 @@ REPEAT - count and consider repeats"
   "Go to the end of a compound python expression.
 
 Operators are ignored.
-ORIG - consider orignial position or point.
+ORIG - consider original position or point.
 DONE - transaktional argument
 REPEAT - count and consider repeats"
   (interactive)

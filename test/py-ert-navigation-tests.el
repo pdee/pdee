@@ -24,7 +24,7 @@
 
 (require 'py-setup-ert-tests)
 
-(ert-deftest py-ert-moves-up-def-or-class-bol-iPn4ge-u4t728 ()
+(ert-deftest py-ert-moves-up-def-or-class-u4t728 ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -45,10 +45,11 @@
             ar_atpt_python_list_roh = ([
                 'python-expression',"
     (goto-char (point-max))
+    (search-backward "def __init")
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
-(ert-deftest py-ert-moves-up-minor-block-bol-sqyjbT-KaTTq2 ()
+(ert-deftest py-ert-moves-up-minor-block-KaTTq2 ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -73,10 +74,13 @@
                 ar_atpt_python_list_roh = ([
                     'python-expression'])"
     (goto-char (point-max))
-    (py-up-minor-block-bol)
-    (should (looking-at " +if a:"))))
+    (search-backward "if")
+    (py-up-minor-block)
+    (should (looking-at "if a:"))))
 
-(ert-deftest py-ert-moves-up-block-bol-u0LDDH-OcJjMV ()
+
+
+(ert-deftest py-ert-moves-up-block-bol-OcJjMV ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -100,7 +104,7 @@
     (py-up-block-bol)
     (should (looking-at " +def f():"))))
 
-(ert-deftest py-ert-moves-up-block-w7eExs-Gg9b6O ()
+(ert-deftest py-ert-moves-up-block-Gg9b6O ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -133,7 +137,7 @@
     (py-up-block)
     (should  (eq (char-after) ?d))))
 
-(ert-deftest py-ert-moves-backward-block-w7eExs-QrymnI ()
+(ert-deftest py-ert-moves-backward-block-QrymnI ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -166,7 +170,7 @@
     (py-backward-block)
     (should (looking-at "if a:"))))
 
-(ert-deftest py-ert-moves-up-minor-block-bol-2-IrCqCB ()
+(ert-deftest py-ert-moves-up-minor-block-bol-IrCqCB ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -190,7 +194,7 @@
     (py-up-minor-block)
     (should (looking-at "if a:"))))
 
-(ert-deftest py-ert-moves-up-def-bol-wTMxJq-KMclSu ()
+(ert-deftest py-ert-moves-up-def-bol-KMclSu ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -210,7 +214,7 @@
     (py-up-def-bol)
     (should (looking-at " +def __init__"))))
 
-(ert-deftest py-ert-moves-up-class-bol-hObRZJ-cDUW2n ()
+(ert-deftest py-ert-moves-up-class-bol-cDUW2n ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -235,7 +239,7 @@
     (py-up-class)
     (should (bolp))))
 
-(ert-deftest py-ert-moves-up-def-or-class-bol-2-UDtFbh ()
+(ert-deftest py-ert-moves-up-def-or-class-UDtFbh ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -268,7 +272,7 @@
     (py-up-def-or-class)
     (should (looking-at "class"))))
 
-(ert-deftest py-ert-moves-down-block-bol-1-e6MBka ()
+(ert-deftest py-ert-moves-down-block-bol-e6MBka ()
   (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
@@ -306,7 +310,7 @@
     (py-down-block-bol)
     (should (bolp))))
 
-(ert-deftest py-ert-moves-down-def-bol-1-k3V8r3 ()
+(ert-deftest py-ert-moves-down-def-bol-k3V8r3 ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -370,7 +374,7 @@
     (py-down-class-bol)
     (should (eobp))))
 
-(ert-deftest py-ert-moves-down-def-or-class-bol-1-82GNQR ()
+(ert-deftest py-ert-moves-down-def-or-class-bol-82GNQR ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -409,7 +413,7 @@
     (should (bolp))
     (should (looking-at " +def"))))
 
-(ert-deftest py-ert-moves-down-block-1-wznp1L ()
+(ert-deftest py-ert-moves-down-block-wznp1L ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -486,7 +490,7 @@
     (should (bolp))
     (should (looking-at " +def"))))
 
-(ert-deftest py-ert-moves-down-minor-block-1-KGpcdA ()
+(ert-deftest py-ert-moves-down-minor-block-KGpcdA ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -519,7 +523,7 @@
     (py-down-minor-block)
     (should (eq (char-after) ?i))))
 
-(ert-deftest py-ert-moves-down-minor-block-bol-1-Ebh0gu ()
+(ert-deftest py-ert-moves-down-minor-block-bol-Ebh0gu ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -552,7 +556,7 @@
     (should (bolp))
     (should (looking-at " +if"))))
 
-(ert-deftest py-ert-moves-down-def-1-2Dlxio ()
+(ert-deftest py-ert-moves-down-def-2Dlxio ()
   (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
@@ -652,7 +656,7 @@
     (goto-char (point-max))
     (should (not (py-down-class)))))
 
-(ert-deftest py-ert-moves-down-def-or-class-1-ym0d05 ()
+(ert-deftest py-ert-moves-down-def-or-class-ym0d05 ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -875,7 +879,8 @@
 "
     (goto-char (point-max))
     (goto-char 576)
-    (should (eq 594 (py-forward-clause-bol)))))
+    (py-forward-clause-bol)
+    (should (eq (point) 594))))
 
 (ert-deftest py-ert-moves-forward-block-or-clause-bol-MHBxwf ()
   (py-test-with-temp-buffer-point-min
@@ -909,6 +914,40 @@
 "
     (search-forward "elif b:")
     (py-forward-block-or-clause-bol)
+    (should (eobp))))
+
+(ert-deftest py-ert-moves-forward-clause-MHBxwf ()
+  (py-test-with-temp-buffer-point-min
+      "class OrderedDict1(dict):
+    \"\"\"
+    This implementation of a dictionary keeps track of the order
+    in which keys were inserted.
+    \"\"\"
+
+    def __init__(self, d={}):
+        self._keys = d.keys()
+        dict.__init__(self, d)
+
+    def f():
+        \"\"\"
+        class for in 'for in while with blah'
+        \"\"\"
+        if a:
+
+            ar_atpt_python_list_roh = ([
+                'python-expression',
+
+            # def ar_thingatpt_write_lists (&optional datei):
+            'python-partial-expression',
+            'python-statement',
+            ])
+        elif b:
+            pass
+        else b:
+            pass
+"
+    (search-forward "elif b:")
+    (py-forward-clause-bol)
     (should (looking-at " +else b:"))))
 
 (ert-deftest py-ert-moves-up-position-tests-12-AJXhT7 ()
@@ -1140,7 +1179,7 @@ if __name__ == \"__main__\":
     (forward-line 3)
     (should (eolp))))
 
-(ert-deftest py-ert-backward-def-or-class-1-iuGWZ9 ()
+(ert-deftest py-ert-backward-def-or-class-iuGWZ9 ()
   (py-test-with-temp-buffer
       "class _Simple(object):
     # emulate something
@@ -1288,7 +1327,7 @@ if __name__ == \"__main__\":
     (py-up-clause)
     (should (looking-at "else:"))))
 
-(ert-deftest py-backward-statement-test-1-QcNOgE ()
+(ert-deftest py-backward-statement-test-QcNOgE ()
   (py-test-with-temp-buffer
       "# -*- coding: utf-8 -*-
 print dir()
@@ -1357,7 +1396,7 @@ class bar:
     (sit-for 0.1)
     (should (eq (char-after) 32))))
 
-(ert-deftest py-ert-end-of-def-or-class-test-1-ibbr7d ()
+(ert-deftest py-ert-end-of-def-or-class-test-ibbr7d ()
   (py-test-with-temp-buffer
       "class MyTest(unittest.TestCase):
     def test(self):
@@ -1499,7 +1538,6 @@ else:
 "
     (goto-char (point-max))
     (search-backward "elif")
-    (beginning-of-line)
     (py-backward-block)
     (should (eq (char-after) ?i))))
 
@@ -2779,7 +2817,7 @@ With a command name as argument, print help about that command
     (py-backward-indent)
     (should (eq (char-after) ?a))))
 
-(ert-deftest py-ert-forward-indent-test-1-D3Bcke ()
+(ert-deftest py-ert-forward-indent-test-D3Bcke ()
   (py-test-with-temp-buffer-point-min
       "class A(object):
     def a(self):
@@ -2883,7 +2921,7 @@ string.
     (py-backward-def-or-class)
     (should (looking-at "def wwrap"))))
 
-(ert-deftest py-forward-def-or-class-1-cmHY16 ()
+(ert-deftest py-forward-def-or-class-cmHY16 ()
   (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
@@ -2901,6 +2939,25 @@ string.
     (search-backward "args)'")
     (py-forward-def-or-class)
     (should (eq (char-before) ?'))
+    (py-forward-def-or-class)
+    (should (eq (char-before) ?f))))
+
+(ert-deftest py-forward-def-or-class-f31P1y ()
+  (py-test-with-temp-buffer
+      "def foo(arg1, arg2, arg3):
+    '''print decorated function call data to stdout.
+    '''
+    def bar(f):
+        print 'Inside wwrap()'
+        def wrapped_f(*args):
+            print 'Inside wrapped_f()'
+            print 'Decorator arguments:', arg1, arg2, arg3
+            f(*args)
+            print 'After f(*args)'
+        return wrapped_f
+    return wwrap"
+    (goto-char (point-max))
+    (search-backward "return wrapped_f")
     (py-forward-def-or-class)
     (should (eq (char-before) ?f))))
 
@@ -2924,7 +2981,7 @@ string.
     (py-forward-def-or-class)
     (should (eq (char-before) ?f))))
 
-(ert-deftest py-forward-block-1-Ex3K59 ()
+(ert-deftest py-forward-block-Ex3K59 ()
   (py-test-with-temp-buffer-point-min
       "if True:
     def bar():
@@ -2960,7 +3017,7 @@ else:
     (py-forward-block)
     (should (eobp))))
 
-(ert-deftest py-forward-clause-lp-1630952-1-HFqYAb ()
+(ert-deftest py-forward-clause-lp-1630952-HFqYAb ()
   (py-test-with-temp-buffer
       "def foo(arg1, arg2, arg3):
     '''print decorated function call data to stdout.
@@ -2979,7 +3036,7 @@ else:
     (py-forward-clause)
     (should (eq (char-before) ?'))))
 
-(ert-deftest py-up-block-test-Ek86Xk-GRei3c ()
+(ert-deftest py-up-block-test-GRei3c ()
   (py-test-with-temp-buffer
       "
 def foo():
@@ -2992,8 +3049,8 @@ def foo():
     else:
         try:
             1 == 1
-        except True:
-        "
+        except:
+            pass"
     (goto-char (point-max))
     (py-up-block)
     (should (looking-at "if True:"))))
@@ -3127,7 +3184,7 @@ ausgabe = kugel.ausgabe"
     (should (eq (char-after) ?a))
     ))
 
-(ert-deftest py-forward-def-or-class-test-1-YpTSCo ()
+(ert-deftest py-forward-def-or-class-test-YpTSCo ()
   (py-test-with-temp-buffer
       "class foo:
     \"\"\"asdf\"\"\"
@@ -3145,7 +3202,7 @@ ausgabe = kugel.ausgabe"
     (py-forward-def-or-class)
     (should (looking-back "pass"))))
 
-(ert-deftest py-down-statement-test-1-zsvwPG ()
+(ert-deftest py-down-statement-test-zsvwPG ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -3295,9 +3352,7 @@ ausgabe = kugel.ausgabe"
     ;; (should (eq (char-after) 10))
     ))
 
-
-
-(ert-deftest py-backward-minor-block-test-1-OLNs0Y ()
+(ert-deftest py-backward-minor-block-test-OLNs0Y ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
     \"\"\"
@@ -3315,7 +3370,7 @@ ausgabe = kugel.ausgabe"
     (py-backward-minor-block)
     (should (eq (char-after) ?i))))
 
-(ert-deftest py-forward-block-or-clause-test-1-FCZrch ()
+(ert-deftest py-forward-block-or-clause-test-FCZrch ()
   (py-test-with-temp-buffer
       "def main():
     if len(sys.argv) == 1:
@@ -3455,7 +3510,7 @@ from __future__ import foo
       "  d
   "
     (goto-char (point-max))
-    (should (eq nil (py-backward-def-or-class)))))
+    (should-not (py-backward-def-or-class))))
 
 (ert-deftest py-95-reliability-test-LiHlAP ()
   (py-test-with-temp-buffer
@@ -6691,12 +6746,13 @@ class CFG(object):
   (py-test-with-temp-buffer
   "def foo():
     def bar():
-
+        
         pass
    "
   (goto-char (point-max))
   (search-backward "pass")
   (forward-line -1)
+  (end-of-line) 
   (py-backward-def)
   (should (looking-at "def bar():"))))
 
@@ -6709,7 +6765,7 @@ class CFG(object):
     "
   (goto-char (point-max))
   (py-backward-def)
-  (should (looking-at "def foo():"))))
+  (should (looking-at "def bar():"))))
 
 (ert-deftest py-beginning-of-def-rmDlg1 ()
   "bar closed by pass"
@@ -6717,7 +6773,7 @@ class CFG(object):
   "def foo():
     def bar():
         pass
-     "
+"
   (goto-char (point-max))
   (py-backward-def)
   (should (looking-at "def foo():"))))
@@ -6774,7 +6830,7 @@ class CFG(object):
     (forward-line 1)
     (forward-char 4)
     (py-backward-def)
-    (should (looking-at "def foo():"))))
+    (should (looking-at "def bar():"))))
 
 (ert-deftest py-beginning-of-def-or-class-test-mjHsgR ()
   (py-test-with-temp-buffer

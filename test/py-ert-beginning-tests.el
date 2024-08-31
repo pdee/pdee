@@ -89,10 +89,19 @@ class bar:
             block2
 "
     (goto-char (point-max))
-    (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def)
     (should (eq (char-after) ?d))))
+
+(ert-deftest py-ert-beginning-of-def-Bj7ykP ()
+  (py-test-with-temp-buffer
+"def foo():
+    def bar():
+        pass
+    "
+    (goto-char (point-max))
+    (py-backward-def)
+    (should (looking-at "def bar"))))
 
 (ert-deftest py-ert-beginning-of-class-test ()
   (py-test-with-temp-buffer
@@ -177,7 +186,8 @@ class bar:
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-minor-block)
-    (should (eq (char-after) ?f))))
+    (should (eq (char-after) ?f)))
+  )
 
 (ert-deftest py-ert-beginning-of-for-block-test ()
   (py-test-with-temp-buffer
@@ -479,7 +489,7 @@ class bar:
     (py-backward-for-block-bol)
     (should (eq (char-after) ?\ ))))
 
-(ert-deftest py-ert-beginning-of-statement-bol-test ()
+(ert-deftest py-ert-beginning-of-statement-bol-test-CwtMcD ()
   (py-test-with-temp-buffer
       "# -*- coding: utf-8 -*-
 class bar:
@@ -495,6 +505,24 @@ class bar:
     (search-backward "pass")
     (py-backward-statement-bol)
     (should (bolp))))
+
+(ert-deftest py-ert-beginning-of-statement-5JY7mb ()
+  (py-test-with-temp-buffer
+"def foo():
+    if True:
+        def bar():
+            pass
+    elif False:
+        def baz():
+            pass
+    else:
+        try:
+            1 == 1
+        except:
+            pass"
+    (goto-char (point-max))
+    (py-backward-def-or-class)
+    (should (looking-at "def foo"))))
 
 (provide 'py-ert-beginning-tests)
 ;;; py-ert-beginning-tests.el ends here

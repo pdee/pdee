@@ -1289,7 +1289,7 @@ With optional \\\\[universal-argument] get a new dedicated "))
   (interactive \"p\")
   (let ((buffer (py-shell argprompt args nil \"" ele "\" buffer fast exception-buffer split (unless argprompt (eq 1 (prefix-numeric-value argprompt))))))
     (funcall (lambda nil (window-configuration-to-register 121)))
-    (goto-char (point-max)) 
+    (goto-char (point-max))
     buffer))\n\n"))))
   (insert "(provide 'python-components-named-shells)
 ;;; python-components-named-shells.el ends here
@@ -1727,31 +1727,31 @@ http://repo.or.cz/w/elbb.git/blob/HEAD:/code/Go-to-Emacs-Lisp-Definition.el
   (dolist (ele py-down-forms)
     (unless (string= ele "statement")
       (insert (concat "
-\(defun py-up-" ele " (&optional indent)
-  \"Go to the beginning of next " ele " upwards according to INDENT.
-Optional INDENT
+\(defun py-up-" ele " ()
+  \"Go to the beginning of next " ele " upwards.
+
 Return position if " ele " found, nil otherwise.\"
   (interactive)
   (py-up-base 'py-"))
       (cond ((string-match "def\\|class\\|section" ele)
-             (insert (concat ele "-re indent))\n")))
-            ;; (t (insert "extended-block-or-clause-re indent))\n"))
-            (t (insert (concat ele "-re indent))\n")))
-            ;; (t (insert "extended-block-or-clause-re indent))\n"))
+             (insert (concat ele "-re))\n")))
+            ;; (t (insert "extended-block-or-clause-re))\n"))
+            (t (insert (concat ele "-re))\n")))
+            ;; (t (insert "extended-block-or-clause-re))\n"))
             )))
   ;; up bol
   (dolist (ele py-down-forms)
     (if (string= "statement" ele)
         nil
       (insert (concat "
-\(defun py-up-" ele "-bol (&optional indent)
-  \"Go to the beginning of next " ele " upwards according to INDENT.
+\(defun py-up-" ele "-bol ()
+  \"Go to the beginning of next " ele " upwards.
 
 Go to beginning of line.
 Return position if " ele " found, nil otherwise.\"
   (interactive)
-  (py-up-base 'py-" ele "-re indent)
-  (progn (beginning-of-line)(point)))\n"))))
+  (and (py-up-base 'py-" ele "-re)
+    (progn (beginning-of-line)(point))))\n"))))
   ;; down bol
 
   (insert "\n;; python-components-up.el ends here
@@ -1923,31 +1923,19 @@ Return beginning and end positions of region, a cons.\"
   (dolist (ele py-backward-def-or-class-forms)
     (insert (concat "
 \(defun py-backward-" ele " ()"))
-    ;; (if (string-match "def\\|class" ele)
-    ;;  (insert "&optional decorator)")
-    ;; (insert ")"))
-    (insert (concat "\n \"Go to beginning of `" ele "'.
+    (insert (concat "\n  \"Go to beginning of `" ele "'.
 
 If already at beginning, go one `" ele "' backward."))
-    ;; (when (string-match "def\\|class" ele)
-    ;;   (insert "\nOptional DECORATOR\n"))
     (insert (concat "
-Return beginning of form if successful, nil otherwise\"\n"))
+Return position if successful, nil otherwise\"\n"))
     (insert "  (interactive)
   (let (erg)")
-    ;; (cond
-    ;;    ((string-match "def\\|class" ele)
-    ;;     (insert (concat "
-    ;; (cdr-safe (py--go-to-keyword 'py-" ele "-re decorator)))\n")))
-    ;;    (t (insert (concat "
-    ;; (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re)))\n")))
-    ;;)
     (insert (concat "
-    (setq erg (car-safe (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re))))"))
+    (setq erg (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re '<))"))
     ;; (setq erg (py--backward-regexp 'py-" (ar-block-regexp-name-richten ele) "-re (current-indentation)))"))
     (when (string-match  "def\\|class$\\|block$" ele)
-    (insert "\n    (when py-mark-decorators (and (py-backward-decorator)
-                                                 (setq erg (point))))"))
+    (insert "\n    (when py-mark-decorators
+      (and (py-backward-decorator) (setq erg (point))))"))
     (insert "\n    erg))\n")))
 
 (defun py--insert-backward-def-or-class-bol-forms ()
@@ -1955,9 +1943,6 @@ Return beginning of form if successful, nil otherwise\"\n"))
   (dolist (ele py-backward-def-or-class-forms)
     (insert (concat "
 \(defun py-backward-" ele "-bol ()"))
-    ;; (if (string-match "def\\|class" ele)
-    ;;  (insert "&optional decorator)")
-    ;;   (insert ")"))
     (insert (concat "
   \"Go to beginning of `" ele "', go to BOL."))
     ;; (when (string-match "def\\|class" ele)
@@ -1979,39 +1964,25 @@ Return beginning of `" ele "' if successful, nil otherwise"))
     ;; (if (string-match "def\\|class" ele)
     ;;  (insert "&optional decorator)")
     ;; (insert ")"))
-    (insert (concat "\n \"Go to beginning of `" ele "'.
+    (insert (concat "\n  \"Go to beginning of `" ele "'.
 
 If already at beginning, go one `" ele "' backward."))
     ;; (when (string-match "def\\|class" ele)
     ;;   (insert "\nOptional DECORATOR\n"))
     (insert (concat "
-Return beginning of form if successful, nil otherwise\"\n"))
+Return position if successful, nil otherwise\"\n"))
     (insert "  (interactive)")
-    ;; (cond
-    ;;    ((string-match "def\\|class" ele)
-    ;;     (insert (concat "
-    ;; (cdr-safe (py--go-to-keyword 'py-" ele "-re decorator)))\n")))
-    ;;    (t (insert (concat "
-    ;; (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re)))\n")))
-    ;;)
     (insert (concat "
-  (car-safe (cdr-safe (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re))))\n"))
-    ;; (setq erg (py--backward-regexp 'py-" (ar-block-regexp-name-richten ele) "-re (current-indentation)))"))
-    ))
+  (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re '<))\n"))
+        ))
 
 (defun py--insert-backward-minor-block-bol-forms ()
   ;; bol forms
   (dolist (ele py-backward-minor-block-forms)
     (insert (concat "
 \(defun py-backward-" ele "-bol ()"))
-    ;; (if (string-match "def\\|class" ele)
-    ;;  (insert "&optional decorator)")
-    ;;   (insert ")"))
     (insert (concat "
   \"Go to beginning of `" ele "', go to BOL."))
-    ;; (when (string-match "def\\|class" ele)
-    ;;   (insert  "\nOptional DECORATOR\n"))
-
 (insert (concat "
 If already at beginning, go one `" ele "' backward.
 Return beginning of `" ele "' if successful, nil otherwise"))
@@ -2439,7 +2410,7 @@ Return end of `assignment' if successful, nil otherwise
 Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position\"
   (interactive)
-  (cdr-safe (py--end-base 'py-assignment-re orig bol)))
+  (py--end-base 'py-assignment-re orig bol))
 
 \(defun py-forward-assignment-bol ()
   \"Goto beginning of line following end of `assignment'\.
@@ -2467,8 +2438,13 @@ Return end of `" ele "' if successful, nil otherwise
 Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position\"
   (interactive)
-  (cdr-safe (py--end-base 'py-" (ar-block-regexp-name-richten ele)
+  (let (erg)
+    (unless (setq erg (py--end-base 'py-" (ar-block-regexp-name-richten ele)
+                               "-re orig bol))
+      (skip-chars-forward \" \\t\\r\\n\\f\")
+      (setq erg (py--end-base 'py-" (ar-block-regexp-name-richten ele)
                                "-re orig bol)))
+    erg))
 
 \(defun py-forward-" ele "-bol ()
   \"Goto beginning of line following end of `" ele "'.

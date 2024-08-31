@@ -104,7 +104,7 @@ class kugel(object):
     (should-not (string-match (prin1-to-string (car (overlays-at (point)))) "overlay from 21 to 65" ))
     ))
 
-(ert-deftest py-ert-hide-block-test ()
+(ert-deftest py-ert-hide-block-test-5j57vC ()
   (py-test-with-temp-buffer-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -118,9 +118,8 @@ class kugel(object):
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (search-forward "+ \"")
-
     (py-hide-block)
     (should (string-match "overlay from 222 to 319" (prin1-to-string (car (overlays-at (point))))))
     (py-show)
@@ -141,7 +140,7 @@ class kugel(object):
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (search-forward "+ \"")
     (py-hide-def)
     (should (string-match "overlay from 73 to 319" (prin1-to-string (car (overlays-at (point))))))
@@ -164,7 +163,7 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
     (switch-to-buffer (current-buffer))
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (search-forward "+ \"")
     (py-hide-class)
     (should (string-match "overlay from 2 to 319" (prin1-to-string (car (overlays-at (point))))))
@@ -186,7 +185,7 @@ class kugel(object):
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (search-forward "+ \"")
     (py-hide-indent)
     (should (string-match "overlay from 255 to 348" (prin1-to-string (car (overlays-at (point))))))

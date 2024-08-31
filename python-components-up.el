@@ -25,117 +25,117 @@
 ;;; Code:
 
 
-(defun py-up-block (&optional indent)
-  "Go to the beginning of next block upwards according to INDENT.
-Optional INDENT
+(defun py-up-block ()
+  "Go to the beginning of next block upwards.
+
 Return position if block found, nil otherwise."
   (interactive)
-  (py-up-base 'py-block-re indent))
+  (py-up-base 'py-block-re))
 
-(defun py-up-class (&optional indent)
-  "Go to the beginning of next class upwards according to INDENT.
-Optional INDENT
+(defun py-up-class ()
+  "Go to the beginning of next class upwards.
+
 Return position if class found, nil otherwise."
   (interactive)
-  (py-up-base 'py-class-re indent))
+  (py-up-base 'py-class-re))
 
-(defun py-up-clause (&optional indent)
-  "Go to the beginning of next clause upwards according to INDENT.
-Optional INDENT
+(defun py-up-clause ()
+  "Go to the beginning of next clause upwards.
+
 Return position if clause found, nil otherwise."
   (interactive)
-  (py-up-base 'py-clause-re indent))
+  (py-up-base 'py-clause-re))
 
-(defun py-up-block-or-clause (&optional indent)
-  "Go to the beginning of next block-or-clause upwards according to INDENT.
-Optional INDENT
+(defun py-up-block-or-clause ()
+  "Go to the beginning of next block-or-clause upwards.
+
 Return position if block-or-clause found, nil otherwise."
   (interactive)
-  (py-up-base 'py-block-or-clause-re indent))
+  (py-up-base 'py-block-or-clause-re))
 
-(defun py-up-def (&optional indent)
-  "Go to the beginning of next def upwards according to INDENT.
-Optional INDENT
+(defun py-up-def ()
+  "Go to the beginning of next def upwards.
+
 Return position if def found, nil otherwise."
   (interactive)
-  (py-up-base 'py-def-re indent))
+  (py-up-base 'py-def-re))
 
-(defun py-up-def-or-class (&optional indent)
-  "Go to the beginning of next def-or-class upwards according to INDENT.
-Optional INDENT
+(defun py-up-def-or-class ()
+  "Go to the beginning of next def-or-class upwards.
+
 Return position if def-or-class found, nil otherwise."
   (interactive)
-  (py-up-base 'py-def-or-class-re indent))
+  (py-up-base 'py-def-or-class-re))
 
-(defun py-up-minor-block (&optional indent)
-  "Go to the beginning of next minor-block upwards according to INDENT.
-Optional INDENT
+(defun py-up-minor-block ()
+  "Go to the beginning of next minor-block upwards.
+
 Return position if minor-block found, nil otherwise."
   (interactive)
-  (py-up-base 'py-minor-block-re indent))
+  (py-up-base 'py-minor-block-re))
 
-(defun py-up-block-bol (&optional indent)
-  "Go to the beginning of next block upwards according to INDENT.
+(defun py-up-block-bol ()
+  "Go to the beginning of next block upwards.
 
 Go to beginning of line.
 Return position if block found, nil otherwise."
   (interactive)
-  (py-up-base 'py-block-re indent)
-  (progn (beginning-of-line)(point)))
+  (and (py-up-base 'py-block-re)
+    (progn (beginning-of-line)(point))))
 
-(defun py-up-class-bol (&optional indent)
-  "Go to the beginning of next class upwards according to INDENT.
+(defun py-up-class-bol ()
+  "Go to the beginning of next class upwards.
 
 Go to beginning of line.
 Return position if class found, nil otherwise."
   (interactive)
-  (py-up-base 'py-class-re indent)
-  (progn (beginning-of-line)(point)))
+  (and (py-up-base 'py-class-re)
+    (progn (beginning-of-line)(point))))
 
-(defun py-up-clause-bol (&optional indent)
-  "Go to the beginning of next clause upwards according to INDENT.
+(defun py-up-clause-bol ()
+  "Go to the beginning of next clause upwards.
 
 Go to beginning of line.
 Return position if clause found, nil otherwise."
   (interactive)
-  (py-up-base 'py-clause-re indent)
-  (progn (beginning-of-line)(point)))
+  (and (py-up-base 'py-clause-re)
+    (progn (beginning-of-line)(point))))
 
-(defun py-up-block-or-clause-bol (&optional indent)
-  "Go to the beginning of next block-or-clause upwards according to INDENT.
+(defun py-up-block-or-clause-bol ()
+  "Go to the beginning of next block-or-clause upwards.
 
 Go to beginning of line.
 Return position if block-or-clause found, nil otherwise."
   (interactive)
-  (py-up-base 'py-block-or-clause-re indent)
-  (progn (beginning-of-line)(point)))
+  (and (py-up-base 'py-block-or-clause-re)
+    (progn (beginning-of-line)(point))))
 
-(defun py-up-def-bol (&optional indent)
-  "Go to the beginning of next def upwards according to INDENT.
+(defun py-up-def-bol ()
+  "Go to the beginning of next def upwards.
 
 Go to beginning of line.
 Return position if def found, nil otherwise."
   (interactive)
-  (py-up-base 'py-def-re indent)
-  (progn (beginning-of-line)(point)))
+  (and (py-up-base 'py-def-re)
+    (progn (beginning-of-line)(point))))
 
-(defun py-up-def-or-class-bol (&optional indent)
-  "Go to the beginning of next def-or-class upwards according to INDENT.
+(defun py-up-def-or-class-bol ()
+  "Go to the beginning of next def-or-class upwards.
 
 Go to beginning of line.
 Return position if def-or-class found, nil otherwise."
   (interactive)
-  (py-up-base 'py-def-or-class-re indent)
-  (progn (beginning-of-line)(point)))
+  (and (py-up-base 'py-def-or-class-re)
+    (progn (beginning-of-line)(point))))
 
-(defun py-up-minor-block-bol (&optional indent)
-  "Go to the beginning of next minor-block upwards according to INDENT.
+(defun py-up-minor-block-bol ()
+  "Go to the beginning of next minor-block upwards.
 
 Go to beginning of line.
 Return position if minor-block found, nil otherwise."
   (interactive)
-  (py-up-base 'py-minor-block-re indent)
-  (progn (beginning-of-line)(point)))
+  (and (py-up-base 'py-minor-block-re)
+    (progn (beginning-of-line)(point))))
 
 ;; python-components-up.el ends here
 (provide 'python-components-up)

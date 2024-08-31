@@ -207,7 +207,7 @@ LIEP stores line-end-position at point-of-interest
                          0))
                ;; nesting: started nesting a list
                (nesting nesting)
-               erg indent this-line)
+               indent this-line)
           (if (< py-max-specpdl-size repeat)
               (error "‘py-compute-indentation’ reached loops max.")
             (setq nesting (nth 0 pps))
@@ -316,13 +316,23 @@ LIEP stores line-end-position at point-of-interest
 		   ;; (car (py--clause-lookup-keyword py-elif-re -1 nil origline)))
 		   ((and (looking-at py-minor-clause-re) (not line)
                          (eq liep (line-end-position)))
-
 		    (cond
                      ((looking-at py-case-re)
-                      (py--backward-regexp 'py-match-case-re) (+ (current-indentation) py-indent-offset))
+                      (and (py--backward-regexp 'py-match-case-re nil '>)
+                                           (+ (current-indentation) py-indent-offset)
+                                           ))
+                     ((looking-at py-minor-clause-re)
+		      (and (py--backward-regexp 'py-block-or-clause-re
+                      ;; an arbitray number, larger than an real expected indent
+                      (* 99 py-indent-offset)
+                      '<)
+                           (current-indentation)))
+
                      ((looking-at py-outdent-re)
-		      ;; (and (py--backward-regexp 'py-block-or-clause-re) (current-indentation)))
-		      (and (py--go-to-keyword 'py-block-or-clause-re (current-indentation) t) (current-indentation)))
+		      (and (py--backward-regexp 'py-block-or-clause-re
+                      ;; an arbitray number, larger than an real expected indent
+                      (* 99 py-indent-offset)
+                      '<)))
 		     ((bobp) 0)
 		     (t (save-excursion
 			  ;; (skip-chars-backward " \t\r\n\f")
@@ -378,23 +388,24 @@ LIEP stores line-end-position at point-of-interest
 		   ((and py-empty-line-closes-p (py--after-empty-line))
 		    (progn (py-backward-statement)
 			   (- (current-indentation) (or indent-offset py-indent-offset))))
-		   ;; still at orignial line
+		   ;; still at original line
 		   ((and (eq liep (line-end-position))
                          (save-excursion
-			   (and (setq erg (py--go-to-keyword 'py-extended-block-or-clause-re (* py-indent-offset 99)))
-				;; maybe Result: (nil nil nil), which evaluates to ‘t’
-				(not (bobp))
-				(if (and (not indent-offset) py-smart-indentation) (setq indent-offset (py-guess-indent-offset)) t)
-				(ignore-errors (< orig (or (py-forward-block-or-clause) (point)))))))
-		    (+ (or (car erg) 0)(if py-smart-indentation
-				           (or indent-offset (py-guess-indent-offset))
-				         (or indent-offset py-indent-offset))))
+			   (and
+                            (py--go-to-keyword 'py-extended-block-or-clause-re nil (* py-indent-offset 99))
+                            (if (looking-at (concat py-block-re "\\|" py-outdent-re))
+		                (+ (current-indentation)
+                                   (if py-smart-indentation
+				       (or indent-offset (py-guess-indent-offset))
+				     (or indent-offset py-indent-offset)))
+                              (current-indentation))))))
 		   ((and (not line)
                          (eq liep (line-end-position))
                          (py--beginning-of-statement-p))
 		    (py-backward-statement)
 		    (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep beg))
 		   (t (current-indentation))))
+            ;; (when (or (eq 1 (prefix-numeric-value iact)) py-verbose-p) (message "%s" indent))
             (when py-verbose-p (message "%s" indent))
             indent))))))
 
@@ -1197,15 +1208,18 @@ Use current region unless optional args BEG END are delivered."
 
 (defun py--close-intern (regexp)
   "Core function, internal used only. "
-  (let ((cui (car (py--go-to-keyword regexp))))
-    (message "%s" cui)
+  (let ((cui (and
+              (or (and (looking-at (symbol-value regexp))
+                       (not (nth 8 (parse-partial-sexp (point-min) (point)))))
+                  (py--go-to-keyword regexp))
+              (current-indentation))))
+    (when py-verbose-p (message "%s" cui))
     (py--end-base regexp (point))
     (forward-line 1)
     (if py-close-provides-newline
         (unless (py-empty-line-p) (split-line))
       (fixup-whitespace))
-    (indent-to-column cui)
-    cui))
+    (indent-to-column cui)))
 
 (defun py--backward-regexp-fast (regexp)
   "Search backward next regexp not in string or comment.

@@ -45,8 +45,8 @@ print(\"two\")"
       (py-execute-region-python3 (point-min) (point-max))
       (set-buffer buffer)
       (goto-char (point-max))
-      ;;  (sit-for 1)
-      (font-lock-ensure)
+       (sit-for 1)
+      ;; (font-lock-ensure)
       (should (search-backward "two")))))
 
 (ert-deftest py-ert-execute-region-ipython-test ()
@@ -59,7 +59,7 @@ print(\"two\")"
           (py-execute-region-ipython (point-min) (point-max))
           (set-buffer buffer)
           ;; (accept-process-output (get-buffer-process buffer) 0.1)
-          (switch-to-buffer (current-buffer))
+          ;; (switch-to-buffer (current-buffer))
           (goto-char (point-max))
           ;; (sit-for 0.5 t)
           (should (search-backward "two"))))
@@ -68,39 +68,49 @@ print(\"two\")"
 
 
 (ert-deftest py-ert-execute-region-ipython3-test ()
-  (let ((buffer (py--choose-buffer-name "ipython3"))
-	(inhibit-point-motion-hooks t)
-        (py-debug-p t))
-    (py-test-with-temp-buffer
-        "print(\"one\")
+  (if
+      (executable-find "ipython3")
+      (let ((buffer (py--choose-buffer-name "ipython3"))
+	    (inhibit-point-motion-hooks t)
+            ;; (py-debug-p t)
+            )
+        (py-test-with-temp-buffer
+            "print(\"one\")
 print(\"two\")"
-      (py-execute-region-ipython3 (point-min) (point-max))
-      (set-buffer buffer)
-      (when py-debug-p (message "current-buffer0: %s" (current-buffer))
-            (sit-for 9)
-            ;; (accept-process-output (get-buffer-process buffer) 1)
-            (when py-debug-p (message "current-buffer1: %s" (current-buffer)))
-            ;; (goto-char (point-max))
-            (switch-to-buffer (current-buffer))
-            (when py-debug-p (message "current-buffer2: %s" (current-buffer)))
-            (goto-char (point-max))
-            (when py-debug-p (message "current-buffer3: %s" (current-buffer)))
-            (font-lock-ensure)
-            ;; (sit-for 2)
-            (when py-debug-p (message "current-buffer4: %s" (current-buffer)))
-            (should (search-backward "two"))))))
+          (py-execute-region-ipython3 (point-min) (point-max))
+          (set-buffer buffer)
+          (when py-debug-p (message "current-buffer0: %s" (current-buffer))
+                (sit-for 0.1)
+                ;; (accept-process-output (get-buffer-process buffer) 1)
+                (when py-debug-p (message "current-buffer1: %s" (current-buffer)))
+                ;; (goto-char (point-max))
+                ;; (switch-to-buffer (current-buffer))
+                (when py-debug-p (message "current-buffer2: %s" (current-buffer)))
+                (goto-char (point-max))
+                (when py-debug-p (message "current-buffer3: %s" (current-buffer)))
+                ;; (font-lock-ensure)
+                ;; (sit-for 2)
+                (when py-debug-p (message "current-buffer4: %s" (current-buffer)))
+                (should (search-backward "two")))))
+    (when py-verbose-p
+      (message "py-ert-execute-region-ipython3-test: %s" "No executable found!"))))
 
 (ert-deftest py-ert-execute-region-jython-test ()
-  (py-test-with-temp-buffer
-      "print(\"one\")
+  (if
+      (executable-find "jython")
+      (py-test-with-temp-buffer
+          "print(\"one\")
 print(\"two\")"
-    (let ((buffer (py--choose-buffer-name "jython")))
-      (py-execute-region-jython (point-min) (point-max))
-      (set-buffer buffer)
-      (switch-to-buffer (current-buffer))
-      (goto-char (point-max))
-      (font-lock-ensure)
-      (should (search-backward "two")))))
+        (let ((buffer (py--choose-buffer-name "jython")))
+          (py-execute-region-jython (point-min) (point-max))
+          (set-buffer buffer)
+          ;; (switch-to-buffer (current-buffer))
+          (goto-char (point-max))
+          ;; (font-lock-ensure)
+          (sit-for 0.1)
+          (should (search-backward "two"))))
+    (when py-verbose-p
+      (message "py-ert-execute-region-jython-test: %s" "No executable found!"))))
 
 (provide 'py-ert-execute-region-test)
 ;;; py-ert-execute-region-test.el here

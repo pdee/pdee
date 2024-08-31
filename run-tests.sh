@@ -69,10 +69,10 @@ echo "\$PYTHONMODE: $PYTHONMODE"
 SETUP=$TESTDIR/py-setup-ert-tests.el
 
 TEST1=$TESTDIR/py-ert-indent-tests.el
-TEST2=$TESTDIR/py-ert-misc-tests.el
-TEST3=$TESTDIR/py-ert-scope-tests.el
-TEST4=$TESTDIR/py-ert-beginning-tests.el
-TEST5=$TESTDIR/py-ert-forward-tests.el
+TEST2=$TESTDIR/py-ert-beginning-tests.el
+TEST3=$TESTDIR/py-ert-forward-tests.el
+TEST4=$TESTDIR/py-ert-misc-tests.el
+TEST5=$TESTDIR/py-ert-scope-tests.el
 TEST6=$TESTDIR/py-ert-function-tests.el
 TEST7=$TESTDIR/py-ert-variablen-tests.el
 TEST8=$TESTDIR/py-ert-navigation-tests.el
@@ -98,6 +98,7 @@ h1() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq py-verbose-p nil)" \
 --eval "(setq py-install-dir \"$PDIR\")" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
