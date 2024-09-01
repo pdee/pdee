@@ -322,7 +322,7 @@ may want to re-add custom functions to it using the
     'indent-for-tab-command)
    (t
     (define-key py-shell-mode-map "\t"
-		'py-indent-or-complete)))
+		'py-indent-line)))
   (define-key py-shell-mode-map [(control c) (control r)] 'py-nav-last-prompt)
   (make-local-variable 'py-pdbtrack-buffers-to-kill)
   (make-local-variable 'py-shell-fast-last-output)

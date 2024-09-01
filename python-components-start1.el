@@ -2645,9 +2645,7 @@ Defined with a defvar form to allow testing the loading of new versions.")
   (when (called-interactively-p 'interactive) (message "py-debug-p: %s" py-debug-p)))
 
 (defcustom py-shell-complete-p nil
-  "Enable native completion.
-
-Set TAB accordingly."
+  "Enable native completion."
 
   :type 'boolean
   :tag "py-shell-complete-p"
