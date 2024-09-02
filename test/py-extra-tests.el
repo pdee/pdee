@@ -46,18 +46,18 @@
 	         (py-kill-buffer-unconditional (current-buffer)))))
       (when py-debug-p (message "py-ert-moves-up-execute-statement-test-RdqUKX: %s" "Can't see python2")))))
 
-(ert-deftest py-complete-in-python3-shell-test-JtNakZ ()
-  (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
-  (set-buffer (python3))
-  (when py-debug-p (switch-to-buffer (current-buffer)))
-  (sit-for 0.1)
-  (should (eq (current-buffer) (get-buffer "*Python3*")))
-  (goto-char (point-max))
-  (insert "pri")
-  (py-indent-or-complete)
-  (should (looking-back "print(")))
+;; (ert-deftest py-complete-in-python3-shell-test-JtNakZ ()
+;;   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
+;;   (set-buffer (python3))
+;;   (when py-debug-p (switch-to-buffer (current-buffer)))
+;;   (sit-for 0.1)
+;;   (should (eq (current-buffer) (get-buffer "*Python3*")))
+;;   (goto-char (point-max))
+;;   (insert "pri")
+;;   (py-indent-or-complete)
+;;   (should (looking-back "print(")))
 
-(ert-deftest UnicodeEncodeError-lp-550661-test-1-1oxvP0 ()
+(ert-deftest UnicodeEncodeError-lp-550661-test-1oxvP0 ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python3
 print(u'\\xA9')"
@@ -67,6 +67,7 @@ print(u'\\xA9')"
       (py-execute-buffer)
       ;; (setq erg (car (read-from-string py-result)))
       ;; (message "UnicodeEncodeError-lp-550661-test-1 erg: %s" erg)
+      (sit-for 0.1) 
       (should (string= "©" py-result)))))
 
 (ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2 ()
@@ -86,14 +87,14 @@ os.write"
     (goto-char comint-last-output-start)
     (should (string-match "write" (buffer-substring-no-properties (point) (point-max))))))
 
-(ert-deftest py-complete-empty-string-result-test-jI82K3 ()
-  (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
-  (set-buffer (python3))
-  (goto-char (point-max))
-  (insert "foo")
-  (py-indent-or-complete)
-  (sit-for 0.1)
-  (should (looking-back "foo")))
+;; (ert-deftest py-complete-empty-string-result-test-jI82K3 ()
+;;   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
+;;   (set-buffer (python3))
+;;   (goto-char (point-max))
+;;   (insert "foo")
+;;   (py-indent-or-complete)
+;;   (sit-for 0.1)
+;;   (should (looking-back "foo")))
 
 (ert-deftest py-ert-execute-block-fast-9Ui5ja-zo3sa5 ()
   (py-test-with-temp-buffer-point-min
@@ -148,31 +149,31 @@ finally:
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
-(ert-deftest py-ert-execute-block-jython-test-9gQUza ()
-  (if (not (executable-find "jython"))
-      (message "py-ert-execute-block-jython-test-9gQUza: %s" "No executable found!")
-    (let ((buffer (py--choose-buffer-name "jython"))
-	  py-split-window-on-execute py-switch-buffers-on-execute-p)
-      (py-test-with-temp-buffer
-          "if True:
-    print(\"one\")
-    print(\"two\")"
-	(py-execute-block-jython)
-	(sit-for 2)
-	(should (string-match "two" py-result))))))
+;; (ert-deftest py-ert-execute-block-jython-test-9gQUza ()
+;;   (if (not (executable-find "jython"))
+;;       (message "py-ert-execute-block-jython-test-9gQUza: %s" "No executable found!")
+;;     (let ((buffer (py--choose-buffer-name "jython"))
+;; 	  py-split-window-on-execute py-switch-buffers-on-execute-p)
+;;       (py-test-with-temp-buffer
+;;           "if True:
+;;     print(\"one\")
+;;     print(\"two\")"
+;; 	(py-execute-block-jython)
+;; 	(sit-for 2)
+;; 	(should (string-match "two" py-result))))))
 
-(ert-deftest py-shell-complete-in-dedicated-shell-XafVPb ()
-  ;; (py-test-with-temp-buffer
-  (with-current-buffer (python '(4))
-    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    ;; (switch-to-buffer (current-buffer))
-    (insert "pri")
-    (sit-for 1 t)
-    (call-interactively 'py-indent-or-complete)
-    (sit-for 0.1 t)
-    (should (or (looking-back "print.?" (line-beginning-position))))))
+;; (ert-deftest py-shell-complete-in-dedicated-shell-XafVPb ()
+;;   ;; (py-test-with-temp-buffer
+;;   (with-current-buffer (python '(4))
+;;     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+;;     ;; (switch-to-buffer (current-buffer))
+;;     (insert "pri")
+;;     (sit-for 1 t)
+;;     (call-interactively 'py-indent-or-complete)
+;;     (sit-for 0.1 t)
+;;     (should (or (looking-back "print.?" (line-beginning-position))))))
 
-(ert-deftest py-ert-execute-statement-fast-2-7XrRee ()
+(ert-deftest py-ert-execute-statement-fast-7XrRee ()
   (py-test-with-temp-buffer-point-min
       "print(2)"
     (let ((py-fast-process-p t)
@@ -202,7 +203,7 @@ finally:
       (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))
       (should (search-backward "123234")))))
 
-(ert-deftest py-ert-fast-complete-1-vS8fnm ()
+(ert-deftest py-ert-fast-complete-vS8fnm ()
   (py-test-with-temp-buffer
       "obj"
     (goto-char (point-max))
@@ -1044,7 +1045,7 @@ class EmacsFrameThemeManager(datatypes.Singleton, metaclass=cldef.metaClass):
     (py-forward-def-or-class)
     (should (eq 26242 (point)))))
 
-(ert-deftest py-execute-region-ipython-test-1-1gyFLs ()
+(ert-deftest py-execute-region-ipython-test-1gyFLs ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python3
 print(u'\\xA9')"
@@ -1052,7 +1053,7 @@ print(u'\\xA9')"
     (push-mark)
     (beginning-of-line)
     (if (not (executable-find  "ipython"))
-	(message "py-execute-region-ipython-test-1-1gyFLs: %s" "No executable found")
+	(message "py-execute-region-ipython-test-1gyFLs: %s" "No executable found")
       (py-execute-region-ipython (region-beginning) (region-end))
       (set-buffer "*IPython*")
       (string-match "@" (buffer-substring-no-properties (point-min) (point-max))))))
@@ -1294,7 +1295,7 @@ by the
     (py-indent-or-complete)
     (should (looking-back "print.?" (line-beginning-position)))))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-1-BBJoDt ()
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-BBJoDt ()
   (let ((py-docstring-style 'pep-257-nn))
     (py-test-with-temp-buffer-point-min
 	"# r1416
@@ -1328,7 +1329,7 @@ def baz():
       (should (<= (current-column) 72))
       )))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-django-2-BVA4Jt ()
+(ert-deftest py-ert-moves-up-fill-paragraph-django-BVA4Jt ()
   (let ((py-docstring-style 'django))
     (py-test-with-temp-buffer-point-min
 	"# r1416

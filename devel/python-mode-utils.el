@@ -2403,8 +2403,8 @@ class bar:
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (goto-char (point-max))
-  (insert "\n(defun py-forward-assignment (\&optional orig bol)
-  \"Go to end of assignment\.
+  (insert "\n(defun py-forward-assignment (&optional orig bol)
+  \"Go to end of assignment.
 
 Return end of `assignment' if successful, nil otherwise
 Optional ORIG: start position
@@ -2413,9 +2413,9 @@ Optional BOL: go to beginning of line following end-position\"
   (py--end-base 'py-assignment-re orig bol))
 
 \(defun py-forward-assignment-bol ()
-  \"Goto beginning of line following end of `assignment'\.
+  \"Goto beginning of line following end of `assignment'.
 
-Return position reached, if successful, nil otherwise\.
+Return position reached, if successful, nil otherwise.
 See also `py-down-assignment'.\"
   (interactive)
   (py-forward-assignment nil t))\n\n")

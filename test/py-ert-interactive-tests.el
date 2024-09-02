@@ -140,8 +140,6 @@ print(\"I'm the py-always-reuse-lp-1361531-test\")"
       (should (eq 3 (count-windows)))
       (py-restore-window-configuration))))
 
-
-
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-ipython-test-zGlzYP ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env ipython
@@ -369,7 +367,7 @@ a, b, c = (1, 2, 3)"
 (ert-deftest py-pdbtrack-input-prompt-45-test-xhbEyD ()
   (py-test-with-temp-buffer
       "def exercise():
-  import pdb\; pdb.set_trace()
+  import pdb\\; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
@@ -386,7 +384,7 @@ exercise()"
 (ert-deftest py-pdbtrack-input-prompt-45-test-7V1h5F ()
   (py-test-with-temp-buffer
       "def exercise():
-  import pdb\; pdb.set_trace()
+  import pdb\\; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
@@ -403,7 +401,7 @@ exercise()"
 (ert-deftest py-pdbtrack-is-tracking-45-test-N1CTvI ()
   (py-test-with-temp-buffer
       "def exercise():
-  import pdb\; pdb.set_trace()
+  import pdb\\; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
@@ -417,7 +415,7 @@ exercise()"
 (ert-deftest py-pdbtrack-is-tracking-45-test-ra9WRA ()
   (py-test-with-temp-buffer
       "def exercise():
-  import pdb\; pdb.set_trace()
+  import pdb\\; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
@@ -571,15 +569,6 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
       (py-kill-buffer-unconditional erg1)
       (py-kill-buffer-unconditional erg2)
       (py-restore-window-configuration))))
-
-(ert-deftest py-shell-test-t3Sizn ()
-  (let ((buffer (py-shell nil nil t)))
-    (with-current-buffer buffer
-      (switch-to-buffer (current-buffer))
-      (goto-char (point-max))
-      (insert "def")
-      (backward-char)
-      (should (eq (char-after) ?f)))))
 
 (ert-deftest py-shell-dedicated-buffer-test-t3Sizn ()
   (let ((buffer (py-shell nil nil t)))

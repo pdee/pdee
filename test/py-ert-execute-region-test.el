@@ -51,7 +51,7 @@ print(\"two\")"
 
 (ert-deftest py-ert-execute-region-ipython-test ()
   (if
-      (executable-find "ipython")
+      (ignore-errors (executable-find "ipython"))
       (py-test-with-temp-buffer
           "print(\"one\")
 print(\"two\")"
@@ -69,7 +69,7 @@ print(\"two\")"
 
 (ert-deftest py-ert-execute-region-ipython3-test ()
   (if
-      (executable-find "ipython3")
+      (ignore-errors (executable-find "ipython3"))
       (let ((buffer (py--choose-buffer-name "ipython3"))
 	    (inhibit-point-motion-hooks t)
             ;; (py-debug-p t)

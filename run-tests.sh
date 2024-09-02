@@ -22,7 +22,9 @@
 
 # Code:
 
-if [ $1 == e25 ]; then
+if [ $1 == en ]; then
+    export EMACS=$(echo $(alias $1) | sed "s,alias [^~]*.\([^ ]*\).*,$HOME\1,g")
+elif [ $1 == e25 ]; then
     export EMACS=$(echo $(alias $1) | sed "s,alias [^~]*.\([^ ]*\).*,$HOME\1,g")
 elif
     [ $1 == e26 ];then
@@ -433,6 +435,8 @@ hier() {
     date; $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-guess-indent-offset nil)" \
+--eval "(setq python-indend-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -444,7 +448,6 @@ hier() {
 -l $TEST5 \
 -l $TEST6 \
 -l $TEST7 \
-sleep 1 \
 -l $TEST8 \
 -l $TEST9 \
 -l $TEST10 \
