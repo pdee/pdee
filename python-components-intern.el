@@ -34,12 +34,6 @@
       (+ (current-indentation) py-indent-offset)
     (1+ (current-column))))
 
-(defun py--compute-closing-outer-list ()
-  "Compute indentation according to py-closing-list-dedents-bos."
-  (if py-closing-list-dedents-bos
-      (current-indentation)
-    (+ (current-indentation) py-indent-offset)))
-
 (defun py-compute-indentation-according-to-list-style (pps)
   "See ‘py-indent-list-style’
 
