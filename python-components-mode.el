@@ -69,6 +69,7 @@
 (require 'python-components-beginning-position-forms)
 (require 'python-components-extended-executes)
 (require 'python-components-execute)
+(require 'python-components-compute-indentation)
 (require 'python-components-intern)
 (require 'python-components-copy-forms)
 (require 'python-components-delete-forms)
