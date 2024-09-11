@@ -298,7 +298,6 @@ h17() {
 -f ert-run-tests-batch-and-exit
 }
 
-
 h18() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
@@ -459,11 +458,10 @@ hier() {
 -f ert-run-tests-batch-and-exit
 }
 
-# neu() {
-# h1 & h2 & h3 & h4 & h5 & h6 & h7 & h8 & h9 & h10 & h11 & h13 & h16 & h19 & h21
-# }
-
 if [ $IFLOCAL -eq 0 ]; then
+
+    # sleep 1
+
     while getopts 123456789abcdefghijklmnopqrstuvx option
     do
         case $option in
