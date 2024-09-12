@@ -15,9 +15,9 @@
 
 ;;; Code:
 
-(defalias 'py-script-complete 'py-shell-complete)
-(defalias 'py-python2-shell-complete 'py-shell-complete)
-(defalias 'py-python3-shell-complete 'py-shell-complete)
+(defalias (quote py-script-complete) (quote py-shell-complete))
+(defalias (quote py-python2-shell-complete) (quote py-shell-complete))
+(defalias (quote py-python3-shell-complete) (quote py-shell-complete))
 
 (defun py--shell-completion-get-completions (input process completion-code)
   "Retrieve available completions for INPUT using PROCESS.
@@ -41,19 +41,19 @@ Takes END"
             (eq this-command 'completion-at-point)
             (eq this-command 'choose-completion)
             (eq this-command 'choose-completion)
-            (eq this-command 'py-shell-complete)
+            (eq this-command (quote py-shell-complete))
             (and (or
                   (eq last-command 'completion-at-point)
                   (eq last-command 'choose-completion)
                   (eq last-command 'choose-completion)
-                  (eq last-command 'py-shell-complete))
+                  (eq last-command (quote py-shell-complete)))
                  (eq this-command 'self-insert-command))))
     (py-restore-window-configuration)
     )
 
   (goto-char end))
 
-(defalias 'ipython-complete 'py-shell-complete)
+(defalias 'ipython-complete (quote py-shell-complete))
 
 (defun py--try-completion-intern (input completion buffer)
   (with-current-buffer buffer
@@ -174,7 +174,7 @@ Otherwise call `py-indent-line'
 If `(use-region-p)' returns t, indent region.
 Use `C-q TAB' to insert a literally TAB-character
 
-In `python-mode' `py-complete-function' is called,
+In ‘python-mode’ `py-complete-function' is called,
 in (I)Python shell-modes `py-shell-complete'"
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)

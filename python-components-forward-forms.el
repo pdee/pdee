@@ -33,13 +33,13 @@ Return end of `assignment' if successful, nil otherwise
 Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
-  (py--end-base 'py-assignment-re orig bol))
+  (py--end-base (quote py-assignment-re) orig bol))
 
 (defun py-forward-assignment-bol ()
   "Goto beginning of line following end of `assignment'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-assignment'."
+See also `ar-down-assignment'."
   (interactive)
   (py-forward-assignment nil t))
 
@@ -57,16 +57,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-block-re orig bol))
+    (unless (setq erg (py--end-base (quote py-block-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-block-re orig bol)))
+      (setq erg (py--end-base (quote py-block-re) orig bol)))
     erg))
 
 (defun py-forward-block-bol ()
   "Goto beginning of line following end of `block'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-block'."
+See also `ar-down-block'."
   (interactive)
   (py-forward-block nil t))
 
@@ -78,16 +78,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-block-or-clause-re orig bol))
+    (unless (setq erg (py--end-base (quote py-block-or-clause-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-block-or-clause-re orig bol)))
+      (setq erg (py--end-base (quote py-block-or-clause-re) orig bol)))
     erg))
 
 (defun py-forward-block-or-clause-bol ()
   "Goto beginning of line following end of `block-or-clause'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-block-or-clause'."
+See also `ar-down-block-or-clause'."
   (interactive)
   (py-forward-block-or-clause nil t))
 
@@ -99,16 +99,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-class-re orig bol))
+    (unless (setq erg (py--end-base (quote py-class-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-class-re orig bol)))
+      (setq erg (py--end-base (quote py-class-re) orig bol)))
     erg))
 
 (defun py-forward-class-bol ()
   "Goto beginning of line following end of `class'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-class'."
+See also `ar-down-class'."
   (interactive)
   (py-forward-class nil t))
 
@@ -120,16 +120,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-clause-re orig bol))
+    (unless (setq erg (py--end-base (quote py-clause-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-clause-re orig bol)))
+      (setq erg (py--end-base (quote py-clause-re) orig bol)))
     erg))
 
 (defun py-forward-clause-bol ()
   "Goto beginning of line following end of `clause'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-clause'."
+See also `ar-down-clause'."
   (interactive)
   (py-forward-clause nil t))
 
@@ -141,16 +141,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-def-re orig bol))
+    (unless (setq erg (py--end-base (quote py-def-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-def-re orig bol)))
+      (setq erg (py--end-base (quote py-def-re) orig bol)))
     erg))
 
 (defun py-forward-def-bol ()
   "Goto beginning of line following end of `def'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-def'."
+See also `ar-down-def'."
   (interactive)
   (py-forward-def nil t))
 
@@ -162,16 +162,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-def-or-class-re orig bol))
+    (unless (setq erg (py--end-base (quote py-def-or-class-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-def-or-class-re orig bol)))
+      (setq erg (py--end-base (quote py-def-or-class-re) orig bol)))
     erg))
 
 (defun py-forward-def-or-class-bol ()
   "Goto beginning of line following end of `def-or-class'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-def-or-class'."
+See also `ar-down-def-or-class'."
   (interactive)
   (py-forward-def-or-class nil t))
 
@@ -183,16 +183,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-elif-re orig bol))
+    (unless (setq erg (py--end-base (quote py-elif-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-elif-re orig bol)))
+      (setq erg (py--end-base (quote py-elif-re) orig bol)))
     erg))
 
 (defun py-forward-elif-block-bol ()
   "Goto beginning of line following end of `elif-block'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-elif-block'."
+See also `ar-down-elif-block'."
   (interactive)
   (py-forward-elif-block nil t))
 
@@ -204,16 +204,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-else-re orig bol))
+    (unless (setq erg (py--end-base (quote py-else-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-else-re orig bol)))
+      (setq erg (py--end-base (quote py-else-re) orig bol)))
     erg))
 
 (defun py-forward-else-block-bol ()
   "Goto beginning of line following end of `else-block'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-else-block'."
+See also `ar-down-else-block'."
   (interactive)
   (py-forward-else-block nil t))
 
@@ -225,16 +225,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-except-re orig bol))
+    (unless (setq erg (py--end-base (quote py-except-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-except-re orig bol)))
+      (setq erg (py--end-base (quote py-except-re) orig bol)))
     erg))
 
 (defun py-forward-except-block-bol ()
   "Goto beginning of line following end of `except-block'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-except-block'."
+See also `ar-down-except-block'."
   (interactive)
   (py-forward-except-block nil t))
 
@@ -246,16 +246,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-for-re orig bol))
+    (unless (setq erg (py--end-base (quote py-for-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-for-re orig bol)))
+      (setq erg (py--end-base (quote py-for-re) orig bol)))
     erg))
 
 (defun py-forward-for-block-bol ()
   "Goto beginning of line following end of `for-block'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-for-block'."
+See also `ar-down-for-block'."
   (interactive)
   (py-forward-for-block nil t))
 
@@ -267,16 +267,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-if-re orig bol))
+    (unless (setq erg (py--end-base (quote py-if-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-if-re orig bol)))
+      (setq erg (py--end-base (quote py-if-re) orig bol)))
     erg))
 
 (defun py-forward-if-block-bol ()
   "Goto beginning of line following end of `if-block'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-if-block'."
+See also `ar-down-if-block'."
   (interactive)
   (py-forward-if-block nil t))
 
@@ -288,16 +288,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-minor-block-re orig bol))
+    (unless (setq erg (py--end-base (quote py-minor-block-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-minor-block-re orig bol)))
+      (setq erg (py--end-base (quote py-minor-block-re) orig bol)))
     erg))
 
 (defun py-forward-minor-block-bol ()
   "Goto beginning of line following end of `minor-block'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-minor-block'."
+See also `ar-down-minor-block'."
   (interactive)
   (py-forward-minor-block nil t))
 
@@ -309,16 +309,16 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base 'py-try-re orig bol))
+    (unless (setq erg (py--end-base (quote py-try-re) orig bol))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base 'py-try-re orig bol)))
+      (setq erg (py--end-base (quote py-try-re) orig bol)))
     erg))
 
 (defun py-forward-try-block-bol ()
   "Goto beginning of line following end of `try-block'.
 
 Return position reached, if successful, nil otherwise.
-See also `py-down-try-block'."
+See also `ar-down-try-block'."
   (interactive)
   (py-forward-try-block nil t))
 

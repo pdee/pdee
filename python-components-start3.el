@@ -141,7 +141,7 @@ Expects INDENTS, a cons"
                   (if (< second first)
                       (- first second)
                     (- second first))
-                (default-value 'py-indent-offset))))
+                (default-value (quote py-indent-offset)))))
     (setq erg (and (py-guessed-sanity-check erg) erg))
     erg))
 
@@ -202,7 +202,7 @@ Unless DIRECTION is symbol \\='forward, go backward first"
            (erg (py--guess-indent-final indents)))
       (if erg (setq py-indent-offset erg)
         (setq py-indent-offset
-              (default-value 'py-indent-offset)))
+              (default-value (quote py-indent-offset))))
       (when (called-interactively-p 'any) (message "%s" py-indent-offset))
       py-indent-offset)))
 
@@ -277,7 +277,7 @@ thus remember line of source buffer"
 		(when (looking-at "[ \t]*\\([^\t\n\r\f]+\\)[ \t]*$")
 		  (setq estring (match-string-no-properties 1))
 		  (setq ecode (replace-regexp-in-string "[ \n\t\f\r^]+" " " estring))
-		  (push 'py-error ecode))))))
+		  (push (quote py-error) ecode))))))
 	py-error))))
 
 (defun py-execute-python-mode-v5 (start end origline filename)

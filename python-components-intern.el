@@ -81,7 +81,7 @@ module-qualified names."
 ;;  arrange to kill temp files when Emacs exists
 
 (when py--warn-tmp-files-left-p
-  (add-hook 'python-mode-hook 'py--warn-tmp-files-left))
+  (add-hook 'python-mode-hook (quote py--warn-tmp-files-left)))
 
 (defun py-guess-pdb-path ()
   "If py-pdb-path isn't set, find location of pdb.py. "
@@ -100,8 +100,8 @@ module-qualified names."
 (if py-mode-output-map
     nil
   (setq py-mode-output-map (make-sparse-keymap))
-  (define-key py-mode-output-map [button2]  'py-mouseto-exception)
-  (define-key py-mode-output-map "\C-c\C-c" 'py-goto-exception)
+  (define-key py-mode-output-map [button2]  (quote py-mouseto-exception))
+  (define-key py-mode-output-map "\C-c\C-c" (quote py-goto-exception))
   ;; TBD: Disable all self-inserting keys.  This is bogus, we should
   ;; really implement this as *Python Output* buffer being read-only
   (mapc #' (lambda (key)
@@ -113,12 +113,12 @@ module-qualified names."
   "Toggles comment-auto-fill mode"
   (interactive "P")
   (if (or (and arg (< 0 (prefix-numeric-value arg)))
-	  (and (boundp 'py-comment-auto-fill-p)(not py-comment-auto-fill-p)))
+	  (and (boundp (quote py-comment-auto-fill-p))(not py-comment-auto-fill-p)))
       (progn
-        (set (make-local-variable 'py-comment-auto-fill-p) t)
+        (set (make-local-variable (quote py-comment-auto-fill-p)) t)
         (setq fill-column py-comment-fill-column)
         (auto-fill-mode 1))
-    (set (make-local-variable 'py-comment-auto-fill-p) nil)
+    (set (make-local-variable (quote py-comment-auto-fill-p)) nil)
     (auto-fill-mode -1)))
 
 (defun py-comment-auto-fill-on ()
@@ -147,7 +147,7 @@ module-qualified names."
       (setq py-autofill-timer
             (run-with-idle-timer
              py-autofill-timer-delay t
-             'py--set-auto-fill-values)))))
+             (quote py--set-auto-fill-values))))))
 
 ;;  unconditional Hooks
 ;;  (orgstruct-mode 1)

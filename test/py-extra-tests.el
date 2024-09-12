@@ -1061,7 +1061,7 @@ print(u'\\xA9')"
 ;; (ert-deftest py-execute-org-source-tdzgdj ()
 ;;   (py-test-with-temp-buffer
 ;;       "#+BEGIN_SRC python :results output
-;; print(\"%(language)s has %(number)03d quote types\.\" %
+;; print(\"%(language)s has %(number)03d quote types.\" %
 ;;        {'language': \"Python\", \"number\": 2})
 
 ;; #+END_SRC
@@ -1362,20 +1362,20 @@ def baz():
       "import pdb
 import sys
 import os
-pdb\.set_trace()
+pdb.set_trace()
 
-args = sys\.argv
+args = sys.argv
 def usage():
     print(\"\"\"Fehler: %s
 Es muß die aufzurufende Ziehungszahl als Argument angegeben werden:
-'python roulette\.py 1, 'python roulette\.py 2', \.\.\. 'python roulette\.py n'\.
+'python roulette.py 1, 'python roulette.py 2', ... 'python roulette.py n'.
 \"\"\" % (
-          os\.path\.basename(sys\.argv\[0])))
+          os.path.basename(sys.argv\[0])))
 
 def main():
-    if len(sys\.argv) == 1:
+    if len(sys.argv) == 1:
         usage()
-        # sys\.exit()
+        # sys.exit()
 "
     (save-excursion
       (let ((inhibit-field-text-motion t)

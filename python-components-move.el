@@ -460,7 +460,7 @@ Return position of successful, nil of not started from inside."
 ;; Return position of successful, nil of not started from inside"
 ;;   (interactive)
 ;;   (unless (eobp)
-;;     (if (eq last-command 'py-backward-assignment)
+;;     (if (eq last-command (quote py-backward-assignment))
 ;; 	;; assume at start of an assignment
 ;; 	(py--forward-assignment-intern)
 ;;       ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time

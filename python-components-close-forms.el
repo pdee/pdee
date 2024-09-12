@@ -37,7 +37,7 @@ If final line isn't empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
-  (py--close-intern 'py-block-re))
+  (py--close-intern (quote py-block-re)))
 
 (defun py-close-class ()
   "Close class at point.
@@ -48,7 +48,7 @@ If final line isn't empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
-  (py--close-intern 'py-class-re))
+  (py--close-intern (quote py-class-re)))
 
 (defun py-close-clause ()
   "Close clause at point.
@@ -59,7 +59,7 @@ If final line isn't empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
-  (py--close-intern 'py-clause-re))
+  (py--close-intern (quote py-clause-re)))
 
 (defun py-close-block-or-clause ()
   "Close block-or-clause at point.
@@ -70,7 +70,7 @@ If final line isn't empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
-  (py--close-intern 'py-block-or-clause-re))
+  (py--close-intern (quote py-block-or-clause-re)))
 
 (defun py-close-def ()
   "Close def at point.
@@ -81,7 +81,7 @@ If final line isn't empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
-  (py--close-intern 'py-def-re))
+  (py--close-intern (quote py-def-re)))
 
 (defun py-close-def-or-class ()
   "Close def-or-class at point.
@@ -92,7 +92,7 @@ If final line isn't empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
-  (py--close-intern 'py-def-or-class-re))
+  (py--close-intern (quote py-def-or-class-re)))
 
 (defun py-close-minor-block ()
   "Close minor-block at point.
@@ -103,7 +103,7 @@ If final line isn't empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
-  (py--close-intern 'py-minor-block-re))
+  (py--close-intern (quote py-minor-block-re)))
 
 (defun py-close-statement ()
   "Close statement at point.
@@ -114,7 +114,7 @@ If final line isn't empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
-  (py--close-intern 'py-statement-re))
+  (py--close-intern (quote py-statement-re)))
 
 (provide 'python-components-close-forms)
 ;;; python-components-close-forms.el ends here

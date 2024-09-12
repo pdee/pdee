@@ -179,7 +179,7 @@ not inside a defun."
     (when names
       (mapconcat (lambda (strg) strg) names "."))))
 
-(defalias 'py-describe-symbol 'py-help-at-point)
+(defalias (quote py-describe-symbol) (quote py-help-at-point))
 (defun py--help-at-point-intern (sym orig)
   (let* ((origfile (py--buffer-filename-remote-maybe))
 	 (cmd (py-find-imports))
@@ -533,7 +533,7 @@ local bindings to py-newline-and-indent."))
       (exchange-point-and-mark))))
 
 ;;  Find function stuff, lifted from python.el
-(defalias 'py-find-function 'py-find-definition)
+(defalias (quote py-find-function) (quote py-find-definition))
 (defun py--find-definition-question-type (symbol imports)
   (let (erg)
     (cond ((setq erg (py-execute-string (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
@@ -588,7 +588,7 @@ Imports done are displayed in message buffer."
 
 ;;  Code-Checker
 ;;  pep8
-(defalias 'pep8 'py-pep8-run)
+(defalias 'pep8 (quote py-pep8-run))
 (defun py-pep8-run (command)
   "*Run pep8 using COMMAND, check formatting.
 Default on the file currently visited."
@@ -612,12 +612,12 @@ Default on the file currently visited."
                               (if last
                                   last
                                 default)
-                              'py-pep8-history)
+                              (quote py-pep8-history))
         (read-string "Run pep8 like this: "
                      (if last
                          last
                        default)
-                     'py-pep8-history)))))
+                     (quote py-pep8-history))))))
   (save-some-buffers (not py-ask-about-save) nil)
   (if (fboundp 'compilation-start)
       ;; Emacs.
@@ -634,7 +634,7 @@ Default on the file currently visited."
   (shell-command "pep8 --help" "*pep8-Help*"))
 
 ;;  Pylint
-(defalias 'pylint 'py-pylint-run)
+(defalias 'pylint (quote py-pylint-run))
 (defun py-pylint-run (command)
   "Run pylint from COMMAND.
 
@@ -651,7 +651,7 @@ Home-page: http://www.logilab.org/project/pylint"
 			'read-shell-command 'read-string)
 		    "Run pylint like this: "
 		    (or default last)
-		    'py-pylint-history))))
+		    (quote py-pylint-history)))))
     (save-some-buffers (not py-ask-about-save))
   (set-buffer (get-buffer-create "*Pylint*"))
   (erase-buffer)
@@ -659,7 +659,7 @@ Home-page: http://www.logilab.org/project/pylint"
     (message "Warning: %s" "pylint needs a file"))
   (shell-command command "*Pylint*"))
 
-(defalias 'pylint-help 'py-pylint-help)
+(defalias 'pylint-help (quote py-pylint-help))
 (defun py-pylint-help ()
   "Display Pylint command line help messages.
 
@@ -668,7 +668,7 @@ Let's have this until more Emacs-like help is prepared"
   (with-help-window "*Pylint-Help*"
     (shell-command "pylint --long-help" "*Pylint-Help*")))
 
-(defalias 'pylint-doku 'py-pylint-doku)
+(defalias 'pylint-doku (quote py-pylint-doku))
 (defun py-pylint-doku ()
   "Display Pylint Documentation.
 
@@ -679,7 +679,7 @@ Calls `pylint --full-documentation'"
   (shell-command "pylint --full-documentation" "*Pylint-Documentation*"))
 
 ;;  Pyflakes3
-(defalias 'pyflakes 'py-pyflakes3-run)
+(defalias 'pyflakes (quote py-pyflakes3-run))
 (defun py-pyflakes3-run (command)
   "Check Python source files for errors."
   (interactive
@@ -708,12 +708,12 @@ Consider \"pip install pyflakes3\" resp. visit \"pypi.python.org\""))
                               ;; (if last
                               ;; last
                               default
-                              'py-pyflakes3-history1)
+                              (quote py-pyflakes3-history1))
         (read-string "Run pyflakes3 like this: "
                      (if last
                          last
                        default)
-                     'py-pyflakes3-history)))))
+                     (quote py-pyflakes3-history))))))
   (save-some-buffers (not py-ask-about-save) nil)
   (if (fboundp 'compilation-start)
       ;; Emacs.
@@ -722,7 +722,7 @@ Consider \"pip install pyflakes3\" resp. visit \"pypi.python.org\""))
     (when (featurep 'xemacs)
       (compile-internal command "No more errors"))))
 
-(defalias 'pyflakes-help 'py-pyflakes3-help)
+(defalias 'pyflakes-help (quote py-pyflakes3-help))
 (defun py-pyflakes3-help ()
   "Display Pyflakes3 command line help messages."
   (interactive)
@@ -730,7 +730,7 @@ Consider \"pip install pyflakes3\" resp. visit \"pypi.python.org\""))
     (shell-command "pyflakes3 --help" "*pyflakes3-Help*")))
 
 ;;  Pyflakes-pep8
-(defalias 'pyflakespep8 'py-pyflakespep8-run)
+(defalias 'pyflakespep8 (quote py-pyflakespep8-run))
 (defun py-pyflakespep8-run (command)
   "*Run COMMAND pyflakespep8, check formatting.
 
@@ -755,12 +755,12 @@ Default on the file currently visited."
                               (if last
                                   last
                                 default)
-                              'py-pyflakespep8-history)
+                              (quote py-pyflakespep8-history))
         (read-string "Run pyflakespep8 like this: "
                      (if last
                          last
                        default)
-                     'py-pyflakespep8-history)))))
+                     (quote py-pyflakespep8-history))))))
   (save-some-buffers (not py-ask-about-save) nil)
   (if (fboundp 'compilation-start)
       ;; Emacs.
@@ -802,12 +802,12 @@ Default on the file currently visited."
                               (if last
                                   last
                                 default)
-                              'py-pychecker-history)
+                              (quote py-pychecker-history))
         (read-string "Run pychecker like this: "
                      (if last
                          last
                        default)
-                     'py-pychecker-history)))))
+                     (quote py-pychecker-history))))))
   (save-some-buffers (not py-ask-about-save) nil)
   (if (fboundp 'compilation-start)
       ;; Emacs.
@@ -836,7 +836,7 @@ See ‘py-check-command’ for the default."
     (compilation-start command)))
 
 ;;  flake8
-(defalias 'flake8 'py-flake8-run)
+(defalias 'flake8 (quote py-flake8-run))
  (defun py-flake8-run (command)
   "COMMAND Flake8 is a wrapper around these tools:
 - PyFlakes
@@ -876,12 +876,12 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
                               ;; (if last
                               ;; last
                               default
-                              'py-flake8-history1)
+                              (quote py-flake8-history1))
         (read-string "Run flake8 like this: "
                      (if last
                          last
                        default)
-                     'py-flake8-history)))))
+                     (quote py-flake8-history))))))
   (save-some-buffers (not py-ask-about-save) nil)
   (if (fboundp 'compilation-start)
       ;; Emacs.
@@ -992,7 +992,7 @@ Assumes vars are defined in current source buffer"
         (let* ((name (symbol-at-point))
                (state
                 (unless
-                    (or (eq name 'py-menu)
+                    (or (eq name (quote py-menu))
                         (eq name 'python-mode-map)
                         (string-match "syntax-table" (prin1-to-string name)))
 

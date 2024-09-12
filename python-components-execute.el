@@ -118,7 +118,7 @@ Returns value of ‘py-switch-buffers-on-execute-p’."
   (setq shell-dirtrackp t)
   (add-hook 'comint-input-filter-functions 'shell-directory-tracker nil t))
 
-(defalias 'py-dedicated-shell 'py-shell-dedicated)
+(defalias (quote py-dedicated-shell) (quote py-shell-dedicated))
 (defun py-shell-dedicated (&optional argprompt)
   "Start an interpreter in another window according to ARGPROMPT.
 
@@ -286,7 +286,7 @@ Optional SHELL SWITCH FAST
 See also ‘py-execute-region’."
   (interactive)
   (let ((strg (or strg (read-from-minibuffer "String: ")))
-        (shell (or shell (default-value 'py-shell-name))))
+        (shell (or shell (default-value (quote py-shell-name)))))
     (with-temp-buffer
       (insert strg)
       (py-execute-region (point-min) (point-max) shell t switch fast))))
@@ -385,7 +385,11 @@ This may be preferable to `\\[py-execute-buffer]' because:
     (if file
         (let ((proc (or
                      (ignore-errors (get-process (file-name-directory shell)))
-                     (get-buffer-process (py-shell nil nil py-dedicated-process-p shell (or shell (default-value 'py-shell-name)))))))
+                     (get-buffer-process
+                      (py-shell nil nil py-dedicated-process-p shell
+                                ;; (or shell (default-value (quote py-shell-name)))
+                                (or shell py-shell-name)
+                     )))))
           ;; Maybe save some buffers
           (save-some-buffers (not py-ask-about-save) nil)
           (py--execute-file-base file proc

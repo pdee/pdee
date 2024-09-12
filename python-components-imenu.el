@@ -277,17 +277,17 @@ of the first definition found."
 
 ;; A modified slice from python.el
 (defvar py-imenu-format-item-label-function
-  'py-imenu-format-item-label
+  (quote py-imenu-format-item-label)
   "Imenu function used to format an item label.
 It must be a function with two arguments: TYPE and NAME.")
 
 (defvar py-imenu-format-parent-item-label-function
-  'py-imenu-format-parent-item-label
+  (quote py-imenu-format-parent-item-label)
   "Imenu function used to format a parent item label.
 It must be a function with two arguments: TYPE and NAME.")
 
 (defvar py-imenu-format-parent-item-jump-label-function
-  'py-imenu-format-parent-item-jump-label
+  (quote py-imenu-format-parent-item-jump-label)
   "Imenu function used to format a parent jump item label.
 It must be a function with two arguments: TYPE and NAME.")
 

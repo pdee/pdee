@@ -134,7 +134,7 @@ Requires BEG, END as the boundery of region"
 	   ((eq need cui)
 	    (if (or dedent
 		    (eq this-command last-command)
-		    (eq this-command 'py-indent-line))
+		    (eq this-command (quote py-indent-line)))
 		(if (and py-tab-shifts-region-p region)
 		    (while (and (goto-char beg) (< 0 (current-indentation)))
 		      (py-shift-region-left 1))
@@ -239,7 +239,7 @@ Optional arg DEDENT: force dedent.
 		 (py-guess-indent-offset))
 		((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
 		 py-already-guessed-indent-offset)
-		(t (default-value 'py-indent-offset))))
+		(t (default-value (quote py-indent-offset)))))
     (setq outmost (py-compute-indentation nil nil nil nil nil nil nil this-indent-offset))
     ;; now choose the indent
     (unless (and (not dedent)(not (eq this-command last-command))(eq outmost (current-indentation)))
@@ -681,7 +681,7 @@ arg MODE: which buffer-mode used in edit-buffer"
 	(insert editstrg)
 	(when suffix (insert suffix))
 	(funcall mode)
-	(local-set-key [(control c) (control c)] 'py--write-edit)
+	(local-set-key [(control c) (control c)] (quote py--write-edit))
 	(goto-char relpos)
 	(message "%s" "Type C-c C-c writes contents back")))))
 

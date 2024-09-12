@@ -30,49 +30,49 @@
 
 Return position if block found, nil otherwise."
   (interactive)
-  (py-down-base 'py-block-re indent))
+  (py-down-base (quote py-block-re) indent))
 
 (defun py-down-class (&optional indent)
   "Go to the beginning of next class downwards according to INDENT.
 
 Return position if class found, nil otherwise."
   (interactive)
-  (py-down-base 'py-class-re indent))
+  (py-down-base (quote py-class-re) indent))
 
 (defun py-down-clause (&optional indent)
   "Go to the beginning of next clause downwards according to INDENT.
 
 Return position if clause found, nil otherwise."
   (interactive)
-  (py-down-base 'py-clause-re indent))
+  (py-down-base (quote py-clause-re) indent))
 
 (defun py-down-block-or-clause (&optional indent)
   "Go to the beginning of next block-or-clause downwards according to INDENT.
 
 Return position if block-or-clause found, nil otherwise."
   (interactive)
-  (py-down-base 'py-block-or-clause-re indent))
+  (py-down-base (quote py-block-or-clause-re) indent))
 
 (defun py-down-def (&optional indent)
   "Go to the beginning of next def downwards according to INDENT.
 
 Return position if def found, nil otherwise."
   (interactive)
-  (py-down-base 'py-def-re indent))
+  (py-down-base (quote py-def-re) indent))
 
 (defun py-down-def-or-class (&optional indent)
   "Go to the beginning of next def-or-class downwards according to INDENT.
 
 Return position if def-or-class found, nil otherwise."
   (interactive)
-  (py-down-base 'py-def-or-class-re indent))
+  (py-down-base (quote py-def-or-class-re) indent))
 
 (defun py-down-minor-block (&optional indent)
   "Go to the beginning of next minor-block downwards according to INDENT.
 
 Return position if minor-block found, nil otherwise."
   (interactive)
-  (py-down-base 'py-minor-block-re indent))
+  (py-down-base (quote py-minor-block-re) indent))
 
 (defun py-down-block-bol (&optional indent)
   "Go to the beginning of next block below according to INDENT.
@@ -81,7 +81,7 @@ Go to beginning of line
 Optional INDENT: honor indentation
 Return position if block found, nil otherwise "
   (interactive)
-  (py-down-base 'py-block-re indent t)
+  (py-down-base (quote py-block-re) indent t)
   (progn (beginning-of-line)(point)))
 
 (defun py-down-class-bol (&optional indent)
@@ -91,7 +91,7 @@ Go to beginning of line
 Optional INDENT: honor indentation
 Return position if class found, nil otherwise "
   (interactive)
-  (py-down-base 'py-class-re indent t)
+  (py-down-base (quote py-class-re) indent t)
   (progn (beginning-of-line)(point)))
 
 (defun py-down-clause-bol (&optional indent)
@@ -101,7 +101,7 @@ Go to beginning of line
 Optional INDENT: honor indentation
 Return position if clause found, nil otherwise "
   (interactive)
-  (py-down-base 'py-clause-re indent t)
+  (py-down-base (quote py-clause-re) indent t)
   (progn (beginning-of-line)(point)))
 
 (defun py-down-block-or-clause-bol (&optional indent)
@@ -111,7 +111,7 @@ Go to beginning of line
 Optional INDENT: honor indentation
 Return position if block-or-clause found, nil otherwise "
   (interactive)
-  (py-down-base 'py-block-or-clause-re indent t)
+  (py-down-base (quote py-block-or-clause-re) indent t)
   (progn (beginning-of-line)(point)))
 
 (defun py-down-def-bol (&optional indent)
@@ -121,7 +121,7 @@ Go to beginning of line
 Optional INDENT: honor indentation
 Return position if def found, nil otherwise "
   (interactive)
-  (py-down-base 'py-def-re indent t)
+  (py-down-base (quote py-def-re) indent t)
   (progn (beginning-of-line)(point)))
 
 (defun py-down-def-or-class-bol (&optional indent)
@@ -131,7 +131,7 @@ Go to beginning of line
 Optional INDENT: honor indentation
 Return position if def-or-class found, nil otherwise "
   (interactive)
-  (py-down-base 'py-def-or-class-re indent t)
+  (py-down-base (quote py-def-or-class-re) indent t)
   (progn (beginning-of-line)(point)))
 
 (defun py-down-minor-block-bol (&optional indent)
@@ -141,7 +141,7 @@ Go to beginning of line
 Optional INDENT: honor indentation
 Return position if minor-block found, nil otherwise "
   (interactive)
-  (py-down-base 'py-minor-block-re indent t)
+  (py-down-base (quote py-minor-block-re) indent t)
   (progn (beginning-of-line)(point)))
 
 ;; python-components-down.el ends here

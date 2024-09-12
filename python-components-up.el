@@ -30,49 +30,49 @@
 
 Return position if block found, nil otherwise."
   (interactive)
-  (py-up-base 'py-block-re))
+  (py-up-base (quote py-block-re)))
 
 (defun py-up-class ()
   "Go to the beginning of next class upwards.
 
 Return position if class found, nil otherwise."
   (interactive)
-  (py-up-base 'py-class-re))
+  (py-up-base (quote py-class-re)))
 
 (defun py-up-clause ()
   "Go to the beginning of next clause upwards.
 
 Return position if clause found, nil otherwise."
   (interactive)
-  (py-up-base 'py-clause-re))
+  (py-up-base (quote py-clause-re)))
 
 (defun py-up-block-or-clause ()
   "Go to the beginning of next block-or-clause upwards.
 
 Return position if block-or-clause found, nil otherwise."
   (interactive)
-  (py-up-base 'py-block-or-clause-re))
+  (py-up-base (quote py-block-or-clause-re)))
 
 (defun py-up-def ()
   "Go to the beginning of next def upwards.
 
 Return position if def found, nil otherwise."
   (interactive)
-  (py-up-base 'py-def-re))
+  (py-up-base (quote py-def-re)))
 
 (defun py-up-def-or-class ()
   "Go to the beginning of next def-or-class upwards.
 
 Return position if def-or-class found, nil otherwise."
   (interactive)
-  (py-up-base 'py-def-or-class-re))
+  (py-up-base (quote py-def-or-class-re)))
 
 (defun py-up-minor-block ()
   "Go to the beginning of next minor-block upwards.
 
 Return position if minor-block found, nil otherwise."
   (interactive)
-  (py-up-base 'py-minor-block-re))
+  (py-up-base (quote py-minor-block-re)))
 
 (defun py-up-block-bol ()
   "Go to the beginning of next block upwards.
@@ -80,7 +80,7 @@ Return position if minor-block found, nil otherwise."
 Go to beginning of line.
 Return position if block found, nil otherwise."
   (interactive)
-  (and (py-up-base 'py-block-re)
+  (and (py-up-base (quote py-block-re))
     (progn (beginning-of-line)(point))))
 
 (defun py-up-class-bol ()
@@ -89,7 +89,7 @@ Return position if block found, nil otherwise."
 Go to beginning of line.
 Return position if class found, nil otherwise."
   (interactive)
-  (and (py-up-base 'py-class-re)
+  (and (py-up-base (quote py-class-re))
     (progn (beginning-of-line)(point))))
 
 (defun py-up-clause-bol ()
@@ -98,7 +98,7 @@ Return position if class found, nil otherwise."
 Go to beginning of line.
 Return position if clause found, nil otherwise."
   (interactive)
-  (and (py-up-base 'py-clause-re)
+  (and (py-up-base (quote py-clause-re))
     (progn (beginning-of-line)(point))))
 
 (defun py-up-block-or-clause-bol ()
@@ -107,7 +107,7 @@ Return position if clause found, nil otherwise."
 Go to beginning of line.
 Return position if block-or-clause found, nil otherwise."
   (interactive)
-  (and (py-up-base 'py-block-or-clause-re)
+  (and (py-up-base (quote py-block-or-clause-re))
     (progn (beginning-of-line)(point))))
 
 (defun py-up-def-bol ()
@@ -116,7 +116,7 @@ Return position if block-or-clause found, nil otherwise."
 Go to beginning of line.
 Return position if def found, nil otherwise."
   (interactive)
-  (and (py-up-base 'py-def-re)
+  (and (py-up-base (quote py-def-re))
     (progn (beginning-of-line)(point))))
 
 (defun py-up-def-or-class-bol ()
@@ -125,7 +125,7 @@ Return position if def found, nil otherwise."
 Go to beginning of line.
 Return position if def-or-class found, nil otherwise."
   (interactive)
-  (and (py-up-base 'py-def-or-class-re)
+  (and (py-up-base (quote py-def-or-class-re))
     (progn (beginning-of-line)(point))))
 
 (defun py-up-minor-block-bol ()
@@ -134,7 +134,7 @@ Return position if def-or-class found, nil otherwise."
 Go to beginning of line.
 Return position if minor-block found, nil otherwise."
   (interactive)
-  (and (py-up-base 'py-minor-block-re)
+  (and (py-up-base (quote py-minor-block-re))
     (progn (beginning-of-line)(point))))
 
 ;; python-components-up.el ends here

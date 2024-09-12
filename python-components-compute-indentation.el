@@ -312,18 +312,18 @@ LIEP stores line-end-position at point-of-interest
                          (eq liep (line-end-position)))
 		    (cond
                      ((looking-at py-case-re)
-                      (and (py--backward-regexp 'py-match-case-re nil '>)
+                      (and (py--backward-regexp (quote py-match-case-re) nil '>)
                                            (+ (current-indentation) py-indent-offset)
                                            ))
                      ((looking-at py-minor-clause-re)
-		      (and (py--backward-regexp 'py-block-or-clause-re
+		      (and (py--backward-regexp (quote py-block-or-clause-re)
                       ;; an arbitray number, larger than an real expected indent
                       (* 99 py-indent-offset)
                       '<)
                            (current-indentation)))
 
                      ((looking-at py-outdent-re)
-		      (and (py--backward-regexp 'py-block-or-clause-re
+		      (and (py--backward-regexp (quote py-block-or-clause-re)
                       ;; an arbitray number, larger than an real expected indent
                       (* 99 py-indent-offset)
                       '<)))
@@ -331,7 +331,7 @@ LIEP stores line-end-position at point-of-interest
 		     (t (save-excursion
 			  ;; (skip-chars-backward " \t\r\n\f")
 			  (if (py-backward-block)
-			      ;; (py--backward-regexp 'py-block-or-clause-re)
+			      ;; (py--backward-regexp (quote py-block-or-clause-re))
 			      (+ py-indent-offset (current-indentation))
 			    0)))))
 		   ((looking-at py-extended-block-or-clause-re)
@@ -386,7 +386,7 @@ LIEP stores line-end-position at point-of-interest
 		   ((and (eq liep (line-end-position))
                          (save-excursion
 			   (and
-                            (py--go-to-keyword 'py-extended-block-or-clause-re nil (* py-indent-offset 99))
+                            (py--go-to-keyword (quote py-extended-block-or-clause-re) nil (* py-indent-offset 99))
                             (if (looking-at (concat py-block-re "\\|" py-outdent-re))
 		                (+ (current-indentation)
                                    (if py-smart-indentation

@@ -36,7 +36,7 @@ If already at beginning, go one `block' backward.
 Return position if successful, nil otherwise"
   (interactive)
   (let (erg)
-    (setq erg (py--go-to-keyword 'py-block-re '<))
+    (setq erg (py--go-to-keyword (quote py-block-re) (quote <)))
     (when py-mark-decorators
       (and (py-backward-decorator) (setq erg (point))))
     erg))
@@ -48,7 +48,7 @@ If already at beginning, go one `class' backward.
 Return position if successful, nil otherwise"
   (interactive)
   (let (erg)
-    (setq erg (py--go-to-keyword 'py-class-re '<))
+    (setq erg (py--go-to-keyword (quote py-class-re) '<))
     (when py-mark-decorators
       (and (py-backward-decorator) (setq erg (point))))
     erg))
@@ -60,7 +60,7 @@ If already at beginning, go one `def' backward.
 Return position if successful, nil otherwise"
   (interactive)
   (let (erg)
-    (setq erg (py--go-to-keyword 'py-def-re '<))
+    (setq erg (py--go-to-keyword (quote py-def-re) '<))
     (when py-mark-decorators
       (and (py-backward-decorator) (setq erg (point))))
     erg))
@@ -72,7 +72,7 @@ If already at beginning, go one `def-or-class' backward.
 Return position if successful, nil otherwise"
   (interactive)
   (let (erg)
-    (setq erg (py--go-to-keyword 'py-def-or-class-re '<))
+    (setq erg (py--go-to-keyword (quote py-def-or-class-re) '<))
     (when py-mark-decorators
       (and (py-backward-decorator) (setq erg (point))))
     erg))
@@ -115,7 +115,7 @@ Return beginning of `def-or-class' if successful, nil otherwise"
 If already at beginning, go one `assignment' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-assignment-re '<))
+  (py--go-to-keyword (quote py-assignment-re) '<))
 
 (defun py-backward-block-or-clause ()
   "Go to beginning of `block-or-clause'.
@@ -123,7 +123,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `block-or-clause' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-block-or-clause-re '<))
+  (py--go-to-keyword (quote py-block-or-clause-re) '<))
 
 (defun py-backward-clause ()
   "Go to beginning of `clause'.
@@ -131,7 +131,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `clause' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-clause-re '<))
+  (py--go-to-keyword (quote py-clause-re) '<))
 
 (defun py-backward-elif-block ()
   "Go to beginning of `elif-block'.
@@ -139,7 +139,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `elif-block' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-elif-re '<))
+  (py--go-to-keyword (quote py-elif-re) '<))
 
 (defun py-backward-else-block ()
   "Go to beginning of `else-block'.
@@ -147,7 +147,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `else-block' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-else-re '<))
+  (py--go-to-keyword (quote py-else-re) '<))
 
 (defun py-backward-except-block ()
   "Go to beginning of `except-block'.
@@ -155,7 +155,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `except-block' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-except-re '<))
+  (py--go-to-keyword (quote py-except-re) '<))
 
 (defun py-backward-for-block ()
   "Go to beginning of `for-block'.
@@ -163,7 +163,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `for-block' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-for-re '<))
+  (py--go-to-keyword (quote py-for-re) '<))
 
 (defun py-backward-if-block ()
   "Go to beginning of `if-block'.
@@ -171,7 +171,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `if-block' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-if-re '<))
+  (py--go-to-keyword (quote py-if-re) '<))
 
 (defun py-backward-minor-block ()
   "Go to beginning of `minor-block'.
@@ -179,7 +179,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `minor-block' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-minor-block-re '<))
+  (py--go-to-keyword (quote py-minor-block-re) '<))
 
 (defun py-backward-try-block ()
   "Go to beginning of `try-block'.
@@ -187,7 +187,7 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `try-block' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-try-re '<))
+  (py--go-to-keyword (quote py-try-re) '<))
 
 (defun py-backward-assignment-bol ()
   "Go to beginning of `assignment', go to BOL.

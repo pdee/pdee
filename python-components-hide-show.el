@@ -23,8 +23,8 @@
 
 ;;; Code:
 
-;; (setq hs-block-start-regexp 'py-extended-block-or-clause-re)
-;; (setq hs-forward-sexp-func 'py-forward-block)
+;; (setq hs-block-start-regexp (quote py-extended-block-or-clause-re))
+;; (setq hs-forward-sexp-func (quote py-forward-block))
 
 (defun py-hide-base (form &optional beg end)
   "Hide visibility of existing form at point."

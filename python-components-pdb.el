@@ -336,7 +336,7 @@ Returns the tracked buffer."
         ;; Fallback to a locally available copy of the file.
         (setq file-buffer (find-file-noselect file-name-prospect))))
       (when (not (member file-buffer py-pdbtrack-buffers-to-kill))
-        (add-to-list 'py-pdbtrack-buffers-to-kill file-buffer)))
+        (add-to-list (quote py-pdbtrack-buffers-to-kill) file-buffer)))
     file-buffer))
 
 (defun py-pdbtrack-toggle-stack-tracking (arg)
@@ -354,9 +354,9 @@ Returns the tracked buffer."
          (setq py-pdbtrack-do-tracking-p t)))
   ;; (if py-pdbtrack-do-tracking-p
   ;;     (progn
-  ;;       (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file)
+  ;;       (add-hook 'comint-output-filter-functions (quote py--pdbtrack-track-stack-file))
   ;;       (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file))
-  ;;   (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file)
+  ;;   (remove-hook 'comint-output-filter-functions (quote py--pdbtrack-track-stack-file))
   ;;   )
   (message "%sabled Python's pdbtrack"
            (if py-pdbtrack-do-tracking-p "En" "Dis")))
@@ -372,8 +372,8 @@ Returns the tracked buffer."
 
 
 (if pdb-track-stack-from-shell-p
-    (add-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file)
-  (remove-hook 'comint-output-filter-functions 'py--pdbtrack-track-stack-file))
+    (add-hook 'comint-output-filter-functions (quote py--pdbtrack-track-stack-file))
+  (remove-hook 'comint-output-filter-functions (quote py--pdbtrack-track-stack-file)))
 
 
 (defun py-pdbtrack-comint-output-filter-function (output)

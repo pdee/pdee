@@ -36,7 +36,7 @@ Returns value of ‘py-smart-indentation’ switched to."
           (setq py-smart-indentation t)
           (py-guess-indent-offset))
       (setq py-smart-indentation nil)
-      (setq py-indent-offset (default-value 'py-indent-offset)))
+      (setq py-indent-offset (default-value (quote py-indent-offset))))
     (when (called-interactively-p 'any) (message "py-smart-indentation: %s" py-smart-indentation))
     py-smart-indentation))
 
@@ -63,7 +63,7 @@ Returns value of ‘py-smart-indentation’."
 (defun py-toggle-sexp-function ()
   "Opens customization."
   (interactive)
-  (customize-variable 'py-sexp-function))
+  (customize-variable (quote py-sexp-function)))
 
 ;; Autopair mode
 ;; py-autopair-mode forms

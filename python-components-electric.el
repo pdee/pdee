@@ -114,7 +114,7 @@ string or comment."
   (if (and py-indent-comments py-electric-comment-p)
       (if (ignore-errors (eq 4 (car-safe arg)))
           (insert "#")
-        (when (and (eq last-command 'py-electric-comment)
+        (when (and (eq last-command (quote py-electric-comment))
                    (looking-back " " (line-beginning-position)))
           (forward-char -1))
         (if (called-interactively-p 'any)
@@ -331,12 +331,12 @@ Pass ARG to the command ‘yank’."
 ;;       the electric behaviours, not just the electric colon.
 
 ;; required for pending-del and delsel modes
-(put 'py-electric-colon 'delete-selection t) ;delsel
-(put 'py-electric-colon 'pending-delete t) ;pending-del
-(put 'py-electric-backspace 'delete-selection 'supersede) ;delsel
-(put 'py-electric-backspace 'pending-delete 'supersede) ;pending-del
-(put 'py-electric-delete 'delete-selection 'supersede) ;delsel
-(put 'py-electric-delete 'pending-delete 'supersede) ;pending-del
+(put (quote py-electric-colon) 'delete-selection t) ;delsel
+(put (quote py-electric-colon) 'pending-delete t) ;pending-del
+(put (quote py-electric-backspace) 'delete-selection 'supersede) ;delsel
+(put (quote py-electric-backspace) 'pending-delete 'supersede) ;pending-del
+(put (quote py-electric-delete) 'delete-selection 'supersede) ;delsel
+(put (quote py-electric-delete) 'pending-delete 'supersede) ;pending-del
 
 (provide 'python-components-electric)
 ;;; python-components-electric.el ends here

@@ -25,8 +25,8 @@ Prepared for version 6.3.2
 - ‘py-up’ as pythonic ‘backward-sexp’,
   ‘py-down’ as ‘forward-sexp’
    consider  
-   (define-key python-mode-map [(control meta f)] 'py-down)
-   (define-key python-mode-map [(control meta b)] 'py-up)
+   (define-key python-mode-map [(control meta f)] (quote py-down))
+   (define-key python-mode-map [(control meta b)] (quote py-up))
 
 - Customizable boolean ‘py-do-completion-p’ 
   permits disabling python-mode native completion.
@@ -1226,7 +1226,7 @@ New in version 6.0.2
 
   Also for existing commands a shorthand is defined:
 
-  (defalias 'py-statement 'py-copy-statement)
+  (defalias (quote py-statement) (quote py-copy-statement))
 
   which will mark, copy and return.
 
