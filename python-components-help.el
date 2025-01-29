@@ -209,7 +209,6 @@ If symbol is defined in current buffer, jump to it's definition"
 	      (py-symbol-at-point))))
     (and symbol (unless (string= "" symbol)
 		  (py--help-at-point-intern symbol orig))
-	 ;; (py--shell-manage-windows buffer exception-buffer split (or interactivep switch))
 	 )))
 
 (defun py--dump-help-string (str)

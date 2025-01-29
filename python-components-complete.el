@@ -19,6 +19,7 @@
   "Retrieve available completions for INPUT using PROCESS.
 Argument COMPLETION-CODE is the python code used to get
 completions on the current context."
+  (py-send-string-no-output py-shell-completion-setup-code process)
   (let ((erg
 	 (py-send-string-no-output (format completion-code input) process)))
     (if (and erg (> (length erg) 2))
@@ -203,12 +204,12 @@ completions on the current context."
 			 (list (replace-regexp-in-string "\n" "" (shell-command-to-string (concat "find / -maxdepth 1 -name " ausdruck))))))
          (imports (or imports (py-find-imports)))
          py-fontify-shell-buffer-p erg)
-    (cond (fast (py--fast-complete-base shell word imports))
+    (cond ;; (fast (py--fast-complete-base shell word imports))
 	  ((and in-string filenames)
 	   (when (setq erg (try-completion (concat "/" word) filenames))
 	     (delete-region beg end)
 	     (insert erg)))
-	  (t (py--complete-base shell word imports exception-buffer)))
+	  (t (py--complete-base (or shell (py-choose-shell))  word imports exception-buffer)))
     nil))
 
 (defun py-fast-complete (&optional shell word imports)
@@ -243,6 +244,7 @@ in (I)Python shell-modes ‘py-shell-complete’"
 	 (py-indent-region (region-beginning) (region-end)))
 	((or (bolp)
 	     (member (char-before) (list 9 10 12 13 32 ?: ?\) ?\] ?\}))
+             (eq (current-column) (current-indentation))
 	     (not (looking-at "[ \t]*$")))
 	 (py-indent-line))
         ;; (;; in comment
@@ -255,7 +257,8 @@ in (I)Python shell-modes ‘py-shell-complete’"
 	(py-do-completion-p
 	 (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘(completion-at-point)’"))
 	 ;; (py-fast-complete)
-	 (completion-at-point))))
+	 (completion-at-point)
+         (skip-chars-forward "^ \t\r\n\f") )))
 
 (provide 'python-components-complete)
 ;;; python-components-complete.el here

@@ -34,7 +34,10 @@
            (py-exception-buffer (current-buffer))
            (beg (unless filename
                   (prog1
-                      (or beg (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
+                      (or beg
+                          (and (bolp) (point))
+                          ;; (funcall
+                          ;;      (intern-soft (concat "py--beginning-of-" form "-p")))
                           (funcall (intern-soft (concat "py-backward-" form)))
                           (push-mark)))))
            (end (unless filename

@@ -317,12 +317,13 @@ may want to re-add custom functions to it using the
   (compilation-shell-minor-mode 1)
   (add-hook 'completion-at-point-functions
 	    #'py-shell-completion-at-point nil 'local)
-  (cond
-   ((string-match "^[Jj]" (process-name (get-buffer-process (current-buffer))))
-    'indent-for-tab-command)
-   (t
-    (define-key py-shell-mode-map "\t"
-		'py-indent-line)))
+  ;; (cond
+  ;;  ((string-match "^[Jj]" (process-name (get-buffer-process (current-buffer))))
+  ;;   'indent-for-tab-command)
+  ;;  (t
+  ;;   ;; (define-key py-shell-mode-map "\t"
+  ;;   ;;     	'py-indent-line)
+  ;;   ))
   (define-key py-shell-mode-map [(control c) (control r)] 'py-nav-last-prompt)
   (make-local-variable 'py-pdbtrack-buffers-to-kill)
   (make-local-variable 'py-shell-fast-last-output)

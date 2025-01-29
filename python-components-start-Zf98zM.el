@@ -1,6 +1,5 @@
 ;;; python-components-start-Zf98zM.el -- Searching downwards in buffer -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages
 
@@ -21,6 +20,28 @@
 
 ;;; Code:
 
+(defcustom py-mark-decorators nil
+  "If decorators should be marked too.
+
+Default is nil.
+
+Also used by navigation"
+  :type 'boolean
+  :tag "ar-mark-decorators")
+
+(defun py-escaped-p (&optional pos)
+    "Return t if char at POS is preceded by an odd number of backslashes. "
+    (save-excursion
+      (when pos (goto-char pos))
+      (< 0 (% (abs (skip-chars-backward "\\\\")) 2))))
+
+(defmacro py-current-line-backslashed-p ()
+  "Return t if current line is a backslashed continuation line."
+  `(save-excursion
+     (end-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (and (eq (char-before (point)) ?\\ )
+          (py-escaped-p))))
 
 (defun py--skip-to-comment-or-semicolon ()
   "Returns position if point was moved."
@@ -30,6 +51,13 @@
                        (and (nth 8 (parse-partial-sexp (point-min) (point))) (skip-chars-forward "#;" (line-end-position)))))))
     (and (< orig (point))(point))))
 
+(defun py--end-of-comment-intern (pos)
+  (while (and (not (eobp))
+              (forward-comment 99999)))
+  ;; forward-comment fails sometimes
+  (and (eq pos (point)) (prog1 (forward-line 1) (back-to-indentation))
+       (while (member (char-after) (list  (string-to-char comment-start) 10))(forward-line 1)(back-to-indentation))))
+
 (defun py-forward-statement (&optional orig done repeat)
   "Go to the last char of current statement.
 
@@ -37,6 +65,7 @@ ORIG - consider original position or point.
 DONE - transaktional argument
 REPEAT - count and consider repeats"
   (interactive)
+  (unless (eq major-mode 'python-mode) (py-navigate-update-vars major-mode))
   (unless (eobp)
     (let ((repeat (or (and repeat (1+ repeat)) 0))
 	  (orig (or orig (point)))
@@ -47,8 +76,12 @@ REPEAT - count and consider repeats"
       ;; (origline (or origline (py-count-lines)))
       (cond
        ;; which-function-mode, lp:1235375
+       ;; (re-search-forward "'ar-\\([[:alpha:]-]+" nil t 1)
        ((< py-max-specpdl-size repeat)
 	(error "forward-statement reached loops max. If no error, customize ‘max-specpdl-size’"))
+       ((looking-at (symbol-value (quote py-def-or-class-re)))
+        (end-of-line)
+        (skip-chars-backward " \t\r\n\f"))
        ;; list
        ((nth 1 pps)
 	(if (<= orig (point))
@@ -148,6 +181,7 @@ Optional MAXINDENT: don't stop if indentation is larger"
   (interactive)
   (save-restriction
     (unless (bobp)
+      (unless (eq major-mode 'python-mode) (py-navigate-update-vars major-mode))
       (let* ((repeat (or (and repeat (1+ repeat)) 0))
 	     (orig (or orig (point)))
              (pps (parse-partial-sexp (or limit (point-min))(point)))
@@ -159,7 +193,7 @@ Optional MAXINDENT: don't stop if indentation is larger"
  	       (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
 	 ((< py-max-specpdl-size repeat)
-	  (error "Py-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
+	  (error "py-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
          ((and (bolp) (eolp))
           (skip-chars-backward " \t\r\n\f")
           (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
@@ -168,7 +202,7 @@ Optional MAXINDENT: don't stop if indentation is larger"
 	  (setq done t)
 	  (goto-char (nth 8 pps))
 	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
-	 ((nth 4 pps)
+         ((nth 4 pps)
 	  (while (ignore-errors (goto-char (nth 8 pps)))
 	    (skip-chars-backward " \t\r\n\f")
 	    (setq pps (parse-partial-sexp (line-beginning-position) (point))))
@@ -183,6 +217,11 @@ Optional MAXINDENT: don't stop if indentation is larger"
           (back-to-indentation)
           (setq done t)
           (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
+         ((looking-at comment-start-skip)
+	  (setq done t)
+	  (forward-char -1)
+          (skip-chars-backward " \t\r\n\f")
+	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
 	 ;; at raw-string
 	 ;; (and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
 	 ((and (looking-at "\"\"\"\\|'''") (member (char-before) (list ?u ?U ?r ?R)))
@@ -267,7 +306,6 @@ Return position if statement found, nil otherwise."
   (if (py--beginning-of-statement-p)
       (py-backward-statement)
     (progn (and (py-backward-statement) (py-backward-statement)))))
-
 
 (defun py--end-of-statement-p ()
   "Return position, if cursor is at the end of a statement, nil otherwise."
@@ -436,14 +474,15 @@ Optional IGNOREINDENT: find next keyword at any indentation"
            erg)
       (unless (py-beginning-of-statement-p)
 	(py-backward-statement))
-      (when (looking-at py-block-closing-keywords-re)
+      (when (and (not (string= "" py-block-closing-keywords-re))(looking-at py-block-closing-keywords-re))
         (setq maxindent (min maxindent (- (current-indentation) py-indent-offset))))
       (cond
        ((and (looking-at regexpvalue)(< (point) orig))
         (setq erg (point)))
         (t (while
               (not (or (bobp) (and (looking-at regexpvalue)(< (point) orig) (not (nth 8 (parse-partial-sexp (point-min) (point)))))))
-              (setq erg (py--backward-regexp allvalue maxindent
+             ;; search backward and reduce maxindent, if non-matching forms suggest it
+              (setq erg (py--backward-regexp regexp maxindent
                                          (or condition '<=)
                                          orig regexpvalue)))))
       erg)))
@@ -532,9 +571,10 @@ Arg REGEXP, a symbol"
 	       (repeat (if repeat (1+ repeat) 0))
 	       (indent (if
 			   (looking-at regexpvalue)
-			   (if (bolp) 0
-			     (abs
-			      (- (current-indentation) py-indent-offset)))
+                           (current-indentation)
+			   ;; (if (bolp) 0
+			   ;;   (abs
+			   ;;    (- (current-indentation) py-indent-offset)))
 			 (current-indentation)))
                (secondvalue (py--end-base-determine-secondvalue regexp))
 	       ;; when at block-start, be specific
@@ -605,7 +645,6 @@ Arg REGEXP, a symbol"
 		 (goto-char orig)
 		 (when (py--down-according-to-indent regexp secondvalue nil t)
 		   (py--end-base regexp (point) bol (1+ repeat))))))))))
-
 
 ;; python-components-start-Zf98zM.el ends here
 (provide 'python-components-start-Zf98zM)

@@ -269,5 +269,5 @@ Return beginning of `try-block' if successful, nil otherwise"
   (and (py-backward-try-block)
        (progn (beginning-of-line)(point))))
 
-(provide 'python-components-backward-forms)
+(provide (quote python-components-backward-forms))
 ;;; python-components-backward-forms.el ends here

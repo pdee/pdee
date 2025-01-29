@@ -6746,13 +6746,13 @@ class CFG(object):
   (py-test-with-temp-buffer
   "def foo():
     def bar():
-        
+
         pass
    "
   (goto-char (point-max))
   (search-backward "pass")
   (forward-line -1)
-  (end-of-line) 
+  (end-of-line)
   (py-backward-def)
   (should (looking-at "def bar():"))))
 
@@ -7154,6 +7154,31 @@ for file in a:
     (skip-chars-backward " \t\r\n\f")
     (py-backward-top-level)
     (should (eq (char-after) ?f))))
+
+(ert-deftest py-backward-statement-test-9AmhhG ()
+  (py-test-with-temp-buffer
+"def fromstring(cls, input, encoding=None):
+    \"\"\"
+    Return the grammar instance corresponding to the input string(s).
+
+    :param input: a grammar, either in the form of a string or as a list of strings.
+    \"\"\"
+    start, productions = read_grammar(
+        input, standard_nonterm_parser, encoding=encoding
+    )
+    return cls(start, productions)
+"
+    (goto-char (point-max))
+    (search-backward "start")
+    (py-backward-statement)
+    (should (eq (char-after) ?r))
+    (search-backward "start")
+    (py-backward-statement)
+    (forward-line -1)
+    (back-to-indentation) 
+    (should (eq (char-after) ?d))
+    ))
+
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

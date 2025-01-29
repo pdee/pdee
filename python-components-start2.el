@@ -66,6 +66,7 @@ Avoid empty lines at the beginning."
 	erg)
     (with-temp-buffer
       (with-current-buffer (current-buffer)
+        (python-mode)
 	(when py-debug-p
 	  (switch-to-buffer (current-buffer)))
 	;; (python-mode)

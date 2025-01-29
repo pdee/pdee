@@ -34,17 +34,27 @@
 (ert-deftest py-ert-moves-up-execute-statement-test-RdqUKX ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-statement-test\")"
-    (if (executable-find "python2")
-        (progn
-          (goto-char (point-min))
-          (let ((py-shell-name "python2"))
-            (py-execute-statement)
-            (sit-for 0.1)
-            (set-buffer (get-buffer "*Python2*"))
-            (goto-char (point-max))
-            (and (should (search-backward "py-execute-statement-test" nil t 1))
-	         (py-kill-buffer-unconditional (current-buffer)))))
-      (when py-debug-p (message "py-ert-moves-up-execute-statement-test-RdqUKX: %s" "Can't see python2")))))
+    (cond ((executable-find "python2")
+           (progn
+             (goto-char (point-min))
+             (let ((py-shell-name "python2"))
+               (py-execute-statement)
+               (sit-for 0.1)
+               (set-buffer (get-buffer "*Python2*"))
+               (goto-char (point-max))
+               (and (should (search-backward "py-execute-statement-test" nil t 1))
+	            (py-kill-buffer-unconditional (current-buffer))))))
+          ((executable-find "python3")
+           (progn
+             (goto-char (point-min))
+             (let ((py-shell-name "python3"))
+               (py-execute-statement)
+               (sit-for 0.1)
+               (set-buffer (get-buffer "*Python3*"))
+               (goto-char (point-max))
+               (and (should (search-backward "py-execute-statement-test" nil t 1))
+	            (py-kill-buffer-unconditional (current-buffer)))))))
+    (when py-debug-p (message "py-ert-moves-up-execute-statement-test-RdqUKX: %s" "Can't see python2"))))
 
 ;; (ert-deftest py-complete-in-python3-shell-test-JtNakZ ()
 ;;   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
@@ -67,7 +77,7 @@ print(u'\\xA9')"
       (py-execute-buffer)
       ;; (setq erg (car (read-from-string py-result)))
       ;; (message "UnicodeEncodeError-lp-550661-test-1 erg: %s" erg)
-      (sit-for 0.1) 
+      (sit-for 0.1)
       (should (string= "©" py-result)))))
 
 (ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2 ()
@@ -1355,6 +1365,15 @@ def baz():
     (set-buffer "*Python3 Fast*")
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
     (when py-debug-p (switch-to-buffer "*Python3 Fast*"))
+    (should (eq 1 (point-max)))))
+
+(ert-deftest py-send-string-no-output-VxbcvH ()
+  (py-test-with-temp-buffer
+      "print(234)"
+    (py-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
+    (set-buffer "*Python3*")
+    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+    (when py-debug-p (switch-to-buffer output-buffer))
     (should (eq 1 (point-max)))))
 
 (ert-deftest py-pdbtrack-test-H6CpKY ()

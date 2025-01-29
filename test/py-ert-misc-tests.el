@@ -21,31 +21,6 @@
 
 (require 'py-setup-ert-tests)
 
-;;;
-
-;; (ert-deftest py-ert-if-name-main-permission-lp-326620-test-CZefpG ()
-;;   (py-test-with-temp-buffer-point-min
-;;    "#! /usr/bin/env python2
-;; # -*- coding: utf-8 -*-
-;; def py_if_name_main_permission_test():
-;;     if __name__ == \"__main__\" :
-;;         print(\"__name__ == '__main__' run\")
-;;         return True
-
-;;     else:
-;;         print(\"__name__ == '__main__' supressed\")
-;;         return False
-
-;; py_if_name_main_permission_test()
-;; "
-;;    (goto-char (point-min))
-;;    (let ((py-if-name-main-permission-p t))
-;;      (py-execute-buffer-python2)
-;;      (set-buffer "*Python2*")
-;;      (goto-char (point-max))
-;;      (sit-for 0.1)
-;;      (should (search-backward "run" nil t)))))
-
 (ert-deftest py-ert-borks-all-lp-1294820-sIKMyz ()
   (py-test-with-temp-buffer-point-min
       "# M-q within some code (not in= a docstring) completely borks all previous

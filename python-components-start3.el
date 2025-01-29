@@ -428,8 +428,9 @@ START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
     (setq py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
 			       (py--choose-buffer-name shell dedicated fast)))
     (py--execute-base-intern strg filename proc wholebuf py-output-buffer origline execute-directory start end fast)
-    (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
-      (py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch))))
+    ;; (when (or split py-split-window-on-execute py-switch-buffers-on-execute-p)
+    ;;   (py--shell-manage-windows py-output-buffer exception-buffer (or split py-split-window-on-execute) switch))
+    ))
 
 (provide 'python-components-start3)
 ;;; python-components-start3.el ends here

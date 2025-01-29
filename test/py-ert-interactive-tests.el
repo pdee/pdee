@@ -111,11 +111,13 @@ def foo():
 (ert-deftest py-ert-execute-line-test-jU3Xgu ()
   (py-test-with-temp-buffer-point-min
       "print(\"I'm the py-execute-line-test\")"
-    (let ((py-shell-name "python"))
+    (let ((py-shell-name (or
+                          (executable-find "python")
+                          (executable-find "python3"))))
       (sit-for 0.1 t)
       (py-execute-line)
+      (set-buffer           py-output-buffer)
       (sit-for 0.1 t)
-      (when py-debug-p (switch-to-buffer (current-buffer)) )
       (and (should
 	    (or
 	     (search-backward "py-execute-line-test" nil t 1)
