@@ -3723,7 +3723,8 @@ Return nil, if no executable found."
   (or shell
       (let* (done
 	     (erg
-	      (cond (py-shell-name)
+	      (cond ((and py-shell-name (executable-find py-shell-name))
+                     py-shell-name)
                     (py-force-py-shell-name-p
 		     (default-value 'py-shell-name))
 		    (py-use-local-default
@@ -3739,7 +3740,7 @@ Return nil, if no executable found."
 		    ((py--choose-shell-by-import))
 		    ((py-choose-shell-by-path))
 		    (t (or
-			py-python-command
+                        (and py-python-command (executable-find py-python-command) py-python-command)
 			"python3"))))
 	     (cmd (if (or
 		       ;; comint-check-proc was succesful
@@ -4503,16 +4504,6 @@ Return and move to match-beginning if successful"
   (while
       (or (< 0 (abs (skip-chars-backward " \t\r\n\f")))
 	  (py-backward-comment))))
-
-;; (defun py-kill-buffer-unconditional (buffer)
-;;   "Kill buffer unconditional, kill buffer-process if existing. "
-;;   (interactive
-;;    (list (current-buffer)))
-;;   (ignore-errors (with-current-buffer buffer
-;;     (let (kill-buffer-query-functions)
-;;       (set-buffer-modified-p nil)
-;;       (ignore-errors (kill-process (get-buffer-process buffer)))
-;;       (kill-buffer buffer)))))
 
 (defun py--down-end-form ()
   "Return position."
@@ -5328,13 +5319,9 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
   (save-excursion
     (let* ((buffer (or output-buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell argprompt args dedicated shell output-buffer fast exception-buffer split switch internal)))))
 	   (proc (or process (get-buffer-process buffer)))
-	   ;; nil nil nil nil (buffer-name buffer))))
 	   (orig (or orig (point)))
-   	   (limit (ignore-errors (marker-position (process-mark proc))))
-           ;; (window-configuration-to-register (- py--windows-config-register 1)))
-           )
+   	   (limit (ignore-errors (marker-position (process-mark proc)))))
       (unless (eq 1 (length (window-list))) (window-configuration-to-register py--windows-config-register))
-      ;; (windows-config-register (list (current-window-configuration) (point-marker))))
       (cond ((and no-output fast)
 	     (py--fast-send-string-no-output-intern strg proc limit buffer no-output))
 	    (no-output
@@ -5347,32 +5334,20 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 		    (file-name (or (buffer-file-name) temp-file-name)))
 	       (py-execute-file file-name proc)))
 	    (t
-             ;; (with-current-buffer buffer
-             (setq windows-config-register (list (current-window-configuration) (point-marker)))
 	     (comint-send-string proc strg)
 	     (when (or (not (string-match "\n\\'" strg))
 		       (string-match "\n[ \t].*\n?\\'" strg))
 	       (comint-send-string proc "\n"))
 	     (sit-for py-python-send-delay)
-             ;; (register-val-jump-to windows-config-register nil)
 	     (cond (result
 		    (setq py-result
 			  (py--fetch-result buffer limit strg)))
 		   (no-output
-		    (and orig (py--cleanup-shell orig buffer))))
-             ;; )
-             ))
-      ;; )
-      ;; (let ((val (get-register register)))
-      ;; (register-val-jump-to val delete)))
-      (if  (eq 1 (length (window-list)))
+		    (and orig (py--cleanup-shell orig buffer))))))
+      (if (eq 1 (length (window-list)))
           (py--shell-manage-windows buffer)
-          (jump-to-register (get-register py--windows-config-register)))
-      ;; (jump-to-register (get-register windows-config-register) nil)
-      ;; (register-val-jump-to windows-config-register nil)
-      ;; (register-val-jump-to windows-config-register nil)
-      ;; (jump-to-register window-configuration-to-register)
-      )))
+        (when (get-register py--windows-config-register)
+          (jump-to-register (get-register py--windows-config-register)))))))
 
 (defun py--shell-manage-windows (output-buffer &optional exception-buffer split switch)
   "Adapt or restore window configuration from OUTPUT-BUFFER.
@@ -5428,7 +5403,6 @@ Return nil."
       (unless
 	  (member (get-buffer-window output-buffer) (window-list))
 	(py--manage-windows-split exception-buffer))
-      ;; Fixme: otherwise new window appears above
       (save-excursion
 	(other-window 1)
 	(pop-to-buffer output-buffer)
@@ -5445,21 +5419,14 @@ Return nil."
       (unless
 	  (member (get-buffer-window output-buffer) (window-list))
 	(py--manage-windows-split exception-buffer))
-      ;; Fixme: otherwise new window appears above
-      ;; (save-excursion
-      ;; (other-window 1)
-      ;; (pop-to-buffer output-buffer)
-      ;; [Bug 1579309] python buffer window on top when using python3
       (set-buffer output-buffer)
       (switch-to-buffer output-buffer)
-      (goto-char (point-max))
-      ;; (other-window 1)
-      )
+      (goto-char (point-max)))
      ((not switch)
       (let (pop-up-windows)
 	(py-restore-window-configuration))))))
 
-(defun py--execute-file-base (filename &optional proc cmd procbuf origline fast interactivep)
+(defun py--execute-file-base (filename &optional proc cmd procbuf origline fast)
   "Send to Python interpreter process PROC.
 
 In Python version 2.. \"execfile('FILENAME')\".
@@ -5479,25 +5446,22 @@ Returns position where output starts."
     (if fast
 	(process-send-string proc cmd)
       (py-execute-string cmd proc))
-    ;; (message "%s" (current-buffer))
     (with-current-buffer buffer
       (when (or py-return-result-p py-store-result-p)
 	(setq erg (py--postprocess buffer origline limit cmd filename))
 	(if py-error
 	    (setq py-error (prin1-to-string py-error))
-	  erg)))
-    (when (or interactivep
-	      (or py-switch-buffers-on-execute-p py-split-window-on-execute))
-      ;; (py--shell-manage-windows buffer (find-file-noselect filename) py-split-window-on-execute py-switch-buffers-on-execute-p)
-      )))
+	  erg)))))
 
 (defun py-restore-window-configuration (&optional register)
   "Restore ‘py-restore-window-configuration’."
   (let ((val register))
     (if val
         (jump-to-register (get-register val))
-      (and (setq val (get-register py--windows-config-register) (consp val) (window-configuration-p (car val))(markerp (cadr val))(marker-buffer (cadr val))
-	         (jump-to-register py--windows-config-register))))))
+      (and (setq val (get-register py--windows-config-register))
+           (consp val) (window-configuration-p (car val))
+           (markerp (cadr val))(marker-buffer (cadr val))
+	   (jump-to-register py--windows-config-register)))))
 
 (defun py-toggle-split-window-function ()
   "If window is splitted vertically or horizontally.
@@ -5568,8 +5532,6 @@ according to ‘py-split-windows-on-execute-function’."
       (display-buffer output-buffer t)
       (switch-to-buffer exception-buffer)
       )))
-
-
 
 (defun py-execute-file (filename &optional proc)
   "When called interactively, user is prompted for FILENAME."
@@ -5821,6 +5783,22 @@ process buffer for a list of commands.)"
 	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
 	  buffer)
       (error (concat "py-shell:" (py--fetch-error py-output-buffer))))))
+
+(defun py-kill-buffer-unconditional (&optional buffer)
+  "Kill buffer unconditional, kill buffer-process if existing."
+  (interactive
+   (list (current-buffer)))
+  (let ((buffer (or (and (bufferp buffer) buffer)
+		    (get-buffer (current-buffer))))
+	proc kill-buffer-query-functions)
+    (if (buffer-live-p buffer)
+        (progn
+          (setq proc (get-buffer-process buffer))
+          (and proc (kill-process proc))
+          (set-buffer buffer)
+          (set-buffer-modified-p 'nil)
+          (kill-buffer (current-buffer)))
+      (message "Can't see a buffer %s" buffer))))
 
 (provide 'python-components-start1)
 ;;; python-components-start1.el ends here

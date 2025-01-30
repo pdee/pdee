@@ -540,15 +540,15 @@ These would interfere when inserting forms heading a block"
             (read-abbrev-file abbrev-file-name))
       (kill-buffer (file-name-nondirectory abbrev-file-name)))))
 
-(defmacro py--kill-buffer-unconditional (buffer)
-  "Kill buffer unconditional, kill buffer-process if existing. "
-  `(let ((proc (get-buffer-process ,buffer))
-         kill-buffer-query-functions)
-     (ignore-errors
-       (and proc (kill-process proc))
-       (set-buffer ,buffer)
-       (set-buffer-modified-p 'nil)
-       (kill-buffer (current-buffer)))))
+;; (defmacro py-kill-buffer-unconditional (buffer)
+;;   "Kill buffer unconditional, kill buffer-process if existing. "
+;;   `(let ((proc (get-buffer-process ,buffer))
+;;          kill-buffer-query-functions)
+;;      (ignore-errors
+;;        (and proc (kill-process proc))
+;;        (set-buffer ,buffer)
+;;        (set-buffer-modified-p 'nil)
+;;        (kill-buffer (current-buffer)))))
 
 (defun py-down-top-level ()
   "Go to beginning of next top-level form downward.
@@ -944,22 +944,6 @@ Returns imports"
     ;; (setq imports (replace-regexp-in-string ";$" "" imports)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" imports))
     imports))
-
-(defun py-kill-buffer-unconditional (&optional buffer)
-  "Kill buffer unconditional, kill buffer-process if existing."
-  (interactive
-   (list (current-buffer)))
-  (let ((buffer (or (and (bufferp buffer) buffer)
-		    (get-buffer (current-buffer))))
-	proc kill-buffer-query-functions)
-    (if (buffer-live-p buffer)
-        (progn
-          (setq proc (get-buffer-process buffer))
-          (and proc (kill-process proc))
-          (set-buffer buffer)
-          (set-buffer-modified-p 'nil)
-          (kill-buffer (current-buffer)))
-      (message "Can't see a buffer %s" buffer))))
 
 (provide 'python-components-intern)
  ;;;  python-components-intern.el ends here

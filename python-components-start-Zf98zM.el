@@ -65,7 +65,6 @@ ORIG - consider original position or point.
 DONE - transaktional argument
 REPEAT - count and consider repeats"
   (interactive)
-  (unless (eq major-mode 'python-mode) (py-navigate-update-vars major-mode))
   (unless (eobp)
     (let ((repeat (or (and repeat (1+ repeat)) 0))
 	  (orig (or orig (point)))
@@ -181,7 +180,6 @@ Optional MAXINDENT: don't stop if indentation is larger"
   (interactive)
   (save-restriction
     (unless (bobp)
-      (unless (eq major-mode 'python-mode) (py-navigate-update-vars major-mode))
       (let* ((repeat (or (and repeat (1+ repeat)) 0))
 	     (orig (or orig (point)))
              (pps (parse-partial-sexp (or limit (point-min))(point)))
@@ -193,7 +191,7 @@ Optional MAXINDENT: don't stop if indentation is larger"
  	       (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
 	 ((< py-max-specpdl-size repeat)
-	  (error "py-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
+	  (error "ar-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
          ((and (bolp) (eolp))
           (skip-chars-backward " \t\r\n\f")
           (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))

@@ -136,12 +136,12 @@ Kill buffer and its process.
 Receives a ‘buffer-name’ as argument"
   (interactive)
   (let ((shell (or shell (py-shell))))
-    (ignore-errors (py--kill-buffer-unconditional shell))))
+    (ignore-errors (py-kill-buffer-unconditional shell))))
 
 (defun py-kill-default-shell-unconditional ()
   "Kill buffer \"\*Python\*\" and its process."
   (interactive)
-  (ignore-errors (py--kill-buffer-unconditional "*Python*")))
+  (ignore-errors (py-kill-buffer-unconditional "*Python*")))
 
 (defun py--report-executable (buffer)
   (let ((erg (downcase (replace-regexp-in-string

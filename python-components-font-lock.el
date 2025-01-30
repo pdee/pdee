@@ -260,6 +260,7 @@ sign in chained assignment."
                   (group assignment-operator)))
      (1 py-variable-name-face)
      (2 'font-lock-operator-face))
+    ("\\([a-zA-Z_][a-zA-Z0-9_]*\\)\\\s-*=[^=]" 1 'py-variable-name-face)
     ;; https://emacs.stackexchange.com/questions/55184/
     ;; how-to-highlight-in-different-colors-for-variables-inside-fstring-on-python-mo
     ;;

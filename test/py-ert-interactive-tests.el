@@ -44,8 +44,8 @@ def foo():
 
 (ert-deftest py-ert-imports-in-interactive-shell-lp-1290709-lZvVlc ()
   ""
-  (when (buffer-live-p (get-buffer "*Python*")) (kill-buffer-unconditional (get-buffer "*Python*")))
-  (when (buffer-live-p (get-buffer "*Python3*")) (kill-buffer-unconditional (get-buffer "*Python3*")))
+  (when (buffer-live-p (get-buffer "*Python*")) (py-kill-buffer-unconditional (get-buffer "*Python*")))
+  (when (buffer-live-p (get-buffer "*Python3*")) (py-kill-buffer-unconditional (get-buffer "*Python3*")))
   (let ((buffer (py-shell nil nil "python")))
     (set-buffer buffer)
     (delete-other-windows)
@@ -398,7 +398,7 @@ exercise()"
     (message "prompt-45: %s" (buffer-name (current-buffer)))
     (message "Nach Prompt: %s" (buffer-substring-no-properties (1- (line-beginning-position)) (point)))
     (sit-for 1)
-    (should (looking-back pdbtrack-input-prompt (line-beginning-position)))))
+    (should (looking-back py-pdbtrack-input-prompt (line-beginning-position)))))
 
 (ert-deftest py-pdbtrack-is-tracking-45-test-N1CTvI ()
   (py-test-with-temp-buffer
@@ -605,8 +605,9 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 
 (ert-deftest py-shell-test-t3Sizn ()
   (let ((buffer (py-shell nil nil t)))
+    (sit-for 0.1) 
     (with-current-buffer buffer
-      (switch-to-buffer (current-buffer))
+      ;; (switch-to-buffer (current-buffer))
       (goto-char (point-max))
       (insert "def")
       (backward-char)
