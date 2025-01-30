@@ -468,7 +468,7 @@ Optional IGNOREINDENT: find next keyword at any indentation"
 		9999
 	      (or maxindent
                   (if (py-empty-line-p) (current-column) (current-indentation)))))
-           (allvalue (symbol-value (quote py-block-or-clause-re)))
+           ;; (allvalue (symbol-value (quote py-block-or-clause-re)))
            erg)
       (unless (py-beginning-of-statement-p)
 	(py-backward-statement))
