@@ -468,7 +468,7 @@ Optional IGNOREINDENT: find next keyword at any indentation"
 		9999
 	      (or maxindent
                   (if (py-empty-line-p) (current-column) (current-indentation)))))
-           ;; (allvalue (symbol-value (quote py-block-or-clause-re)))
+           (allvalue (symbol-value (quote py-block-or-clause-re)))
            erg)
       (unless (py-beginning-of-statement-p)
 	(py-backward-statement))
@@ -480,7 +480,8 @@ Optional IGNOREINDENT: find next keyword at any indentation"
         (t (while
               (not (or (bobp) (and (looking-at regexpvalue)(< (point) orig) (not (nth 8 (parse-partial-sexp (point-min) (point)))))))
              ;; search backward and reduce maxindent, if non-matching forms suggest it
-              (setq erg (py--backward-regexp regexp maxindent
+              ;; (setq erg (py--backward-regexp regexp maxindent
+              (setq erg (py--backward-regexp allvalue maxindent                                                                
                                          (or condition '<=)
                                          orig regexpvalue)))))
       erg)))
