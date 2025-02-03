@@ -1372,9 +1372,10 @@ def baz():
       "print(234)"
     (py-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
     (set-buffer "*Python3*")
+    (goto-char (point-max))
     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-    (when py-debug-p (switch-to-buffer output-buffer))
-    (should (eq 1 (point-max)))))
+    (when py-debug-p (switch-to-buffer "*Python3*"))
+    (should-not (looking-back "123" (line-beginning-position)))))
 
 (ert-deftest py-pdbtrack-test-H6CpKY ()
   (py-test-with-temp-buffer

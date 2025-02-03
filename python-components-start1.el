@@ -5347,7 +5347,7 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
       (if (eq 1 (length (window-list)))
           (py--shell-manage-windows buffer)
         (when (get-register py--windows-config-register)
-          (jump-to-register (get-register py--windows-config-register)))))))
+          (ignore-errors (jump-to-register (get-register py--windows-config-register))))))))
 
 (defun py--shell-manage-windows (output-buffer &optional exception-buffer split switch)
   "Adapt or restore window configuration from OUTPUT-BUFFER.

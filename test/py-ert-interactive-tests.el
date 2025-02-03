@@ -126,16 +126,20 @@ def foo():
 
 (ert-deftest py-ert-always-reuse-lp-1361531-test-dJBO5C ()
   (py-test-with-temp-buffer
-    "#! /usr/bin/env python
+      "#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-print(\"I'm the py-always-reuse-lp-1361531-test\")"
+print(\"I'm the py-always-reuse-lp-1361531-test\")
+from datetime import datetime; datetime.now()"
     (delete-other-windows)
     (python-mode)
     (let* ((py-split-window-on-execute 'always)
 	   py-switch-buffers-on-execute-p
-	   py-dedicated-process-p)
-      (py-execute-statement-python)
+	   py-dedicated-process-p
+           (oldbuf (current-buffer)))
       (py-execute-statement-python3)
+      (save-excursion (py-execute-statement-python))
+      (set-buffer oldbuf)
+      (when py-debug-p (switch-to-buffer (current-buffer)))
       (py-execute-statement-python)
       ;; (message "(window-list): %s" (window-list))
       (sit-for 0.1 t)
@@ -604,14 +608,20 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
       (should (eq (window-height) full-height)))))
 
 (ert-deftest py-shell-test-t3Sizn ()
-  (let ((buffer (py-shell nil nil t)))
-    (sit-for 0.1) 
-    (with-current-buffer buffer
-      ;; (switch-to-buffer (current-buffer))
-      (goto-char (point-max))
-      (insert "def")
-      (backward-char)
-      (should (eq (char-after) ?f)))))
+  (py-test-with-temp-buffer
+      (let ((buffer (py-shell nil nil t)))
+        (sit-for 0.1)
+        (with-current-buffer buffer
+          (goto-char (point-max))
+          (insert "def")
+          (should (looking-back "def" (line-beginning-position)))))))
+
+(ert-deftest py-shell-test-3uMnzx ()
+  (py-test-with-temp-buffer
+      (with-current-buffer (py-shell nil nil t)
+        (goto-char (point-max))
+        (insert "def")
+        (should (looking-back "def" (line-beginning-position))))))
 
 (ert-deftest py-execute-import-or-reload-test-ZYUvdh ()
   (py-test-with-temp-buffer
