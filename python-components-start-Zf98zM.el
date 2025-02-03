@@ -20,6 +20,8 @@
 
 ;;; Code:
 
+
+
 (defcustom py-mark-decorators nil
   "If decorators should be marked too.
 
@@ -27,7 +29,7 @@ Default is nil.
 
 Also used by navigation"
   :type 'boolean
-  :tag "ar-mark-decorators")
+  :tag "py-mark-decorators")
 
 (defun py-escaped-p (&optional pos)
     "Return t if char at POS is preceded by an odd number of backslashes. "
@@ -191,7 +193,7 @@ Optional MAXINDENT: don't stop if indentation is larger"
  	       (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
 	 ((< py-max-specpdl-size repeat)
-	  (error "ar-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
+	  (error "py-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
          ((and (bolp) (eolp))
           (skip-chars-backward " \t\r\n\f")
           (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
@@ -480,8 +482,7 @@ Optional IGNOREINDENT: find next keyword at any indentation"
         (t (while
               (not (or (bobp) (and (looking-at regexpvalue)(< (point) orig) (not (nth 8 (parse-partial-sexp (point-min) (point)))))))
              ;; search backward and reduce maxindent, if non-matching forms suggest it
-              ;; (setq erg (py--backward-regexp regexp maxindent
-              (setq erg (py--backward-regexp allvalue maxindent                                                                
+              (setq erg (py--backward-regexp allvalue maxindent
                                          (or condition '<=)
                                          orig regexpvalue)))))
       erg)))

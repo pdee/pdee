@@ -521,8 +521,9 @@ class bar:
         except:
             pass"
     (goto-char (point-max))
+    (sit-for 0.1) 
     (py-backward-def-or-class)
-    (sit-for 1) 
+    (sit-for 0.1)
     (should (looking-at "def foo"))))
 
 (provide 'py-ert-beginning-tests)

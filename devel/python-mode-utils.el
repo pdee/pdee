@@ -1955,15 +1955,14 @@ Return beginning and end positions of region, a cons.\"
 If already at beginning, go one `" ele "' backward."))
     (insert (concat "
 Return position if successful, nil otherwise\"\n"))
-    (insert "  (interactive)
-  (let (erg)")
+    (insert "  (interactive)")
     (insert (concat "
-    (setq erg (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re '<))"))
-    ;; (setq erg (py--backward-regexp 'py-" (ar-block-regexp-name-richten ele) "-re (current-indentation)))"))
+  (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re '<)"))
     (when (string-match  "def\\|class$\\|block$" ele)
-    (insert "\n    (when py-mark-decorators
-      (and (py-backward-decorator) (setq erg (point))))"))
-    (insert "\n    erg))\n")))
+  (insert "\n  (when py-mark-decorators
+    (py-backward-decorator))
+  (point))"))
+    (insert "\n")))
 
 (defun py--insert-backward-def-or-class-bol-forms ()
   ;; bol forms
