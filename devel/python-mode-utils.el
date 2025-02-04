@@ -1957,11 +1957,11 @@ If already at beginning, go one `" ele "' backward."))
 Return position if successful, nil otherwise\"\n"))
     (insert "  (interactive)")
     (insert (concat "
-  (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re '<)"))
+  (if py-mark-decorators
+      (when (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re '<)
+        (py-backward-decorator)(point))"))
     (when (string-match  "def\\|class$\\|block$" ele)
-  (insert "\n  (when py-mark-decorators
-    (py-backward-decorator))
-  (point))"))
+  (insert "\n    (py--go-to-keyword 'py-" (ar-block-regexp-name-richten ele) "-re '<)))"))
     (insert "\n")))
 
 (defun py--insert-backward-def-or-class-bol-forms ()

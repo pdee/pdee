@@ -36,10 +36,10 @@
 If already at beginning, go one `block' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-block-re '<)
-  (when py-mark-decorators
-    (py-backward-decorator))
-  (point))
+  (if py-mark-decorators
+      (when (py--go-to-keyword 'py-block-re '<)
+        (py-backward-decorator)(point))
+    (py--go-to-keyword 'py-block-re '<)))
 
 (defun py-backward-class ()
   "Go to beginning of `class'.
@@ -47,10 +47,10 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `class' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-class-re '<)
-  (when py-mark-decorators
-    (py-backward-decorator))
-  (point))
+  (if py-mark-decorators
+      (when (py--go-to-keyword 'py-class-re '<)
+        (py-backward-decorator)(point))
+    (py--go-to-keyword 'py-class-re '<)))
 
 (defun py-backward-def ()
   "Go to beginning of `def'.
@@ -58,10 +58,10 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `def' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-def-re '<)
-  (when py-mark-decorators
-    (py-backward-decorator))
-  (point))
+  (if py-mark-decorators
+      (when (py--go-to-keyword 'py-def-re '<)
+        (py-backward-decorator)(point))
+    (py--go-to-keyword 'py-def-re '<)))
 
 (defun py-backward-def-or-class ()
   "Go to beginning of `def-or-class'.
@@ -69,10 +69,10 @@ Return position if successful, nil otherwise"
 If already at beginning, go one `def-or-class' backward.
 Return position if successful, nil otherwise"
   (interactive)
-  (py--go-to-keyword 'py-def-or-class-re '<)
-  (when py-mark-decorators
-    (py-backward-decorator))
-  (point))
+  (if py-mark-decorators
+      (when (py--go-to-keyword 'py-def-or-class-re '<)
+        (py-backward-decorator)(point))
+    (py--go-to-keyword 'py-def-or-class-re '<)))
 
 (defun py-backward-block-bol ()
   "Go to beginning of `block', go to BOL.

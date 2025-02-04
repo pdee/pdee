@@ -6765,6 +6765,11 @@ class CFG(object):
     "
   (goto-char (point-max))
   (py-backward-def)
+  ;; (message "(point) %s" (point))
+  ;; (sit-for 1)
+  ;; (message "(point) %s" (point))
+  ;; (print "py-mark-decorators: ")
+  ;; (print py-mark-decorators)
   (should (looking-at "def bar():"))))
 
 (ert-deftest py-beginning-of-def-rmDlg1 ()
@@ -7175,7 +7180,7 @@ for file in a:
     (search-backward "start")
     (py-backward-statement)
     (forward-line -1)
-    (back-to-indentation) 
+    (back-to-indentation)
     (should (eq (char-after) ?d))
     ))
 

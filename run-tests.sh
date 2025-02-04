@@ -434,56 +434,54 @@ $EMACS -Q -L . --batch \
 # --eval "(setq python-mode-v5-behavior-p t)" \
 # --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 
+# hier() {
+#     date; time -p $EMACS -Q -L . --batch \
+# --eval "(message (emacs-version))" \
+# --eval "(setq py-debug-p nil)" \
+# --eval "(setq python-mode-v5-behavior-p t)" \
+# --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+# -load $SETUP \
+# -load $PYTHONMODE \
+# -l $TEST1 \
+# --eval "(sit-for 0.1)" \
+# -l $TEST2 \
+# --eval "(sit-for 0.1)" \
+# -l $TEST3 \
+# -l $TEST4 \
+# -l $TEST5 \
+# -l $TEST6 \
+# -l $TEST7 \
+# -l $TEST8 \
+# -f ert-run-tests-batch-and-exit
+# }
+
 hier() {
-    date; time -p $EMACS -Q -L . --batch \
+    date; $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p t)" \
+--eval "(setq python-indent-guess-indent-offset nil)" \
+--eval "(setq python-indend-offset 4)" \
+--eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
 -l $TEST1 \
---eval "(sit-for 0.1)" \
 -l $TEST2 \
---eval "(sit-for 0.1)" \
 -l $TEST3 \
 -l $TEST4 \
 -l $TEST5 \
 -l $TEST6 \
 -l $TEST7 \
 -l $TEST8 \
+-l $TEST9 \
+-l $TEST10 \
+-l $TEST11 \
+-l $TEST13 \
+-l $TEST16 \
+-l $TEST19 \
+-l $TEST21 \
 -f ert-run-tests-batch-and-exit
 }
-
-# hier() {
-#     date; $EMACS -Q -L . --batch \
-# --eval "(message (emacs-version))" \
-# --eval "(setq py-debug-p nil)" \
-# --eval "(setq python-indent-guess-indent-offset nil)" \
-# --eval "(setq python-indend-offset 4)" \
-# --eval "(setq python-mode-v5-behavior-p nil)" \
-# --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
-# -load $SETUP \
-# -load $PYTHONMODE \
-# -l $TEST8 \
-# --eval "(sit-for 1)" \
-# -l $TEST1 \
-# -l $TEST2 \
-# -l $TEST3 \
-# -l $TEST4 \
-# -l $TEST5 \
-# -l $TEST6 \
-# -l $TEST7 \
-# --eval "(sit-for 0.1)" \
-# -l $TEST9 \
-# -l $TEST10 \
-# -l $TEST11 \
-# -l $TEST13 \
-# -l $TEST16 \
-# -l $TEST19 \
-# -l $TEST21 \
-# -f ert-run-tests-batch-and-exit
-# }
 
 if [ $IFLOCAL -eq 0 ]; then
 
