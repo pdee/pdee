@@ -20,8 +20,6 @@
 
 ;;; Code:
 
-
-
 (defcustom py-mark-decorators nil
   "If decorators should be marked too.
 

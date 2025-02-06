@@ -591,9 +591,9 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 (ert-deftest py-python2-shell-test-8Ostfe ()
   ""
   (if (not (executable-find "python2"))
-      (message "py-python2-shell-test-8Ostfe: %s" "No python executable found!")
-
+      (and py-debug-p (message "py-python2-shell-test-8Ostfe: %s" "No python executable found!"))
     (let ((erg (python2)))
+      (sit-for 0.1) 
       (should (bufferp (get-buffer erg)))
       (should (get-buffer-process erg)))))
 
