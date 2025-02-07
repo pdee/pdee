@@ -3238,7 +3238,7 @@ ausgabe = kugel.ausgabe"
   (py-test-with-temp-buffer-point-min
       "[a, b, c] = 1, 2, 3"
     (goto-char (point-min))
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (py-down)
     (should (eq (char-before) ?\]))))
 
@@ -3323,7 +3323,7 @@ ausgabe = kugel.ausgabe"
     # def __init__(self, d={}):
     #    self._keys = d.keys()
     #    dict.__init__(self, d)"
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "\"\"\"" nil nil 2)
     (py-down)
@@ -3342,7 +3342,7 @@ ausgabe = kugel.ausgabe"
     #    self._keys = d.keys()
     #    dict.__init__(self, d)
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (end-of-line)
     (py-down)
     (should (eq (char-before) 10))
@@ -5476,7 +5476,7 @@ class CFG(object):
         return cls(start, productions)
 ]
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "read_grammar")
     (py-up)
@@ -5598,7 +5598,7 @@ class CFG(object):
         return cls(start, productions)
 ]
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "encoding")
     (py-up)
@@ -5752,7 +5752,7 @@ class CFG(object):
         return cls(start, productions)
 "
     (goto-char (point-max))
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (search-backward ":param")
     (py-up)
     (should (eq (char-after) 34))
@@ -6117,7 +6117,7 @@ class CFG(object):
         return cls(start, productions)
 ]
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "left, set")
     (py-up)
@@ -6238,7 +6238,7 @@ class CFG(object):
         return cls(start, productions)
 ]
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "update")
     (py-up)
@@ -6603,7 +6603,7 @@ class CFG(object):
 ]
 "
     (goto-char (point-max))
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (search-backward "In that case it is better")
     (py-up)
     (should (eq (char-after) ?#))))
@@ -6724,7 +6724,7 @@ class CFG(object):
 ]
 "
     (goto-char (point-max))
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (search-backward "10000")
     (py-up)
     (should
@@ -6882,7 +6882,7 @@ class C:
         \"\"\"
         self.a = 1
         self.b = 2"
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "\"\"\"")
     (py-up)
@@ -6913,7 +6913,7 @@ class C:
     (goto-char (point-max))
     (search-backward "error")
     ;; (and py-debug-p (message "py-version: %s" py-version))
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     ;; (sit-for 0.1)
     (py-up)
     (should (eq (char-after) 34))
@@ -6990,7 +6990,7 @@ class C:
 # from typing import Mapping, Tuple, Sequence
 var1: int = 5
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-min))
     (search-forward "red")
     (end-of-line)
@@ -7017,7 +7017,7 @@ class M:
         self.a = 1
         self.b = 2
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "def")
     (py-up)
@@ -7033,7 +7033,7 @@ class M:
     class asdf\(object\):
         zeit = time.strftime\('%Y%m%d\-\-%H\-%M\-%S'\)
 "
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "'")
     (py-down)
@@ -7113,7 +7113,7 @@ class M:
     (search-backward "ausgabe" nil nil 2)
     (end-of-line)
     (py-forward-statement)
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (sit-for 0.1)
     (should (eq (char-before) 41))))
 
@@ -7132,7 +7132,7 @@ class M:
     (goto-char (point-max))
     (search-backward "{" nil nil 2)
     (py-down)
-    (font-lock-ensure)
+    ;; (font-lock-ensure)
     (sit-for 0.1)
     (should (eq (char-before) ?}))
     (should (eq (char-after) ?,))

@@ -4365,27 +4365,6 @@ Return beginning position, nil if not inside."
           (py-beginning-of-list-pps iact last ppstart orig done))
       last)))
 
-(defun py-end-of-string (&optional beginning-of-string-position)
-  "Go to end of string at point if any, if successful return position. "
-  (interactive)
-  (let ((orig (point))
-        (beginning-of-string-position (or beginning-of-string-position (and (nth 3 (parse-partial-sexp 1 (point)))(nth 8 (parse-partial-sexp 1 (point))))
-                                          (and (looking-at "\"\"\"\\|'''\\|\"\\|\'")(match-beginning 0))))
-        erg)
-    (if beginning-of-string-position
-        (progn
-          (goto-char beginning-of-string-position)
-          (when
-              ;; work around parse-partial-sexp error
-              (and (nth 3 (parse-partial-sexp 1 (point)))(nth 8 (parse-partial-sexp 1 (point))))
-            (goto-char (nth 3 (parse-partial-sexp 1 (point)))))
-          (if (ignore-errors (setq erg (scan-sexps (point) 1)))
-                              (goto-char erg)
-            (goto-char orig)))
-
-      (error (concat "py-end-of-string: don't see end-of-string at " (buffer-name (current-buffer)) "at pos " (point))))
-    erg))
-
 (defun py--record-list-error (pps)
   "When encountering a missing parenthesis, store its line, position.
 ‘py-verbose-p’  must be t"
@@ -4555,7 +4534,8 @@ thus remember ORIGLINE of source buffer"
   "CMD: some shells echo the command in output-buffer
 Delete it here"
   (when py-debug-p (message "(current-buffer): %s" (current-buffer))
-	(switch-to-buffer (current-buffer)))
+	;; (switch-to-buffer (current-buffer))
+        )
   (cond (python-mode-v5-behavior-p
 	 (with-current-buffer buffer
 	   (py--string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n")))
@@ -5344,6 +5324,7 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 			  (py--fetch-result buffer limit strg)))
 		   (no-output
 		    (and orig (py--cleanup-shell orig buffer))))))
+      ;; (message "py-execute-string; current-buffer: %s" (current-buffer))
       (if (eq 1 (length (window-list)))
           (py--shell-manage-windows buffer)
         (when (get-register py--windows-config-register)

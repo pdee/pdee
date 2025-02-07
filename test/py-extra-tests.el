@@ -141,7 +141,7 @@ finally:
 	  ;; (py-debug-p t)
 	  py-split-window-on-execute)
       (py-execute-block)
-      (sit-for 1)
+      (sit-for 0.1)
       (when py-debug-p (message "py-ert-execute-block-fast-9Ui5ja, py-result: %s" py-result))
       (should (string-match "[0-9]+" py-result)))))
 
@@ -159,30 +159,6 @@ finally:
       (goto-char (point-min))
       (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
-;; (ert-deftest py-ert-execute-block-jython-test-9gQUza ()
-;;   (if (not (executable-find "jython"))
-;;       (message "py-ert-execute-block-jython-test-9gQUza: %s" "No executable found!")
-;;     (let ((buffer (py--choose-buffer-name "jython"))
-;; 	  py-split-window-on-execute py-switch-buffers-on-execute-p)
-;;       (py-test-with-temp-buffer
-;;           "if True:
-;;     print(\"one\")
-;;     print(\"two\")"
-;; 	(py-execute-block-jython)
-;; 	(sit-for 2)
-;; 	(should (string-match "two" py-result))))))
-
-;; (ert-deftest py-shell-complete-in-dedicated-shell-XafVPb ()
-;;   ;; (py-test-with-temp-buffer
-;;   (with-current-buffer (python '(4))
-;;     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
-;;     ;; (switch-to-buffer (current-buffer))
-;;     (insert "pri")
-;;     (sit-for 1 t)
-;;     (call-interactively 'py-indent-or-complete)
-;;     (sit-for 0.1 t)
-;;     (should (or (looking-back "print.?" (line-beginning-position))))))
-
 (ert-deftest py-ert-execute-statement-fast-7XrRee ()
   (py-test-with-temp-buffer-point-min
       "print(2)"
@@ -190,7 +166,7 @@ finally:
 	  (py-return-result-p t)
 	  py-result py-store-result-p)
       (py-execute-statement-fast)
-      (sit-for 1)
+      (sit-for 0.1)
       (should (string= "2" py-result)))))
 
 ;; adapted from python.el
@@ -208,7 +184,7 @@ finally:
     (let (py-split-window-on-execute py-switch-buffers-on-execute-p)
       (py-execute-statement-fast)
       (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
-      (sit-for 1)
+      (sit-for 0.1)
       (goto-char (point-max))
       (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))
       (should (search-backward "123234")))))
@@ -218,7 +194,7 @@ finally:
       "obj"
     (goto-char (point-max))
     (py-fast-complete)
-    (sit-for 1)
+    (sit-for 0.1)
     (goto-char (point-max))
     (when py-debug-p (message "py-ert-fast-complete-1, current-buffer: %s" (current-buffer)))
     (should (search-backward "ect"))))
@@ -1411,6 +1387,7 @@ def main():
   (py-test-with-temp-buffer
       ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2020-06/msg00128.html
       "foo: int = 1"
+    (font-lock-ensure) 
     (goto-char (point-max))
     (search-backward "foo")
     (let ((erg (face-at-point)))

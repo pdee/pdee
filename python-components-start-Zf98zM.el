@@ -29,6 +29,19 @@ Also used by navigation"
   :type 'boolean
   :tag "py-mark-decorators")
 
+(defun py-end-of-string ()
+  "Go to end of string at point if any, if successful return position. "
+  (interactive)
+  (let ((pps (parse-partial-sexp (point-min) (point)))
+        (sapo (car (syntax-after (point)))))
+    (if (and (nth 3 pps)(nth 8 pps))
+        (progn (goto-char (nth 8 pps))
+               (forward-sexp))
+      (if (or (eq sapo 7) (eq sapo 15))
+          (and (skip-syntax-forward "|\"")
+               (skip-syntax-forward "^|\""))))
+    (skip-syntax-forward "|\"")))
+
 (defun py-escaped-p (&optional pos)
     "Return t if char at POS is preceded by an odd number of backslashes. "
     (save-excursion
@@ -119,7 +132,7 @@ REPEAT - count and consider repeats"
        ;; string
        ((looking-at py-string-delim-re)
 	(goto-char (match-end 0))
-	(py-forward-statement orig done repeat))
+	(py-forward-statement (match-beginning 0) done repeat))
        ((nth 3 pps)
 	(when (py-end-of-string)
 	  (end-of-line)
