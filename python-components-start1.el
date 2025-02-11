@@ -2949,8 +2949,8 @@ See ‘py-minor-block-re-raw’ for better readable content")
 (defconst py-case-re "[ \t]*\\_<case\\_>[: \t][^:]*:"
   "Matches a ‘case’ clause.")
 
-(defconst py-match-case-re "[ \t]*\\_<match\\_>[: \t][^:]*:"
-  "Matches a ‘case’ clause.")
+(defconst py-match-case-re "[ \t]*\\_<match\\|case\\_>[: \t][^:]*:"
+  "Matches a ‘match case’ clause.")
 
 (defconst py-for-re "[ \t]*\\_<\\(async for\\|for\\)\\_> +[[:alpha:]_][[:alnum:]_]* +in +[[:alpha:]_][[:alnum:]_()]* *[: \n\t]"
   "Matches the beginning of a ‘try’ block.")
@@ -4050,15 +4050,10 @@ Returns ‘t’ if point was moved"
 (defun py-forward-comment ()
   "Go to the end of commented section at point."
   (interactive)
-  (let ((pps (parse-partial-sexp (point-min) (point)))
-        last)
-    (while (and (not (eobp))(or (eq (char-after) ?#) (nth 4 pps) (py-empty-line-p)))
-      (setq last (line-end-position))
-      (forward-line 1)
-      (end-of-line))
-    (unless (nth 4 (parse-partial-sexp (point-min) (point)))
-      (when last (goto-char last)))
-    ))
+  (while (and (not (eobp))(or (and comment-start (looking-at comment-start)) (and comment-start-skip (looking-at comment-start-skip))(nth 4 (parse-partial-sexp (point-min) (point)))))
+    (forward-line 1)
+    (unless (eobp) (beginning-of-line))
+    (skip-chars-forward " \t\r\n\f")))
 
 (defun py--forward-string-maybe (&optional start)
   "Go to the end of string.
@@ -4473,9 +4468,8 @@ Return and move to match-beginning if successful"
     (while
         (and
          (py-forward-statement)
-         (save-excursion (py-backward-statement) (< indent (current-indentation)))
-         (setq last (point))
-         ))
+         (< indent (current-indentation))
+         (setq last (point))))
     (when last (goto-char last))))
 
 (defun py--backward-empty-lines-or-comment ()

@@ -706,7 +706,7 @@ class bar:
     (py-forward-statement-bol)
     (should (looking-at " +pass"))))
 
-(ert-deftest py-ert-forward-statement-test-1 ()
+(ert-deftest py-ert-forward-statement-test-7MuP64 ()
   (py-test-with-temp-buffer-point-min
 	"def wwwwww_wwwwwww(self, text):
 		# wwwwww www wwww wwww wwwwwww, w.w. <!-- wwwwww wwwwwwwwww wwww wwww -->
@@ -714,7 +714,7 @@ class bar:
 		self.wwwwww.append(\"<!--%(text)s-->\" % locals())"
     (end-of-line)
     (py-forward-statement)
-    (should (eq (char-before) ?\)))))
+    (should (eq (char-before) 41))))
 
 (provide 'py-ert-forward-tests)
 ;;; py-ert-forward-tests.el ends here

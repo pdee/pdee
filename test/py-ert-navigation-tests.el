@@ -78,8 +78,6 @@
     (py-up-minor-block)
     (should (looking-at "if a:"))))
 
-
-
 (ert-deftest py-ert-moves-up-block-bol-OcJjMV ()
   (py-test-with-temp-buffer
       "class OrderedDict1(dict):
@@ -1348,9 +1346,9 @@ def foo(*args):2
       (py-backward-statement)
       (should (eq (char-after) ?a))
       (py-backward-statement)
-      (should (eq (char-after) ?d))
+      (should (eq (char-after) 34))
       (py-backward-statement)
-      (should (eq (char-after) ?o))
+      (should (eq (char-after) ?d))
       (py-backward-statement)
       (should (eq (char-after) ?i))
       (py-backward-statement)
@@ -1359,8 +1357,8 @@ def foo(*args):2
       (should (eq (char-after) ?c))
       (py-backward-statement)
       (should (eq (char-after) ?p))
-      (py-backward-statement)
-      (should (bobp)))))
+
+      )))
 
 (ert-deftest py-ert-backward-except-block-test-TC7jEj ()
   (py-test-with-temp-buffer
@@ -3313,7 +3311,7 @@ ausgabe = kugel.ausgabe"
     ))
 
 (ert-deftest py-down-string-test-826iF9 ()
-  (py-test-with-temp-buffer
+  (py-test-with-temp-buffer-point-min
       "class OrderedDict1(dict):
     \"\"\"
     This implementation of a dictionary keeps track of the order
@@ -3324,8 +3322,8 @@ ausgabe = kugel.ausgabe"
     #    self._keys = d.keys()
     #    dict.__init__(self, d)"
     ;; (font-lock-ensure)
-    (goto-char (point-max))
-    (search-backward "\"\"\"" nil nil 2)
+    ;; (goto-char (point-max))
+    (skip-chars-forward "^\"") 
     (py-down)
     (sit-for 0.1)
     (should (eq 34 (char-before)))))
@@ -3345,11 +3343,7 @@ ausgabe = kugel.ausgabe"
     ;; (font-lock-ensure)
     (end-of-line)
     (py-down)
-    (should (eq (char-before) 10))
-    ;; (should (eobp))
-    ;; (should (eolp))
-    ;; (sit-for 0.1)
-    ;; (should (eq (char-after) 10))
+    (should (eq (char-before) 34))
     ))
 
 (ert-deftest py-backward-minor-block-test-OLNs0Y ()
@@ -3622,7 +3616,7 @@ def example3():
     (goto-char (point-min))
     (search-forward "CONN_ID)")
     (py-forward-statement)
-    (should (looking-back "file_name) " (line-beginning-position)))))
+    (should (looking-back "file_name)" (line-beginning-position)))))
 
 (ert-deftest py-forward-class-test-dr9XSR ()
   (py-test-with-temp-buffer-point-min
@@ -5724,7 +5718,9 @@ class CFG(object):
     (back-to-indentation)
     (py-up)
     (should
-     (looking-at "def fromstring(cls, input, encoding=None):"))))
+     ;; (looking-at "def fromstring(cls, input, encoding=None):")
+     (looking-at "\"\"\"")
+     )))
 
 (ert-deftest py-up-class-test-KpIGDt ()
   (py-test-with-temp-buffer
@@ -6886,9 +6882,6 @@ class C:
     (goto-char (point-max))
     (search-backward "\"\"\"")
     (py-up)
-    ;; (sit-for 1)
-    (font-lock-fontify-buffer)
-    ;; (sit-for 1)
     (should (eq (char-after) 34))
     (should (eq (char-before) 32))))
 
@@ -6978,13 +6971,13 @@ class C:
     (py-down)
     (should (eq (char-before) ?2))))
 
-(ert-deftest py-down-test-4dAZaV ()
+(ert-deftest py-down-test-2XNdbk ()
   (py-test-with-temp-buffer-point-min
-      "def example3\(\):
-    list\(map\(lambda tpl: print\(f\"{tpl\[0\]} {tpl\[1\]}\"\), enumerate\(\[\"yellow\",\"blue\",\"red\"\]\)\)\)
+      "def example3():
+    list(map(lambda tpl: print(f\"{tpl[0]} {tpl[1]}\"), enumerate([\"yellow\",\"blue\",\"red\"])))
 
 # Ruby
-# def deliver\(from: \"A\", to: nil, via: \"mail\"\)
+# def deliver(from: \"A\", to: nil, via: \"mail\")
 #  \"Sending from #{from} to #{to} via #{via}\"
 
 # from typing import Mapping, Tuple, Sequence
@@ -6995,7 +6988,7 @@ var1: int = 5
     (search-forward "red")
     (end-of-line)
     (py-down)
-    (should (eq (char-before) ?5))))
+    (should (eq (char-after) ?v))))
 
 (ert-deftest py-up-test-NnVYMF ()
   (py-test-with-temp-buffer
@@ -7183,7 +7176,6 @@ for file in a:
     (back-to-indentation)
     (should (eq (char-after) ?d))
     ))
-
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

@@ -993,7 +993,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 "
     (goto-char (point-max))
     (search-backward "case")
-    (should (eq 8 (py-compute-indentation)))))
+    (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-match-case-indent-137-b1Kuye ()
   (py-test-with-temp-buffer

@@ -501,18 +501,6 @@ If already at the beginning of a block, move these form upward."
      ((nth 1 pps)
       (goto-char (nth 1 pps)))
      (t (py-backward-statement)))))
-     ;; ((py-beginning-of-statement-p)
-     ;;  (py-backward-statement))
-     ;; ((py--beginning-of-class-p)
-     ;;  (py-up-class (current-indentation)))
-     ;; ((py--beginning-of-def-p)
-     ;;  (py-up-def (current-indentation)))
-     ;; ((py--beginning-of-block-p)
-     ;;  (py-up-block (current-indentation)))
-     ;; ((py--beginning-of-clause-p)
-     ;;  (py-backward-block))
-     ;; ((py-beginning-of-statement-p)
-     ;;  (py-backward-block-or-clause))
 
 (defun py-nav-last-prompt ()
   "Move to previous prompt in py-shell."
