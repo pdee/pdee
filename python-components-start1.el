@@ -4050,10 +4050,19 @@ Returns ‘t’ if point was moved"
 (defun py-forward-comment ()
   "Go to the end of commented section at point."
   (interactive)
-  (while (and (not (eobp))(or (and comment-start (looking-at comment-start)) (and comment-start-skip (looking-at comment-start-skip))(nth 4 (parse-partial-sexp (point-min) (point)))))
-    (forward-line 1)
-    (unless (eobp) (beginning-of-line))
-    (skip-chars-forward " \t\r\n\f")))
+  (let (last)
+    (while
+        (and (not (eobp))
+             (or
+              (and comment-start (looking-at comment-start))
+              (and comment-start-skip (looking-at comment-start-skip))
+              (nth 4 (parse-partial-sexp (point-min) (point)))))
+      (setq last (line-end-position))
+      (forward-line 1)
+      (skip-chars-forward " \t\r\n\f") 
+      (unless (or (eobp) (eq (point) last))
+        (back-to-indentation)))
+    (when last (goto-char last))))
 
 (defun py--forward-string-maybe (&optional start)
   "Go to the end of string.
