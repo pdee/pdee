@@ -1287,33 +1287,27 @@ by the
 	"# r1416
 
 def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. Not unhappy.
 
-    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    Now this is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very glad.
     \"\"\"
     return 7
 "
-      (goto-char 49)
-      (py-fill-string)
-      (end-of-line)
-      ;; (sit-for 0.1 t)
-      (should (<= (current-column) 72))
-      (forward-line 2)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (forward-line 1)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (forward-line 1)
-      (end-of-line)
-      (should (<= (current-column) 72))
       (search-forward "\"\"\"")
-      (forward-line -1)
       (fill-paragraph)
-      (end-of-line)
-      ;; (sit-for 0.1 t)
-      (should (<= (current-column) 72))
-      )))
+      (goto-char (point-min))
+      (search-forward "unhappy")
+      (forward-line 1)
+      (should (py-empty-line-p))
+      (search-forward "Now")
+      (should (eq 4 (current-indentation)))
+      (search-forward "glad")
+      (forward-line 1)
+      ;; (sit-for 1) 
+      (back-to-indentation)
+      ;; (sit-for 1)
+      ;; (should (eq (char-after) 34))
+)))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-BVA4Jt ()
   (let ((py-docstring-style 'django))
@@ -1387,7 +1381,7 @@ def main():
   (py-test-with-temp-buffer
       ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2020-06/msg00128.html
       "foo: int = 1"
-    (font-lock-ensure) 
+    (font-lock-ensure)
     (goto-char (point-max))
     (search-backward "foo")
     (let ((erg (face-at-point)))

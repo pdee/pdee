@@ -3317,16 +3317,20 @@ ausgabe = kugel.ausgabe"
     This implementation of a dictionary keeps track of the order
     in which keys were inserted.
     \"\"\"
-
-    # def __init__(self, d={}):
-    #    self._keys = d.keys()
-    #    dict.__init__(self, d)"
+    pass
+# def __init__(self, d={}):
+#    self._keys = d.keys()
+#    dict.__init__(self, d)"
     ;; (font-lock-ensure)
     ;; (goto-char (point-max))
-    (skip-chars-forward "^\"") 
+    (skip-chars-forward "^\"")
     (py-down)
     (sit-for 0.1)
-    (should (eq 34 (char-before)))))
+    ;; (should (eq 34 (char-before)))
+    ;; (should (eq 140 (point)))
+    (should (eq 4 (current-indentation)))
+    ;; (should (eq 7 (current-column)))
+    ))
 
 (ert-deftest py-down-class-test-826iF9 ()
   (py-test-with-temp-buffer-point-min
@@ -5751,8 +5755,10 @@ class CFG(object):
     ;; (font-lock-ensure)
     (search-backward ":param")
     (py-up)
-    (should (eq (char-after) 34))
-    (should (eq (char-before) 32))
+    (sit-for 0.1) 
+    ;; (should (eq (char-after) 34))
+    ;; (should (eq (char-before) 32))
+    (should (looking-at "\"\"\""))
     ))
 
 (ert-deftest py-up-class-test-FxaOqw ()

@@ -202,8 +202,7 @@ Optional MAXINDENT: don't stop if indentation is larger"
       (let ((repeat (or (and repeat (1+ repeat)) 0))
 	    (orig (or orig (point)))
             (pps (parse-partial-sexp (or limit (point-min))(point)))
-            (done done)
-            erg)
+            (done done))
 	;; lp:1382788
 	;; (unless done
 	;;   (and (< 0 (abs (skip-chars-backward " \t\r\n\f")))
