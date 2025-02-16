@@ -25,87 +25,7 @@
 
 ;;; Code:
 
-(defun py-fill-string-django (&optional justify)
-  "Fill docstring according to Django's coding standards style.
 
-    \"\"\"
-    Process foo, return bar.
-    \"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-
-See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
-"
-  (interactive "*P")
-  (py-fill-string justify 'django t))
-
-(defun py-fill-string-onetwo (&optional justify)
-  "One newline and start and Two at end style.
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-
-    \"\"\"
-
-See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
-"
-  (interactive "*P")
-  (py-fill-string justify 'onetwo t))
-
-(defun py-fill-string-pep-257 (&optional justify)
-  "PEP-257 with 2 newlines at end of string.
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-
-    \"\"\"
-
-See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
-"
-  (interactive "*P")
-  (py-fill-string justify 'pep-257 t))
-
-(defun py-fill-string-pep-257-nn (&optional justify)
-  "PEP-257 with 1 newline at end of string.
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-
-See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
-"
-  (interactive "*P")
-  (py-fill-string justify 'pep-257-nn t))
-
-(defun py-fill-string-symmetric (&optional justify)
-  "Symmetric style.
-
-    \"\"\"Process foo, return bar.\"\"\"
-
-    \"\"\"
-    Process foo, return bar.
-
-    If processing fails throw ProcessingError.
-    \"\"\"
-
-See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
-"
-  (interactive "*P")
-  (py-fill-string justify 'symmetric t))
 
 (defun py-set-nil-docstring-style ()
   "Set py-docstring-style to \\='nil"
@@ -296,7 +216,7 @@ See lp:1066489 "
     (when (save-excursion (end-of-line) (re-search-forward py-labelled-re end t 1))
       (setq end (match-beginning 0)))
     (skip-chars-forward " \t\r\n\f")
-    (py-travel-single-words-and-symbols beg end)
+    ;; (py-travel-single-words-and-symbols beg end)
     (if (looking-at py-star-labelled-re)
         (setq fill-prefix (make-string (+ (current-indentation) 2) 32))
       (setq fill-prefix (make-string (+ (current-indentation) py-indent-offset) 32)))
@@ -318,43 +238,46 @@ See lp:1066489 "
     (save-restriction
       ;; don't go backward beyond beginning of string
       (narrow-to-region beg end)
-      (let* (;; If paragraph starts with beginning of string, skip the fence-chars
+      (let* (;; Paragraph starts with beginning of string, skip the fence-chars
 	     (innerbeg (copy-marker
-                        (goto-char docstring)
-                        (max
-                         (py--skip-raw-string-front-fence)
-		         (progn (unless (looking-at paragraph-start)
-		                  (backward-paragraph))
-                                (skip-chars-forward " \t\r\n\f")
-		                ;; (when (looking-at paragraph-start)
-		                (point)))))
+                        (progn (goto-char docstring)
+                               ;; (max
+                               ;;  (py--skip-raw-string-front-fence)
+		               ;;  (progn (unless (looking-at paragraph-start)
+		               ;;           (backward-paragraph))
+                               ;;         (skip-chars-forward " \t\r\n\f")
+		               ;;         (point)))
+                               ;; (max
+                               (py--skip-raw-string-front-fence)
+                               (point))))
 	     (innerend (copy-marker (progn (goto-char end) (skip-chars-backward "\\'\"") (skip-chars-backward " \t\r\n\f") (point))))
 	     (multi-line-p (string-match "\n" (buffer-substring-no-properties innerbeg innerend)))
              ;; (paragraph-separate (concat py-symbol-re "\\|" py-star-labelled-re "\\|" py-colon-labelled-re "\\|" paragraph-separate))
              ;; (paragraph-start (concat py-symbol-re "\\|" py-star-labelled-re "\\|" py-colon-labelled-re "\\|"  paragraph-start))
              parabeg paraend on-first-line)
         (setq paraend
-              (save-excursion
-                (goto-char orig)
-                (py-travel-single-words-and-symbols innerbeg innerend)
-                (end-of-line)
-                (if (re-search-forward py-labelled-re end t)
-                    (progn
-                      (min (progn (beginning-of-line) (skip-chars-backward " \t\r\n\f") (point))
-                           (save-excursion (goto-char orig) (forward-paragraph) (point)) innerend))
-                  (progn (forward-paragraph) (skip-chars-backward " \t\r\n\f" orig) (min (point) innerend)))))
+              (copy-marker
+               (save-excursion
+                 (goto-char orig)
+                 ;; (py-travel-single-words-and-symbols innerbeg innerend)
+                 (end-of-line)
+                 (if (re-search-forward py-labelled-re end t)
+                     (progn
+                       (min (progn (beginning-of-line) (skip-chars-backward " \t\r\n\f") (point))
+                            (save-excursion (goto-char orig) (forward-paragraph) (point)) innerend))
+                   (progn (forward-paragraph) (skip-chars-backward " \t\r\n\f" orig) (min (point) innerend))))))
         (setq parabeg (max (progn (goto-char paraend) (backward-paragraph) (skip-chars-forward " \t\r\n\f") (point)) innerbeg))
         (setq on-first-line (< (line-beginning-position) docstring))
         (if (or (string-match (concat "^" py-colon-labelled-re) (buffer-substring-no-properties parabeg paraend))
                 (string-match (concat "^" py-star-labelled-re) (buffer-substring-no-properties parabeg paraend)))
             (py-fill-labelled-string parabeg paraend)
           (when on-first-line (py--fill-docstring-first-line parabeg (line-end-position) multi-line-p))
-          (setq parabeg (py-travel-single-words-and-symbols parabeg paraend))
+          ;; (setq parabeg (py-travel-single-words-and-symbols parabeg paraend))
           (goto-char parabeg)
           (setq fill-prefix (make-string (current-column) 32))
           (fill-region-as-paragraph parabeg paraend t))
+        (goto-char paraend)
         (when (member py-docstring-style (list 'pep-257 'onetwo))
-          (goto-char paraend)
           (forward-line -1)
           (unless (py-empty-line-p)
             (forward-line 1)
@@ -468,6 +391,88 @@ Fill according to ‘py-docstring-style’ "
       ;; (py-fill-comment pps)
       (do-auto-fill)
       ))))
+
+(defun py-fill-string-django (&optional justify)
+  "Fill docstring according to Django's coding standards style.
+
+    \"\"\"
+    Process foo, return bar.
+    \"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
+"
+  (interactive "*P")
+  (py-fill-string justify 'django t))
+
+(defun py-fill-string-onetwo (&optional justify)
+  "One newline and start and Two at end style.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
+"
+  (interactive "*P")
+  (py-fill-string justify 'onetwo t))
+
+(defun py-fill-string-pep-257 (&optional justify)
+  "PEP-257 with 2 newlines at end of string.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+
+    \"\"\"
+
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
+"
+  (interactive "*P")
+  (py-fill-string justify 'pep-257 t))
+
+(defun py-fill-string-pep-257-nn (&optional justify)
+  "PEP-257 with 1 newline at end of string.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
+"
+  (interactive "*P")
+  (py-fill-string justify 'pep-257-nn t))
+
+(defun py-fill-string-symmetric (&optional justify)
+  "Symmetric style.
+
+    \"\"\"Process foo, return bar.\"\"\"
+
+    \"\"\"
+    Process foo, return bar.
+
+    If processing fails throw ProcessingError.
+    \"\"\"
+
+See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
+"
+  (interactive "*P")
+  (py-fill-string justify 'symmetric t))
 
 (provide 'python-components-paragraph)
 ;;; python-components-paragraph.el ends here

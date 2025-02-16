@@ -512,7 +512,7 @@ def baz():
       (forward-char 1)
       (should (eolp))
       (forward-line -2)
-      (should (empty-line-p)))))
+      (should (py-empty-line-p)))))
 
 (ert-deftest py-ert-pep-257-9HrXY7 ()
   (py-test-with-temp-buffer

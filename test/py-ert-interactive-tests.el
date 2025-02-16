@@ -252,10 +252,11 @@ print()"
       "# {{
 print(3+3)
 # }}"
-    (search-backward "print")
-    (py-execute-section)
-    (sleep-for 1)
-    (should (string= py-result "6"))))
+    (let ((py-store-result-p t))
+      (search-backward "print")
+      (py-execute-section)
+      (sleep-for 0.1)
+      (should (string= py-result "6")))))
 
 (ert-deftest py-ert-match-paren-test-3-xtdxLn ()
     (py-test-with-temp-buffer
@@ -317,27 +318,7 @@ if __name__ == \"__main__\":
         (search-forward "\"\"\"")
         (should (eq 8 (current-indentation))))))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-django-1-raqbPv ()
-  (py-test-with-temp-buffer-point-min
-      "# r1416
 
-def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-
-    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-    (let ((py-docstring-style 'django))
-      (goto-char 49)
-      (fill-paragraph)
-      (search-backward "\"\"\"")
-      (goto-char (match-end 0))
-      (should (eolp))
-      (forward-line 1)
-      (end-of-line)
-      (when py-debug-p (message "fill-column: %s" fill-column))
-      (should (<= (current-column) 72)))))
 
 (ert-deftest py-ert-split-window-on-execute-1361535-test-fK4Nqy ()
   (py-test-with-temp-buffer-point-min
@@ -593,7 +574,7 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
   (if (not (executable-find "python2"))
       (and py-debug-p (message "py-python2-shell-test-8Ostfe: %s" "No python executable found!"))
     (let ((erg (python2)))
-      (sit-for 0.1) 
+      (sit-for 0.1)
       (should (bufferp (get-buffer erg)))
       (should (get-buffer-process erg)))))
 
@@ -707,6 +688,50 @@ Bar
     (goto-char (point-max))
     (forward-line -3)
     (should (eq 10 (py-compute-indentation)))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-django-76Aw4O ()
+  (py-test-with-temp-buffer-point-min
+      "# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+    Line below should not be empty, when ‘py-docstring-style’ is not ‘PEP-257’.
+    \"\"\"
+    return 7
+"
+    (let ((py-docstring-style 'django))
+      (goto-char 49)
+      (fill-paragraph)
+      (search-backward "\"\"\"")
+      (goto-char (match-end 0))
+      (should (eolp))
+      (forward-line 1)
+      (end-of-line)
+      (when py-debug-p (message "fill-column: %s" fill-column))
+      (should (<= (current-column) 72)))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-django-w8Rbx5 ()
+  (py-test-with-temp-buffer-point-min
+      "# r1416
+
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+
+    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+    Line below should not be empty, when ‘py-docstring-style’ is not ‘PEP-257’.
+
+    \"\"\"
+    return 7
+"
+    (let ((py-docstring-style 'django))
+      (goto-char 49)
+      (when py-debug-p (message "fill-column: %s" fill-column))
+      (fill-paragraph)
+      (py-end-of-string)
+      (forward-line -1)
+      (should-not (py-empty-line-p)))))
 
 (provide 'py-ert-interactive-tests)
 ;;; py-ert-interactive-tests.el ends here
