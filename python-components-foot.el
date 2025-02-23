@@ -253,6 +253,7 @@ VARIABLES
   ;; (add-hook 'python-mode-hook
   ;; (lambda ()
   ;; (run-with-idle-timer 1 t 'py-shell-complete))))
+  ;; (when py-electric-backspace-p (py-electric-backspace-mode 1))
   (if py-auto-fill-mode
       (add-hook 'python-mode-hook 'py--run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py--run-auto-fill-timer))

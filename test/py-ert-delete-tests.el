@@ -537,5 +537,14 @@ x = {'abc':'def',
     (py-electric-backspace)
     (should (eq (char-before) 41))))
 
+(ert-deftest py-backspace-test-86TyUY ()
+  (py-test-with-temp-buffer
+      "a = b = c = 5     "
+    (let (py-electric-backspace-p)
+    (goto-char (point-max))
+    (execute-kbd-macro (kbd "<backspace>"))   
+    (should (eq (point) 18)))))
+
+
 (provide 'py-ert-delete-tests)
 ;;; py-ert-delete-tests.el ends here

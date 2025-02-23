@@ -3940,6 +3940,41 @@ Optional argument END specify end."
   :tag "py-default-working-directory"
   :group 'python-mode)
 
+(defcustom py-python-ffap-setup-code
+  "
+def __FFAP_get_module_path(objstr):
+    try:
+        import inspect
+        import os.path
+        # NameError exceptions are delayed until this point.
+        obj = eval(objstr)
+        module = inspect.getmodule(obj)
+        filename = module.__file__
+        ext = os.path.splitext(filename)[1]
+        if ext in ('.pyc', '.pyo'):
+            # Point to the source file.
+            filename = filename[:-1]
+        if os.path.exists(filename):
+            return filename
+        return ''
+    except:
+        return ''"
+  "Python code to get a module path."
+  :type 'string
+  :tag "py-python-ffap-setup-code"
+  :group 'python-mode)
+
+;; (defvar py-ffap-string-code
+;;   "__FFAP_get_module_path('''%s''')\n"
+;;   "Python code used to get a string with the path of a module.")
+
+(defcustom py-ffap-string-code
+  "__FFAP_get_module_path('''%s''')"
+  "Python code used to get a string with the path of a module."
+  :type 'string
+  :tag "py-python-ffap-string-code"
+  :group 'python-mode)
+
 (defun py-empty-line-p ()
   "Return t if cursor is at an empty line, nil otherwise."
   (save-excursion
@@ -4047,7 +4082,7 @@ Returns ‘t’ if point was moved"
               (nth 4 (parse-partial-sexp (point-min) (point)))))
       (setq last (line-end-position))
       (forward-line 1)
-      (skip-chars-forward " \t\r\n\f") 
+      (skip-chars-forward " \t\r\n\f")
       (unless (or (eobp) (eq (point) last))
         (back-to-indentation)))
     (when last (goto-char last))))
@@ -5309,7 +5344,7 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 	       (comint-send-string proc "\n"))
 	     (cond (result
                     ;; (sit-for py-python-send-delay)
-                    (sit-for py-python-send-delay)                                                     
+                    (sit-for py-python-send-delay)
 		    (py--fetch-result buffer limit strg))
 	           (no-output
 	            (and orig (py--cleanup-shell orig buffer))))))

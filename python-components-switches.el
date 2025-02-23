@@ -1,6 +1,5 @@
 ;;; python-components-switches.el --- Toggle minor modes -*- lexical-binding: t; -*-
 
-
 ;; URL: https://gitlab.com/python-mode-devs
 
 ;; Keywords: languages
@@ -359,8 +358,6 @@ Returns value of ‘py-underscore-word-syntax-p’."
   (when (or py-verbose-p (called-interactively-p 'any)) (message "py-underscore-word-syntax-p: %s" py-underscore-word-syntax-p))
   py-underscore-word-syntax-p)
 
-;; py-toggle-underscore-word-syntax-p must be known already
-;; circular: py-toggle-underscore-word-syntax-p sets and calls it
 (defcustom py-underscore-word-syntax-p t
   "If underscore chars should be of ‘syntax-class’ word.
 
@@ -376,6 +373,9 @@ See bug report at launchpad, lp:940812"
   :set (lambda (symbol value)
          (set-default symbol value)
          (py-toggle-underscore-word-syntax-p (if value 1 0))))
+
+;; py-toggle-underscore-word-syntax-p must be known already
+;; circular: py-toggle-underscore-word-syntax-p sets and calls it
 
 (provide 'python-components-switches)
 ;;;  python-components-switches.el ends here

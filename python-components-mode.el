@@ -50,6 +50,8 @@
 
 ;;; Code:
 
+;; used by py-hungry-delete-backwards
+(require 'cc-cmds)
 (require 'python-components-rx)
 (require 'python-components-foot)
 (require 'python-components-start1)
