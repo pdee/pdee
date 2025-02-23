@@ -202,9 +202,8 @@ finally:
 (ert-deftest py-execute-string-text-dtOWbA1 ()
   (py-test-with-temp-buffer
       ""
-    (let (erg)
-      (setq erg (py-execute-string "print(\"foo\")" nil t))
-      (should (string= erg "foo"))
+    (let ((py-store-result-p t))
+      (py-execute-string "print(\"foo\")" nil t)
       (should (string= py-result "foo")))))
 
 (ert-deftest py-ert-class-definitions-lp-1018164-test-3pDuRq ()
@@ -1303,7 +1302,7 @@ def baz():
       (should (eq 4 (current-indentation)))
       (search-forward "glad")
       (forward-line 1)
-      ;; (sit-for 1) 
+      ;; (sit-for 1)
       (back-to-indentation)
       ;; (sit-for 1)
       ;; (should (eq (char-after) 34))

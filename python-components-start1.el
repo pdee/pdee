@@ -3538,18 +3538,6 @@ REGEXP defaults to \"[ \\t\\n\\r]+\"."
 TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
   (py--string-trim-left (py--string-trim-right strg trim-right) trim-left))
 
-;; subr-x
-;; (defsubst string-blank-p (strg)
-;;   "Check whether STRING is either empty or only whitespace."
-;;   (string-match-p "\\`[ \t\n\r]*\\'" strg))
-
-;; subr-x
-;; (defsubst string-remove-prefix (prefix strg)
-;;   "Remove PREFIX from STRING if present."
-;;   (if (string-prefix-p prefix strg)
-;;       (substring strg (length prefix))
-;;     strg))
-
 (defun py-toggle-imenu-create-index ()
   "Toggle value of ‘py--imenu-create-index-p’."
   (interactive)
@@ -4536,9 +4524,7 @@ thus remember ORIGLINE of source buffer"
 (defun py--fetch-result (buffer limit &optional cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
-  (when py-debug-p (message "(current-buffer): %s" (current-buffer))
-	;; (switch-to-buffer (current-buffer))
-        )
+  (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
   (cond (python-mode-v5-behavior-p
 	 (with-current-buffer buffer
 	   (py--string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n")))
@@ -5321,12 +5307,12 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 	     (when (or (not (string-match "\n\\'" strg))
 		       (string-match "\n[ \t].*\n?\\'" strg))
 	       (comint-send-string proc "\n"))
-	     (sit-for py-python-send-delay)
 	     (cond (result
-		    (setq py-result
-			  (py--fetch-result buffer limit strg)))
-		   (no-output
-		    (and orig (py--cleanup-shell orig buffer))))))
+                    ;; (sit-for py-python-send-delay)
+                    (sit-for py-python-send-delay)                                                     
+		    (py--fetch-result buffer limit strg))
+	           (no-output
+	            (and orig (py--cleanup-shell orig buffer))))))
       ;; (message "py-execute-string; current-buffer: %s" (current-buffer))
       (if (eq 1 (length (window-list)))
           (py--shell-manage-windows buffer)
