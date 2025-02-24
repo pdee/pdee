@@ -634,7 +634,7 @@ Default is nil"
   :group 'python-mode)
 
 (defvar highlight-indent-active nil)
-(defvar autopair-mode nil)
+;; (defvar autopair-mode nil)
 
 (defvar-local py--editbeg nil
   "Internally used by ‘py-edit-docstring’ and others")
@@ -671,15 +671,15 @@ See var ‘py-return-result-p’ and command ‘py-toggle-py-return-result-p’"
   :tag "py-timer-close-completions-p"
   :group 'python-mode)
 
-(defcustom py-autopair-mode nil
-  "If ‘python-mode’ calls (autopair-mode-on)
+;; (defcustom py-autopair-mode nil
+;;   "If ‘python-mode’ calls (autopair-mode-on)
 
-Default is nil
-Load ‘autopair-mode’ written by Joao Tavora <joaotavora [at] gmail.com>
-URL: http://autopair.googlecode.com"
-  :type 'boolean
-  :tag "py-autopair-mode"
-  :group 'python-mode)
+;; Default is nil
+;; Load ‘autopair-mode’ written by Joao Tavora <joaotavora [at] gmail.com>
+;; URL: http://autopair.googlecode.com"
+;;   :type 'boolean
+;;   :tag "py-autopair-mode"
+;;   :group 'python-mode)
 
 (defcustom py-indent-no-completion-p nil
   "If completion function should insert a TAB when no completion found.

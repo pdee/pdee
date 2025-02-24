@@ -64,44 +64,6 @@ Returns value of ‘py-smart-indentation’."
   (interactive)
   (customize-variable (quote py-sexp-function)))
 
-;; Autopair mode
-;; py-autopair-mode forms
-(declare-function autopair-mode "autopair" ())
-(defun py-autopair-check ()
-  "Check, if ‘autopair-mode’ is available.
-
-Give some hints, if not."
-  (interactive)
-  (if (featurep 'autopair)
-      't
-    (progn
-      (message "py-autopair-check: %s" "Don't see autopair.el. Make sure, it's installed. If not, maybe see source: URL: http://autopair.googlecode.com")
-      nil)))
-
-(defun py-toggle-autopair-mode ()
-  "If ‘py-autopair-mode’ should be on or off.
-
-  Returns value of ‘py-autopair-mode’ switched to."
-  (interactive)
-  (and (py-autopair-check)
-       (declare-function autopair-mode "autopair-mode" ())
-       (setq py-autopair-mode (autopair-mode (if autopair-mode 0 1)))))
-
-(defun py-autopair-mode-on ()
-  "Make sure, py-autopair-mode' is on.
-
-Returns value of ‘py-autopair-mode’."
-  (interactive)
-  (and (py-autopair-check)
-       (setq py-autopair-mode (autopair-mode 1))))
-
-(defun py-autopair-mode-off ()
-  "Make sure, py-autopair-mode' is off.
-
-Returns value of ‘py-autopair-mode’."
-  (interactive)
-  (setq py-autopair-mode (autopair-mode -1)))
-
 ;;  py-switch-buffers-on-execute-p forms
 (defun py-toggle-switch-buffers-on-execute-p (&optional arg)
   "Toggle ‘py-switch-buffers-on-execute-p’ according to ARG.

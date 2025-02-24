@@ -45,7 +45,7 @@
        'py-nested-block-or-clause-test
        'py-highlight-indentation-test
        'py-smart-indentation-test
-       'autopair-mode-test
+       ;; 'autopair-mode-test
        'py-execute-block-python-test
        'py-execute-statement-error-test
        'py-shell-complete-test
@@ -1570,19 +1570,19 @@ def fooBaz( bar ):  # version 2003/9/7
   (assert (eq 2 (py-guess-indent-offset)) nil "py-guess-indent-offset-test #5 failed")
   (message "%s" "py-guess-indent-offset-test #5 done"))
 
-(defun autopair-mode-test (&optional arg)
-  (interactive "p")
-  (let ((teststring "#! /usr/bin/env python
-# -*- coding: utf-8 -*-
+;; (defun autopair-mode-test (&optional arg)
+;;   (interactive "p")
+;;   (let ((teststring "#! /usr/bin/env python
+;; # -*- coding: utf-8 -*-
 
-"))
-  (py-bug-tests-intern 'autopair-on-base arg teststring)))
+;; "))
+;;   (py-bug-tests-intern 'autopair-on-base arg teststring)))
 
-(defun autopair-on-base (arg)
-  (assert (py-autopair-mode-on) nil "autopair-mode-test #1 failed")
-  (message "%s" "autopair-mode-test #1  done")
-  (assert (not (py-toggle-autopair-mode)) nil "autopair-mode-test #2 failed"))
-  (message "%s" "autopair-mode-test #2  done")
+;; (defun autopair-on-base (arg)
+;;   (assert (py-autopair-mode-on) nil "autopair-mode-test #1 failed")
+;;   (message "%s" "autopair-mode-test #1  done")
+;;   (assert (not (py-toggle-autopair-mode)) nil "autopair-mode-test #2 failed"))
+  ;; (message "%s" "autopair-mode-test #2  done")
 
 (defun py-smart-indentation-test (&optional arg)
   (interactive "p")

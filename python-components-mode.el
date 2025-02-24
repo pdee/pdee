@@ -111,7 +111,6 @@
 
 ;; (require 'python-components-eldoc)
 
-
 ;; (provide 'python-components-mode)
 (provide 'python-mode)
 ;;; python-components-mode.el ends her

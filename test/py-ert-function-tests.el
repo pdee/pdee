@@ -1192,14 +1192,14 @@
 (ert-deftest py-ert-toggle-sexp-function-functionp-test-ymnQYZ ()
   (should (functionp 'py-toggle-sexp-function)))
 
-(ert-deftest py-ert-toggle-autopair-mode-functionp-test-i4umLM ()
-  (should (functionp 'py-toggle-autopair-mode)))
+;; (ert-deftest py-ert-toggle-autopair-mode-functionp-test-i4umLM ()
+;;   (should (functionp 'py-toggle-autopair-mode)))
 
-(ert-deftest py-ert-autopair-mode-on-functionp-test-GOXfuz ()
-  (should (functionp 'py-autopair-mode-on)))
+;; (ert-deftest py-ert-autopair-mode-on-functionp-test-GOXfuz ()
+;;   (should (functionp 'py-autopair-mode-on)))
 
-(ert-deftest py-ert-autopair-mode-off-functionp-test-cpfpem ()
-  (should (functionp 'py-autopair-mode-off)))
+;; (ert-deftest py-ert-autopair-mode-off-functionp-test-cpfpem ()
+;;   (should (functionp 'py-autopair-mode-off)))
 
 (ert-deftest py-ert-switch-buffers-on-execute-p-on-functionp-test-2hUpEV ()
   (should (functionp 'py-switch-buffers-on-execute-p-on)))
@@ -2010,7 +2010,7 @@
 (ert-deftest py-ert-py-smart-indentation-off-functionp-test ()   (should (functionp 'py-smart-indentation-off)))
 (ert-deftest py-ert-py-toggle-sexp-function-functionp-test ()   (should (functionp 'py-toggle-sexp-function)))
 (ert-deftest py-ert-py-toggle-autopair-mode-functionp-test ()   (should (functionp 'py-toggle-autopair-mode)))
-(ert-deftest py-ert-py-autopair-mode-on-functionp-test ()   (should (functionp 'py-autopair-mode-on)))
+;; (ert-deftest py-ert-py-autopair-mode-on-functionp-test ()   (should (functionp 'py-autopair-mode-on)))
 (ert-deftest py-ert-py-autopair-mode-off-functionp-test ()   (should (functionp 'py-autopair-mode-off)))
 (ert-deftest py-ert-py-toggle-switch-buffers-on-execute-p-functionp-test ()   (should (functionp 'py-toggle-switch-buffers-on-execute-p)))
 (ert-deftest py-ert-py-switch-buffers-on-execute-p-on-functionp-test ()   (should (functionp 'py-switch-buffers-on-execute-p-on)))

@@ -70,8 +70,8 @@
 (ert-deftest py-ert-autofill-timer-delay-test-f1Dh7B ()
   (should (boundp 'py-autofill-timer-delay)))
 
-(ert-deftest py-ert-autopair-mode-test-9agvcu ()
-  (should (boundp 'py-autopair-mode)))
+;; (ert-deftest py-ert-autopair-mode-test-9agvcu ()
+;;   (should (boundp 'py-autopair-mode)))
 
 (ert-deftest py-ert-backslashed-lines-indent-offset-test-L7tlfm ()
   (should (boundp 'py-backslashed-lines-indent-offset)))

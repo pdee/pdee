@@ -211,16 +211,16 @@ VARIABLES
   (set (make-local-variable 'electric-indent-mode) nil)
   (and py-load-skeletons-p (py-load-skeletons))
   (and py-guess-py-install-directory-p (py-set-load-path))
-  (and py-autopair-mode
-       (declare-function autopair-python-triple-quote-action "autopair" ())
-       (declare-function autopair-default-handle-action "autopair" ())
-       (load-library "autopair")
-       (add-hook 'python-mode-hook
-                 #'(lambda ()
-                     (setq autopair-handle-action-fns
-                           (list #'autopair-default-handle-action
-                                 #'autopair-python-triple-quote-action))))
-       (py-autopair-mode-on))
+  ;; (and py-autopair-mode
+  ;;      (declare-function autopair-python-triple-quote-action "autopair" ())
+  ;;      (declare-function autopair-default-handle-action "autopair" ())
+  ;;      (load-library "autopair")
+  ;;      (add-hook 'python-mode-hook
+  ;;                #'(lambda ()
+  ;;                    (setq autopair-handle-action-fns
+  ;;                          (list #'autopair-default-handle-action
+  ;;                                #'autopair-python-triple-quote-action))))
+  ;;      (py-autopair-mode-on))
   (when (and py--imenu-create-index-p
              (fboundp 'imenu-add-to-menubar)
              (ignore-errors (require 'imenu)))
