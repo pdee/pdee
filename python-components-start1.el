@@ -3214,6 +3214,9 @@ Add hook \\='comint-output-filter-functions \\='py--pdbtrack-track-stack-file"
   :tag "pdb-track-stack-from-shell-p"
   :group 'python-mode)
 
+(defvar gud-pdb-history ""
+  "Silence compiler warning.")
+
 (defcustom py-update-gud-pdb-history-p t
   "If pdb should provide suggestions WRT file to check and ‘py-pdb-path’.
 
