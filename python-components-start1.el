@@ -89,6 +89,18 @@
 
 ;; (require 'org)
 
+(defvar comint-mime-setup-script-dir nil
+  "Avoid compiler warning")
+
+(defvar comint-mime-enabled-types nil
+  "Avoid compiler warning")
+
+(defvar comint-mime-setup-function-alist nil
+  "Avoid compiler warning")
+
+(defvar comint-mime-setup-function-alist nil
+  "Avoid compiler warning")
+
 (defgroup python-mode nil
   "Support for the Python programming language, <http://www.python.org/>"
   :group 'languages
@@ -620,17 +632,6 @@ Default is nil"
   :type 'boolean
   :tag "py-modeline-acronym-display-home-p"
   :group 'python-mode)
-
-(defun py-autopair-check ()
-  "Check, if ‘autopair-mode’ is available.
-
-Give some hints, if not."
-  (interactive)
-  (if (featurep 'autopair)
-      't
-    (progn
-      (message "py-autopair-check: %s" "Don't see autopair.el. Make sure, it's installed. If not, maybe see source: URL: http://autopair.googlecode.com")
-      nil)))
 
 (defvar highlight-indent-active nil)
 (defvar autopair-mode nil)
@@ -3590,9 +3591,9 @@ If succesful, returns beginning of docstring position in buffer"
   "STATE expected as result von (parse-partial-sexp (point-min) (point)."
   (if (nth 3 state)
       (if (py--docstring-p (nth 8 state))
-          font-lock-doc-face
-        font-lock-string-face)
-    font-lock-comment-face))
+          'font-lock-doc-face
+        'font-lock-string-face)
+    'font-lock-comment-face))
 
 (and (fboundp 'make-obsolete-variable)
      (make-obsolete-variable 'py-mode-hook 'python-mode-hook nil))

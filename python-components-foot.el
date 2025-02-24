@@ -253,7 +253,10 @@ VARIABLES
   ;; (add-hook 'python-mode-hook
   ;; (lambda ()
   ;; (run-with-idle-timer 1 t 'py-shell-complete))))
-  ;; (when py-electric-backspace-p (py-electric-backspace-mode 1))
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (if py-electric-backspace-p (py-electric-backspace-mode 1)
+                (py-electric-backspace-mode -1))))
   (if py-auto-fill-mode
       (add-hook 'python-mode-hook 'py--run-auto-fill-timer)
     (remove-hook 'python-mode-hook 'py--run-auto-fill-timer))
@@ -272,7 +275,7 @@ VARIABLES
     (set (make-local-variable 'end-of-defun-function) 'py-forward-def-or-class)
     (define-key python-mode-map [(control meta a)] 'py-backward-def-or-class)
     (define-key python-mode-map [(control meta e)] 'py-forward-def-or-class))
-    (when py-sexp-use-expression-p
+  (when py-sexp-use-expression-p
     (define-key python-mode-map [(control meta f)] 'py-forward-expression)
     (define-key python-mode-map [(control meta b)] 'py-backward-expression))
 
@@ -281,7 +284,7 @@ VARIABLES
   (when (and py-debug-p (called-interactively-p 'any))
     (py-message-which-python-mode))
   (when py-use-menu-p
-	  (py-define-menu python-mode-map))
+    (py-define-menu python-mode-map))
   (force-mode-line-update))
 
 (define-derived-mode py-shell-mode comint-mode py-modeline-display

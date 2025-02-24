@@ -5,9 +5,8 @@ Prepared for version 6.3.2
 -----------------------
 - ‘py-electric-backspace-mode’ is a minor-mode now.
 
-  Call M-x customize-variable ‘py-electric-backspace-mode’ RET in
+  Call M-x customize-variable ‘py-electric-backspace-p’ RET in
   order to change the default.
-  See also command ‘py-electric-backspace-mode’ WRT current session.
 
 - TAB calls ‘py-indent-line’ by default.
 

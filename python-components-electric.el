@@ -360,13 +360,13 @@ Default is nil"
         (keymap-local-unset "<backspace>")
       (local-unset-key "<backspace>"))))
 
-(defcustom py-electric-backspace-mode nil
+(defcustom py-electric-backspace-p nil
   "When ‘t’, <backspace> key will delete all whitespace chars before point.
 
 Default nil"
 
   :type 'boolean
-  :tag "py-electric-backspace-mode"
+  :tag "py-electric-backspace-p"
   :group 'python-mode
   :safe 'booleanp
   :set (lambda (symbol value)

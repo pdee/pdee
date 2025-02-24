@@ -318,8 +318,6 @@ if __name__ == \"__main__\":
         (search-forward "\"\"\"")
         (should (eq 8 (current-indentation))))))
 
-
-
 (ert-deftest py-ert-split-window-on-execute-1361535-test-fK4Nqy ()
   (py-test-with-temp-buffer-point-min
       "print(\"%(language)s has %(number)03d quote types.\" %
@@ -732,6 +730,76 @@ def baz():
       (py-end-of-string)
       (forward-line -1)
       (should-not (py-empty-line-p)))))
+
+(ert-deftest py-up-string-test-NJ7sie ()
+  (py-test-with-temp-buffer
+      "class M:
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+
+        In Python 3.14, the end state is to require and use the module's
+        __spec__.loader and ignore any __loader__ attribute on the
+        module.
+
+        * If you have a __loader__ and a __spec__.loader but they are not the
+        same, in Python 3.12 we issue a DeprecationWarning and fall back to
+        __loader__ for backward compatibility.  In Python 3.14, we'll flip
+        this case to ignoring __loader__ entirely, without error.
+
+        \"\"\"
+        self.a = 1
+        self.b = 2"
+    ;; (font-lock-ensure)
+    (goto-char (point-max))
+    (search-backward "\"\"\"")
+    (py-up)
+    (should (eq (char-after) 34))
+    (should (eq (char-before) 32))))
+
+(ert-deftest py-up-string-test-DVKVO2 ()
+  (py-test-with-temp-buffer
+      "class M:
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+
+        In Python 3.14, the end state is to require and use the module's
+        __spec__.loader and ignore any __loader__ attribute on the
+        module.
+
+        * If you have a __loader__ and a __spec__.loader but they are not the
+        same, in Python 3.12 we issue a DeprecationWarning and fall back to
+        __loader__ for backward compatibility.  In Python 3.14, we'll flip
+        this case to ignoring __loader__ entirely, without error.
+
+        \"\"\"
+        self.a = 1
+        self.b = 2"
+    (goto-char (point-max))
+    (search-backward "error")
+    ;; (and py-debug-p (message "py-version: %s" py-version))
+    ;; (font-lock-ensure)
+    ;; (sit-for 0.1)
+    (ignore-errors (call-interactively (py-up)))
+    (should (eq (char-after) 34))
+    (should (eq (char-before) 32))
+      ))
+
+
+(ert-deftest py-backspace-test-86TyUY ()
+  (py-test-with-temp-buffer
+      "a = b = c = 5     "
+    (goto-char (point-max))
+    (py-electric-backspace-mode -1)
+    (execute-kbd-macro (kbd "<backspace>"))
+    (should (eq (point) 18))))
+
+(ert-deftest py-backspace-test-xyFFow ()
+  (py-test-with-temp-buffer
+      "a = b = c = 5     "
+    (goto-char (point-max))
+    (py-electric-backspace-mode 1)
+    (execute-kbd-macro (kbd "<backspace>"))
+    (should (eq (point) 14))))
 
 (provide 'py-ert-interactive-tests)
 ;;; py-ert-interactive-tests.el ends here

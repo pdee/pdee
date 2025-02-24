@@ -6867,59 +6867,6 @@ class C:
     (py-forward-clause)
     (should (looking-back "ausgabe\\[6] = treffer" (line-beginning-position) t))))
 
-(ert-deftest py-up-string-test-NJ7sie ()
-  (py-test-with-temp-buffer
-      "class M:
-    def __init__(self):
-        \"\"\"Helper function implementing the current module loader policy.1
-
-        In Python 3.14, the end state is to require and use the module's
-        __spec__.loader and ignore any __loader__ attribute on the
-        module.
-
-        * If you have a __loader__ and a __spec__.loader but they are not the
-        same, in Python 3.12 we issue a DeprecationWarning and fall back to
-        __loader__ for backward compatibility.  In Python 3.14, we'll flip
-        this case to ignoring __loader__ entirely, without error.
-
-        \"\"\"
-        self.a = 1
-        self.b = 2"
-    ;; (font-lock-ensure)
-    (goto-char (point-max))
-    (search-backward "\"\"\"")
-    (py-up)
-    (should (eq (char-after) 34))
-    (should (eq (char-before) 32))))
-
-(ert-deftest py-up-string-test-DVKVO2 ()
-  (py-test-with-temp-buffer
-      "class M:
-    def __init__(self):
-        \"\"\"Helper function implementing the current module loader policy.1
-
-        In Python 3.14, the end state is to require and use the module's
-        __spec__.loader and ignore any __loader__ attribute on the
-        module.
-
-        * If you have a __loader__ and a __spec__.loader but they are not the
-        same, in Python 3.12 we issue a DeprecationWarning and fall back to
-        __loader__ for backward compatibility.  In Python 3.14, we'll flip
-        this case to ignoring __loader__ entirely, without error.
-
-        \"\"\"
-        self.a = 1
-        self.b = 2"
-    (goto-char (point-max))
-    (search-backward "error")
-    ;; (and py-debug-p (message "py-version: %s" py-version))
-    ;; (font-lock-ensure)
-    ;; (sit-for 0.1)
-    (ignore-errors (call-interactively (py-up)))
-    (should (eq (char-after) 34))
-    (should (eq (char-before) 32))
-      ))
-
 (ert-deftest py-up-comment-test-4dAZaV ()
   (py-test-with-temp-buffer
       "class M:

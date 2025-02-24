@@ -67,6 +67,17 @@ Returns value of ‘py-smart-indentation’."
 ;; Autopair mode
 ;; py-autopair-mode forms
 (declare-function autopair-mode "autopair" ())
+(defun py-autopair-check ()
+  "Check, if ‘autopair-mode’ is available.
+
+Give some hints, if not."
+  (interactive)
+  (if (featurep 'autopair)
+      't
+    (progn
+      (message "py-autopair-check: %s" "Don't see autopair.el. Make sure, it's installed. If not, maybe see source: URL: http://autopair.googlecode.com")
+      nil)))
+
 (defun py-toggle-autopair-mode ()
   "If ‘py-autopair-mode’ should be on or off.
 
