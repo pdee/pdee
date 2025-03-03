@@ -4,17 +4,18 @@ Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
 
 * Initialize\
+
   Make sure the directory, where python-mode.el resides, is in load-path
   For expample put something like that in your init-file: 
 
   (add-to-list 'load-path "PATH/TO/PYTHON-MODE")\
-  (require 'python-mode)\
+  (require 'python-mode)
 
   or probably still better: 
 
   (setq py-install-directory "PATH/TO/PYTHON-MODE/")\
   (add-to-list 'load-path py-install-directory)\
-  (require 'python-mode)\
+  (require 'python-mode)
 
 * Selecting a Python shell:
 
