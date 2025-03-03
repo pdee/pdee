@@ -1,23 +1,20 @@
-[![CircleCI pdee](https://circleci.com/gh/pdee/pdee.svg?style=svg)](https://app.circleci.com/pipelines/gh/pdee/pdee)
-
 [![MELPA](https://melpa.org/packages/python-mode-badge.svg)](https://melpa.org/#/python-mode)
 
 Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
 
-
 * Initialize
   Make sure the directory, where python-mode.el resides, is in load-path
   For expample put something like that in your init-file: 
 
-  (add-to-list 'load-path "PATH/TO/PYTHON-MODE")
-  (require 'python-mode)
+  (add-to-list 'load-path "PATH/TO/PYTHON-MODE")\
+  (require 'python-mode)\
 
   or probably still better: 
 
-  (setq py-install-directory "PATH/TO/PYTHON-MODE/")
-  (add-to-list 'load-path py-install-directory)
-  (require 'python-mode)
+  (setq py-install-directory "PATH/TO/PYTHON-MODE/")\
+  (add-to-list 'load-path py-install-directory)\
+  (require 'python-mode)\
 
 * Selecting a Python shell:
 
@@ -70,17 +67,6 @@ Provide fine grained navigation of all known Python constructs.
   (interactive)
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
 
-* Prefix conventions
-
-  Most python-mode.el commands start with prefix `py-'
-
-  `M-x py- TAB'
-  displays a list of them in completion-buffer.
-  See also commands list delivered in directory doc.
-
-  List virtualenv related `M-x virtualenv- TAB'
-  resp. Pymacs commands `M-x pymacs-'
-
 * Execution code
   Python code might be processed by an
 
@@ -94,6 +80,57 @@ Both processes might run in
 
 There is also
 - python-mode-v5-behavior
+
+* Indentation rules
+  See customizable variable ‘py-indent-offset’ for default indent
+  
+  Beside syntactic indent, a couple of conventions should enhance readability.
+  
+  Customizable variable ‘py-closing-list-dedents-bos’: 
+  When non-nil, indent lists closing delimiter like start-column.
+  
+  my_list = [
+    1, 2, 3,
+    4, 5, 6
+  ]
+  
+  otherwise
+
+  my_list = [
+    1, 2, 3,
+    4, 5, 6
+    ]
+
+  With nested dicts: 
+  
+  "# closing, py-closing-list-dedents-bos t
+  asdf = {
+      'a':{
+           'b':3,
+           'c':4
+      }
+  }
+
+  otherwise
+  # hanging, py-closing-list-dedents-bos nil
+  asdf = {
+      'a':{
+           'b':3,
+           'c':4
+          }
+      }
+
+  # With opener at EOL, next line indents acording to ‘py-indent-offset’
+  def long_function_name(
+      var_one, var_two, var_three,
+      var_four):
+      print(var_one)
+
+  # ‘one-level-from-first-element’ adds ‘py-indent-offset’ from first element
+  def foo():
+      if (foo &&
+              baz):
+          bar()"
 
 * Checks
   Access is provided to a couple of known checkers like Flake8, pep8, pylint
@@ -206,6 +243,17 @@ There is also
   Comment- and docstring settings might be disabled by
   any non-integer value, which means: do not use a
   different value of `fill-column' than emacs-wide
+
+* Prefix conventions
+
+  Most python-mode.el commands start with prefix `py-'
+
+  `M-x py- TAB'
+  displays a list of them in completion-buffer.
+  See also commands list delivered in directory doc.
+
+  List virtualenv related `M-x virtualenv- TAB'
+  resp. Pymacs commands `M-x pymacs-'
 
 * Python and IPython
 
