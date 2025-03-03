@@ -3,7 +3,7 @@
 Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
 
-* Initialize\
+* Initialize
 
   Make sure the directory, where python-mode.el resides, is in load-path
   For expample put something like that in your init-file: 
@@ -21,7 +21,7 @@ Provide fine grained navigation of all known Python constructs.
 
   Customize default Python shell as `py-shell-name'
 
-  `py-shell-name' might be an installed default executable as shell
+  ‘py-shell-name’ might be an installed default executable as shell
   command `type' would display, but also a PATH/TO/EXECUTABLE
 
   If different flavours of Python are installed, in order to adress
@@ -68,19 +68,19 @@ Provide fine grained navigation of all known Python constructs.
   (interactive)
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
 
-* Execution code
+* Executing code
   Python code might be processed by an
 
-- interactive Python shell (DEFAULT)
-- non-interactive Python (`py-fast-process-p')
+interactive Python shell (DEFAULT)
+non-interactive Python (`py-fast-process-p')
   The latter, while design for large output, seems more reliable - see  also PROBLEMS.org.
 
 Both processes might run in 
-- session, i.e. start from possible previous state (DEFAULT)
-- dedicated, (`py-dedicated-process-p') run in separate process
+session, i.e. start from possible previous state (DEFAULT)
+dedicated, (`py-dedicated-process-p') run in separate process
 
 There is also
-- python-mode-v5-behavior
+python-mode-v5-behavior
 
 * Indentation rules
 See customizable variable ‘py-indent-offset’ for default indent
