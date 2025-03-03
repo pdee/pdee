@@ -70,40 +70,39 @@ Provide fine grained navigation of all known Python constructs.
 
 * Executing code
 
-Python code might be processed by an
+  Python code might be processed by an interactive Python shell (DEFAULT)
 
-interactive Python shell (DEFAULT)
-non-interactive Python (`py-fast-process-p')
+  non-interactive Python (`py-fast-process-p')
+  
   The latter, while design for large output, seems more reliable - see  also PROBLEMS.org.
 
-Both processes might run in 
-session, i.e. start from possible previous state (DEFAULT)
-dedicated, (`py-dedicated-process-p') run in separate process
+  Both processes might run in 
+  - session, i.e. start from possible previous state (DEFAULT)
+  - dedicated, (`py-dedicated-process-p') run in separate process
 
-There is also
-python-mode-v5-behavior
+  There is also ‘python-mode-v5-behavior’
 
 * Indentation rules
-See customizable variable ‘py-indent-offset’ for default indent
+  See customizable variable ‘py-indent-offset’ for default indent
   
-Beside syntactic indent, a couple of conventions should enhance readability.
+  Beside syntactic indent, a couple of conventions should enhance readability.
   
   Customizable variable ‘py-closing-list-dedents-bos’: 
   When non-nil, indent lists closing delimiter like start-column.
   
-  my_list = [
-    1, 2, 3,
+  my_list = [\
+    1, 2, 3,\
     4, 5, 6
   ]
   
   otherwise
 
-  my_list = [
-    1, 2, 3,
-    4, 5, 6
+  my_list = [\
+    1, 2, 3,\
+    4, 5, 6\
     ]
 
-With nested dicts: 
+  With nested dicts: 
   
   closing, py-closing-list-dedents-bos t
   asdf = {
