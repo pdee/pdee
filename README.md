@@ -3,7 +3,7 @@
 Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
 
-* Initialize
+* Initialize\
   Make sure the directory, where python-mode.el resides, is in load-path
   For expample put something like that in your init-file: 
 
