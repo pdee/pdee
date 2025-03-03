@@ -82,9 +82,9 @@ There is also
 - python-mode-v5-behavior
 
 * Indentation rules
-  See customizable variable ‘py-indent-offset’ for default indent
+- See customizable variable ‘py-indent-offset’ for default indent
   
-  Beside syntactic indent, a couple of conventions should enhance readability.
+-  Beside syntactic indent, a couple of conventions should enhance readability.
   
   Customizable variable ‘py-closing-list-dedents-bos’: 
   When non-nil, indent lists closing delimiter like start-column.
@@ -101,9 +101,9 @@ There is also
     4, 5, 6
     ]
 
-  With nested dicts: 
+- With nested dicts: 
   
-  "# closing, py-closing-list-dedents-bos t
+  closing, py-closing-list-dedents-bos t
   asdf = {
       'a':{
            'b':3,
@@ -112,7 +112,7 @@ There is also
   }
 
   otherwise
-  # hanging, py-closing-list-dedents-bos nil
+- hanging, py-closing-list-dedents-bos nil
   asdf = {
       'a':{
            'b':3,
@@ -120,13 +120,13 @@ There is also
           }
       }
 
-  # With opener at EOL, next line indents acording to ‘py-indent-offset’
+  With opener at EOL, next line indents acording to ‘py-indent-offset’
   def long_function_name(
       var_one, var_two, var_three,
       var_four):
       print(var_one)
 
-  # ‘one-level-from-first-element’ adds ‘py-indent-offset’ from first element
+  ‘one-level-from-first-element’ adds ‘py-indent-offset’ from first element
   def foo():
       if (foo &&
               baz):
