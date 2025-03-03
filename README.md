@@ -70,9 +70,9 @@ Provide fine grained navigation of all known Python constructs.
 
 * Executing code
 
-  Python code might be processed by an interactive Python shell (DEFAULT)
+  - Python code might be processed by an interactive Python shell (DEFAULT)
 
-  non-interactive Python (`py-fast-process-p')
+  - non-interactive Python (`py-fast-process-p')
   
   The latter, while design for large output, seems more reliable - see  also PROBLEMS.org.
 
@@ -104,33 +104,34 @@ Provide fine grained navigation of all known Python constructs.
 
   With nested dicts: 
   
-  closing, py-closing-list-dedents-bos t
-  asdf = {
-      'a':{
-           'b':3,
-           'c':4
-      }
+  closing, py-closing-list-dedents-bos t\
+  asdf = {\
+      'a':{\
+           'b':3,\
+           'c':4\
+      }\
   }
 
   otherwise
-hanging, py-closing-list-dedents-bos nil
-  asdf = {
-      'a':{
-           'b':3,
-           'c':4
-          }
+
+  hanging, py-closing-list-dedents-bos nil\
+  asdf = {\
+      'a':{\
+           'b':3,\
+           'c':4\
+          }\
       }
 
-  With opener at EOL, next line indents acording to ‘py-indent-offset’
-  def long_function_name(
-      var_one, var_two, var_three,
-      var_four):
+  With opener at EOL, next line indents acording to ‘py-indent-offset’\
+  def long_function_name(\
+      var_one, var_two, var_three,\
+      var_four):\
       print(var_one)
 
-  ‘one-level-from-first-element’ adds ‘py-indent-offset’ from first element
-  def foo():
-      if (foo &&
-              baz):
+  ‘one-level-from-first-element’ adds ‘py-indent-offset’ from first element\
+  def foo():\
+      if (foo &&\
+              baz):\
           bar()"
 
 * Checks
