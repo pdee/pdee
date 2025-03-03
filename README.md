@@ -69,7 +69,8 @@ Provide fine grained navigation of all known Python constructs.
   (py-shell nil DEDICATED PATH-TO-LOCAL-SHELL))
 
 * Executing code
-  Python code might be processed by an
+
+Python code might be processed by an
 
 interactive Python shell (DEFAULT)
 non-interactive Python (`py-fast-process-p')
