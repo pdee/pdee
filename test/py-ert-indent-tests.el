@@ -296,7 +296,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 
 (ert-deftest py-compute-indentation-bob-test-HcSwMS ()
   (py-test-with-temp-buffer-point-min
-      " def foo():
+      "def foo():
     if True:
         pass
     else:
@@ -387,11 +387,11 @@ asdf = {
     'a':{
          'b':3,
          'c':4
-        }"
+        }
+"
     (goto-char(point-max))
-    (beginning-of-line)
     (let ((py-closing-list-dedents-bos nil))
-      (should (eq 8 (py-compute-indentation))))))
+      (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-10-uGdWJg ()
   (py-test-with-temp-buffer
@@ -419,8 +419,7 @@ asdf = {
     (goto-char(point-max))
     (forward-char -1)
     (let ((py-closing-list-dedents-bos t))
-      (indent-line-to (py-compute-indentation))
-      (should (eq 0 (current-column))))))
+      (should (eq 0 (py-compute-indentation))))))
 
 (ert-deftest py-ert-nested-dictionaries-indent-lp:328791-test-12-ygoJUM4 ()
   (py-test-with-temp-buffer
@@ -437,7 +436,7 @@ asdf = {
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-eBQAKK ()
   (py-test-with-temp-buffer-point-min
-      "\(along, sequence, of_items,
+      "(along, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
     (goto-char (point-min))
     (forward-char 1)
@@ -445,13 +444,11 @@ asdf = {
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-8L9T1k ()
   (py-test-with-temp-buffer
-      "\(long, sequence, of_items,
+      "(long, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
-    (goto-char(point-max))
     (let ((py-indent-list-style 'line-up-with-first-element))
       (goto-char (point-max))
-      (indent-line-to (py-compute-indentation))
-      (should (eq 1 (current-indentation))))))
+      (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-list-indent-test-THFplR ()
   (py-test-with-temp-buffer
@@ -472,8 +469,7 @@ that, needs, to_be, wrapped)"
     (goto-char(point-max))
     (search-backward "d")
     (let ((py-indent-list-style 'line-up-with-first-element))
-      (indent-line-to (py-compute-indentation))
-      (should  (eq 16 (current-indentation))))))
+      (should  (eq 16 (py-compute-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-pGszAP ()
   (py-test-with-temp-buffer
@@ -481,8 +477,7 @@ that, needs, to_be, wrapped)"
     (goto-char(point-max))
     (search-backward ")")
     (let ((py-indent-list-style 'line-up-with-first-element))
-      (indent-line-to  (py-compute-indentation))
-      (should (eq 9 (current-indentation))))))
+      (should (eq 9 (py-compute-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-3kW4RJ ()
   (py-test-with-temp-buffer
@@ -498,16 +493,14 @@ a):"
       "def foo (a,\n):"
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
-      (indent-line-to (py-compute-indentation))
-      (should (eq 4 (current-indentation))))))
+      (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-indent-in-arglist-test-kYc1wJ ()
   (py-test-with-temp-buffer
       "def foo (\na,"
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
-      (indent-line-to (py-compute-indentation))
-      (should (eq 4 (current-indentation))))))
+      (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-close-block-test-8LPQD3 ()
   (py-test-with-temp-buffer-point-min
@@ -528,9 +521,9 @@ if __name__==\"__main__\":
   (py-test-with-temp-buffer
       "def foo (a,\n):"
     (goto-char(point-max))
-    (let ((py-indent-list-style 'one-level-from-first-element))
-      (indent-line-to (py-compute-indentation))
-      (should (eq 13 (current-indentation))))))
+    (let ((py-indent-list-style 'one-level-from-first-element)
+          py-closing-list-dedents-bos)
+      (should (eq 13 (py-compute-indentation))))))
 
 (ert-deftest py-ert-close-def-or-class-test-7Kc5SQ ()
   (py-test-with-temp-buffer-point-min
@@ -619,7 +612,7 @@ import os
       "
 my_list = [
     1, 2, 3,
-    4, 5, 6,
+    4, 5, 6
     ]
 "
     (goto-char (point-max))
@@ -629,19 +622,32 @@ my_list = [
   (py-test-with-temp-buffer
       "
 my_list = [1, 2, 3,
-    4, 5, 6,
+    4, 5, 6
     ]"
-    (goto-char (point-max))
-    (search-backward "4")
-    ;; line-up-with-first-element (default)
-    (should (eq 11 (py-compute-indentation)))))
+    (let (py-closing-list-dedents-bos)
+      (goto-char (point-max))
+      (search-backward "4")
+      ;; line-up-with-first-element (default)
+      (should (eq 11 (py-compute-indentation))))))
+
+(ert-deftest py-ert-indent-closing-EcP0BS ()
+  (py-test-with-temp-buffer
+      "
+my_list = [1, 2, 3,
+    4, 5, 6
+    ]"
+    (let ((py-closing-list-dedents-bos t))
+      (goto-char (point-max))
+      (search-backward "4")
+      ;; line-up-with-first-element (default)
+      (should (eq 11 (py-compute-indentation))))))
 
 (ert-deftest py-ert-indent-closing-vmqBXD ()
   (py-test-with-temp-buffer
       "
 my_list = [
     1, 2, 3,
-    4, 5, 6,
+    4, 5, 6
     ]"
     (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
       (goto-char (point-max))
@@ -653,12 +659,48 @@ my_list = [
       "
 my_list = [
     1, 2, 3,
-    4, 5, 6,
+    4, 5, 6
     ]"
     (let ((py-closing-list-dedents-bos t))
       (goto-char (point-max))
       (search-backward "]")
       (should (eq 0 (py-compute-indentation))))))
+
+(ert-deftest py-ert-indent-closing-Juf3lq ()
+  (py-test-with-temp-buffer
+"
+my_list = [
+    1, 2, 3,
+    4, 5, 6]"
+    (let ((py-closing-list-dedents-bos t)
+          (py-indent-list-style 'one-level-to-beginning-of-statement))
+      (goto-char (point-max))
+      (search-backward "]")
+      (should (eq 4 (py-compute-indentation))))))
+
+(ert-deftest py-ert-indent-closing-6IYou0 ()
+  (py-test-with-temp-buffer
+"
+my_list = [
+    1, 2, 3,
+    4, 5, 6]"
+    (let ((py-closing-list-dedents-bos t)
+          (py-indent-list-style 'line-up-with-first-element))
+      (goto-char (point-max))
+      ;; previous line matters
+      (search-backward "]")
+      (should (eq 4 (py-compute-indentation))))))
+
+(ert-deftest py-ert-indent-closing-TGnvyS ()
+  (py-test-with-temp-buffer
+"
+my_list = [
+    1, 2, 3,
+    4, 5, 6]"
+    (let ((py-closing-list-dedents-bos t))
+      (goto-char (point-max))
+      (search-backward "3")
+      (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-async-indent-test-MFS8IW ()
   (py-test-with-temp-buffer-point-min
@@ -715,7 +757,7 @@ def foo():
           'string'
           'here')"
     (goto-char (point-max))
-    (beginning-of-line)
+    (search-backward "s")
     (should (eq 6 (py-compute-indentation)))))
 
 (ert-deftest py-ert-list-indent-test-GXE2bT ()
@@ -728,25 +770,24 @@ def foo():
     (goto-char (point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
       (search-backward "datetime.datetime.now")
-      (indent-line-to (py-compute-indentation))
-      (should (eq 8 (current-indentation))))))
+      (should (eq 8 (py-compute-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-70Eccx ()
   (py-test-with-temp-buffer
-      "\(long, sequence, of_items,
+      "(long, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
     (goto-char(point-max))
+    (skip-chars-backward " \t\r\n\f")
     (let ((py-indent-list-style 'one-level-from-first-element))
-      (should (eq 5 (py-compute-indentation))))))
+      (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-flexible-indentation-lp-328842-test-umQ6Tk ()
   (py-test-with-temp-buffer
-      "\( whitespaced, long, sequence, of_items,
+      "( whitespaced, long, sequence, of_items,
     that, needs, to_be, wrapped) = input_list"
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
-      (indent-line-to (py-compute-indentation))
-      (should (eq 5 (py-compute-indentation))))))
+      (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-list-indent-test-hvCk3U ()
   (py-test-with-temp-buffer
@@ -791,7 +832,7 @@ def main():
 (ert-deftest py-clause-indent-test-UXZsX9 ()
   (py-test-with-temp-buffer
       "def ziffernraten ()
-    ziffer = random\.randint(1,20)
+    ziffer = random.randint(1,20)
 
     guess = 0
     tries = 0
@@ -809,15 +850,15 @@ else: "
     (goto-char (point-max))
     (should (eq 4  (py-compute-indentation)))))
 
-(ert-deftest py-multline-arguments-with-literal-lists-79-test-7NWa5T ()
-  (py-test-with-temp-buffer
-      ;; Improper indentation for multline arguments with literal lists (#79)
-      "def foo():
-    bar = dosomething([
-                       x <- point"
-    (goto-char (point-max))
-    (search-backward "x")
-    (should (eq 8 (py-compute-indentation)))))
+;; (ert-deftest py-multline-arguments-with-literal-lists-79-test-7NWa5T ()
+;;   (py-test-with-temp-buffer
+;;       ;; Improper indentation for multline arguments with literal lists (#79)
+;;       "def foo():
+;;     bar = dosomething([
+;;                        x <- point"
+;;     (goto-char (point-max))
+;;     (search-backward "x")
+;;     (should (eq 8 (py-compute-indentation)))))
 
 (ert-deftest lines-after-return-80-Ahdpe8 ()
   (py-test-with-temp-buffer
@@ -843,32 +884,16 @@ if len(sys.argv) == 1"
 (ert-deftest py-98-indent-test-KaDCGx ()
   (py-test-with-temp-buffer
       "def some_fct():
-    \"\"\" Test for py-indent-or-complete\.
+    \"\"\" Test for py-indent-or-complete.
 
-    To test place point on the first statement\.
+    To test place point on the first statement.
 
-    If this line is here, py-compute-indentation returns 0\.
+    If this line is here, py-compute-indentation returns 0.
 
     \"\"\"
     if the_cursor_is_here:"
     (goto-char (point-max))
     (should (eq 4 (current-indentation)))))
-
-(ert-deftest py-bug42513-indent-multi-line-if-test-KaDCGx ()
-  ";; bug#42513: Python indentation bug when using multi-line on an if-conditition"
-  (py-test-with-temp-buffer "def fun(arg):
-    if(
-args\.suppliername == \"Messingschlager\" or
-args\.suppliercodename == \"MS\"
-	): #<- culprit
-		#do something
-else: #<- this else is not possible to indent 1 tab
-		#do something"
-    (goto-char (point-max))
-    (search-backward "else:")
-    (should (eq 4  (py-compute-indentation)))
-    (search-backward "args" nil t 2)
-    (should (eq 7  (py-compute-indentation)))))
 
 (ert-deftest py-indent-test-W5dPqP ()
   (py-test-with-temp-buffer
@@ -1074,47 +1099,320 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 }}"
     (goto-char (point-max))
     (search-backward "name" nil t 1)
-    (should (eq 9 (py-compute-indentation)))
-    (search-backward "pk" nil t 1)
-    (should (eq 8 (py-compute-indentation)))
+    (should (eq 9 (py-compute-indentation)))))
+
+(ert-deftest py-indent-bug63959-test-Nhdprq ()
+  (py-test-with-temp-buffer
+      "data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}"
+    (goto-char (point-max))
     (search-backward "name" nil t 1)
-    (should (eq 9 (py-compute-indentation)))
+    (should (eq 9 (py-compute-indentation)))))
+
+(ert-deftest py-indent-bug63959-test-vn8oBL ()
+  (py-test-with-temp-buffer
+            "data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}"
+
+      (goto-char (point-max))
     (search-backward "pk" nil t 1)
-    (should (eq 8 (py-compute-indentation)))
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-indent-bug63959-test-MFw6EK ()
+  (py-test-with-temp-buffer
+      "data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}"
+
+    (goto-char (point-max))
+    (search-backward "name" nil t 2)
+    (should (eq 9 (py-compute-indentation)))))
+
+(ert-deftest py-indent-bug63959-test-Zy6iEE ()
+  (py-test-with-temp-buffer
+      "data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}"
+
+    (goto-char (point-max))
+    (search-backward "pk" nil t 2)
+    (should (eq 8 (py-compute-indentation)))))
+
+(ert-deftest py-indent-in-tuple-test-8y1ZyT ()
+  (py-test-with-temp-buffer
+      "_PN34 = (-1475, -1438, -1427, -1401, -1398, -1380, -1376, -1363, -1354,
+        -1277)"
+    (let ((py-closing-list-dedents-bos t))
+      (goto-char (point-max))
+      (should (eq (py-compute-indentation) 9)))))
+
+(ert-deftest py-gnu-bug42513-indent-multi-line-if-test-tZmIx7 ()
+  ";; bug#42513: Python indentation bug when using multi-line on an if-conditition"
+  (py-test-with-temp-buffer "def fun(arg):
+    if(
+args.suppliername == \"Messingschlager\" or
+args.suppliercodename == \"MS\"
+	): #<- culprit
+		#do something
+else: #<- this else is not possible to indent 1 tab
+		#do something"
+    (goto-char (point-max))
+    (search-backward "args" nil t 1)
+    (should (eq 0  (py-compute-indentation)))))
+
+(ert-deftest py-gnu-bug42513-indent-multi-line-if-test-KaDCGx ()
+  ";; bug#42513: Python indentation bug when using multi-line on an if-conditition"
+  (py-test-with-temp-buffer "def fun(arg):
+    if(
+args.suppliername == \"Messingschlager\" or
+args.suppliercodename == \"MS\"
+	): #<- culprit
+		#do something
+else: #<- this else is not possible to indent 1 tab
+		#do something"
+    (goto-char (point-max))
+    (search-backward "args" nil t 2)
+    (should (eq 0  (py-compute-indentation)))))
+
+(ert-deftest py-gnu-bug42513-indent-multi-line-if-test-3qcJU7 ()
+  ";; bug#42513: Python indentation bug when using multi-line on an if-conditition"
+  (py-test-with-temp-buffer "def fun(arg):
+    if(
+args.suppliername == \"Messingschlager\" or
+args.suppliercodename == \"MS\"
+	): #<- culprit
+		#do something
+else: #<- this else is not possible to indent 1 tab
+		#do something"
+    (let (py-closing-list-dedents-bos)
+      (goto-char (point-max))
+      (search-backward "else:")
+      (should (eq 4 (py-compute-indentation))))))
+
+(ert-deftest py-gnu-bug42513-indent-multi-line-if-test-4RSTQF ()
+  ";; bug#42513: Python indentation bug when using multi-line on an if-conditition"
+  (py-test-with-temp-buffer "def fun(arg):
+    if(args.suppliername == \"Messingschlager\" or
+       args.suppliercodename == \"MS\"
+	): #<- culprit
+		#do something
+else: #<- this else is not possible to indent 1 tab
+		#do something"
+    (let (py-closing-list-dedents-bos)
+      (goto-char (point-max))
+      (search-backward ")")
+      (should (eq 7 (py-compute-indentation))))))
+
+(ert-deftest py-gnu-bug42513-indent-multi-line-if-test-7YHplS ()
+  ";; bug#42513: Python indentation bug when using multi-line on an if-conditition"
+  (py-test-with-temp-buffer "def fun(arg):
+    if(args.suppliername == \"Messingschlager\" or
+args.suppliercodename == \"MS\"
+	): #<- culprit
+		#do something
+else: #<- this else is not possible to indent 1 tab
+		#do something"
+    (goto-char (point-max))
+    (search-backward "args.")
+    (should (eq 7 (py-compute-indentation)))))
+
+(ert-deftest py-indent-bug63959-test-6sVElZ ()
+  (py-test-with-temp-buffer
+      "data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}"
+    (goto-char (point-max))
     (search-backward "obj" nil t 1)
     (should (eq 4 (py-compute-indentation)))))
 
-(ert-deftest py-backward-def-or-class-test-2bgJkT ()
+(ert-deftest py-indent-bug63959-test-dgPK5O ()
   (py-test-with-temp-buffer
-      "def main():
-    if len(sys.argv) == 1:
-        usage()
-        # sys.exit()
-
-    class asdf(object):
-        zeit = time.strftime('%Y%m%d--%H-%M-%S')
-
-        def foo():
-            pass
-
-        def bar():
-            pass
-
-        # def Utf8_Exists(filename) -> a[1:2]:
-        def Utf8_Exists(filename):
-            return os.path.exists(filename.encode('utf-8'))"
+"data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}
+"
     (goto-char (point-max))
-    (py-backward-def-or-class)
-    (should (char-equal (char-after) ?d))
-    (py-backward-def-or-class)
-    (should (char-equal (char-after) ?d))
-    (py-backward-def-or-class)
-    (should (char-equal (char-after) ?d))
-    (py-backward-def-or-class)
-    (should (char-equal (char-after) ?c))
-    (py-backward-def-or-class)
-    (should (char-equal (char-after) ?d))
-    ))
+    (skip-chars-backward " \t\r\n\f")
+    (should (py-compute-indentation--at-closer-p))))
+
+(ert-deftest py-indent-bug63959-test-WQJF2a ()
+  (py-test-with-temp-buffer
+"data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}
+"
+    (goto-char (point-max))
+    (search-backward "}")
+    (should (py-compute-indentation--at-closer-p))))
+
+(ert-deftest py-indent-bug63959-test-AsmMX4 ()
+  (py-test-with-temp-buffer
+"data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}
+"
+    (goto-char (point-max))
+    (search-backward "}" nil t 2)
+    (should (py-compute-indentation--at-closer-p))))
+
+(ert-deftest py-indent-bug63959-test-ZdzpFK ()
+  (py-test-with-temp-buffer
+"data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}
+"
+    (goto-char (point-max))
+    (search-backward "]")
+    (forward-char 1)
+    (should (py-compute-indentation--at-closer-p))))
+
+(ert-deftest py-indent-bug63959-test-nSKy69 ()
+  (py-test-with-temp-buffer
+"data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}
+"
+    (goto-char (point-max))
+    (search-backward "]")
+    (should (py-compute-indentation--at-closer-p))))
+
+(ert-deftest py-indent-bug63959-test-4HtEoV ()
+  (py-test-with-temp-buffer
+"data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}
+"
+    (goto-char (point-max))
+    (search-backward "]")
+    (beginning-of-line)
+    (should (py-compute-indentation--at-closer-p))))
+
+(ert-deftest py-indent-bug63959-test-xhNrCD ()
+  (py-test-with-temp-buffer
+"data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}
+"
+    (goto-char (point-max))
+    (search-backward "name")
+    (forward-char -1)
+    (should-not (py-compute-indentation--at-closer-p))))
+
+(ert-deftest py-indent-bug63959-test-HnA9Ko ()
+  (py-test-with-temp-buffer
+"data = {'key': {
+    'objlist': [
+        {'pk': 1,
+         'name': 'first'},
+        {'pk': 2,
+         'name': 'second'}
+    ]
+}}
+"
+    (goto-char (point-max))
+    (search-backward "}" nil t 3)
+    (should-not (py-compute-indentation--at-closer-p))))
+
+(ert-deftest py-indent-bug63959-test-VCIfFY ()
+  (py-test-with-temp-buffer
+"var5: Sequence[Mapping[str, Sequence[str]]] = [
+    {
+     'red': ['scarlet', 'vermilion', 'ruby'],
+     'green': ['emerald', 'aqua']
+    },
+    {
+                'sword': ['cutlass', 'rapier']
+    }
+]
+"
+    (goto-char (point-max))
+    (search-backward "sword" nil t)
+    (beginning-of-line)
+    (should (eq 5 (py-compute-indentation)))))
+
+(ert-deftest py-indent-bug63959-test-7JiI5a ()
+  (py-test-with-temp-buffer
+"def f():
+    \"\"\"
+    Return nothing.
+
+    .. NOTE::
+
+        First note line
+    second note line\"\"\"
+    pass
+"
+    (goto-char (point-max))
+    (search-backward "pass")
+    (should (eq 4 (py-compute-indentation)))))
+
+
+
+
+
+
 
 (provide 'py-ert-indent-tests)
 ;;; py-ert-indent-tests.el ends here

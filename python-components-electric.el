@@ -272,8 +272,8 @@ At no-whitespace char, delete one char at point.
 	(if (boundp 'delete-active-region)
             (delete-active-region)
 	  (delete-region (region-beginning) (region-end))))
-       ((looking-at "[[:graph:]]")
-	(delete-char 1))
+       ;; ((looking-at "[[:graph:]]")
+       ;;  (delete-char 1))
        ((or (eolp) (looking-at "[ \t]+$"))
 	(cond
 	 ((eolp) (delete-char 1))

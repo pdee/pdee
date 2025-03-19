@@ -389,13 +389,13 @@ x = {'abc':'def',
     if True:
         print('in')
 
-     print('out')"
+           print('out')"
     (goto-char (point-max))
     (when py-debug-p (whitespace-mode))
     (beginning-of-line)
     (forward-char 3)
     (py-electric-delete)
-    (should (eq 4 (current-indentation)))))
+    (should (eq 8 (current-indentation)))))
 
 (ert-deftest extra-trailing-space-yC7gXH ()
   (py-test-with-temp-buffer

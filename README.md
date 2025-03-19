@@ -82,25 +82,41 @@ Provide fine grained navigation of all known Python constructs.
 
   There is also ‘python-mode-v5-behavior’
 
-* Indentation rules
-  See customizable variable ‘py-indent-offset’ for default indent
-  
-  Beside syntactic indent, a couple of conventions should enhance readability.
-  
-  Customizable variable ‘py-closing-list-dedents-bos’: 
-  When non-nil, indent lists closing delimiter like start-column.
-  
-  my_list = [\
-    1, 2, 3,\
-    4, 5, 6
-  ]
-  
-  otherwise
+* Indentation\
 
-  my_list = [\
-    1, 2, 3,\
-    4, 5, 6\
+  See customizable variable ‘py-indent-offset’ for default indent
+
+  Rules according to ‘py-indent-list-style’
+
+  - ‘line-up-with-first-element’ (default)
+
+     Which would look like\
+     packed_entry = (long, sequence, of_items,
+                   that, needs, to_be, wrapped)
+
+     However, if a continuation list or tuple starts at the beginning line,
+     select ‘one-level-from-opener’ though
+
+     (long, sequence, of_items,
+         that, needs, to_be, wrapped) = input_list
+
+  - ‘one-level-to-beginning-of-statement’
+  - ‘one-level-from-opener’
+  
+  As for the closing line:\
+  ‘ py-closing-list-dedents-bos’
+  
+    my_list = [\
+      1, 2, 3,\
+      4, 5, 6
     ]
+
+    otherwise
+
+    my_list = [\
+      1, 2, 3,\
+      4, 5, 6\
+      ]
 
   With nested dicts: 
   
@@ -115,12 +131,12 @@ Provide fine grained navigation of all known Python constructs.
   otherwise
 
   hanging, py-closing-list-dedents-bos nil\
-  asdf = {\
-      'a':{\
-           'b':3,\
-           'c':4\
-          }\
-      }
+    asdf = {\
+        'a':{\
+             'b':3,\
+             'c':4\
+            }\
+        }
 
   With opener at EOL, next line indents acording to ‘py-indent-offset’\
   def long_function_name(\

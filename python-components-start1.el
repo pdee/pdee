@@ -1702,14 +1702,6 @@ See also ‘py-keep-windows-configuration’"
   :tag "py-split-window-on-execute"
   :group 'python-mode)
 
-;; (defun py-toggle-py-split-window-on-execute ()
-;;   "Toggle between customized value and nil."
-;;   (interactive)
-;;   (setq py-split-window-on-execute (not py-split-window-on-execute))
-;;   (when (called-interactively-p 'interactive)
-;;     (message "py-split-window-on-execute: %s" py-split-window-on-execute)
-;;     py-split-window-on-execute))
-
 (defcustom py-split-window-on-execute-threshold 3
   "Maximal number of displayed windows.
 
@@ -2956,7 +2948,7 @@ See ‘py-minor-block-re-raw’ for better readable content")
 (defconst py-for-re "[ \t]*\\_<\\(async for\\|for\\)\\_> +[[:alpha:]_][[:alnum:]_]* +in +[[:alpha:]_][[:alnum:]_()]* *[: \n\t]"
   "Matches the beginning of a ‘try’ block.")
 
-(defconst py-if-re "[ \t]*\\_<if\\_> +[^\n\r\f]+ *[: \n\t]"
+(defconst py-if-re "[ \t]*\\_<if\\_>[ (]+"
   "Matches the beginning of an ‘if’ block.")
 
 (defconst py-else-re "[ \t]*\\_<else:"

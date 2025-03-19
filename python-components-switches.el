@@ -350,5 +350,15 @@ See bug report at launchpad, lp:940812"
 ;; py-toggle-underscore-word-syntax-p must be known already
 ;; circular: py-toggle-underscore-word-syntax-p sets and calls it
 
+(defun py-toggle-py-closing-list-dedents-bos ()
+  "Toggle var py-closing-list-dedents-bos.
+
+Valid in current session only.
+At start may be set by custom-file"
+  (interactive) 
+  (setq py-closing-list-dedents-bos
+	(not py-closing-list-dedents-bos))
+  (when (or py-verbose-p (called-interactively-p 'any)) (message "py-closing-list-dedents-bos: %s" py-closing-list-dedents-bos)))
+
 (provide 'python-components-switches)
 ;;;  python-components-switches.el ends here

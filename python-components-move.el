@@ -296,13 +296,8 @@ If already at ‘beginning-of-line’ and not at BOB,
 go to beginning of previous line."
   (interactive)
   (unless (bobp)
-    (let ((erg
-           (if (bolp)
-               (progn
-                 (forward-line -1)
-                 (progn (beginning-of-line)(point)))
-             (progn (beginning-of-line)(point)))))
-      erg)))
+    (forward-line -1)
+    (point))) 
 
 (defun py-forward-line ()
   "Go to ‘end-of-line’, return position.

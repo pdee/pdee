@@ -107,7 +107,8 @@ BODY is code to be executed within the temp buffer.  Point is
  at the end of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-     (let ((python-indend-offset 4)
+     (let (
+           ;; (python-indend-offset 4)
            python-indent-guess-indent-offset
            hs-minor-mode py--imenu-create-index-p)
        ;; (and (featurep 'python) (unload-feature 'python))
@@ -125,7 +126,8 @@ BODY is code to be executed within the temp buffer.  Point is
  at the beginning of buffer."
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-     (let ((python-indent-offset 4)
+     (let (
+           ;; (python-indent-offset 4)
            python-indent-guess-indent-offset
            hs-minor-mode py--imenu-create-index-p)
        (python-mode)

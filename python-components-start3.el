@@ -212,7 +212,8 @@ Unless DIRECTION is symbol \\='forward, go backward first"
     (let* ((tempfile (concat (expand-file-name py-temp-directory) py-separator-char "temp" (md5 (format "%s" (nth 3 (current-time)))) ".py")))
       (with-temp-buffer
 	(insert strg)
-	(write-file tempfile))
+	(write-file tempfile)
+        (sit-for 0.1))
       (unwind-protect
 	  (py--execute-file-base tempfile proc nil procbuf origline fast)
 	(and (file-readable-p tempfile) (delete-file tempfile py-debug-p))))))

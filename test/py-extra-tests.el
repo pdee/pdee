@@ -56,17 +56,6 @@
 	            (py-kill-buffer-unconditional (current-buffer)))))))
     (when py-debug-p (message "py-ert-moves-up-execute-statement-test-RdqUKX: %s" "Can't see python2"))))
 
-;; (ert-deftest py-complete-in-python3-shell-test-JtNakZ ()
-;;   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
-;;   (set-buffer (python3))
-;;   (when py-debug-p (switch-to-buffer (current-buffer)))
-;;   (sit-for 0.1)
-;;   (should (eq (current-buffer) (get-buffer "*Python3*")))
-;;   (goto-char (point-max))
-;;   (insert "pri")
-;;   (py-indent-or-complete)
-;;   (should (looking-back "print(")))
-
 (ert-deftest UnicodeEncodeError-lp-550661-test-1oxvP0 ()
   (py-test-with-temp-buffer
       "#! /usr/bin/env python3
@@ -96,15 +85,6 @@ os.write"
     (when py-debug-p (message "%s" (current-buffer)))
     (goto-char comint-last-output-start)
     (should (string-match "write" (buffer-substring-no-properties (point) (point-max))))))
-
-;; (ert-deftest py-complete-empty-string-result-test-jI82K3 ()
-;;   (ignore-errors (py-kill-buffer-unconditional "*Python3*"))
-;;   (set-buffer (python3))
-;;   (goto-char (point-max))
-;;   (insert "foo")
-;;   (py-indent-or-complete)
-;;   (sit-for 0.1)
-;;   (should (looking-back "foo")))
 
 (ert-deftest py-ert-execute-block-fast-9Ui5ja-zo3sa5 ()
   (py-test-with-temp-buffer-point-min
@@ -1043,30 +1023,6 @@ print(u'\\xA9')"
       (set-buffer "*IPython*")
       (string-match "@" (buffer-substring-no-properties (point-min) (point-max))))))
 
-;; (ert-deftest py-execute-org-source-tdzgdj ()
-;;   (py-test-with-temp-buffer
-;;       "#+BEGIN_SRC python :results output
-;; print(\"%(language)s has %(number)03d quote types.\" %
-;;        {'language': \"Python\", \"number\": 2})
-
-;; #+END_SRC
-;; "
-;;     (goto-char (point-max))
-;;     (search-backward "print")
-;;     (org-babel-execute-src-block)
-;;     (should (search-forward "Python has 002 quote types."))))
-
-;; (ert-deftest py-execute-org-source-H31syJ ()
-;;   (py-test-with-temp-buffer
-;;       "#+BEGIN_SRC python :results output
-;; print(u'\\xA9')
-;; #+END_SRC
-;; "
-;;     (goto-char (point-max))
-;;     (search-backward "print")
-;;     (org-babel-execute-src-block)
-;;     (should (search-forward "@"))))
-
 (ert-deftest py-ert-respect-paragraph-1294829-test-dpmi5s ()
   (py-test-with-temp-buffer-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
@@ -1237,9 +1193,9 @@ by the
     (forward-line 2)
     (should (eq (char-after) ?\n))))
 
-(ert-deftest py-indent-in-docstring-gh6-7Zafwt ()
-  (py-test-with-temp-buffer-point-min
-      "def f():
+(ert-deftest py-indent-bug63959-test-6ZlhPF ()
+  (py-test-with-temp-buffer
+"def f():
     \"\"\"
     Return nothing.
 
@@ -1247,29 +1203,29 @@ by the
 
         First note line
     second note line\"\"\"
-    pass"
-    (ignore-errors (unload-feature 'python))
-    (goto-char (point-min))
-    (when py-debug-p
-      (search-forward "\"\"\"")
-      (message "(syntax-after (point)) (point): %s %s" (syntax-after (point)) (point))
-      (message "(syntax-after (1- (point)) (point)): %s %s" (syntax-after (1- (point))) (1- (point)))
-      (message "(syntax-after (- (point) 2)): %s %s" (syntax-after (- (point) 2)) (- (point) 2))
-      (message "(syntax-after (- (point) 3)): %s %s" (syntax-after (- (point) 3)) (- (point) 3))
-      (when (functionp 'ar-syntax-atpt)
-	(message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
-	(message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
-	(message "(ar-syntax-class-atpt (point)) (point): %s %s" (ar-syntax-class-atpt (point)) (point))
-	(message "(ar-syntax-class-atpt (1- (point)) (point)): %s %s" (ar-syntax-class-atpt (1- (point))) (1- (point)))
-	(message "(ar-syntax-class-atpt (- (point) 2)): %s %s" (ar-syntax-class-atpt (- (point) 2)) (- (point) 2))
-	(message "(ar-syntax-class-atpt (- (point) 3)): %s %s" (ar-syntax-class-atpt (- (point) 3)) (- (point) 3))
-	(message "(ar-syntax-atpt 1 nil (point)) (point): %s %s" (ar-syntax-atpt 1 nil) (point))
-	(message "(ar-syntax-atpt 1 nil (1- (point)) (point)): %s %s" (ar-syntax-atpt 1 nil (1- (point))) (1- (point)))
-	(message "(ar-syntax-atpt 1 nil (- (point) 2)): %s %s" (ar-syntax-atpt 1 nil (- (point) 2)) (- (point) 2))
-	(message "(ar-syntax-atpt 1 nil (- (point) 3)): %s %s" (ar-syntax-atpt 1 nil (- (point) 3)) (- (point) 3)))
-      (search-forward "second"))
-    (back-to-indentation)
-    (should (eq 8 (py-compute-indentation)))))
+    pass
+"
+    (goto-char (point-max))
+    (search-backward "First")
+    (sit-for 0.1)
+    (should (eq 4 (py-compute-indentation)))))
+
+
+(ert-deftest py-indent-bug63959-test-Bfr7rA ()
+  (py-test-with-temp-buffer
+"def f():
+    \"\"\"
+    Return nothing.
+
+    .. NOTE::
+
+        First note line
+    second note line\"\"\"
+    pass
+"
+    (goto-char (point-max))
+    (search-backward "Return")
+    (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest  py-indent-or-complete-7NWa5T ()
   (py-test-with-temp-buffer
