@@ -615,8 +615,22 @@ my_list = [
     4, 5, 6
     ]
 "
-    (goto-char (point-max))
-    (should (eq 0 (py-compute-indentation)))))
+    (let ((py-closing-list-dedents-bos t))
+      (goto-char (point-max))
+      (should (eq 0 (py-compute-indentation))))))
+
+(ert-deftest py-ert-indent-closing-1vO0ER ()
+  (py-test-with-temp-buffer
+      "
+my_list = [
+    1, 2, 3,
+    4, 5, 6
+    7, 8, 9]
+"
+    (let ((py-closing-list-dedents-bos t))
+      (goto-char (point-max))
+      (skip-chars-backward " \t\r\n\f") 
+      (should (eq 4 (py-compute-indentation))))))
 
 (ert-deftest py-ert-indent-closing-OUClAx ()
   (py-test-with-temp-buffer

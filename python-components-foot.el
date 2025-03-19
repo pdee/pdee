@@ -393,7 +393,7 @@ may want to re-add custom functions to it using the
 (puthash "python-"
          (append (gethash "python" definition-prefixes) '("python-mode"))
          definition-prefixes)
-;;;
+
 (provide 'python-components-foot)
 
 ;;; python-components-foot.el ends here

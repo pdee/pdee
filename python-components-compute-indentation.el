@@ -135,33 +135,6 @@ See also py-closing-list-dedents-bos"
       (+ (current-indentation) py-indent-offset))
      (t (py-compute-indentation-according-to-list-style-intern)))))
 
-;; (defun py-compute-indentation-closing-list (pps)
-;;   (cond
-;;    ((< 1 (nth 0 pps))
-;;     (goto-char (nth 1 pps))
-;;     ;; reach the outer list
-;;     (goto-char (nth 1 (parse-partial-sexp (point-min) (point))))
-;;     (py--computer-closing-inner-list))
-;;    ;; just close an maybe outer list
-;;    ((eq 1 (nth 0 pps))
-;;     (goto-char (nth 1 pps))
-;;     (py-compute-indentation-according-to-list-style pps))))
-
-;; (defun py-compute-indentation-in-list (pps line closing orig)
-;;   ;; (if closing
-;;   ;; (py-compute-indentation-closing-list pps)
-;;   (let ((orig (point))
-;;         (oldlinestart (line-beginning-position)))
-;;     (if
-;;         (and (not line) (not closing)
-;;              (progn (back-to-indentation)
-;;                     (skip-chars-backward " \t\r\n\f")
-;;                     (or line (setq line (< (line-beginning-position) oldlinestart)))
-;;                     (back-to-indentation)
-;;                     (< (nth 1 pps) (point))))
-;;         (current-indentation)
-;;       (py-compute-indentation-according-to-list-style pps closing))))
-
 (defun py-compute-comment-indentation (pps iact orig origline closing line nesting repeat indent-offset liep)
   (cond ((nth 8 pps)
          (goto-char (nth 8 pps))
