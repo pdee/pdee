@@ -1,4 +1,4 @@
-[![MELPA](https://melpa.org/packages/python-mode-badge.svg)](https://melpa.org/#/python-mode)
+[![CircleCI pdee](https://circleci.com/gh/pdee/pdee.svg?style=svg)](https://app.circleci.com/pipelines/gh/pdee/pdee)
 
 Send source code to all known Python shells without need to reconfigure default.
 Provide fine grained navigation of all known Python constructs.
@@ -82,7 +82,7 @@ Provide fine grained navigation of all known Python constructs.
 
   There is also ‘python-mode-v5-behavior’
 
-* Indentation\
+* Indentation
 
   See customizable variable ‘py-indent-offset’ for default indent
 
