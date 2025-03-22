@@ -604,7 +604,7 @@ Returns position if successful, nil otherwise"
           ((or (eq (car (syntax-after orig)) 15)
                (eq (car (syntax-after orig)) 4))
            (forward-sexp))
-          ((not (py-beginning-of-statement-p))
+          ((not (py--beginning-of-statement-p))
            (py-backward-statement)
            (cond ((py--beginning-of-class-p)
                   (py-forward-class))

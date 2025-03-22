@@ -63,12 +63,13 @@
     ))
 
 (ert-deftest py-python-mode-v5-behavior-test-2n0wbL ()
+  (when (buffer-live-p (get-buffer "*Python Output*"))
+    (py-kill-buffer-unconditional "*Python Output*"))
   (let ((python-mode-v5-behavior-p t))
-    ;; (python3)
-    (when (bufferp (ipython3))
-      (sit-for 0.1)
-      (should (buffer-live-p (get-buffer "*Python Output*")))
-      (py-kill-buffer-unconditional "*Python Output*"))))
+    (py-execute-string "asdf")
+    (sit-for 0.1)
+    (should (buffer-live-p (get-buffer "*Python Output*")))
+    (py-kill-buffer-unconditional "*Python Output*")))
 
 (provide 'py-executable-python-tests)
 ;;; py-executable-python-tests.el ends here

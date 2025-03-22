@@ -161,9 +161,12 @@ finally:
   (py-test-with-temp-buffer-point-min
       "print(123234)"
     (goto-char (point-min))
-    (let (py-split-window-on-execute py-switch-buffers-on-execute-p)
+    (let ((py-split-window-on-execute py-switch-buffers-on-execute-p)
+          (shell (py-choose-shell)))
+      ;; delete old buffer if existing
+      ;; (py-kill-buffer-unconditional  (concat "*" (capitalize shell) " Fast*"))
       (py-execute-statement-fast)
-      (set-buffer (concat "*" (capitalize py-shell-name) " Fast*"))
+      (set-buffer (concat "*" (capitalize shell) " Fast*"))
       (sit-for 0.1)
       (goto-char (point-max))
       (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))

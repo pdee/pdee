@@ -25,8 +25,8 @@
 (ert-deftest py-ert-virtualenv-filter-functionp-test-2b5yDV ()
   (should (functionp 'virtualenv-filter)))
 
-(ert-deftest py-ert-py-beginning-of-statement-p-functionp-test-sHNAQu ()
-  (should (functionp 'py-beginning-of-statement-p)))
+(ert-deftest py-ert-py--beginning-of-statement-p-functionp-test-sHNAQu ()
+  (should (functionp 'py--beginning-of-statement-p)))
 
 (ert-deftest py-ert-virtualenv-append-path-functionp-test-isLD43 ()
   (should (functionp 'virtualenv-append-path)))
@@ -84,9 +84,6 @@
 
 (ert-deftest py-ert--beginning-of-top-level-p-functionp-test-WYzTbw ()
   (should (functionp 'py--beginning-of-top-level-p)))
-
-(ert-deftest py-ert--beginning-of-statement-p-functionp-test-iGvK35 ()
-  (should (functionp 'py--beginning-of-statement-p)))
 
 (ert-deftest py-ert--beginning-of-expression-p-functionp-test-04H1WF ()
   (should (functionp 'py--beginning-of-expression-p)))

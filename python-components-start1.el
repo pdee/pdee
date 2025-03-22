@@ -4452,8 +4452,7 @@ Return and move to match-beginning if successful"
            (point)))))
 
 (defun py--beginning-of-statement-p (&optional pps)
-  "Return position, if cursor is at the beginning of a ‘statement’, nil otherwise."
-  (interactive)
+  "Return ‘t’, if cursor is at the beginning of a ‘statement’, nil otherwise."
   (save-excursion
     (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
       (and (not (or (nth 8 pps) (nth 1 pps)))
@@ -4461,7 +4460,7 @@ Return and move to match-beginning if successful"
            (looking-back "[^ \t]*" (line-beginning-position))
            (eq (current-column) (current-indentation))
 	   (eq (point) (progn (py-forward-statement) (py-backward-statement)))
-           (point)))))
+           ))))
 
 (defun py--beginning-of-statement-bol-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘statement’, nil otherwise."
