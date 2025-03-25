@@ -20,7 +20,7 @@
 
 ;; (ert-deftest py-ert-hide-partial-expression-test-Li7vPR ()
 
-;;   (py-test-with-temp-buffer-point-min "
+;;   (py-test-point-min "
 ;; class kugel(object):
 ;;     zeit = time.strftime('%Y%m%d--%H-%M-%S')
 
@@ -42,165 +42,158 @@
 ;;     ))
 
 (ert-deftest py-ert-hide-expression-test ()
-  (py-test-with-temp-buffer-point-min "
+  (py-test-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
-
     def pylauf(self):
         \"\"\"Eine Doku fuer pylauf\"\"\"
         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
         ausgabe[0] = treffer
         if treffer in gruen:
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-ensure)
-    (search-forward "+ \"")
-    (py-hide-expression)
-    (should (string-match "overlay from 286 to 319" (prin1-to-string (car (overlays-at (point))))))
-    (py-show)
-    (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))
-    ))
+                     'python-mode
+                     'py-verbose-p
+                     (font-lock-ensure)
+                     (search-forward "+ \"")
+                     (py-hide-expression)
+                     (should (string-match "overlay from 286 to 319" (prin1-to-string (car (overlays-at (point))))))
+                     (py-show)
+                     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
 
 (ert-deftest py-ert-hide-clause-test-qsv8kt ()
-  (py-test-with-temp-buffer-point-min "
+  (py-test-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
-
     def pylauf(self):
         \"\"\"Eine Doku fuer pylauf\"\"\"
         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
         ausgabe[0] = treffer
         if treffer in gruen:
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (font-lock-ensure)
-    (search-forward "+ \"")
-
-
-    (py-hide-clause)
-    (should (string-match "overlay from 222 to 319" (prin1-to-string (car (overlays-at (point))))))
-    (py-show)
-    (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))
-    ))
+                     'python-mode
+                     'py-verbose-p
+                     (font-lock-ensure)
+                     (search-forward "+ \"")
+                     (py-hide-clause)
+                     (should (string-match "overlay from 222 to 319" (prin1-to-string (car (overlays-at (point))))))
+                     (py-show)
+                     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
 
 
 (ert-deftest py-ert-hide-clause-test-rO7k4k ()
-  (py-test-with-temp-buffer "if 0 < treffer:
+  (py-test "if 0 < treffer:
     if 18 < treffer:
         ausgabe[6] = treffer
     else:
         ausgabe[7] = treffer
 "
-    (font-lock-ensure)
-    (goto-char (point-max))
-    (search-backward "6")
-    (py-hide-clause)
-    ;; (should (search-forward "else"))
-    (should-not (string-match (prin1-to-string (car (overlays-at (point)))) "overlay from 21 to 105" ))
-    (should-not (string-match (prin1-to-string (car (overlays-at (point)))) "overlay from 21 to 65" ))
-    ))
+           'python-mode
+           'py-verbose-p
+           (font-lock-ensure)
+           (goto-char (point-max))
+           (search-backward "6")
+           (py-hide-clause)
+           ;; (should (search-forward "else"))
+           (should-not (string-match (prin1-to-string (car (overlays-at (point)))) "overlay from 21 to 105" ))
+           (should-not (string-match (prin1-to-string (car (overlays-at (point)))) "overlay from 21 to 65"))))
 
 (ert-deftest py-ert-hide-block-test-5j57vC ()
-  (py-test-with-temp-buffer-point-min "
+  (py-test-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
-
     def pylauf(self):
         \"\"\"Eine Doku fuer pylauf\"\"\"
         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
         ausgabe[0] = treffer
         if treffer in gruen:
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    ;; (font-lock-ensure)
-    (search-forward "+ \"")
-    (py-hide-block)
-    (should (string-match "overlay from 222 to 319" (prin1-to-string (car (overlays-at (point))))))
-    (py-show)
-    (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))
-    ))
+                     'python-mode
+                     'py-verbose-p
+                     ;; (font-lock-ensure)
+                     (search-forward "+ \"")
+                     (py-hide-block)
+                     (should (string-match "overlay from 222 to 319" (prin1-to-string (car (overlays-at (point))))))
+                     (py-show)
+                     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
 
 (ert-deftest py-ert-hide-def-test ()
-  (py-test-with-temp-buffer-point-min "
+  (py-test-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
-
     def pylauf(self):
         \"\"\"Eine Doku fuer pylauf\"\"\"
         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
         ausgabe[0] = treffer
         if treffer in gruen:
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    ;; (font-lock-ensure)
-    (search-forward "+ \"")
-    (py-hide-def)
-    (should (string-match "overlay from 73 to 319" (prin1-to-string (car (overlays-at (point))))))
-    (py-show)
-    (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))
-    ))
+                     'python-mode
+                     'py-verbose-p
+                     ;; (font-lock-ensure)
+                     (search-forward "+ \"")
+                     (py-hide-def)
+                     (should (string-match "overlay from 73 to 319" (prin1-to-string (car (overlays-at (point))))))
+                     (py-show)
+                     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
 
 (ert-deftest py-ert-hide-class-test ()
-  (py-test-with-temp-buffer-point-min "
+  (py-test-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
-
     def pylauf(self):
         \"\"\"Eine Doku fuer pylauf\"\"\"
         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
         ausgabe[0] = treffer
         if treffer in gruen:
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    (switch-to-buffer (current-buffer))
-    ;; (font-lock-ensure)
-    (search-forward "+ \"")
-    (py-hide-class)
-    (should (string-match "overlay from 2 to 319" (prin1-to-string (car (overlays-at (point))))))
-    (py-show)
-    (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
+                     'python-mode
+                     'py-verbose-p
+                     (switch-to-buffer (current-buffer))
+                     ;; (font-lock-ensure)
+                     (search-forward "+ \"")
+                     (py-hide-class)
+                     (should (string-match "overlay from 2 to 319" (prin1-to-string (car (overlays-at (point))))))
+                     (py-show)
+                     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
 
 (ert-deftest py-ert-hide-indent-test-dTRpuQ ()
-  (py-test-with-temp-buffer-point-min "
+  (py-test-point-min "
 class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
-
     def pylauf(self):
         \"\"\"Eine Doku fuer pylauf\"\"\"
         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
         ausgabe[0] = treffer
         if treffer in gruen:
             print \"0, Gruen\"
             # print \"0, Gruen\"
             datei.write(str(spiel[i]) + \"\\n\")
 "
-    ;; (font-lock-ensure)
-    (search-forward "+ \"")
-    (py-hide-indent)
-    (should (string-match "overlay from 255 to 348" (prin1-to-string (car (overlays-at (point))))))
-    (py-show)
-    (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
+                     'python-mode
+                     'py-verbose-p
+                     ;; (font-lock-ensure)
+                     (search-forward "+ \"")
+                     (py-hide-indent)
+                     (should (string-match "overlay from 255 to 348" (prin1-to-string (car (overlays-at (point))))))
+                     (py-show)
+                     (should (not (string-match "overlay" (prin1-to-string (car (overlays-at (point)))))))))
 
 (ert-deftest py-ert-hide-block-test-dTRpuQ ()
-  (py-test-with-temp-buffer
-      "def f(first, second):
-
+  (py-test
+   "def f(first, second):
     if first    == 1:
         return 11
     elif first  == 2:
         return 22
-
     if second   == 12:
         return 211
     elif second == 22:
@@ -208,12 +201,12 @@ class kugel(object):
     else:
         return 25
 "
-    (goto-char (point-max))
-    (should (search-backward "else"))
-    (py-hide-block)
-    (should (string-match "overlay from 109 to 216" (prin1-to-string (car (overlays-at (point))))))
-
-    ))
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (should (search-backward "else"))
+   (py-hide-block)
+   (should (string-match "overlay from 109 to 216" (prin1-to-string (car (overlays-at (point))))))))
 
 
 (provide 'py-ert-hide-tests)

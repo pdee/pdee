@@ -25,32 +25,34 @@
 (require 'py-setup-ert-tests)
 
 (ert-deftest py-ert-fill-paragraph-lp-1291493-JPuJd3 ()
-  (py-test-with-temp-buffer-point-min
-      "if True:
+  (py-test-point-min
+   "if True:
     if True:
         if True:
             if True:
                 pass
-
 def foo():
     \"\"\"Foo\"\"\"
 "
-        (sit-for 0.1 t)
-
-    (search-forward "\"\"\"")
-    (fill-paragraph)
-    (sit-for 0.1 t)
-    (should (eq 7 (current-column)))))
+   'python-mode
+   'py-verbose-p
+   (sit-for 0.1 t)
+   (search-forward "\"\"\"")
+   (fill-paragraph)
+   (sit-for 0.1 t)
+   (should (eq 7 (current-column)))))
 
 (ert-deftest py-ert-imports-in-interactive-shell-lp-1290709-lZvVlc ()
   ""
-  (when (buffer-live-p (get-buffer "*Python*")) (py-kill-buffer-unconditional (get-buffer "*Python*")))
+  'python-mode
+  'py-verbose-p
+  (when (buffer-live-p (get-buffer "*Python*"))
+    (py-kill-buffer-unconditional (get-buffer "*Python*")))
   (when (buffer-live-p (get-buffer "*Python3*")) (py-kill-buffer-unconditional (get-buffer "*Python3*")))
   (let ((buffer (py-shell nil nil "python")))
     (set-buffer buffer)
     (delete-other-windows)
     (let ((full-height (window-height)))
-
       (py-execute-string "import os" (get-buffer-process (current-buffer)))
       (sit-for 0.1)
       (goto-char (point-max))
@@ -61,147 +63,154 @@ def foo():
       (should (< (window-height) full-height)))))
 
 (ert-deftest py-ert-execute-region-ipython-lp-1294796-HePARg ()
-  (py-test-with-temp-buffer-point-min
-      "print(1)
+  (py-test-point-min
+   "print(1)
 "
-    (let ((py-shell-name "ipython")
-	  py-split-window-on-execute
-	  py-switch-buffers-on-execute-p)
-      (if (executable-find "ipython")
-	  (progn
-	    (py-execute-buffer)
-	    (sit-for 0.5 t)
-	    (set-buffer "*IPython*")
-
-	    (goto-char (point-max))
-	    (should (search-backward "1")))
-	(message "%s" "ipython does not exist on your system.")))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-shell-name "ipython")
+	 py-split-window-on-execute
+	 py-switch-buffers-on-execute-p)
+     (if (executable-find "ipython")
+	 (progn
+	   (py-execute-buffer)
+	   (sit-for 0.5 t)
+	   (set-buffer "*IPython*")
+	   (goto-char (point-max))
+	   (should (search-backward "1")))
+       (message "%s" "ipython does not exist on your system.")))))
 
 (ert-deftest py-ert-execute-region-ipython3-lp-1294796-HePARg ()
-  (py-test-with-temp-buffer-point-min
-      "print(1)
+  (py-test-point-min
+   "print(1)
 "
-    (let ((py-shell-name "ipython3")
-	  py-split-window-on-execute
-	  py-switch-buffers-on-execute-p)
-      (if (executable-find "ipython3")
-	  (progn
-	    (py-execute-buffer)
-	    (sit-for 0.5 t)
-	    (set-buffer "*IPython3*")
-	    (goto-char (point-max))
-	    (should (search-backward "1")))
-	(message "%s" "ipython3 does not exist on your system.")))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-shell-name "ipython3")
+	 py-split-window-on-execute
+	 py-switch-buffers-on-execute-p)
+     (if (executable-find "ipython3")
+	 (progn
+	   (py-execute-buffer)
+	   (sit-for 0.5 t)
+	   (set-buffer "*IPython3*")
+	   (goto-char (point-max))
+	   (should (search-backward "1")))
+       (message "%s" "ipython3 does not exist on your system.")))))
 
 (ert-deftest py-ert-execute-expression-test-bogDOp ()
-  (py-test-with-temp-buffer-point-min
-      "print(\"I'm the py-execute-expression-test\")"
-    (let ((py-shell-name "python"))
-
-      (py-execute-expression)
-      (sit-for 0.1 t)
-      ;; (switch-to-buffer (current-buffer))
-      (sit-for 0.1 t)
-      (and (should
-	    (or
-	     (search-backward "py-execute-expression-test" nil t 1)
-	     (search-forward "py-execute-expression-test" nil t 1)))
-	   (py-kill-buffer-unconditional (current-buffer))))))
+  (py-test-point-min
+   "print(\"I'm the py-execute-expression-test\")"
+   'python-mode
+   'py-verbose-p
+   (let ((py-shell-name "python"))
+     (py-execute-expression)
+     (sit-for 0.1 t)
+     ;; (switch-to-buffer (current-buffer))
+     (sit-for 0.1 t)
+     (and (should
+	   (or
+	    (search-backward "py-execute-expression-test" nil t 1)
+	    (search-forward "py-execute-expression-test" nil t 1)))
+	  (py-kill-buffer-unconditional (current-buffer))))))
 
 (ert-deftest py-ert-execute-line-test-jU3Xgu ()
-  (py-test-with-temp-buffer-point-min
-      "print(\"I'm the py-execute-line-test\")"
-    (let ((py-shell-name (or
-                          (executable-find "python")
-                          (executable-find "python3"))))
-      (sit-for 0.1 t)
-      (py-execute-line)
-      (set-buffer           py-output-buffer)
-      (sit-for 0.1 t)
-      (and (should
-	    (or
-	     (search-backward "py-execute-line-test" nil t 1)
-	     (search-forward "py-execute-line-test" nil t 1)))
-	   (py-kill-buffer-unconditional (current-buffer))))))
+  (py-test-point-min
+   "print(\"I'm the py-execute-line-test\")"
+   'python-mode
+   'py-verbose-p
+   (py-execute-line)
+   (set-buffer py-output-buffer)
+   ;; (sit-for 0.1 t)
+   (goto-char (point-max))
+   (should (search-backward "py-execute-line-test"))))
 
 (ert-deftest py-ert-always-reuse-lp-1361531-test-dJBO5C ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python3
+  (py-test
+   "#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-reuse-lp-1361531-test\")
 from datetime import datetime; datetime.now()"
-    (delete-other-windows)
-    (python-mode)
-    (let* ((py-split-window-on-execute 'always)
-	   py-switch-buffers-on-execute-p
-	   py-dedicated-process-p
-           (oldbuf (current-buffer)))
-      (py-execute-statement-python3)
-      (save-excursion (py-execute-statement-python))
-      (set-buffer oldbuf)
-      (when py-debug-p (switch-to-buffer (current-buffer)))
-      (py-execute-statement-python)
-      ;; (message "(window-list): %s" (window-list))
-      (sit-for 0.1 t)
-      (should (eq 3 (count-windows)))
-      (py-restore-window-configuration))))
+   'python-mode
+   'py-verbose-p
+   ;; (delete-other-windows)
+   (let* ((py-split-window-on-execute 'always)
+	  py-switch-buffers-on-execute-p
+	  py-dedicated-process-p
+          (oldbuf (current-buffer)))
+     (py-execute-statement-python3)
+     ;; (save-excursion (py-execute-statement-python))
+     ;; (set-buffer oldbuf)
+     ;; (when py-debug-p (switch-to-buffer (current-buffer)))
+     (py-execute-statement-python)
+     ;; (message "(window-list): %s" (window-list))
+     ;; (sit-for 0.1 t)
+     (should (eq 3 (count-windows)))
+     ;; (py-restore-window-configuration)
+     )))
 
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-ipython-test-zGlzYP ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env ipython
+  (py-test
+   "#! /usr/bin/env ipython
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-ipython-test\")"
-    (if (executable-find "ipython")
-	(progn
-	  (delete-other-windows)
-	  (let* ((py-split-window-on-execute 'just-two)
-		 (erg1 (progn (py-execute-statement-ipython-dedicated) py-output-buffer))
-		 (erg2 (progn (py-execute-statement-ipython-dedicated) py-output-buffer)))
-	    ;; (sit-for 0.1 t)
-	    (when py-debug-p (message "(count-windows) %s" (count-windows)))
-	    (should (eq 2 (count-windows)))
-	    (py-kill-buffer-unconditional erg1)
-	    (py-kill-buffer-unconditional erg2)
-	    (py-restore-window-configuration)))
-      (message "%s" "ipython does not exist on your system."))))
+   'python-mode
+   'py-verbose-p
+   (if (executable-find "ipython")
+       (progn
+	 (delete-other-windows)
+	 (let* ((py-split-window-on-execute 'just-two)
+		(erg1 (progn (py-execute-statement-ipython-dedicated) py-output-buffer))
+		(erg2 (progn (py-execute-statement-ipython-dedicated) py-output-buffer)))
+	   ;; (sit-for 0.1 t)
+	   (when py-debug-p (message "(count-windows) %s" (count-windows)))
+	   (should (eq 2 (count-windows)))
+	   (py-kill-buffer-unconditional erg1)
+	   (py-kill-buffer-unconditional erg2)
+	   (py-restore-window-configuration)))
+     (message "%s" "ipython does not exist on your system."))))
 
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-ipython3-test-zGlzYP ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env ipython
+  (py-test
+   "#! /usr/bin/env ipython
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-ipython-test\")"
-    (if (executable-find "ipython3")
-	(progn
-	  (delete-other-windows)
-	  (let* ((py-split-window-on-execute 'just-two)
-		 (erg1 (progn (py-execute-statement-ipython3-dedicated) py-output-buffer))
-		 (erg2 (progn (py-execute-statement-ipython3-dedicated) py-output-buffer)))
-	    ;; (sit-for 0.1 t)
-	    (when py-debug-p (message "(count-windows) %s" (count-windows)))
-	    (should (eq 2 (count-windows)))
-	    (py-kill-buffer-unconditional erg1)
-	    (py-kill-buffer-unconditional erg2)
-	    (py-restore-window-configuration)))
-      (message "%s" "ipython3 does not exist on your system."))))
+   'python-mode
+   'py-verbose-p
+   (if (executable-find "ipython3")
+       (progn
+	 ;; (delete-other-windows)
+	 (let* ((py-split-window-on-execute 'just-two)
+		(erg1 (progn (py-execute-statement-ipython3-dedicated) py-output-buffer))
+		(erg2 (progn (py-execute-statement-ipython3-dedicated) py-output-buffer)))
+	   ;; (sit-for 0.1 t)
+	   (when py-debug-p (message "(count-windows) %s" (count-windows)))
+	   (should (eq 2 (count-windows)))
+	   (py-kill-buffer-unconditional erg1)
+	   (py-kill-buffer-unconditional erg2)
+	   (py-restore-window-configuration)))
+     (message "%s" "ipython3 does not exist on your system."))))
 
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-jython-test-Nh6zdU ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env jython
+  (py-test
+   "#! /usr/bin/env jython
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
-    (delete-other-windows)
-    (let* ((py-split-window-on-execute 'just-two)
-	   (erg1 (progn (py-execute-statement-jython-dedicated) py-output-buffer))
-	   (erg2 (progn (py-execute-statement-jython-dedicated) py-output-buffer)))
-      ;; (sit-for 0.1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
-      (should (eq 2 (count-windows)))
-      (py-kill-buffer-unconditional erg1)
-      (py-kill-buffer-unconditional erg2)
-      (py-restore-window-configuration))))
+   'python-mode
+   'py-verbose-p
+   (delete-other-windows)
+   (let* ((py-split-window-on-execute 'just-two)
+	  (erg1 (progn (py-execute-statement-jython-dedicated) py-output-buffer))
+	  (erg2 (progn (py-execute-statement-jython-dedicated) py-output-buffer)))
+     ;; (sit-for 0.1 t)
+     (when py-debug-p (message "(count-windows) %s" (count-windows)))
+     (should (eq 2 (count-windows)))
+     (py-kill-buffer-unconditional erg1)
+     (py-kill-buffer-unconditional erg2)
+     (py-restore-window-configuration))))
 
 ;; (ert-deftest py-flycheck-mode-5Yz7A2 ()
-;;   (py-test-with-temp-buffer
+;;   (py-test
 ;;    ""
 ;;    (py-flycheck-mode -1)
 ;;    (should-not flycheck-mode)
@@ -211,76 +220,86 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
 ;;    (should-not flycheck-mode)))
 
 (ert-deftest py-face-lp-1454858-python3-1-test-3lRWI6 ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python3
+  (py-test
+   "#! /usr/bin/env python3
 file.close()"
-    (let ((py-python-edit-version ""))
-      (goto-char (point-max))
-      (beginning-of-line)
-      (should-not (face-at-point)))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-python-edit-version ""))
+     (goto-char (point-max))
+     (beginning-of-line)
+     (should-not (face-at-point)))))
 
 (ert-deftest py-face-lp-1454858-python3-2-test-R3JIC9 ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python3
+  (py-test
+   "#! /usr/bin/env python3
 file.close()"
-    (let ((py-python-edit-version "python3"))
-      (goto-char (point-max))
-      (beginning-of-line)
-      (should-not (face-at-point)))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-python-edit-version "python3"))
+     (goto-char (point-max))
+     (beginning-of-line)
+     (should-not (face-at-point)))))
 
 (ert-deftest py-face-lp-1454858-python3-4-test-dHIVmf ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python3
+  (py-test
+   "#! /usr/bin/env python3
 print()"
-    (let ((py-python-edit-version ""))
-      (goto-char (point-max))
-      (search-backward "print")
-      (sit-for 0.1)
-      (should (eq (face-at-point) 'py-builtins-face)))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-python-edit-version ""))
+     (goto-char (point-max))
+     (search-backward "print")
+     (sit-for 0.1)
+     (should (eq (face-at-point) 'py-builtins-face)))))
 
 (ert-deftest py-ert-execute-statement-split-rGDJdi ()
-  (py-test-with-temp-buffer-point-min
-      "print(123)"
-    (let ((py-split-window-on-execute t))
-      (delete-other-windows)
-      (py-execute-statement)
-      (sit-for 0.1 t)
-      (should (not (one-window-p))))))
+  (py-test-point-min
+   "print(123)"
+   'python-mode
+   'py-verbose-p
+   (let ((py-split-window-on-execute t))
+     (delete-other-windows)
+     (py-execute-statement)
+     (sit-for 0.1 t)
+     (should (not (one-window-p))))))
 
 (ert-deftest py-ert-py-execute-section-test-bsHl0k ()
-  (py-test-with-temp-buffer
-      "# {{
+  (py-test
+   "# {{
 print(3+3)
 # }}"
-    (let ((py-store-result-p t))
-      (search-backward "print")
-      (py-execute-section)
-      (sleep-for 0.1)
-      (should (string= py-result "6")))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-store-result-p t))
+     (search-backward "print")
+     (py-execute-section)
+     (sleep-for 0.1)
+     (should (string= py-result "6")))))
 
 (ert-deftest py-ert-match-paren-test-3-xtdxLn ()
-    (py-test-with-temp-buffer
-	"if __name__ == \"__main__\":
+  (py-test
+   "if __name__ == \"__main__\":
     main()
 "
-      (skip-chars-backward " \t\r\n\f")
-      (back-to-indentation)
-      (py-match-paren)
-      (should (eq 4 (current-column)))))
+   'python-mode
+   'py-verbose-p
+   (skip-chars-backward " \t\r\n\f")
+   (back-to-indentation)
+   (py-match-paren)
+   (should (eq 4 (current-column)))))
 
 (ert-deftest py-ert-match-paren-test-6-p1JAuq ()
-  (py-test-with-temp-buffer
-      "class kugel(object):
+  (py-test
+   "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
     spiel = []
     gruen = [0]
     rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
-
     def pylauf(self):
         \"\"\"Eine Doku fuer pylauf\"\"\"
         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
         ausgabe[0] = treffer
         fertig = ''
 #        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
@@ -288,137 +307,141 @@ print(3+3)
             # print \"0, Gruen\"
             ausgabe[1] = treffer
             ausgabe[2] = treffer
-
         elif treffer in schwarz:
             # print \"%i, Schwarz\" % (treffer)
             ausgabe[1] = treffer
-
 if __name__ == \"__main__\":
     main()
 "
-    (search-backward "(treffer)")
-    (skip-chars-backward "^\"")
-    (forward-char -1)
-    (py-match-paren)
-    (should (eq (char-after) ?#))
-    (py-match-paren)
-    (should (eq (char-before) ?\)))
-    (should (eolp))))
+   'python-mode
+   'py-verbose-p
+   (search-backward "(treffer)")
+   (skip-chars-backward "^\"")
+   (forward-char -1)
+   (py-match-paren)
+   (should (eq (char-after) ?#))
+   (py-match-paren)
+   (should (eq (char-before) ?\)))
+   (should (eolp))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-2-rq3mat ()
-  (py-test-with-temp-buffer-point-min
-              "class MyClass(object):
+  (py-test-point-min
+   "class MyClass(object):
     def my_method(self):
         \"\"\"Some long line with more than 70 characters in the docstring. Some more text.\"\"\"
 "
-      (let ((py-docstring-style 'pep-257-nn))
-        (goto-char (point-min))
-        (search-forward "\"\"\"")
-        (fill-paragraph)
-        (search-forward "\"\"\"")
-        (should (eq 8 (current-indentation))))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-docstring-style 'pep-257-nn))
+     (goto-char (point-min))
+     (search-forward "\"\"\"")
+     (fill-paragraph)
+     (search-forward "\"\"\"")
+     (should (eq 8 (current-indentation))))))
 
 (ert-deftest py-ert-split-window-on-execute-1361535-test-fK4Nqy ()
-  (py-test-with-temp-buffer-point-min
-      "print(\"%(language)s has %(number)03d quote types.\" %
+  (py-test-point-min
+   "print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})"
-    (let ((oldbuf (current-buffer))
-	  (py-split-window-on-execute t)
-	  (py-split-window-on-execute-threshold 3))
-      (py-shell)
-      (set-buffer oldbuf)
-      (switch-to-buffer (current-buffer))
-      (delete-other-windows)
-      (split-window-vertically)
-      (dired "~")
-      (set-buffer oldbuf)
-      (switch-to-buffer (current-buffer))
-      (split-window-horizontally)
-      (py-execute-statement)
-      (should (eq 3 (length (window-list)))))))
+   'python-mode
+   'py-verbose-p
+   (let ((oldbuf (current-buffer))
+	 (py-split-window-on-execute t)
+	 (py-split-window-on-execute-threshold 3))
+     (py-shell)
+     (set-buffer oldbuf)
+     (switch-to-buffer (current-buffer))
+     (delete-other-windows)
+     (split-window-vertically)
+     (dired "~")
+     (set-buffer oldbuf)
+     (switch-to-buffer (current-buffer))
+     (split-window-horizontally)
+     (py-execute-statement)
+     (should (eq 3 (length (window-list)))))))
 
 (ert-deftest py-backward-toplevel-test-Rfa4ZA ()
-  (py-test-with-temp-buffer
-      "''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
+  (py-test
+   "''' asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''
-
 a, b, c = (1, 2, 3)"
-    (beginning-of-line)
-    (py-backward-top-level)
-    (should (bobp))
-    ;; (should (eq (point) 1))
-    ))
+   'python-mode
+   'py-verbose-p
+   (beginning-of-line)
+   (py-backward-top-level)
+   (should (bobp))
+   ;; (should (eq (point) 1))
+   ))
 
 (ert-deftest py-pdbtrack-input-prompt-45-test-xhbEyD ()
-  (py-test-with-temp-buffer
-      "def exercise():
+  (py-test
+   "def exercise():
   import pdb\\; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
-
 exercise()"
-    (py-execute-buffer)
-    (set-buffer py-output-buffer)
-    (switch-to-buffer (current-buffer))
-    (message "prompt-45: %s" (buffer-name (current-buffer)))
-    (message "Nach Prompt: %s" (buffer-substring-no-properties (1- (line-beginning-position)) (point)))
-    (sit-for 1)
-    (should (looking-back py-pdbtrack-input-prompt))))
+   'python-mode
+   'py-verbose-p
+   (py-execute-buffer)
+   (set-buffer py-output-buffer)
+   (switch-to-buffer (current-buffer))
+   (message "prompt-45: %s" (buffer-name (current-buffer)))
+   (message "Nach Prompt: %s" (buffer-substring-no-properties (1- (line-beginning-position)) (point)))
+   (sit-for 1)
+   (should (looking-back py-pdbtrack-input-prompt))))
 
 (ert-deftest py-pdbtrack-input-prompt-45-test-7V1h5F ()
-  (py-test-with-temp-buffer
-      "def exercise():
+  (py-test
+   "def exercise():
   import pdb\\; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
-
 exercise()"
-    (py-execute-buffer)
-    (set-buffer py-output-buffer)
-    (switch-to-buffer (current-buffer))
-    (message "prompt-45: %s" (buffer-name (current-buffer)))
-    (message "Nach Prompt: %s" (buffer-substring-no-properties (1- (line-beginning-position)) (point)))
-    (sit-for 1)
-    (should (looking-back py-pdbtrack-input-prompt (line-beginning-position)))))
+   'python-mode
+   'py-verbose-p
+   (py-execute-buffer)
+   (set-buffer py-output-buffer)
+   (switch-to-buffer (current-buffer))
+   (message "prompt-45: %s" (buffer-name (current-buffer)))
+   (message "Nach Prompt: %s" (buffer-substring-no-properties (1- (line-beginning-position)) (point)))
+   (sit-for 1)
+   (should (looking-back py-pdbtrack-input-prompt (line-beginning-position)))))
 
 (ert-deftest py-pdbtrack-is-tracking-45-test-N1CTvI ()
-  (py-test-with-temp-buffer
-      "def exercise():
+  (py-test
+   "def exercise():
   import pdb\\; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
-
 exercise()"
-    (py-execute-buffer)
-    (switch-to-buffer py-output-buffer)
-    (should py-pdbtrack-is-tracking-p)
-    ))
+   'python-mode
+   'py-verbose-p
+   (py-execute-buffer)
+   (switch-to-buffer py-output-buffer)
+   (should py-pdbtrack-is-tracking-p)))
 
 (ert-deftest py-pdbtrack-is-tracking-45-test-ra9WRA ()
-  (py-test-with-temp-buffer
-      "def exercise():
+  (py-test
+   "def exercise():
   import pdb\\; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
-
 exercise()"
-    ))
+   'python-mode
+   'py-verbose-p))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-lp-1286318 ()
-  (py-test-with-temp-buffer-point-min
-      "# r1416
-
+  (py-test-point-min
+   "# r1416
 def baz():
     \"\"\"Hello there.
-
     This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
     \"\"\"
     return 7
-
 # The last line of the docstring is longer than fill-column (set to
 # 78 = for me). Put point on the 'T' in 'This' and hit M-q= . Nothing
 # happens.
@@ -427,7 +450,6 @@ def baz():
 #
 def baz():
     \"\"\"Hello there.
-
     This is a multiline
     function definition.
     Don't worry, be happy.
@@ -435,7 +457,6 @@ def baz():
     Very. happy.
     \"\"\"
     return 7
-
 # All of those lines are shorter than fill-column. Put point anywhere
 # = in that paragraph and hit M-q. Nothing happens.
 #
@@ -443,47 +464,46 @@ def baz():
 #
 def baz():
     \"\"\"Hello there.
-
     This is a multiline function definition. Don= 't worry, be happy. Be very
     very happy. Very. happy.
     \"\"\"
     return 7
 "
-    (goto-char 49)
-    ;; (sit-for 0.1 t)
-    (fill-paragraph)
-    (end-of-line)
-    (should (<= (current-column) 72))
-    (goto-char 409)
-    (fill-paragraph)
-    (end-of-line)
-    (should (<= (current-column) 72))
-    (goto-char 731)
-    (fill-paragraph)
-    (end-of-line)
-    (should (<= (current-column) 72))
-    (search-forward "\"\"\"")
-    (forward-line -1)
-    ;; (sit-for 0.1 t)
-    (should (not (py-empty-line-p)))
-
-    ))
+   'python-mode
+   'py-verbose-p
+   (goto-char 49)
+   ;; (sit-for 0.1 t)
+   (fill-paragraph)
+   (end-of-line)
+   (should (<= (current-column) 72))
+   (goto-char 409)
+   (fill-paragraph)
+   (end-of-line)
+   (should (<= (current-column) 72))
+   (goto-char 731)
+   (fill-paragraph)
+   (end-of-line)
+   (should (<= (current-column) 72))
+   (search-forward "\"\"\"")
+   (forward-line -1)
+   ;; (sit-for 0.1 t)
+   (should (not (py-empty-line-p)))))
 
 (ert-deftest py-ert-if-name-main-permission-lp-326620-test-CZefpG ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
    "#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 def py_if_name_main_permission_test():
     if __name__ == \"__main__\" :
         print(\"__name__ == '__main__' run\")
         return True
-
     else:
         print(\"__name__ == '__main__' supressed\")
         return False
-
 py_if_name_main_permission_test()
 "
+   'python-mode
+   'py-verbose-p
    (goto-char (point-min))
    (let ((py-if-name-main-permission-p t))
      (py-execute-buffer-python2)
@@ -493,67 +513,74 @@ py_if_name_main_permission_test()
      (should (search-backward "run" nil t)))))
 
 (ert-deftest py-in-list-indent-test-LEON2Q ()
-  (py-test-with-temp-buffer
-      "def foo():
+  (py-test
+   "def foo():
 print(rest)"
-    (goto-char (point-max))
-    (search-backward "rest")
-    (py-indent-or-complete)
-    ;; (switch-to-buffer (current-buffer))
-    ;; (message "py-in-list-indent-test-LEON2Q (current-buffer):  %s" (current-buffer))
-    ;; (sit-for 1)
-    (should (eq 4 (current-indentation)))))
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (search-backward "rest")
+   (py-indent-or-complete)
+   ;; (switch-to-buffer (current-buffer))
+   ;; (message "py-in-list-indent-test-LEON2Q (current-buffer):  %s" (current-buffer))
+   ;; (sit-for 1)
+   (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-indent-inconsistent-test-Zh2hP0 ()
-  (py-test-with-temp-buffer
-      "def lcs (first):
+  (py-test
+   "def lcs (first):
     for i in range(len(first)):
         print(first[i])
         print(i)
 "
-    (goto-char (point-max))
-    (search-backward "print" nil t 2)
-    (py-indent-line)
-    (should (eq 8 (current-indentation)))
-    (forward-line 1)
-    (back-to-indentation)
-    (py-indent-line)
-    (should (eq 8 (current-indentation)))
-    ))
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (search-backward "print" nil t 2)
+   (py-indent-line)
+   (should (eq 8 (current-indentation)))
+   (forward-line 1)
+   (back-to-indentation)
+   (py-indent-line)
+   (should (eq 8 (current-indentation)))))
 
 (ert-deftest py-indentation-lp-1375122-test-yx67am ()
-  (py-test-with-temp-buffer
-      "def foo():
+  (py-test
+   "def foo():
     if True:
 pass
 "
-    (goto-char (point-max))
-    (forward-line -1)
-    (py-indent-or-complete)
-    (sit-for 0.1 t)
-    (should (eq 8 (current-column)))
-    (beginning-of-line)
-    (delete-horizontal-space)
-    (indent-to 4)
-    (py-indent-or-complete)
-    (sit-for 0.1 t)
-    (should (eq 8 (current-column)))))
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (forward-line -1)
+   (py-indent-or-complete)
+   (sit-for 0.1 t)
+   (should (eq 8 (current-column)))
+   (beginning-of-line)
+   (delete-horizontal-space)
+   (indent-to 4)
+   (py-indent-or-complete)
+   (sit-for 0.1 t)
+   (should (eq 8 (current-column)))))
 
 (ert-deftest py-ert-just-two-split-dedicated-lp-1361531-python3-test ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python3
+  (py-test
+   "#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
-    (delete-other-windows)
-    (let* ((py-split-window-on-execute 'just-two)
-	   (erg1 (progn (py-execute-statement-python3-dedicated) py-output-buffer))
-	   (erg2 (progn (py-execute-statement-python3-dedicated) py-output-buffer)))
-      ;; (sit-for 0.1 t)
-      (when py-debug-p (message "(count-windows) %s" (count-windows)))
-      (should (eq 2 (count-windows)))
-      (py-kill-buffer-unconditional erg1)
-      (py-kill-buffer-unconditional erg2)
-      (py-restore-window-configuration))))
+   'python-mode
+   'py-verbose-p
+   (delete-other-windows)
+   (let* ((py-split-window-on-execute 'just-two)
+	  (erg1 (progn (py-execute-statement-python3-dedicated) py-output-buffer))
+	  (erg2 (progn (py-execute-statement-python3-dedicated) py-output-buffer)))
+     ;; (sit-for 0.1 t)
+     (when py-debug-p (message "(count-windows) %s" (count-windows)))
+     (should (eq 2 (count-windows)))
+     (py-kill-buffer-unconditional erg1)
+     (py-kill-buffer-unconditional erg2)
+     (py-restore-window-configuration))))
 
 (ert-deftest py-shell-dedicated-buffer-test-t3Sizn ()
   (let ((buffer (py-shell nil nil t)))
@@ -561,106 +588,115 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 
 (ert-deftest py-python3-shell-test-YW7ToN ()
   ""
-  (let ((erg (python3)))
-    ;; (when py-debug-p (message "%s" erg))
-    ;; (when py-debug-p (message "buffperp: %s" (get-buffer erg)))
+  'python-mode
+  'py-verbose-p
+  (let ((erg (python3))
+        erg)
     (should (bufferp (get-buffer erg)))
     (should (get-buffer-process erg))))
 
 (ert-deftest py-python2-shell-test-8Ostfe ()
   ""
-  (if (not (executable-find "python2"))
-      (and py-debug-p (message "py-python2-shell-test-8Ostfe: %s" "No python executable found!"))
-    (let ((erg (python2)))
-      (sit-for 0.1)
-      (should (bufferp (get-buffer erg)))
-      (should (get-buffer-process erg)))))
+  'python-mode
+  'py-verbose-p
+  (let ((erg (python2)))
+    (sit-for 0.1)
+    (should (bufferp (get-buffer erg)))
+    (should (get-buffer-process erg))))
 
 (ert-deftest py-keep-windows-configuration-test-Hh2GD6 ()
-  (py-test-with-temp-buffer
-      "print('py-keep-windows-configuration-test-string')"
-    (delete-other-windows)
-    (let ((py-keep-windows-configuration t)
-          (py-split-window-on-execute t)
-          (full-height (window-height)))
-      (py-execute-statement)
-      (should (eq (window-height) full-height)))))
+  (py-test
+   "print('py-keep-windows-configuration-test-string')"
+   'python-mode
+   'py-verbose-p
+   (delete-other-windows)
+   (let ((py-keep-windows-configuration t)
+         (py-split-window-on-execute t)
+         (full-height (window-height)))
+     (py-execute-statement)
+     (should (eq (window-height) full-height)))))
 
 (ert-deftest py-shell-test-t3Sizn ()
-  (py-test-with-temp-buffer
-      (let ((buffer (py-shell nil nil t)))
-        (sit-for 0.1)
-        (with-current-buffer buffer
-          (goto-char (point-max))
-          (insert "def")
-          (should (looking-back "def" (line-beginning-position)))))))
-
-(ert-deftest py-shell-test-3uMnzx ()
-  (py-test-with-temp-buffer
-      (with-current-buffer (py-shell nil nil t)
+  (py-test
+      ""
+    'python-mode
+    'py-verbose-p
+    (let ((buffer (py-shell nil nil t)))
+      (sit-for 0.1)
+      (with-current-buffer buffer
         (goto-char (point-max))
         (insert "def")
-        (should (looking-back "def" (line-beginning-position))))))
+        (should (looking-back "def" (line-beginning-position)))))))
+
+(ert-deftest py-shell-test-3uMnzx ()
+  (py-test
+      ""
+    'python-mode
+    'py-verbose-p
+    (with-current-buffer (py-shell nil nil t)
+      (goto-char (point-max))
+      (insert "def")
+      (should (looking-back "def" (line-beginning-position))))))
 
 (ert-deftest py-execute-import-or-reload-test-ZYUvdh ()
-  (py-test-with-temp-buffer
-      "#! /usr/bin/env python
+  (py-test
+   "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import os"
-    (goto-char (point-max))
-    (should (py-execute-import-or-reload))))
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (should (py-execute-import-or-reload))))
 
 (ert-deftest py-master-file-not-honored-lp-794850-test-P6QZmU ()
-  (py-test-with-temp-buffer
-
-"
+  (py-test
+   "
 # -*- coding: utf-8 -*-
-
 # Local Variables:
 # py-master-file: \"/tmp/my-master.py\"
 # End:
  "
-
-  (let ((oldbuf (current-buffer)))
-    (save-excursion
-      (set-buffer (get-buffer-create "test-master.py"))
-      (erase-buffer)
-      (insert "#! /usr/bin/env python
+   'python-mode
+   'py-verbose-p
+   (let ((oldbuf (current-buffer)))
+     (save-excursion
+       (set-buffer (get-buffer-create "test-master.py"))
+       (erase-buffer)
+       (insert "#! /usr/bin/env python
  # -*- coding: utf-8 -*-
-
 print(\"Hello, I'm your master!\")
 ")
-      (write-file "/tmp/my-master.py"))
-    (set-buffer oldbuf)
-    (unwind-protect
-        (py-execute-buffer)
-      (when (file-readable-p "/tmp/my-master.py") (delete-file "/tmp/my-master.py"))))))
+       (write-file "/tmp/my-master.py"))
+     (set-buffer oldbuf)
+     (unwind-protect
+         (py-execute-buffer)
+       (when (file-readable-p "/tmp/my-master.py") (delete-file "/tmp/my-master.py"))))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-symmetric-i6vspv ()
   (let ((py-docstring-style 'symmetric))
-    (py-test-with-temp-buffer-point-min
-	"# r1416
-
+    (py-test-point-min
+     "# r1416
 def baz():
     \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-
     This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
     \"\"\"
     return 7
 "
-      (goto-char (point-min))
-      (font-lock-fontify-region (point-min)(point-max))
-      (goto-char 49)
-      (fill-paragraph)
-      (search-backward "\"\"\"")
-      (goto-char (match-end 0))
-      (eolp)
-      (forward-line 1)
-      (end-of-line)
-      (should (<= (current-column) 72))
-      (search-forward "\"\"\"")
-      (forward-line -1)
-      (should (not (py-empty-line-p))))))
+     'python-mode
+     'py-verbose-p
+     (goto-char (point-min))
+     (font-lock-fontify-region (point-min)(point-max))
+     (goto-char 49)
+     (fill-paragraph)
+     (search-backward "\"\"\"")
+     (goto-char (match-end 0))
+     (eolp)
+     (forward-line 1)
+     (end-of-line)
+     (should (<= (current-column) 72))
+     (search-forward "\"\"\"")
+     (forward-line -1)
+     (should (not (py-empty-line-p))))))
 
 (ert-deftest py-run-python-test-QDE84k ()
   "Test built-in python.el."
@@ -668,138 +704,157 @@ def baz():
     (run-python)
     (should (buffer-live-p (get-buffer "*Python*")))))
 
-(ert-deftest py--pdb-versioned-test-Ft0557-OoVDWm ()
-  (let ((py-shell-name "python3"))
-    (py-test-with-temp-buffer
-	""
-      (goto-char (point-max))
-      (should (string= "pdb3" (py--pdb-versioned))))))
-
 (ert-deftest py-ert-wrong-indent-inside-string-lp-1574731-test-P19RGY ()
-  (py-test-with-temp-buffer
-      "def foo():
+  (py-test
+   "def foo():
     print(\"\"\"
-
 Bar
 \"\"\")
 "
-    (goto-char (point-max))
-    (forward-line -3)
-    (should (eq 10 (py-compute-indentation)))))
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (forward-line -3)
+   (should (eq 10 (py-compute-indentation)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-76Aw4O ()
-  (py-test-with-temp-buffer-point-min
-      "# r1416
-
+  (py-test-point-min
+   "# r1416
 def baz():
     \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-
     This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
     Line below should not be empty, when ‘py-docstring-style’ is not ‘PEP-257’.
     \"\"\"
     return 7
 "
-    (let ((py-docstring-style 'django))
-      (goto-char 49)
-      (fill-paragraph)
-      (search-backward "\"\"\"")
-      (goto-char (match-end 0))
-      (should (eolp))
-      (forward-line 1)
-      (end-of-line)
-      (when py-debug-p (message "fill-column: %s" fill-column))
-      (should (<= (current-column) 72)))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-docstring-style 'django))
+     (goto-char 49)
+     (fill-paragraph)
+     (search-backward "\"\"\"")
+     (goto-char (match-end 0))
+     (should (eolp))
+     (forward-line 1)
+     (end-of-line)
+     (when py-debug-p (message "fill-column: %s" fill-column))
+     (should (<= (current-column) 72)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-w8Rbx5 ()
-  (py-test-with-temp-buffer-point-min
-      "# r1416
-
+  (py-test-point-min
+   "# r1416
 def baz():
     \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-
     This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
     Line below should not be empty, when ‘py-docstring-style’ is not ‘PEP-257’.
-
     \"\"\"
     return 7
 "
-    (let ((py-docstring-style 'django))
-      (goto-char 49)
-      (when py-debug-p (message "fill-column: %s" fill-column))
-      (fill-paragraph)
-      (py-end-of-string)
-      (forward-line -1)
-      (should-not (py-empty-line-p)))))
-
-(ert-deftest py-up-string-test-NJ7sie ()
-  (py-test-with-temp-buffer
-      "class M:
-    def __init__(self):
-        \"\"\"Helper function implementing the current module loader policy.1
-
-        In Python 3.14, the end state is to require and use the module's
-        __spec__.loader and ignore any __loader__ attribute on the
-        module.
-
-        * If you have a __loader__ and a __spec__.loader but they are not the
-        same, in Python 3.12 we issue a DeprecationWarning and fall back to
-        __loader__ for backward compatibility.  In Python 3.14, we'll flip
-        this case to ignoring __loader__ entirely, without error.
-
-        \"\"\"
-        self.a = 1
-        self.b = 2"
-    ;; (font-lock-ensure)
-    (goto-char (point-max))
-    (search-backward "\"\"\"")
-    (py-up)
-    (should (eq (char-after) 34))
-    (should (eq (char-before) 32))))
+   'python-mode
+   'py-verbose-p
+   (let ((py-docstring-style 'django))
+     (goto-char 49)
+     (when py-debug-p (message "fill-column: %s" fill-column))
+     (fill-paragraph)
+     (py-end-of-string)
+     (forward-line -1)
+     (should-not (py-empty-line-p)))))
 
 (ert-deftest py-up-string-test-DVKVO2 ()
-  (py-test-with-temp-buffer
-      "class M:
+  (py-test
+   "class M:
     def __init__(self):
         \"\"\"Helper function implementing the current module loader policy.1
-
         In Python 3.14, the end state is to require and use the module's
         __spec__.loader and ignore any __loader__ attribute on the
         module.
-
         * If you have a __loader__ and a __spec__.loader but they are not the
         same, in Python 3.12 we issue a DeprecationWarning and fall back to
         __loader__ for backward compatibility.  In Python 3.14, we'll flip
         this case to ignoring __loader__ entirely, without error.
-
         \"\"\"
         self.a = 1
         self.b = 2"
-    (goto-char (point-max))
-    (search-backward "error")
-    ;; (and py-debug-p (message "py-version: %s" py-version))
-    ;; (font-lock-ensure)
-    ;; (sit-for 0.1)
-    (ignore-errors (call-interactively (py-up)))
-    (should (eq (char-after) 34))
-    (should (eq (char-before) 32))
-      ))
-
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (search-backward "error")
+   ;; (and py-debug-p (message "py-version: %s" py-version))
+   ;; (font-lock-ensure)
+   ;; (sit-for 0.1)
+   (ignore-errors (call-interactively (py-up)))
+   (should (eq (char-after) 34))
+   (should (eq (char-before) 32))))
 
 (ert-deftest py-backspace-test-86TyUY ()
-  (py-test-with-temp-buffer
-      "a = b = c = 5     "
-    (goto-char (point-max))
-    (py-electric-backspace-mode -1)
-    (execute-kbd-macro (kbd "<backspace>"))
-    (should (eq (point) 18))))
+  (py-test
+   "a = b = c = 5     "
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (py-electric-backspace-mode -1)
+   (execute-kbd-macro (kbd "<backspace>"))
+   (should (eq (point) 18))))
 
 (ert-deftest py-backspace-test-xyFFow ()
-  (py-test-with-temp-buffer
-      "a = b = c = 5     "
-    (goto-char (point-max))
-    (py-electric-backspace-mode 1)
-    (execute-kbd-macro (kbd "<backspace>"))
-    (should (eq (point) 14))))
+  (py-test
+   "a = b = c = 5     "
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (py-electric-backspace-mode 1)
+   (execute-kbd-macro (kbd "<backspace>"))
+   (should (eq (point) 14))))
+
+(ert-deftest py-up-string-test-NJ7sie ()
+  (py-test
+   "class M:
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+        In Python 3.14, the end state is to require and use the module's
+        __spec__.loader and ignore any __loader__ attribute on the
+        module.
+        * If you have a __loader__ and a __spec__.loader but they are not the
+        same, in Python 3.12 we issue a DeprecationWarning and fall back to
+        __loader__ for backward compatibility.  In Python 3.14, we'll flip
+        this case to ignoring __loader__ entirely, without error.
+        \"\"\"
+        self.a = 1
+        self.b = 2"
+   'python-mode
+   'py-verbose-p
+   ;; (font-lock-ensure)
+   (goto-char (point-max))
+   (search-backward "\"\"\"")
+   (py-up)
+   (should (eq (char-after) 34))
+   (should (eq (char-before) 32))))
+
+;; (defun py-up-string-test-NJ7sie ()
+;;   ""
+;;   (interactive)
+;;   (py-test
+;;       "class M:
+;;     def __init__(self):
+;;         \"\"\"Helper function implementing the current module loader policy.1
+;;         In Python 3.14, the end state is to require and use the module's
+;;         __spec__.loader and ignore any __loader__ attribute on the
+;;         module.
+;;         * If you have a __loader__ and a __spec__.loader but they are not the
+;;         same, in Python 3.12 we issue a DeprecationWarning and fall back to
+;;         __loader__ for backward compatibility.  In Python 3.14, we'll flip
+;;         this case to ignoring __loader__ entirely, without error.
+;;         \"\"\"
+;;         self.a = 1
+;;         self.b = 2"
+;;     'python-mode
+;;     'py-verbose-p
+;;     ;; (font-lock-ensure)
+;;     (goto-char (point-max))
+;;     (search-backward "\"\"\"")
+;;     (py-up)
+;;     (should (eq (char-after) 34))
+;;     (should (eq (char-before) 32))))
 
 (provide 'py-ert-interactive-tests)
 ;;; py-ert-interactive-tests.el ends here

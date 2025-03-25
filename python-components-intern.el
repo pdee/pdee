@@ -788,10 +788,11 @@ Use current region unless optional args BEG END are delivered."
     (save-excursion
       (goto-char beg)
       (unless (py-empty-line-p) (split-line))
-      (beginning-of-line)
+      ;; (beginning-of-line)
       (insert py-section-start)
       (goto-char end)
       (unless (py-empty-line-p) (newline 1))
+      (indent-according-to-mode) 
       (insert py-section-end))))
 
 (defun py-execute-section-prepare (&optional shell)

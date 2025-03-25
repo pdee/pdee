@@ -5340,7 +5340,7 @@ With optional Arg OUTPUT-BUFFER specify output-buffer"
 	     (cond (result
                     ;; (sit-for py-python-send-delay)
                     (sit-for py-python-send-delay)
-		    (py--fetch-result buffer limit strg))
+		    (setq py-result (py--fetch-result buffer limit strg)))
 	           (no-output
 	            (and orig (py--cleanup-shell orig buffer))))))
       ;; (message "py-execute-string; current-buffer: %s" (current-buffer))

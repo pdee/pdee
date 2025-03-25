@@ -22,47 +22,60 @@
 (require 'py-setup-ert-tests)
 
 (ert-deftest py-dedicated-shell-test-7tw0PH ()
-  (if (not (executable-find "python"))
+  ""
+  'python-mode
+  'py-verbose-p
+  (if (not (ignore-errors (executable-find "python")))
       (message "py-dedicated-shell-test-7tw0PH: %s" "No python executable found!")
     (let ((erg (buffer-name (py-shell nil nil t "python"))))
       (should (< 8 (length erg)))
       (should (eq 0 (string-match "^*Python" erg))))))
 
 (ert-deftest py-shell-python-lp-1398530-test-Haizw1 ()
-  (if (not (executable-find "python"))
+  ""
+  'python-mode
+  'py-verbose-p
+  (if (not (executable-find "python"
+                            ))
       (message "py-shell-python-lp-1398530-test-Haizw1: %s" "No python executable found!")
     (when (buffer-live-p (get-buffer "*Python*"))
       (py-kill-buffer-unconditional "*Python*"))
-    (py-test-with-temp-buffer
-	""
+    (py-test
+        ""
       (when py-debug-p (switch-to-buffer (current-buffer)))
       (let ((py-shell-name "python"))
-	(py-shell)
-	(sit-for 0.1 t)
-	(should (buffer-live-p (get-buffer "*Python*")))))))
+        (py-shell)
+        (sit-for 0.1 t)
+        (should (buffer-live-p (get-buffer "*Python*")))))))
 
 (ert-deftest py-shell-python3-lp-1398530-test-gm7LwH ()
-  (if (not (executable-find "python3"))
-      (message "py-shell-python3-lp-1398530-test-gm7LwH: %s" "No python3 executable found!")
-    (when (buffer-live-p (get-buffer "*Python3*"))
-      (py-kill-buffer-unconditional "*Python3*"))
-    (py-test-with-temp-buffer
-	""
-      (goto-char (point-max))
+  (py-test
+      ""
+    'python-mode
+    'py-verbose-p
+    (if (not (executable-find "python3"))
+        (message "py-shell-python3-lp-1398530-test-gm7LwH: %s" "No python3 executable found!")
+      (when (buffer-live-p (get-buffer "*Python3*"))
+        (py-kill-buffer-unconditional "*Python3*"))
       (let ((py-shell-name "python3"))
-	(py-shell)
-	(sit-for 0.1 t)
-	(should (buffer-live-p (get-buffer "*Python3*")))))))
+        (py-shell)
+        (sit-for 0.1 t)
+        (should (buffer-live-p (get-buffer "*Python3*")))))))
 
 (ert-deftest py-python-mode-v5-behavior-test-bSPpqY ()
+  ""
+  'python-mode
+  'py-verbose-p
   (let ((python-mode-v5-behavior-p t))
     (python3)
     (sit-for 0.1)
     (should (buffer-live-p (get-buffer "*Python Output*")))
-    (py-kill-buffer-unconditional "*Python Output*")
-    ))
+    (py-kill-buffer-unconditional "*Python Output*")))
 
 (ert-deftest py-python-mode-v5-behavior-test-2n0wbL ()
+  ""
+  'python-mode
+  'py-verbose-p
   (when (buffer-live-p (get-buffer "*Python Output*"))
     (py-kill-buffer-unconditional "*Python Output*"))
   (let ((python-mode-v5-behavior-p t))

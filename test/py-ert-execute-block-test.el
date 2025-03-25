@@ -25,7 +25,7 @@
 
 (ert-deftest py-ert-execute-block-python-test ()
   (let ((buffer (py--choose-buffer-name "python")))
-    (py-test-with-temp-buffer
+    (py-test
         "if True:
     print(\"one\")
     print(\"two\")"
@@ -35,7 +35,7 @@
 
 (ert-deftest py-ert-execute-block-python2-test ()
   (let ((buffer (py--choose-buffer-name "python2")))
-    (py-test-with-temp-buffer
+    (py-test
         "if True:
     print(\"one\")
     print(\"two\")"
@@ -45,7 +45,7 @@
 
 (ert-deftest py-ert-execute-block-python3-test ()
   (let ((buffer (py--choose-buffer-name "python3")))
-    (py-test-with-temp-buffer
+    (py-test
         "if True:
     print(\"one\")
     print(\"two\")"
@@ -55,7 +55,7 @@
 
 (ert-deftest py-ert-execute-block-ipython-test ()
   (let ((buffer (py--choose-buffer-name "ipython")))
-    (py-test-with-temp-buffer
+    (py-test
         "if True:
     print(\"one\")
     print(\"two\")"
@@ -65,7 +65,7 @@
 
 (ert-deftest py-ert-execute-block-ipython3-test ()
   (let ((buffer (py--choose-buffer-name "ipython3")))
-    (py-test-with-temp-buffer
+    (py-test
         "if True:
     print(\"one\")
     print(\"two\")"

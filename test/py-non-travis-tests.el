@@ -37,7 +37,7 @@
     (should (eq ?p (char-after)))))
 
 (ert-deftest py-ert-script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "#! /usr/bin/env python
  # -*- coding: utf-8 -*-
 print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-test\")
@@ -55,7 +55,7 @@ print(\"I'm the script-buffer-appears-instead-of-python-shell-buffer-lp-957561-t
   (dolist (ele py-ert-test-default-executables)
     (when (buffer-live-p (get-buffer "*Python Completions*"))
       (py-kill-buffer-unconditional (get-buffer "*Python Completions*")))
-    (py-test-with-temp-buffer
+    (py-test
 	"import socket\nsocket."
       (let ((py-debug-p t)
 	    (py-shell-name ele)

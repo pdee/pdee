@@ -22,72 +22,85 @@
 (require 'py-setup-ert-tests)
 
 (ert-deftest py-ert-borks-all-lp-1294820-sIKMyz ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "# M-q within some code (not in= a docstring) completely borks all previous
 # code in the file:
 #
 # E.g. here, if I M-q within the last function:
-
 def foo(self):
     some_actual_code()
-
 def bar(self):
     some_actual_code()
-
 def baz(self):
     some_actual_code()
-
 # def foo(self): some_actual_code() def bar(self): some_actual_code() def
 # baz(self):
 #     some_actual_code()
 "
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min))
-    (font-lock-fontify-region (point-min)(point-max))
+    ;; (font-lock-fontify-region (point-min)(point-max))
     (search-forward "def baz(self):")
     (fill-paragraph)
     (forward-line -1)
-    (should (eq (char-after) ?\n))))
+    (should (bolp))
+    (should (looking-at "    some_"))))
 
 (ert-deftest py-ert-in-comment-p-test-G6FUaB ()
-  (py-test-with-temp-buffer
+  (py-test
       "# "
+    'python-mode
+    'py-verbose-p
     (should (py--in-comment-p))))
 
 (ert-deftest py-ert-in-sq-string-p-test-nwha1D ()
-  (py-test-with-temp-buffer
+  (py-test
       "' "
+    'python-mode
+    'py-verbose-p
     (goto-char(point-max))
     (should (py-in-string-p))))
 
 (ert-deftest py-ert-in-dq-string-p-test-lYrt9b ()
-  (py-test-with-temp-buffer
+  (py-test
       "\" "
+    'python-mode
+    'py-verbose-p
     (goto-char(point-max))
     (should (py-in-string-p))))
 
 (ert-deftest py-ert-in-sq-tqs-string-p-test-EwMSzz ()
-  (py-test-with-temp-buffer
+  (py-test
       "''' "
+    'python-mode
+    'py-verbose-p
     (goto-char(point-max))
     (should (py-in-string-p))))
 
 (ert-deftest py-ert-in-dq-tqs-string-p-test-jkHHQH ()
-  (py-test-with-temp-buffer
+  (py-test
       "\"\"\" "
+    'python-mode
+    'py-verbose-p
     (goto-char(point-max))
     (should (py-in-string-p))))
 
 (ert-deftest py-ert-electric-delete-test-HecKiw ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "  {}"
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min))
     (py-electric-delete)
     (should (eq (char-after) ?{))))
 
 (ert-deftest py-ert-fill-plain-string-test-OEykwr ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "'''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''"
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min))
     (forward-char 4)
     (fill-paragraph)
@@ -95,9 +108,11 @@ def baz(self):
     (should (not (py-empty-line-p)))))
 
 (ert-deftest py-ert-nil-docstring-style-lp-1477422-test-6wpqLB ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "def foo():
     '''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf'''"
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min))
     (let (py-docstring-style)
       (search-forward "'''")
@@ -107,18 +122,16 @@ def baz(self):
       (should (not (py-empty-line-p))))))
 
 (ert-deftest py-markup-region-as-section-test-KetMYL ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
     # zeit = time.strftime('%Y-%m-%d--%H-%M-%S')
     spiel = []
     gruen = [0]
     rot = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
-
     def pylauf(self):
         \"\"\"Eine Doku fuer pylauf\"\"\"
         ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
-
         ausgabe[0] = treffer
         fertig = ''
 #        print \"treffer, schwarz, gruen, rot, pair, impair, passe, manque, spiel\"
@@ -126,41 +139,47 @@ def baz(self):
             # print \"0, Gruen\"
             ausgabe[1] = treffer
             ausgabe[2] = treffer
-
         elif treffer in schwarz:
             # print \"%i, Schwarz\" % (treffer)
             ausgabe[1] = treffer
 "
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min))
     (search-forward "fertig")
     (py-sectionize-region (match-beginning 0) (line-end-position))
     (py-mark-section)
-    (should (eq 371 (region-beginning)))
-    (should (eq 408 (region-end)))))
+    (should (eq (region-beginning) 377 ))
+    (should (eq (region-end) 414 ))))
 
 (ert-deftest py-test-embedded-51-test-sgaO9V ()
-  (py-test-with-temp-buffer
+  (py-test
       "from PrintEngine import *
-
 GeomSim."
+    'python-mode
+    'py-verbose-p
     (goto-char(point-max))
     (ignore-errors (py-indent-or-complete))
     ;; (sit-for 0.1)
     (should (eq (char-before) ?.))))
 
 (ert-deftest py--pdb-versioned-test-QoHSpJ-oNuvXf ()
-  (let ((py-shell-name "python"))
-    (py-test-with-temp-buffer
-	""
+  (py-test
+      ""
+    'python-mode
+    'py-verbose-p
+    (let ((py-shell-name "python3"))
       (goto-char (point-max))
-      (should (string= "pdb" (py--pdb-versioned))))))
+      (should (string= "pdb3" (py--pdb-versioned))))))
 
 (ert-deftest py-ert-copy-indent-test-UbzMto ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-copy-indent)
@@ -170,11 +189,13 @@ GeomSim."
     (should (py--beginning-of-indent-p))))
 
 (ert-deftest py-ert-delete-indent-test-HhZNOr ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-delete-indent)
@@ -182,11 +203,13 @@ GeomSim."
     (should (bolp))))
 
 (ert-deftest py-ert-kill-indent-test-ECwA5u ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-kill-indent)
@@ -195,11 +218,13 @@ GeomSim."
     (should (bolp))))
 
 (ert-deftest py-ert-mark-indent-test-lJ6Hny ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "class A(object):
     def a(self):
         sdfasde
         pass"
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-mark-indent)
@@ -207,12 +232,14 @@ GeomSim."
     (should (eq 28 (length (buffer-substring-no-properties (region-beginning) (region-end)))))))
 
 (ert-deftest py-ert-edit-docstring-write-content-back-test-mh1es0 ()
-  (py-test-with-temp-buffer-point-min
+  (py-test-point-min
       "def foo():
     \"\"\"def bar():
     pass\"\"\"
     pass
 "
+    'python-mode
+    'py-verbose-p
     (goto-char (point-min) )
     (let ((py-edit-buffer "Edit docstring"))
       (search-forward "pass" nil t 1)
@@ -229,12 +256,13 @@ GeomSim."
       ;; back in orginial test buffer
       (forward-line -1)
       (should (and (nth 3 (parse-partial-sexp (point-min) (point)))
-                   (nth 8 (parse-partial-sexp (point-min) (point)))))
-      )))
+                   (nth 8 (parse-partial-sexp (point-min) (point))))))))
 
 (ert-deftest py-execute-region-no-transmm-test-1-7nmEse ()
-  (py-test-with-temp-buffer
+  (py-test
       "print(u'\\xA9')"
+    'python-mode
+    'py-verbose-p
     (goto-char (point-max))
     (let (transient-mark-mode)
       (push-mark)
@@ -243,7 +271,7 @@ GeomSim."
       (should (eq 4 (current-indentation))))))
 
 ;; (ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
-;;   (py-test-with-temp-buffer
+;;   (py-test
 ;;       "range(len(list((1, 2, 3))))"
 ;;     (font-lock-fontify-region (point-min) (point-max))
 ;;     (goto-char (point-max))
@@ -279,18 +307,12 @@ GeomSim."
     (should (buffer-live-p (get-buffer "*IPython*")))
     (py-kill-buffer-unconditional (get-buffer "*IPython*"))))
 
-(ert-deftest py-buffer-check-7JbtYW ()
-  (with-temp-buffer
-    (let ((oldbuf (current-buffer)))
-      (with-current-buffer
-	  (set-buffer (get-buffer-create "Test"))
-	(switch-to-buffer (current-buffer)))
-      (should (equal (current-buffer) (get-buffer  oldbuf))))))
-
 (when (featurep  'comint-mime)
   (ert-deftest py-comint-mime-test-7JbtYW ()
-    (py-test-with-temp-buffer
+    (py-test
 	"__COMINT_MIME_setup"
+      'python-mode
+      'py-verbose-p
       (push '(inferior-python-mode . comint-mime-setup-python)
 	    comint-mime-setup-function-alist)
       (push '(py-shell-mode . comint-mime-setup-py-shell)

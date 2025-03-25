@@ -26,7 +26,7 @@
 (require 'py-setup-ert-tests)
 
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-python-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-dedicated-lp-1361531-python-test\")"
@@ -42,7 +42,7 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-python-test\")"
       (py-restore-window-configuration))))
 
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-ipython-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "#! /usr/bin/env ipython
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-dedicated-lp-1361531-ipython-test\")"
@@ -58,7 +58,7 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-ipython-test\")"
       (py-restore-window-configuration))))
 
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-jython-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "#! /usr/bin/env jython
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-dedicated-lp-1361531-jython-test\")"
@@ -74,7 +74,7 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-jython-test\")"
       (py-restore-window-configuration))))
 
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-python3-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-dedicated-lp-1361531-python3-test\")"

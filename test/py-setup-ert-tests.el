@@ -70,36 +70,34 @@
 	  (format "%s" stax)
 	elt))))
 
-;; (defmacro py-test (contents mode verbose &rest body)
-;;   "Create temp buffer inserting CONTENTS.
+(defmacro py-test (contents mode verbose &rest body)
+  "Create temp buffer inserting CONTENTS.
 
-;; BODY is code to be executed within the temp buffer "
-;;   (declare (indent 1) (debug t))
-;;   `(with-temp-buffer
-;;      (let (hs-minor-mode py--imenu-create-index-p)
-;;        (insert ,contents)
-;;        (funcall ,mode)
-;;        (when ,verbose
-;; 	 (switch-to-buffer (current-buffer))
-;; 	 (font-lock-fontify-region (point-min)(point-max)))
-;;        ,@body))
-;;   ;; (sit-for 0.1)
-;;   )
+BODY is code to be executed within the temp buffer "
+  (declare (indent 1) (debug t))
+  `(with-temp-buffer
+     (let (hs-minor-mode py--imenu-create-index-p)
+       (insert ,contents)
+       (funcall ,mode)
+       (when ,verbose
+	 (switch-to-buffer (current-buffer))
+	 (font-lock-fontify-region (point-min)(point-max)))
+       ,@body)))
 
-;; (defmacro py-test-point-min (contents mode verbose &rest body)
-;;   "Create temp buffer inserting CONTENTS.
-;; BODY is code to be executed within the temp buffer.  Point is
-;;  at the beginning of buffer."
-;;   (declare (debug t))
-;;   `(with-temp-buffer
-;;      (let (hs-minor-mode py--imenu-create-index-p)
-;;        (insert ,contents)
-;;        (funcall ,mode)
-;;        (goto-char (point-min))
-;;        (and ,verbose
-;; 	 (switch-to-buffer (current-buffer))
-;; 	 (font-lock-fontify-region (point-min)(point-max)))
-;;        ,@body)))
+(defmacro py-test-point-min (contents mode verbose &rest body)
+  "Create temp buffer inserting CONTENTS.
+BODY is code to be executed within the temp buffer.  Point is
+ at the beginning of buffer."
+  (declare (debug t))
+  `(with-temp-buffer
+     (let (hs-minor-mode py--imenu-create-index-p)
+       (insert ,contents)
+       (funcall ,mode)
+       (goto-char (point-min))
+       (and ,verbose
+	 (switch-to-buffer (current-buffer))
+	 (font-lock-fontify-region (point-min)(point-max)))
+       ,@body)))
 
 (defmacro py-test-with-temp-buffer (contents &rest body)
   "Create temp buffer in `python-mode' inserting CONTENTS.

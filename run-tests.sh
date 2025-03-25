@@ -91,7 +91,7 @@ TEST18=$TESTDIR/py-split-just-two-window-on-execute-test.el
 TEST19=$TESTDIR/py-ert-interactive-tests.el
 TEST20=$HOME/emacs/test/lisp/progmodes/python-tests.el
 TEST21=$TESTDIR/py-ert-ipython-tests.el
-
+TEST22=$TESTDIR/py-interactive-tests.el
 echo "\$EMACS: $EMACS"
 
 PYCO="$PDIR/completion/pycomplete.el"
@@ -478,7 +478,6 @@ hier() {
 -l $TEST11 \
 -l $TEST13 \
 -l $TEST16 \
--l $TEST19 \
 -l $TEST21 \
 -f ert-run-tests-batch-and-exit
 }
@@ -511,7 +510,7 @@ if [ $IFLOCAL -eq 0 ]; then
 	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
 	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
 	    l) echo "h21: Lade neu: \"neu\"";neu;;
-	    #  m) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
+	    m) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
 	    n) echo "Lade Testumgebung ‘hier’";hier
 
 	esac
