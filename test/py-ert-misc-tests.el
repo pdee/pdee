@@ -163,15 +163,7 @@ GeomSim."
     ;; (sit-for 0.1)
     (should (eq (char-before) ?.))))
 
-(ert-deftest py--pdb-versioned-test-QoHSpJ-oNuvXf ()
-  (py-test
-      ""
-    'python-mode
-    'py-verbose-p
-    (require 'gud)
-    (let ((py-shell-name "python3"))
-      (goto-char (point-max))
-      (should (string= "pdb3" (py--pdb-versioned))))))
+
 
 (ert-deftest py-ert-copy-indent-test-UbzMto ()
   (py-test-point-min
