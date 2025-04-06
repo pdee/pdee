@@ -190,7 +190,7 @@ Receives a ‘buffer-name’ as argument"
 
 ;;  Code execution commands
 
-(defun py--store-result-maybe (erg)
+(defun py--store-result (erg)
   "If no error occurred and ‘py-store-result-p’ store ERG for yank."
   (and (not py-error) erg (or py-debug-p py-store-result-p) (kill-new erg)))
 

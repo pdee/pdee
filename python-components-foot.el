@@ -263,6 +263,8 @@ VARIABLES
   (add-hook 'python-mode-hook
             (lambda ()
               (setq imenu-create-index-function py--imenu-create-index-function)))
+  (add-hook 'completion-at-point-functions
+            #'py-fast-complete)
   ;; caused insert-file-contents error lp:1293172
   ;;  (add-hook 'after-change-functions 'py--after-change-function nil t)
   (if py-defun-use-top-level-p

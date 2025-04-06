@@ -517,8 +517,8 @@
 (ert-deftest py-ert-execute-file-command-functionp-test-q8Pvch ()
   (should (functionp 'py-execute-file-command)))
 
-(ert-deftest py-ert--store-result-maybe-functionp-test-CUmPeV ()
-  (should (functionp 'py--store-result-maybe)))
+(ert-deftest py-ert--store-result-functionp-test-CUmPeV ()
+  (should (functionp 'py--store-result)))
 
 (ert-deftest py-ert--close-execution-functionp-test-8sPofz ()
   (should (functionp 'py--close-execution)))

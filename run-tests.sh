@@ -391,7 +391,6 @@ extrav5() {
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
--load $SETUP \
 -load $PYTHONMODE \
 -l $TEST16 \
 -f ert-run-tests-batch-and-exit
@@ -428,32 +427,6 @@ $EMACS -Q -L . --batch \
 --eval "(setq py-debug-p nil)" \
 -f ert-run-tests-batch-and-exit
 }
-
-# --eval "(message (emacs-version))" \
-# --eval "(setq py-debug-p nil)" \
-# --eval "(setq python-mode-v5-behavior-p t)" \
-# --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
-
-# hier() {
-#     date; time -p $EMACS -Q -L . --batch \
-# --eval "(message (emacs-version))" \
-# --eval "(setq py-debug-p nil)" \
-# --eval "(setq python-mode-v5-behavior-p t)" \
-# --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
-# -load $SETUP \
-# -load $PYTHONMODE \
-# -l $TEST1 \
-# --eval "(sit-for 0.1)" \
-# -l $TEST2 \
-# --eval "(sit-for 0.1)" \
-# -l $TEST3 \
-# -l $TEST4 \
-# -l $TEST5 \
-# -l $TEST6 \
-# -l $TEST7 \
-# -l $TEST8 \
-# -f ert-run-tests-batch-and-exit
-# }
 
 hier() {
     date; $EMACS -Q -L . --batch \
