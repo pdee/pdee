@@ -5054,49 +5054,6 @@ remote host, the returned value is intended for
       (setenv "VIRTUAL_ENV" virtualenv))
     process-environment))
 
-(defmacro py-shell-with-environment (&rest body)
-  "Modify shell environment during execution of BODY.
-Temporarily sets ‘process-environment’ and ‘exec-path’ during
-execution of body.  If ‘default-directory’ points to a remote
-machine then modifies ‘tramp-remote-process-environment’ and
-‘py-shell-remote-exec-path’ instead."
-  (declare (indent 0) (debug (body)))
-  (let ((vec (make-symbol "vec")))
-    `(progn
-       (let* ((,vec
-               (when (file-remote-p default-directory)
-                 (ignore-errors
-                   (tramp-dissect-file-name default-directory 'noexpand))))
-              (process-environment
-               (if ,vec
-                   process-environment
-                 (py-shell-calculate-process-environment)))
-              (exec-path
-               (if ,vec
-                   exec-path
-                 (py-shell-calculate-exec-path)))
-              (tramp-remote-process-environment
-               (if ,vec
-                   (py-shell-calculate-process-environment)
-                 tramp-remote-process-environment)))
-         (when (tramp-get-connection-process ,vec)
-           ;; For already existing connections, the new exec path must
-           ;; be re-set, otherwise it won't take effect.  One example
-           ;; of such case is when remote dir-locals are read and
-           ;; *then* subprocesses are triggered within the same
-           ;; connection.
-           (py-shell-tramp-refresh-remote-path
-            ,vec (py-shell-calculate-exec-path))
-           ;; The ‘tramp-remote-process-environment’ variable is only
-           ;; effective when the started process is an interactive
-           ;; shell, otherwise (like in the case of processes started
-           ;; with ‘process-file’) the environment is not changed.
-           ;; This makes environment modifications effective
-           ;; unconditionally.
-           (py-shell-tramp-refresh-process-environment
-            ,vec tramp-remote-process-environment))
-         ,(macroexp-progn body)))))
-
 (defun py-shell-prompt-detect ()
   "Detect prompts for the current interpreter.
 When prompts can be retrieved successfully from the
@@ -5108,7 +5065,7 @@ shows a warning with instructions to avoid hangs and returns nil.
 When ‘py-shell-prompt-detect-p’ is nil avoids any
 detection and just returns nil."
   (when py-shell-prompt-detect-p
-    (py-shell-with-environment
+    (python-shell-with-environment
       (let* ((code (concat
                     "import sys\n"
                     "ps = [getattr(sys, 'ps%s' % i, '') for i in range(1,4)]\n"
@@ -5316,7 +5273,10 @@ With optional Arg ORIG deliver original position.
 With optional Arg OUTPUT-BUFFER specify output-buffer"
   (interactive "sPython command: ")
   (save-excursion
-    (let* ((buffer (or output-buffer (or (and process (buffer-name (process-buffer process))) (buffer-name (py-shell argprompt args dedicated shell output-buffer fast exception-buffer split switch internal)))))
+    (let* ((buffer (or output-buffer
+                       (and process (buffer-name (process-buffer process)))
+                       (buffer-name
+                        (py-shell argprompt args dedicated shell output-buffer fast exception-buffer split switch internal))))
 	   (proc (or process (get-buffer-process buffer)))
 	   (orig (or orig (point)))
    	   (limit (ignore-errors (marker-position (process-mark proc)))))
@@ -5716,64 +5676,53 @@ Runs the hook ‘py-shell-mode-hook’ after
 ‘comint-mode-hook’ is run.  (Type \\[describe-mode] in the
 process buffer for a list of commands.)"
   (interactive "p")
-  (let* ((interactivep (and argprompt (eq 1 (prefix-numeric-value argprompt))))
-	 (fast (unless (eq major-mode 'org-mode)
-		 (or fast py-fast-process-p)))
-	 (dedicated (or (eq 4 (prefix-numeric-value argprompt)) dedicated py-dedicated-process-p))
-	 (shell (if shell
-		    (pcase shell
-                      ("python"
-                       (or (and (executable-find shell) shell)
-                           (and (executable-find "python3") "python3")))
-		      (_ (if (executable-find shell)
-			     shell
-		           (error (concat "py-shell: Can't see an executable for `"shell "' on your system. Maybe needs a link?")))))
-		  (py-choose-shell)))
-	 (args (or args (py--provide-command-args shell fast)))
-         ;; Make sure a new one is created if required
-	 (buffer-name
-	  (or buffer
-              (and python-mode-v5-behavior-p (get-buffer-create "*Python Output*"))
-	      (py--choose-buffer-name shell dedicated fast)))
-	 (proc (get-buffer-process buffer-name))
-	 (done nil)
-	 (delay nil)
-	 (buffer
-	  (or
-	   (and (ignore-errors (process-buffer proc))
-		(save-excursion (with-current-buffer (process-buffer proc)
-				  ;; point might not be left there
-				  (goto-char (point-max))
-				  (push-mark)
-				  (setq done t)
-				  (process-buffer proc))))
-	   (save-excursion
-	     (py-shell-with-environment
-	       (if fast
-		   (process-buffer (apply 'start-process shell buffer-name shell args))
-		 (apply #'make-comint-in-buffer shell buffer-name
-			shell nil args))))))
-	 ;; (py-shell-prompt-detect-p (or (string-match "^\*IP" buffer) py-shell-prompt-detect-p))
-         )
+  ;; Let's use python.el's ‘python-shell-with-environment’
+  (require 'python)
+  (let* (done delay
+              (interactivep (and argprompt (eq 1 (prefix-numeric-value argprompt))))
+	      (fast (unless (eq major-mode 'org-mode)
+	              (or fast py-fast-process-p)))
+	      (dedicated (or (eq 4 (prefix-numeric-value argprompt)) dedicated py-dedicated-process-p))
+	      (shell (if shell
+	                 (pcase shell
+                           ("python"
+                            (or (and (executable-find shell) shell)
+                                (and (executable-find "python3") "python3")))
+	                   (_ (if (executable-find shell)
+	        	          shell
+	                        (error (concat "py-shell: Can't see an executable for `"shell "' on your system. Maybe needs a link?")))))
+	               (py-choose-shell)))
+	      (args (or args (car (py--provide-command-args shell fast))))
+              ;; Make sure a new one is created if required
+	      (this-buffer
+               (or (and buffer (stringp buffer) buffer)
+                   (and buffer (buffer-name buffer))
+                   (and python-mode-v5-behavior-p (get-buffer-create "*Python Output*"))
+                   (py--choose-buffer-name shell dedicated fast)))
+	      (proc (get-buffer-process this-buffer))
+	      (buffer (or (ignore-errors (process-buffer proc))
+                          ;; Use python.el's provision here
+                          (python-shell-with-environment
+                            (apply #'make-comint-in-buffer shell
+                                   (set-buffer
+                                    (get-buffer-create this-buffer))
+                                   (list shell nil args)))))
+              (this-buffer-name (buffer-name buffer)))
     (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p (get-buffer "*Python Output*") buffer)))
     (unless done
       (with-current-buffer buffer
-	(setq delay (py--which-delay-process-dependent buffer-name))
-	(unless fast
+	(setq delay (py--which-delay-process-dependent this-buffer-name))
+        (unless fast
           (setq py-shell-mode-syntax-table python-mode-syntax-table)
 	  (when interactivep
-	    (cond ((string-match "^.I" buffer-name)
+	    (cond ((string-match "^.I" this-buffer-name)
 		   (message "Waiting according to `py-ipython-send-delay:' %s" delay))
-		  ((string-match "^.+3" buffer-name)
+		  ((string-match "^.+3" this-buffer-name)
 		   (message "Waiting according to `py-python3-send-delay:' %s" delay))))
-	  (setq py-modeline-display (py--update-lighter buffer-name))
-	  ;; (sit-for delay t)
-          )))
+	  (setq py-modeline-display (py--update-lighter this-buffer-name)))))
     (if (setq proc (get-buffer-process buffer))
 	(progn
 	  (with-current-buffer buffer
-            (setq buffer buffer)
-            ;; (switch-to-buffer (current-buffer))
             (when py-register-shell-buffer-p
               (funcall (lambda nil (window-configuration-to-register 121))))
 	    (unless (or done fast) (py-shell-mode))

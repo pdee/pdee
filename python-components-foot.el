@@ -327,7 +327,7 @@ may want to re-add custom functions to it using the
 	    #'py-shell-completion-at-point nil 'local)
   (define-key py-shell-mode-map [(control c) (control r)] 'py-nav-last-prompt)
   (make-local-variable 'py-pdbtrack-buffers-to-kill)
-  (make-local-variable 'py-shell-fast-last-output)
+  ;; (make-local-variable 'py-shell-fast-last-output)
   (set (make-local-variable 'py-shell--block-prompt) nil)
   (set (make-local-variable 'py-shell--prompt-calculated-output-regexp) nil)
   (py-shell-prompt-set-calculated-regexps)
@@ -395,7 +395,7 @@ may want to re-add custom functions to it using the
 (puthash "python-"
          (append (gethash "python" definition-prefixes) '("python-mode"))
          definition-prefixes)
-
-(provide 'python-components-foot)
+(
+provide 'python-components-foot)
 
 ;;; python-components-foot.el ends here

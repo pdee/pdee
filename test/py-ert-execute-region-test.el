@@ -30,8 +30,8 @@ print(\"two\")"
     'py-verbose-p
     (if
         (executable-find "python")
-        (let ((buffer (py--choose-buffer-name "python")))
-
+        (let ((buffer "*Python*"))
+          (require 'python)
           (py-execute-region-python (point-min) (point-max))
           ;; (sit-for 0.5 t)
           (set-buffer buffer)
@@ -45,13 +45,17 @@ print(\"two\")"
 print(\"two\")"
     'python-mode
     'py-verbose-p
-    (let ((buffer (py--choose-buffer-name "python3")))
-      (py-execute-region-python3 (point-min) (point-max))
-      (set-buffer buffer)
-      (goto-char (point-max))
-       (sit-for 1)
-      ;; (font-lock-ensure)
-      (should (search-backward "two")))))
+    (if
+        (executable-find "python3")
+        (let ((buffer "*Python3*"))
+          (require 'python)
+          (py-execute-region-python3 (point-min) (point-max))
+          (set-buffer buffer)
+          (goto-char (point-max))
+          (sit-for 1)
+          ;; (font-lock-ensure)
+          (should (search-backward "two")))
+      (when py-verbose-p (message "%s" "Don't see a ‘python3’ executable")))))
 
 (ert-deftest py-ert-execute-region-ipython-test ()
   (py-test-with-temp-buffer
@@ -61,7 +65,8 @@ print(\"two\")"
     'py-verbose-p
     (if
         (ignore-errors (executable-find "ipython"))
-        (let ((buffer (py--choose-buffer-name "ipython")))
+        (let ((buffer "*IPython*"))
+          (require 'python)
           (py-execute-region-ipython (point-min) (point-max))
           (set-buffer buffer)
           ;; (accept-process-output (get-buffer-process buffer) 0.1)
@@ -81,8 +86,10 @@ print(\"two\")"
     'py-verbose-p
     (if
         (ignore-errors (executable-find "ipython3"))
-        (let ((buffer (py--choose-buffer-name "ipython3"))
+        (let ((buffer "*IPython3*")
+              ;; (buffer (py--choose-buffer-name "ipython3"))
 	      (inhibit-point-motion-hooks t))
+          (require 'python)
           (py-execute-region-ipython3 (point-min) (point-max))
           (set-buffer buffer)
           (when py-debug-p (message "current-buffer0: %s" (current-buffer))
@@ -109,7 +116,8 @@ print(\"two\")"
     'py-verbose-p
     (if
         (executable-find "jython")
-        (let ((buffer (py--choose-buffer-name "jython")))
+        (let ((buffer "*Jython*"))
+          (require 'python)
           (py-execute-region-jython (point-min) (point-max))
           (set-buffer buffer)
           ;; (switch-to-buffer (current-buffer))

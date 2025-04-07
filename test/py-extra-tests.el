@@ -22,6 +22,8 @@
 
 ;;; Code:
 
+;; (setq py-verbose-p t)
+
 (require 'org)
 (org-babel-do-load-languages
      'org-babel-load-languages
@@ -75,23 +77,49 @@ print(u'\\xA9')"
 
 (ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2 ()
   (py-test
-   "#! /usr/bin/env python
+      "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
 os.write"
-   'python-mode
-   'py-verbose-p
-   (goto-char (point-max))
-   (forward-char -1)
-   (py-help-at-point)
-   (sit-for 0.1)
-   (set-buffer py-output-buffer)
-   (goto-char (point-max))
-   (when py-debug-p (switch-to-buffer (current-buffer)))
-   (when py-debug-p (message "%s" (current-buffer)))
-   (goto-char comint-last-output-start)
-   (sit-for 0.1) 
-   (should (string-match "write" (buffer-substring-no-properties (point) (point-max))))))
+    'python-mode
+    py-verbose-p
+    (if (executable-find "python")
+        (progn
+          (goto-char (point-max))
+          (forward-char -1)
+          (py-help-at-point)
+          (sit-for 0.1)
+          (set-buffer py-output-buffer)
+          (goto-char (point-max))
+          (when py-debug-p (switch-to-buffer (current-buffer)))
+          (when py-debug-p (message "%s" (current-buffer)))
+          (goto-char comint-last-output-start)
+          (sit-for 0.1)
+          (should (string-match "write" (buffer-substring-no-properties (point) (point-max)))))
+      (when py-verbose-p (message "py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2: %s" "No executable python found")))))
+
+(ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test-MppJiJ ()
+  (py-test
+      "#! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+import os
+os.write"
+    'python-mode
+    'py-verbose-p
+    (if (executable-find "python3")
+        (progn
+          (goto-char (point-max))
+          (forward-char -1)
+          (py-help-at-point)
+          (sit-for 0.1)
+          (set-buffer py-output-buffer)
+          (goto-char (point-max))
+          (when py-debug-p (switch-to-buffer (current-buffer)))
+          (when py-debug-p (message "%s" (current-buffer)))
+          (goto-char comint-last-output-start)
+          (sit-for 0.1)
+          (should (string-match "write" (buffer-substring-no-properties (point) (point-max)))))
+      (when py-verbose-p (message "py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2: %s" "No executable python found")))))
 
 (ert-deftest py-ert-execute-block-fast-9Ui5ja-zo3sa5 ()
   (py-test-point-min
