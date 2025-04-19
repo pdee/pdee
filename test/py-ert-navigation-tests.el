@@ -521,7 +521,7 @@
    (search-backward "__init__")
    (py-down-minor-block-bol)
    (should (bolp))
-   (should (looking-at " +if"))))
+   (should (looking-at " +def"))))
 
 (ert-deftest py-ert-moves-down-def-2Dlxio ()
   (py-test-point-min

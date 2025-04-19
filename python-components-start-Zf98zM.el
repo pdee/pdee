@@ -491,7 +491,7 @@ Optional IGNOREINDENT: find next keyword at any indentation"
             (py--backward-regexp regexp maxindent
                                  (or condition '<=)
                                  orig allvalue))))
-      (and (< (point) orig)(point)))))
+      (and (< (point) orig)(looking-at regexpvalue)(point)))))
 
 (defun py-up-base (regexp &optional indent)
   "Expects a symbol as REGEXP like `(quote py-clause-re)'
