@@ -3411,7 +3411,7 @@ except:
    (beginning-of-line)
    (should (eq 39 (cdr (py-mark-indent))))))
 
-(ert-deftest py-py-block-test-TsUyyc ()
+(ert-deftest py-block-test-TsUyyc ()
   (py-test-point-min
    "def main():
     if len(sys.argv) == 1:

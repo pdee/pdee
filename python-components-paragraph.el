@@ -89,7 +89,7 @@
                                                     (match-end 0))))
 
        ;; A line with some code, followed by a comment? Remember that the hash
-       ;; which starts the comment shouldn't be part of a string or character.
+       ;; which starts the comment should not be part of a string or character.
        ((progn
           (while (not (looking-at "#\\|$"))
             (skip-chars-forward "^#\n\"'\\")
@@ -236,7 +236,7 @@ See lp:1066489 "
                                           (skip-syntax-forward "^|")
 		                          (1+ (point)))))))
     (save-restriction
-      ;; don't go backward beyond beginning of string
+      ;; do not go backward beyond beginning of string
       (narrow-to-region beg end)
       (let* (;; Paragraph starts with beginning of string, skip the fence-chars
 	     (innerbeg (copy-marker
@@ -310,7 +310,7 @@ Fill according to ‘py-docstring-style’ "
 				 (goto-char orig)
 				 (line-end-position))))))
     (save-restriction
-      ;; don't go backward beyond beginning of string
+      ;; do not go backward beyond beginning of string
       (narrow-to-region beg (point-max))
       (goto-char orig)
       (when beg

@@ -321,7 +321,7 @@ Setup code specific to ‘py-shell-mode’."
   ;; (setq py-python-command "ipython3"
   ;; 	py-ipython-command "ipython3"
   ;; 	py-python-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt")
-  ;; 	;; "-i" doesn't work with `isympy3'
+  ;; 	;; "-i" does not work with ‘isympy3’
   ;; 	py-ipython-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt"))
   )
 

@@ -87,7 +87,7 @@ Stores data in kill ring"
 (defun py-kill-block ()
   "Delete block at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "block")))
     (kill-region (car erg) (cdr erg))))
@@ -95,7 +95,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-block-or-clause ()
   "Delete block-or-clause at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "block-or-clause")))
     (kill-region (car erg) (cdr erg))))
@@ -103,7 +103,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-class ()
   "Delete class at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "class")))
     (kill-region (car erg) (cdr erg))))
@@ -111,7 +111,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-clause ()
   "Delete clause at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "clause")))
     (kill-region (car erg) (cdr erg))))
@@ -119,7 +119,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-def ()
   "Delete def at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "def")))
     (kill-region (car erg) (cdr erg))))
@@ -127,7 +127,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-def-or-class ()
   "Delete def-or-class at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "def-or-class")))
     (kill-region (car erg) (cdr erg))))
@@ -135,7 +135,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-elif-block ()
   "Delete elif-block at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "elif-block")))
     (kill-region (car erg) (cdr erg))))
@@ -143,7 +143,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-else-block ()
   "Delete else-block at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "else-block")))
     (kill-region (car erg) (cdr erg))))
@@ -151,7 +151,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-except-block ()
   "Delete except-block at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "except-block")))
     (kill-region (car erg) (cdr erg))))
@@ -159,7 +159,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-for-block ()
   "Delete for-block at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "for-block")))
     (kill-region (car erg) (cdr erg))))
@@ -167,7 +167,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-if-block ()
   "Delete if-block at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "if-block")))
     (kill-region (car erg) (cdr erg))))
@@ -175,7 +175,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-indent ()
   "Delete indent at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "indent")))
     (kill-region (car erg) (cdr erg))))
@@ -183,7 +183,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-minor-block ()
   "Delete minor-block at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "minor-block")))
     (kill-region (car erg) (cdr erg))))
@@ -191,7 +191,7 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-statement ()
   "Delete statement at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "statement")))
     (kill-region (car erg) (cdr erg))))
@@ -199,10 +199,10 @@ Stores data in kill ring. Might be yanked back using `C-y'."
 (defun py-kill-try-block ()
   "Delete try-block at point.
 
-Stores data in kill ring. Might be yanked back using `C-y'."
+Stores data in kill ring. Might be yanked back using ‘C-y’."
   (interactive "*")
   (let ((erg (py--mark-base-bol "try-block")))
     (kill-region (car erg) (cdr erg))))
 
-(provide 'python-components-kill-forms)
+(provide (quote python-components-kill-forms))
 ;;; python-components-kill-forms.el ends here

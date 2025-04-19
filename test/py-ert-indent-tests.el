@@ -19,6 +19,8 @@
 
 ;;; Code:
 
+;; (setq py-verbose-p t)
+
 (require 'py-setup-ert-tests)
 
 (ert-deftest py-ert-indent-list-style-test-UVqzej ()

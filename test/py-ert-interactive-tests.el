@@ -432,7 +432,7 @@ exercise()"
   print(x)
 exercise()"
    'python-mode
-   'py-verbose-p))
+   py-verbose-p))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-lp-1286318 ()
   (py-test-point-min
@@ -858,7 +858,7 @@ def baz():
 ;;         self.a = 1
 ;;         self.b = 2"
 ;;     'python-mode
-;;     'py-verbose-p
+;;     py-verbose-p
 ;;     ;; (font-lock-ensure)
 ;;     (goto-char (point-max))
 ;;     (search-backward "\"\"\"")

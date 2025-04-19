@@ -383,5 +383,5 @@ Return position, nil otherwise."
          (looking-back "[^ \t]*" (line-beginning-position))
          (point))))
 
-(provide 'python-components-booleans-beginning-forms)
+(provide (quote python-components-booleans-beginning-forms))
 ;; python-components-booleans-beginning-forms.el ends here

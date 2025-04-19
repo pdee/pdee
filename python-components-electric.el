@@ -68,12 +68,12 @@ See also ‘py-electric-colon-greedy-p’"
         (py-newline-and-indent))))))
 
 ;; TODO: PRouleau: I would like to better understand this.
-;;                 I don't understand the docstring.
+;;                 I do not understand the docstring.
 ;;                 What was the completion bug this is reacting to?
 (defun py-electric-close (arg)
   "Close completion buffer when no longer needed.
 
-It is it's sure, it's no longer needed, i.e. when inserting a space.
+It is its sure, its no longer needed, i.e. when inserting a space.
 
 Works around a bug in ‘choose-completion’."
 
@@ -93,7 +93,7 @@ Works around a bug in ‘choose-completion’."
 ;; TODO: PRouleau: describe the electric behavior of '#'.
 ;;       This description should be in docstring of the
 ;;       ‘py-electric-comment-p’ user option and be referred to here.
-;;       I currently don't understand what it should be and prefer not
+;;       I currently do not understand what it should be and prefer not
 ;;       having to infer it from code.
 ;;       - From what I saw, the intent is to align the comment being
 ;;         typed to the one on line above or at the indentation level.
@@ -200,7 +200,7 @@ At no-whitespace character, delete one before point.
        ((eq 4 (prefix-numeric-value arg))
 	(backward-delete-char-untabify 1))
        ((use-region-p)
-        ;; Emacs23 doesn't know that var
+        ;; Emacs23 does not know that var
         (if (boundp 'delete-active-region)
 	    (delete-active-region)
 	  (delete-region (region-beginning) (region-end))))
@@ -268,7 +268,7 @@ At no-whitespace char, delete one char at point.
 	(delete-char 1))
        ;; delete active region if one is active
        ((use-region-p)
-	;; Emacs23 doesn't know that var
+	;; Emacs23 does not know that var
 	(if (boundp 'delete-active-region)
             (delete-active-region)
 	  (delete-region (region-beginning) (region-end))))

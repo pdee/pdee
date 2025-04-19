@@ -1,4 +1,4 @@
-;;; py-ert-always-split-tests.el --- Test splitting
+;;; py-ert-always-split-tests.el --- Test splitting -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience

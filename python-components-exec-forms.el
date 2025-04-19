@@ -59,6 +59,6 @@
                (py-forward-for-block))))
     (py-execute-region beg end)))
 
-(provide 'python-components-exec-forms)
+(provide (quote python-components-exec-forms))
 ;;; python-components-exec-forms.el ends here
  

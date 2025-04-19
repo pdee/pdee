@@ -26,7 +26,7 @@
 
 
 (defun py-comment-region (beg end &optional arg)
-  "Like `comment-region’ but uses double hash (`#') comment starter."
+  "Like `comment-region’ but uses double hash ‘#’ comment starter."
   (interactive "r\nP")
   (let ((comment-start (if py-block-comment-prefix-p
                              py-block-comment-prefix
@@ -36,7 +36,7 @@
 (defun py-comment-block (&optional beg end arg)
   "Comments block at point.
 
-Uses double hash (`#') comment starter when ‘py-block-comment-prefix-p’ is  t,
+Uses double hash ‘#’ comment starter when ‘py-block-comment-prefix-p’ is  t,
 the default"
   (interactive "*")
   (save-excursion
@@ -222,4 +222,4 @@ the default"
 
 
 ;; python-components-comment ends here
-(provide 'python-components-comment)
+(provide (quote python-components-comment))

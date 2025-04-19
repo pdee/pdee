@@ -186,10 +186,10 @@ of the first definition found."
       (setq def-pos
             (or (match-beginning class-paren)
                 (match-beginning def-paren)))
-      ;; if we don't have a starting indent level, take this one
+      ;; if we do not have a starting indent level, take this one
       (or start-indent
           (setq start-indent cur-indent))
-      ;; if we don't have class name yet, take this one
+      ;; if we do not have class name yet, take this one
       (or prev-name
           (setq prev-name def-name))
       ;; what level is the next definition on?  must be same, deeper
@@ -206,7 +206,7 @@ of the first definition found."
         ;; start on, so go back to the last expression. The recursive
         ;; call will find this place again and add it to the correct
         ;; list
-        (re-search-backward py-imenu-generic-regexp (point-min) 'move)
+        (re-search-backward py-imenu-generic-regexp (point-min) (quote move))
         (setq sub-method-alist (py--imenu-create-index-engine cur-indent))
         (if sub-method-alist
             ;; we put the last element on the index-alist on the start
@@ -226,13 +226,13 @@ of the first definition found."
       (and looking-p
            (setq looking-p
                  (re-search-forward py-imenu-generic-regexp
-                                    (point-max) 'move))))
+                                    (point-max) (quote move)))))
     (nreverse index-alist)))
 
 (defun py--imenu-create-index-new (&optional beg end)
   "‘imenu-create-index-function’ for Python. "
   (interactive)
-  (set (make-local-variable 'imenu-max-items) py-imenu-max-items)
+  (set (make-local-variable (quote imenu-max-items)) py-imenu-max-items)
   (let ((orig (point))
         (beg (or beg (point-min)))
         (end (or end (point-max)))
@@ -245,7 +245,7 @@ of the first definition found."
                   name (match-string-no-properties 2)
                   classname (concat "class " name)
                   thisend (save-match-data (py--end-of-def-or-class-position))
-                  sublist '())
+                  sublist (quote ()))
             (while (and (re-search-forward "^[ \t]*\\(def\\|class\\)[ \t]+\\(\\sw+\\)" (or thisend end) t 1)(not (nth 8 (parse-partial-sexp (point-min) (point)))))
               (let* ((pos (match-beginning 0))
                      (name (match-string-no-properties 2)))
@@ -373,5 +373,5 @@ not be passed explicitly unless you know what you are doing."
 	(setq index (cons tree index)))
       index)))
 
-(provide 'python-components-imenu)
+(provide (quote python-components-imenu))
 ;;; python-components-imenu.el ends here

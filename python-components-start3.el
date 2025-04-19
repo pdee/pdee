@@ -210,6 +210,7 @@ Unless DIRECTION is symbol \\='forward, go backward first"
   (if (and filename wholebuf (not (buffer-modified-p)))
       (py--execute-file-base filename proc nil procbuf origline fast)
     (let* ((tempfile (concat (expand-file-name py-temp-directory) py-separator-char "temp" (md5 (format "%s" (nth 3 (current-time)))) ".py")))
+      (sit-for 0.1) 
       (with-temp-buffer
 	(insert strg)
 	(write-file tempfile)
@@ -226,7 +227,7 @@ If an exception occurred return error-string,
 otherwise return nil.
 BUF must exist.
 
-Indicate LINE if code wasn't run from a file,
+Indicate LINE if code was not run from a file,
 thus remember line of source buffer"
   (save-excursion
     (with-current-buffer output-buffer
@@ -423,7 +424,7 @@ START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
 	 (proc (or proc-raw (get-buffer-process buffer-name)
 		   (prog1
 		       (get-buffer-process (py-shell nil nil dedicated shell buffer-name fast exception-buffer split switch))
-		     (sit-for 1))))
+		     (sit-for 0.1))))
 
          ;; (split (if python-mode-v5-behavior-p 'just-two split))
          )

@@ -138,4 +138,4 @@ Return position if minor-block found, nil otherwise."
     (progn (beginning-of-line)(point))))
 
 ;; python-components-up.el ends here
-(provide 'python-components-up)
+(provide (quote python-components-up))

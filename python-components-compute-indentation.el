@@ -347,21 +347,21 @@ LIEP stores line-end-position at point-of-interest
                          (eq liep (line-end-position)))
 		    (cond
                      ((looking-at py-case-re)
-                      (and (py--backward-regexp (quote py-match-case-re) nil '>)
+                      (and (py--backward-regexp (quote py-match-case-re) nil (quote >))
                            ;; (+ (current-indentation) py-indent-offset)
                            (current-indentation)))
                      ((looking-at py-minor-clause-re)
 		      (and (py--backward-regexp (quote py-block-or-clause-re)
                                                 ;; an arbitray number, larger than an real expected indent
                                                 (* 99 py-indent-offset)
-                                                '<)
+                                                (quote <))
                            (current-indentation)))
 
                      ((looking-at py-outdent-re)
 		      (and (py--backward-regexp (quote py-block-or-clause-re)
                                                 ;; an arbitray number, larger than an real expected indent
                                                 (* 99 py-indent-offset)
-                                                '<)))
+                                                (quote <))))
 		     ((bobp) 0)
 		     (t (save-excursion
 			  ;; (skip-chars-backward " \t\r\n\f")
@@ -438,5 +438,5 @@ LIEP stores line-end-position at point-of-interest
             (when py-verbose-p (message "%s" indent))
             indent))))))
 
-(provide 'python-components-compute-indentation)
+(provide (quote python-components-compute-indentation))
  ;;; python-components-compute-indentation.el ends here

@@ -395,5 +395,5 @@ Return position, nil otherwise."
       (when (eq orig (point))
         orig))))
 
-(provide 'python-components-booleans-end-forms)
+(provide (quote python-components-booleans-end-forms))
 ;; python-components-booleans-end-forms.el ends here

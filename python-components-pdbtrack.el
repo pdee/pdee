@@ -22,5 +22,5 @@
 ;;; Code:
 
 
-(provide 'python-components-pdbtrack)
+(provide (quote python-components-pdbtrack))
 ;;; python-components-pdbtrack.el ends here

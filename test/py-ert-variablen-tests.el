@@ -1,4 +1,4 @@
-;;; py-ert-variablen-tests.el --- Just some more tests
+;;; py-ert-variablen-tests.el --- Just some more tests -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
@@ -533,7 +533,7 @@
   (should (boundp 'py-use-local-default)))
 
 (ert-deftest py-ert-verbose-p-test-lvbi1q ()
-  (should (boundp 'py-verbose-p)))
+  (should (boundp py-verbose-p)))
 
 (ert-deftest py-ert--warn-tmp-files-left-p-test-z3Enyp ()
   (should (boundp 'py--warn-tmp-files-left-p)))

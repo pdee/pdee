@@ -22,7 +22,7 @@
 
 ;;; Code:
 
-(and (ignore-errors (require 'easymenu) t)
+(and (ignore-errors (require (quote easymenu)) t)
      ;; (easy-menu-define py-menu map "Python Tools"
      ;;           `("PyTools"
      (easy-menu-define
@@ -464,26 +464,26 @@ Stores data in kill ring"]
 	    :help " ‘py-delete-block’
 Delete BLOCK at point.
 
-Don't store data in kill ring."]
+Do not store data in kill ring."]
 
 	   ["Delete block or clause" py-delete-block-or-clause
 	    :help " ‘py-delete-block-or-clause’
 Delete BLOCK-OR-CLAUSE at point.
 
-Don't store data in kill ring."]
+Do not store data in kill ring."]
 
 	   ["Delete class" py-delete-class
 	    :help " ‘py-delete-class’
 Delete CLASS at point.
 
-Don't store data in kill ring.
+Do not store data in kill ring.
 With C-u or ‘py-mark-decorators’ set to ‘t’, ‘decorators’ are included."]
 
 	   ["Delete clause" py-delete-clause
 	    :help " ‘py-delete-clause’
 Delete CLAUSE at point.
 
-Don't store data in kill ring."]
+Do not store data in kill ring."]
 
 	   ["Delete comment" py-delete-comment
 	    :help " ‘py-delete-comment’"]
@@ -492,21 +492,21 @@ Don't store data in kill ring."]
 	    :help " ‘py-delete-def’
 Delete DEF at point.
 
-Don't store data in kill ring.
+Do not store data in kill ring.
 With C-u or ‘py-mark-decorators’ set to ‘t’, ‘decorators’ are included."]
 
 	   ["Delete def or class" py-delete-def-or-class
 	    :help " ‘py-delete-def-or-class’
 Delete DEF-OR-CLASS at point.
 
-Don't store data in kill ring.
+Do not store data in kill ring.
 With C-u or ‘py-mark-decorators’ set to ‘t’, ‘decorators’ are included."]
 
 	   ["Delete expression" py-delete-expression
 	    :help " ‘py-delete-expression’
 Delete EXPRESSION at point.
 
-Don't store data in kill ring."]
+Do not store data in kill ring."]
 
 	   ["Delete line" py-delete-line
 	    :help " ‘py-delete-line’"]
@@ -515,7 +515,7 @@ Don't store data in kill ring."]
 	    :help " ‘py-delete-minor-block’
 Delete MINOR-BLOCK at point.
 
-Don't store data in kill ring."]
+Do not store data in kill ring."]
 
 	   ["Delete paragraph" py-delete-paragraph
 	    :help " ‘py-delete-paragraph’"]
@@ -524,68 +524,68 @@ Don't store data in kill ring."]
 	    :help " ‘py-delete-partial-expression’
 Delete PARTIAL-EXPRESSION at point.
 
-Don't store data in kill ring."]
+Do not store data in kill ring."]
 
 	   ["Delete statement" py-delete-statement
 	    :help " ‘py-delete-statement’
 Delete STATEMENT at point.
 
-Don't store data in kill ring."]
+Do not store data in kill ring."]
 
 	   ["Delete top level" py-delete-top-level
 	    :help " ‘py-delete-top-level’
 Delete TOP-LEVEL at point.
 
-Don't store data in kill ring."]
+Do not store data in kill ring."]
            )
           ("Comment"
 	   ["Comment block" py-comment-block
 	    :help " ‘py-comment-block’
 Comments block at point.
 
-Uses double hash (`#') comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
+Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
 the default"]
 
 	   ["Comment block or clause" py-comment-block-or-clause
 	    :help " ‘py-comment-block-or-clause’
 Comments block-or-clause at point.
 
-Uses double hash (`#') comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
+Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
 the default"]
 
 	   ["Comment class" py-comment-class
 	    :help " ‘py-comment-class’
 Comments class at point.
 
-Uses double hash (`#') comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
+Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
 the default"]
 
 	   ["Comment clause" py-comment-clause
 	    :help " ‘py-comment-clause’
 Comments clause at point.
 
-Uses double hash (`#') comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
+Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
 the default"]
 
 	   ["Comment def" py-comment-def
 	    :help " ‘py-comment-def’
 Comments def at point.
 
-Uses double hash (`#') comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
+Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
 the default"]
 
 	   ["Comment def or class" py-comment-def-or-class
 	    :help " ‘py-comment-def-or-class’
 Comments def-or-class at point.
 
-Uses double hash (`#') comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
+Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
 the default"]
 
 	   ["Comment statement" py-comment-statement
 	    :help " ‘py-comment-statement’
 Comments statement at point.
 
-Uses double hash (`#') comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
+Uses double hash (‘#’) comment starter when ‘py-block-comment-prefix-p’ is  ‘t’,
 the default"]
            ))
          ("Move"
@@ -1070,7 +1070,7 @@ Interactively, prompt for SYMBOL."]
 	   :help " ‘py-help-at-point’
 Print help on symbol at point.
 
-If symbol is defined in current buffer, jump to it's definition
+If symbol is defined in current buffer, jump to its definition
 Optional C-u used for debugging, will prevent deletion of temp file."]
 
           ["Info lookup symbol" py-info-lookup-symbol
@@ -1125,7 +1125,7 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
 	    ["Enforce py-shell-name" force-py-shell-name-p-on
 	     :help "Enforce customized default ‘py-shell-name’ should upon execution. "]
 
-	    ["Don't enforce default interpreter" force-py-shell-name-p-off
+	    ["Do not enforce default interpreter" force-py-shell-name-p-off
 	     :help "Make execute commands guess interpreter from environment"]
 
 	    )
@@ -1156,7 +1156,7 @@ Use `M-x customize-variable' to set it permanently"
 	    ["Force shell name "
 	     (setq py-force-py-shell-name-p
 		   (not py-force-py-shell-name-p))
-	     :help "When ‘t’, execution with kind of Python specified in ‘py-shell-name’ is enforced, possibly shebang doesn't take precedence. Use `M-x customize-variable' to set it permanently"
+	     :help "When ‘t’, execution with kind of Python specified in ‘py-shell-name’ is enforced, possibly shebang does not take precedence. Use `M-x customize-variable' to set it permanently"
 	     :style toggle :selected py-force-py-shell-name-p]
 
 	    ["Execute \"if name == main\" blocks p"
@@ -1182,7 +1182,7 @@ Otherwise, all modified buffers are saved without asking.Use `M-x customize-vari
 		   (not py-store-result-p))
 	     :help " ‘py-store-result-p’
 
-When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked. "
+When non-nil, put resulting string of ‘py-execute-...’ into kill-ring, so it might be yanked. "
 	     :style toggle :selected py-store-result-p]
 
 	    ["Prompt on changed "
@@ -1222,7 +1222,7 @@ In experimental state yet "
 	     ["Set Pymacs-based complete keymap "
 	      (setq py-set-complete-keymap-p
 		    (not py-set-complete-keymap-p))
-	      :help "If ‘py-complete-initialize’, which sets up enviroment for Pymacs based py-complete, should load it's keys into ‘python-mode-map’
+	      :help "If ‘py-complete-initialize’, which sets up enviroment for Pymacs based py-complete, should load its keys into ‘python-mode-map’
 
 Default is nil.
 See also resp. edit ‘py-complete-set-keymap’ Use `M-x customize-variable' to set it permanently"
@@ -1253,12 +1253,12 @@ Use `M-x customize-variable' to set it permanently"
 Set py-docstring-style to nil, format string normally. "]
 
 	      ["pep-257-nn" py-set-pep-257-nn-docstring-style
-	       :help " `py-set-pep-257-nn-docstring-style'
+	       :help " ‘py-set-pep-257-nn-docstring-style’
 
 Set py-docstring-style to 'pep-257-nn "]
 
 	      ["pep-257" py-set-pep-257-docstring-style
-	       :help " `py-set-pep-257-docstring-style'
+	       :help " ‘py-set-pep-257-docstring-style’
 
 Set py-docstring-style to 'pep-257 "]
 
@@ -1324,7 +1324,7 @@ Use `M-x customize-variable' to set it permanently"
 	      ["Tab indents region "
 	       (setq py-tab-indents-region-p
 		     (not py-tab-indents-region-p))
-	       :help "When ‘t’ and first TAB doesn't shift, indent-region is called.
+	       :help "When ‘t’ and first TAB does not shift, indent-region is called.
 
 Default is nil
 See also ‘py-tab-shifts-region-p’
@@ -1559,7 +1559,7 @@ mark-defun marks top-level form at point etc. "
 	    ["Close provides newline"
 	     (setq py-close-provides-newline
 		   (not py-close-provides-newline))
-	     :help "If a newline is inserted, when line after block isn't empty. Default is non-nil. Use `M-x customize-variable' to set it permanently"
+	     :help "If a newline is inserted, when line after block is not empty. Default is non-nil. Use `M-x customize-variable' to set it permanently"
 	     :style toggle :selected py-close-provides-newline]
 
 	    ["Block comment prefix "
@@ -1641,9 +1641,9 @@ Use `M-x customize-variable' to set it permanently"
 		   (not py-keep-windows-configuration))
 	     :help "If a windows is splitted displaying results, this is directed by variable ‘py-split-window-on-execute’\. Also setting ‘py-switch-buffers-on-execute-p’ affects window-configuration\. While commonly a screen splitted into source and Python-shell buffer is assumed, user may want to keep a different config\.
 
-Setting ‘py-keep-windows-configuration’ to ‘t’ will restore windows-config regardless of settings mentioned above\. However, if an error occurs, it's displayed\.
+Setting ‘py-keep-windows-configuration’ to ‘t’ will restore windows-config regardless of settings mentioned above\. However, if an error occurs, it is displayed\.
 
-To suppres window-changes due to error-signaling also: M-x customize-variable RET. Set `py-keep-4windows-configuration' onto 'force
+To suppres window-changes due to error-signaling also: M-x customize-variable RET. Set ‘py-keep-4windows-configuration’ onto 'force
 
 Default is nil Use `M-x customize-variable' to set it permanently"
 	     :style toggle :selected py-keep-windows-configuration]
@@ -1655,7 +1655,7 @@ Default is nil Use `M-x customize-variable' to set it permanently"
 		 (setq py-split-windows-on-execute-function 'split-window-vertically))
 	       (message "py-split-windows-on-execute-function set to: %s" py-split-windows-on-execute-function))
 
-	     :help "If ‘split-window-vertically’ or `...-horizontally'. Use `M-x customize-variable' RET ‘py-split-windows-on-execute-function’ RET to set it permanently"
+	     :help "If ‘split-window-vertically’ or ‘...-horizontally’. Use `M-x customize-variable' RET ‘py-split-windows-on-execute-function’ RET to set it permanently"
 	     :style toggle :selected py-split-windows-on-execute-function]
 
 	    ["Modeline display full path "
@@ -1663,7 +1663,7 @@ Default is nil Use `M-x customize-variable' to set it permanently"
 		   (not py-modeline-display-full-path-p))
 	     :help "If the full PATH/TO/PYTHON should be displayed in shell modeline.
 
-Default is nil. Note: when ‘py-shell-name’ is specified with path, it's shown as an acronym in buffer-name already. Use `M-x customize-variable' to set it permanently"
+Default is nil. Note: when ‘py-shell-name’ is specified with path, it is shown as an acronym in buffer-name already. Use `M-x customize-variable' to set it permanently"
 	     :style toggle :selected py-modeline-display-full-path-p]
 
 	    ["Modeline acronym display home "
@@ -1757,7 +1757,7 @@ Use `M-x customize-variable' to set it permanently"
 	     ["Guess install directory "
 	      (setq py-guess-py-install-directory-p
 		    (not py-guess-py-install-directory-p))
-	      :help "If in cases, ‘py-install-directory’ isn't set,  ‘py-set-load-path’should guess it from ‘buffer-file-name’. Use `M-x customize-variable' to set it permanently"
+	      :help "If in cases, ‘py-install-directory’ is not set,  ‘py-set-load-path’should guess it from ‘buffer-file-name’. Use `M-x customize-variable' to set it permanently"
 	      :style toggle :selected py-guess-py-install-directory-p]
 
 	     ["Use local default"
@@ -1781,7 +1781,7 @@ See also ‘py-execute-directory’Use `M-x customize-variable' to set it perman
 	     ["Keep shell dir when execute "
 	      (setq py-keep-shell-dir-when-execute-p
 		    (not py-keep-shell-dir-when-execute-p))
-	      :help "Don't change Python shell's current working directory when sending code.
+	      :help "Do not change Python shell's current working directory when sending code.
 
 See also ‘py-execute-directory’Use `M-x customize-variable' to set it permanently"
 	      :style toggle :selected py-keep-shell-dir-when-execute-p]
@@ -1965,7 +1965,7 @@ Reads the abbreviation in the minibuffer; with numeric arg it displays a proposa
 Proposal is composed from the initial character(s) of the
 expansion.
 
-Don't use this function in a Lisp program; use ‘define-abbrev’ instead."]
+Do not use this function in a Lisp program; use ‘define-abbrev’ instead."]
           ("Completion"
 	   ["Py indent or complete" py-indent-or-complete
 	    :help " ‘py-indent-or-complete’"]

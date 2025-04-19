@@ -1,4 +1,4 @@
-;;; python-components-complete.el -- Don't touch interactive shell when completing -*- lexical-binding: t; -*-
+;;; python-components-complete.el -- Do not touch interactive shell when completing -*- lexical-binding: t; -*-
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ completions on the current context."
 	 (py-send-string-no-output (format completion-code input) process)))
     (if (and erg (> (length erg) 2))
 	(setq erg (split-string erg "^'\\|^\"\\|;\\|'$\\|\"$" t))
-      (and py-verbose-p (message "py--shell-completion-get-completions: %s" "Don't see a completion")))
+      (and py-verbose-p (message "py--shell-completion-get-completions: %s" "Do not see a completion")))
     erg))
 
 ;; post-command-hook
@@ -35,16 +35,16 @@ completions on the current context."
 Takes END"
   (when
       (and (or
-            (eq this-command 'completion-at-point)
-            (eq this-command 'choose-completion)
-            (eq this-command 'choose-completion)
+            (eq this-command (quote completion-at-point))
+            (eq this-command (quote choose-completion))
+            (eq this-command (quote choose-completion))
             (eq this-command (quote py-shell-complete))
             (and (or
-                  (eq last-command 'completion-at-point)
-                  (eq last-command 'choose-completion)
-                  (eq last-command 'choose-completion)
+                  (eq last-command (quote completion-at-point))
+                  (eq last-command (quote choose-completion))
+                  (eq last-command (quote choose-completion))
                   (eq last-command (quote py-shell-complete)))
-                 (eq this-command 'self-insert-command))))
+                 (eq this-command (quote self-insert-command)))))
     (py-restore-window-configuration)
     )
 
@@ -54,7 +54,7 @@ Takes END"
   (cond ((eq completion t)
 	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "‘t’ is returned, not completion. Might be a bug.")))
 	((null completion)
-	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "Don't see a completion")))
+	 (and py-verbose-p (message "py--shell-do-completion-at-point %s" "Do not see a completion")))
 	((and completion
 	      (or (and (listp completion)
 		       (string= input (car completion)))
@@ -145,7 +145,7 @@ completions on the current context."
     (cond ((eq completion t)
 	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "‘t’ is returned, not completion. Might be a bug.")))
 	  ((null completion)
-	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "Don't see a completion"))
+	   (and py-verbose-p (message "py--fast--do-completion-at-point %s" "Do not see a completion"))
 	   (set-window-configuration py-last-window-configuration))
 	  ((and completion
 		(or (and (listp completion)
@@ -230,7 +230,7 @@ Use ‘py-fast-process’ "
 If cursor is at end of a symbol, try to complete
 Otherwise call ‘py-indent-line’
 
-If `(use-region-p)' returns t, indent region.
+If ‘(use-region-p)’ returns t, indent region.
 Use `C-q TAB' to insert a literally TAB-character
 
 In ‘python-mode’ ‘py-complete-function’ is called,
@@ -260,5 +260,5 @@ in (I)Python shell-modes ‘py-shell-complete’"
 	 (completion-at-point)
          (skip-chars-forward "^ \t\r\n\f") )))
 
-(provide 'python-components-complete)
+(provide (quote python-components-complete))
 ;;; python-components-complete.el here

@@ -124,5 +124,5 @@
   (let ((buffer (py-shell nil nil t "" nil t)))
     (py--execute-file-base filename (get-buffer-process buffer) nil buffer nil t)))
 
-(provide 'python-components-execute-file)
+(provide (quote python-components-execute-file))
 ;;; python-components-execute-file.el ends here

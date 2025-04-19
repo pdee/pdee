@@ -1,4 +1,4 @@
-;;; py-ert-forward-tests.el --- Just some more tests
+;;; py-ert-forward-tests.el --- Just some more tests -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience

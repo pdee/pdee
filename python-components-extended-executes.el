@@ -53,37 +53,37 @@
   "Send block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-ipython-dedicated (&optional fast split switch proc)
   "Send block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-ipython3 (&optional dedicated fast split switch proc)
   "Send block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-ipython3-dedicated (&optional fast split switch proc)
   "Send block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-jython (&optional dedicated fast split switch proc)
   "Send block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-jython-dedicated (&optional fast split switch proc)
   "Send block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-python (&optional dedicated fast split switch proc)
   "Send block at point to a python3 interpreter.
@@ -91,7 +91,7 @@
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-python-dedicated (&optional fast split switch proc)
   "Send block at point to a python3 unique interpreter.
@@ -99,91 +99,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-python2 (&optional dedicated fast split switch proc)
   "Send block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-python2-dedicated (&optional fast split switch proc)
   "Send block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-python3 (&optional dedicated fast split switch proc)
   "Send block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-python3-dedicated (&optional fast split switch proc)
   "Send block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-pypy (&optional dedicated fast split switch proc)
   "Send block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-pypy-dedicated (&optional fast split switch proc)
   "Send block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block (&optional shell dedicated fast split switch proc)
   "Send block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-dedicated (&optional shell fast split switch proc)
   "Send block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-ipython (&optional dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-ipython-dedicated (&optional fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-ipython3 (&optional dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-ipython3-dedicated (&optional fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-jython (&optional dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-jython-dedicated (&optional fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-python (&optional dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter.
@@ -191,7 +191,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-python-dedicated (&optional fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter.
@@ -199,55 +199,55 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-python2 (&optional dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-python2-dedicated (&optional fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-python3 (&optional dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-python3-dedicated (&optional fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-pypy (&optional dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-pypy-dedicated (&optional fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause (&optional shell dedicated fast split switch proc)
   "Send block-or-clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-block-or-clause-dedicated (&optional shell fast split switch proc)
   "Send block-or-clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'block-or-clause shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote block-or-clause) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-ipython (&optional dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter."
@@ -260,7 +260,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'ipython dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote ipython) dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-ipython-dedicated (&optional fast split switch proc)
   "Send buffer at point to a python3 unique interpreter."
@@ -273,7 +273,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'ipython t switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote ipython) t switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-ipython3 (&optional dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter."
@@ -286,7 +286,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'ipython3 dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote ipython3) dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-ipython3-dedicated (&optional fast split switch proc)
   "Send buffer at point to a python3 unique interpreter."
@@ -299,7 +299,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'ipython3 t switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote ipython3) t switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-jython (&optional dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter."
@@ -312,7 +312,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'jython dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote jython) dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-jython-dedicated (&optional fast split switch proc)
   "Send buffer at point to a python3 unique interpreter."
@@ -325,7 +325,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'jython t switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote jython) t switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-python (&optional dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter.
@@ -340,7 +340,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'python dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote python) dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-python-dedicated (&optional fast split switch proc)
   "Send buffer at point to a python3 unique interpreter.
@@ -355,7 +355,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'python t switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote python) t switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-python2 (&optional dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter."
@@ -368,7 +368,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'python2 dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote python2) dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-python2-dedicated (&optional fast split switch proc)
   "Send buffer at point to a python3 unique interpreter."
@@ -381,7 +381,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'python2 t switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote python2) t switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-python3 (&optional dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter."
@@ -394,7 +394,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'python3 dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote python3) dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-python3-dedicated (&optional fast split switch proc)
   "Send buffer at point to a python3 unique interpreter."
@@ -407,7 +407,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'python3 t switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote python3) t switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-pypy (&optional dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter."
@@ -420,7 +420,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'pypy dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote pypy) dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-pypy-dedicated (&optional fast split switch proc)
   "Send buffer at point to a python3 unique interpreter."
@@ -433,7 +433,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer 'pypy t switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) (quote pypy) t switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer (&optional shell dedicated fast split switch proc)
   "Send buffer at point to a python3 interpreter."
@@ -446,7 +446,7 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer shell dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) shell dedicated switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-buffer-dedicated (&optional shell fast split switch proc)
   "Send buffer at point to a python3 unique interpreter."
@@ -459,43 +459,43 @@ For ‘default’ see value of ‘py-shell-name’"
             buffer (or (get-file-buffer filename)
                        (find-file-noselect filename)))
       (set-buffer buffer))
-    (py--execute-prepare 'buffer shell t switch (point-min) (point-max) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote buffer) shell t switch (point-min) (point-max) nil fast proc wholebuf split)))
 
 (defun py-execute-class-ipython (&optional dedicated fast split switch proc)
   "Send class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-ipython-dedicated (&optional fast split switch proc)
   "Send class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-ipython3 (&optional dedicated fast split switch proc)
   "Send class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-ipython3-dedicated (&optional fast split switch proc)
   "Send class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-jython (&optional dedicated fast split switch proc)
   "Send class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-jython-dedicated (&optional fast split switch proc)
   "Send class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-python (&optional dedicated fast split switch proc)
   "Send class at point to a python3 interpreter.
@@ -503,7 +503,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-python-dedicated (&optional fast split switch proc)
   "Send class at point to a python3 unique interpreter.
@@ -511,91 +511,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-python2 (&optional dedicated fast split switch proc)
   "Send class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-python2-dedicated (&optional fast split switch proc)
   "Send class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-python3 (&optional dedicated fast split switch proc)
   "Send class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-python3-dedicated (&optional fast split switch proc)
   "Send class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-pypy (&optional dedicated fast split switch proc)
   "Send class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-pypy-dedicated (&optional fast split switch proc)
   "Send class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class (&optional shell dedicated fast split switch proc)
   "Send class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-class-dedicated (&optional shell fast split switch proc)
   "Send class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'class shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote class) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-ipython (&optional dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-ipython-dedicated (&optional fast split switch proc)
   "Send clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-ipython3 (&optional dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-ipython3-dedicated (&optional fast split switch proc)
   "Send clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-jython (&optional dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-jython-dedicated (&optional fast split switch proc)
   "Send clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-python (&optional dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter.
@@ -603,7 +603,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-python-dedicated (&optional fast split switch proc)
   "Send clause at point to a python3 unique interpreter.
@@ -611,91 +611,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-python2 (&optional dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-python2-dedicated (&optional fast split switch proc)
   "Send clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-python3 (&optional dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-python3-dedicated (&optional fast split switch proc)
   "Send clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-pypy (&optional dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-pypy-dedicated (&optional fast split switch proc)
   "Send clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause (&optional shell dedicated fast split switch proc)
   "Send clause at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-clause-dedicated (&optional shell fast split switch proc)
   "Send clause at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'clause shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote clause) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-ipython (&optional dedicated fast split switch proc)
   "Send def at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-ipython-dedicated (&optional fast split switch proc)
   "Send def at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-ipython3 (&optional dedicated fast split switch proc)
   "Send def at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-ipython3-dedicated (&optional fast split switch proc)
   "Send def at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-jython (&optional dedicated fast split switch proc)
   "Send def at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-jython-dedicated (&optional fast split switch proc)
   "Send def at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-python (&optional dedicated fast split switch proc)
   "Send def at point to a python3 interpreter.
@@ -703,7 +703,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-python-dedicated (&optional fast split switch proc)
   "Send def at point to a python3 unique interpreter.
@@ -711,91 +711,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-python2 (&optional dedicated fast split switch proc)
   "Send def at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-python2-dedicated (&optional fast split switch proc)
   "Send def at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-python3 (&optional dedicated fast split switch proc)
   "Send def at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-python3-dedicated (&optional fast split switch proc)
   "Send def at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-pypy (&optional dedicated fast split switch proc)
   "Send def at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-pypy-dedicated (&optional fast split switch proc)
   "Send def at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def (&optional shell dedicated fast split switch proc)
   "Send def at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-dedicated (&optional shell fast split switch proc)
   "Send def at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-ipython (&optional dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-ipython-dedicated (&optional fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-ipython3 (&optional dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-ipython3-dedicated (&optional fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-jython (&optional dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-jython-dedicated (&optional fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-python (&optional dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter.
@@ -803,7 +803,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-python-dedicated (&optional fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter.
@@ -811,91 +811,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-python2 (&optional dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-python2-dedicated (&optional fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-python3 (&optional dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-python3-dedicated (&optional fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-pypy (&optional dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-pypy-dedicated (&optional fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class (&optional shell dedicated fast split switch proc)
   "Send def-or-class at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-def-or-class-dedicated (&optional shell fast split switch proc)
   "Send def-or-class at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'def-or-class shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote def-or-class) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-ipython (&optional dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-ipython-dedicated (&optional fast split switch proc)
   "Send expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-ipython3 (&optional dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-ipython3-dedicated (&optional fast split switch proc)
   "Send expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-jython (&optional dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-jython-dedicated (&optional fast split switch proc)
   "Send expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-python (&optional dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter.
@@ -903,7 +903,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-python-dedicated (&optional fast split switch proc)
   "Send expression at point to a python3 unique interpreter.
@@ -911,91 +911,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-python2 (&optional dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-python2-dedicated (&optional fast split switch proc)
   "Send expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-python3 (&optional dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-python3-dedicated (&optional fast split switch proc)
   "Send expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-pypy (&optional dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-pypy-dedicated (&optional fast split switch proc)
   "Send expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression (&optional shell dedicated fast split switch proc)
   "Send expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-expression-dedicated (&optional shell fast split switch proc)
   "Send expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'expression shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote expression) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-ipython (&optional dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-ipython-dedicated (&optional fast split switch proc)
   "Send indent at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-ipython3 (&optional dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-ipython3-dedicated (&optional fast split switch proc)
   "Send indent at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-jython (&optional dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-jython-dedicated (&optional fast split switch proc)
   "Send indent at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-python (&optional dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter.
@@ -1003,7 +1003,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-python-dedicated (&optional fast split switch proc)
   "Send indent at point to a python3 unique interpreter.
@@ -1011,91 +1011,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-python2 (&optional dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-python2-dedicated (&optional fast split switch proc)
   "Send indent at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-python3 (&optional dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-python3-dedicated (&optional fast split switch proc)
   "Send indent at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-pypy (&optional dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-pypy-dedicated (&optional fast split switch proc)
   "Send indent at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent (&optional shell dedicated fast split switch proc)
   "Send indent at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-indent-dedicated (&optional shell fast split switch proc)
   "Send indent at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'indent shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote indent) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-ipython (&optional dedicated fast split switch proc)
   "Send line at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-ipython-dedicated (&optional fast split switch proc)
   "Send line at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-ipython3 (&optional dedicated fast split switch proc)
   "Send line at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-ipython3-dedicated (&optional fast split switch proc)
   "Send line at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-jython (&optional dedicated fast split switch proc)
   "Send line at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-jython-dedicated (&optional fast split switch proc)
   "Send line at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-python (&optional dedicated fast split switch proc)
   "Send line at point to a python3 interpreter.
@@ -1103,7 +1103,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-python-dedicated (&optional fast split switch proc)
   "Send line at point to a python3 unique interpreter.
@@ -1111,91 +1111,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-python2 (&optional dedicated fast split switch proc)
   "Send line at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-python2-dedicated (&optional fast split switch proc)
   "Send line at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-python3 (&optional dedicated fast split switch proc)
   "Send line at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-python3-dedicated (&optional fast split switch proc)
   "Send line at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-pypy (&optional dedicated fast split switch proc)
   "Send line at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-pypy-dedicated (&optional fast split switch proc)
   "Send line at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line (&optional shell dedicated fast split switch proc)
   "Send line at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-line-dedicated (&optional shell fast split switch proc)
   "Send line at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'line shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote line) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-ipython (&optional dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-ipython-dedicated (&optional fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-ipython3 (&optional dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-ipython3-dedicated (&optional fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-jython (&optional dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-jython-dedicated (&optional fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-python (&optional dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter.
@@ -1203,7 +1203,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-python-dedicated (&optional fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter.
@@ -1211,91 +1211,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-python2 (&optional dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-python2-dedicated (&optional fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-python3 (&optional dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-python3-dedicated (&optional fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-pypy (&optional dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-pypy-dedicated (&optional fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block (&optional shell dedicated fast split switch proc)
   "Send minor-block at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-minor-block-dedicated (&optional shell fast split switch proc)
   "Send minor-block at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'minor-block shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote minor-block) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-ipython (&optional dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-ipython-dedicated (&optional fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-ipython3 (&optional dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-ipython3-dedicated (&optional fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-jython (&optional dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-jython-dedicated (&optional fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-python (&optional dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter.
@@ -1303,7 +1303,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-python-dedicated (&optional fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter.
@@ -1311,91 +1311,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-python2 (&optional dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-python2-dedicated (&optional fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-python3 (&optional dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-python3-dedicated (&optional fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-pypy (&optional dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-pypy-dedicated (&optional fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph (&optional shell dedicated fast split switch proc)
   "Send paragraph at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-paragraph-dedicated (&optional shell fast split switch proc)
   "Send paragraph at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'paragraph shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote paragraph) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-ipython (&optional dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-ipython-dedicated (&optional fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-ipython3 (&optional dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-ipython3-dedicated (&optional fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-jython (&optional dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-jython-dedicated (&optional fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-python (&optional dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter.
@@ -1403,7 +1403,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-python-dedicated (&optional fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter.
@@ -1411,91 +1411,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-python2 (&optional dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-python2-dedicated (&optional fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-python3 (&optional dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-python3-dedicated (&optional fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-pypy (&optional dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-pypy-dedicated (&optional fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression (&optional shell dedicated fast split switch proc)
   "Send partial-expression at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-partial-expression-dedicated (&optional shell fast split switch proc)
   "Send partial-expression at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'partial-expression shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote partial-expression) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-region-ipython (beg end &optional dedicated fast split switch proc)
   "Send region at point to a python3 interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'ipython dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote ipython) dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-ipython-dedicated (beg end &optional fast split switch proc)
   "Send region at point to a python3 unique interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'ipython t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote ipython) t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-ipython3 (beg end &optional dedicated fast split switch proc)
   "Send region at point to a python3 interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'ipython3 dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote ipython3) dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-ipython3-dedicated (beg end &optional fast split switch proc)
   "Send region at point to a python3 unique interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'ipython3 t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote ipython3) t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-jython (beg end &optional dedicated fast split switch proc)
   "Send region at point to a python3 interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'jython dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote jython) dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-jython-dedicated (beg end &optional fast split switch proc)
   "Send region at point to a python3 unique interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'jython t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote jython) t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-python (beg end &optional dedicated fast split switch proc)
   "Send region at point to a python3 interpreter.
@@ -1503,7 +1503,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'python dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote python) dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-python-dedicated (beg end &optional fast split switch proc)
   "Send region at point to a python3 unique interpreter.
@@ -1511,91 +1511,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'python t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote python) t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-python2 (beg end &optional dedicated fast split switch proc)
   "Send region at point to a python3 interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'python2 dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote python2) dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-python2-dedicated (beg end &optional fast split switch proc)
   "Send region at point to a python3 unique interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'python2 t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote python2) t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-python3 (beg end &optional dedicated fast split switch proc)
   "Send region at point to a python3 interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'python3 dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote python3) dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-python3-dedicated (beg end &optional fast split switch proc)
   "Send region at point to a python3 unique interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'python3 t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote python3) t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-pypy (beg end &optional dedicated fast split switch proc)
   "Send region at point to a python3 interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'pypy dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote pypy) dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-pypy-dedicated (beg end &optional fast split switch proc)
   "Send region at point to a python3 unique interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region 'pypy t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) (quote pypy) t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region (beg end &optional shell dedicated fast split switch proc)
   "Send region at point to a python3 interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region shell dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) shell dedicated switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-region-dedicated (beg end &optional shell fast split switch proc)
   "Send region at point to a python3 unique interpreter."
   (interactive "r")
   (let ((wholebuf nil))
-    (py--execute-prepare 'region shell t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
+    (py--execute-prepare (quote region) shell t switch (or beg (region-beginning)) (or end (region-end)) nil fast proc wholebuf split)))
 
 (defun py-execute-statement-ipython (&optional dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-ipython-dedicated (&optional fast split switch proc)
   "Send statement at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-ipython3 (&optional dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-ipython3-dedicated (&optional fast split switch proc)
   "Send statement at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-jython (&optional dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-jython-dedicated (&optional fast split switch proc)
   "Send statement at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-python (&optional dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter.
@@ -1603,7 +1603,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-python-dedicated (&optional fast split switch proc)
   "Send statement at point to a python3 unique interpreter.
@@ -1611,91 +1611,91 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-python2 (&optional dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-python2-dedicated (&optional fast split switch proc)
   "Send statement at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-python3 (&optional dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-python3-dedicated (&optional fast split switch proc)
   "Send statement at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-pypy (&optional dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-pypy-dedicated (&optional fast split switch proc)
   "Send statement at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement (&optional shell dedicated fast split switch proc)
   "Send statement at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-statement-dedicated (&optional shell fast split switch proc)
   "Send statement at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'statement shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote statement) shell t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-ipython (&optional dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'ipython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote ipython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-ipython-dedicated (&optional fast split switch proc)
   "Send top-level at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'ipython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote ipython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-ipython3 (&optional dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'ipython3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote ipython3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-ipython3-dedicated (&optional fast split switch proc)
   "Send top-level at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'ipython3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote ipython3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-jython (&optional dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'jython dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote jython) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-jython-dedicated (&optional fast split switch proc)
   "Send top-level at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'jython t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote jython) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-python (&optional dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter.
@@ -1703,7 +1703,7 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'python dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote python) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-python-dedicated (&optional fast split switch proc)
   "Send top-level at point to a python3 unique interpreter.
@@ -1711,55 +1711,55 @@ For ‘default’ see value of ‘py-shell-name’"
 For ‘default’ see value of ‘py-shell-name’"
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'python t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote python) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-python2 (&optional dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'python2 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote python2) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-python2-dedicated (&optional fast split switch proc)
   "Send top-level at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'python2 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote python2) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-python3 (&optional dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'python3 dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote python3) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-python3-dedicated (&optional fast split switch proc)
   "Send top-level at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'python3 t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote python3) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-pypy (&optional dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'pypy dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote pypy) dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-pypy-dedicated (&optional fast split switch proc)
   "Send top-level at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level 'pypy t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) (quote pypy) t switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level (&optional shell dedicated fast split switch proc)
   "Send top-level at point to a python3 interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level shell dedicated switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) shell dedicated switch nil nil nil fast proc wholebuf split)))
 
 (defun py-execute-top-level-dedicated (&optional shell fast split switch proc)
   "Send top-level at point to a python3 unique interpreter."
   (interactive)
   (let ((wholebuf nil))
-    (py--execute-prepare 'top-level shell t switch nil nil nil fast proc wholebuf split)))
+    (py--execute-prepare (quote top-level) shell t switch nil nil nil fast proc wholebuf split)))
 
-(provide 'python-components-extended-executes)
+(provide (quote python-components-extended-executes))
 ;;; python-components-extended-executes.el ends here

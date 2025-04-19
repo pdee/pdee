@@ -1,4 +1,4 @@
-;;; python-components-rx.el --- provide a recent rx.el           --*- lexical-binding: t -*-
+;;; python-components-rx.el --- provide a recent rx.el -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2001-2022 Free Software Foundation, Inc.
 
@@ -35,7 +35,7 @@
 
 ;;; Code:
 
-;; The `rx--translate...' functions below return (REGEXP . PRECEDENCE),
+;; The ‘rx--translate...’ functions below return (REGEXP . PRECEDENCE),
 ;; where REGEXP is a list of string expressions that will be
 ;; concatenated into a regexp, and PRECEDENCE is one of
 ;;
@@ -187,7 +187,7 @@ Each entry is:
                                 (cdr (memq entry rx-constituents))))))
                 entry)
               (cons (list (cdr entry)) nil))))
-      (t (error "Unknown rx symbol `%s'" sym))))))
+      (t (error "Unknown rx symbol ‘%s’" sym))))))
 
 (defun rx--enclose (left-str rexp right-str)
   "Bracket REXP by LEFT-STR and RIGHT-STR."
@@ -663,11 +663,11 @@ If NEGATED, negate the sense."
 
 (defun rx--check-repeat-arg (name min-args body)
   (unless (>= (length body) min-args)
-    (error "rx `%s' requires at least %d argument%s"
+    (error "rx ‘%s’ requires at least %d argument%s"
            name min-args (if (= min-args 1) "" "s")))
   ;; There seems to be no reason to disallow zero counts.
   (unless (natnump (car body))
-    (error "rx `%s' first argument must be nonnegative" name)))
+    (error "rx ‘%s’ first argument must be nonnegative" name)))
 
 (defun rx--translate-bounded-repetition (name body)
   (let ((min-count (car body))
@@ -676,7 +676,7 @@ If NEGATED, negate the sense."
     (unless (and (natnump min-count)
                  (natnump max-count)
                  (<= min-count max-count))
-      (error "rx `%s' range error" name))
+      (error "rx ‘%s’ range error" name))
     (rx--translate-counted-repetition min-count max-count items)))
 
 (defun rx--translate-repeat (body)
@@ -774,7 +774,7 @@ Return (REGEXP . PRECEDENCE)."
               (when (rassq char rx--syntax-codes)
                 (setq syntax char)))))))
       (unless syntax
-        (error "Unknown rx syntax name `%s'" sym)))
+        (error "Unknown rx syntax name ‘%s’" sym)))
     (cons (list (string ?\\ (if negated ?S ?s) syntax))
           t)))
 
@@ -833,10 +833,10 @@ Return (REGEXP . PRECEDENCE)."
           (cond ((symbolp arg)
                  (let ((cat (assq arg rx--categories)))
                    (unless cat
-                     (error "Unknown rx category `%s'" arg))
+                     (error "Unknown rx category ‘%s’" arg))
                    (cdr cat)))
                 ((characterp arg) arg)
-                (t (error "Invalid rx ‘category’ argument `%s'" arg)))))
+                (t (error "Invalid rx ‘category’ argument ‘%s’" arg)))))
     (cons (list (string ?\\ (if negated ?C ?c) category))
           t)))
 
@@ -872,7 +872,7 @@ Return (REGEXP . PRECEDENCE)."
     (error "rx ‘regexp’ form takes exactly one argument"))
   (let ((arg (car body)))
     (cond ((stringp arg)
-           ;; Generate the regexp when needed, since rx isn't
+           ;; Generate the regexp when needed, since rx is not
            ;; necessarily present in the byte-compilation environment.
            (unless rx--regexp-atomic-regexp
              (setq rx--regexp-atomic-regexp
@@ -913,17 +913,17 @@ DEF is the definition tuple.  Return (REGEXP . PRECEDENCE)."
          (predicate (nth 3 def))
          (nargs (1- (length form))))
     (when (< nargs min-args)
-      (error "The `%s' form takes at least %d argument(s)"
+      (error "The ‘%s’ form takes at least %d argument(s)"
              (car form) min-args))
     (when (and max-args (> nargs max-args))
-      (error "The `%s' form takes at most %d argument(s)"
+      (error "The ‘%s’ form takes at most %d argument(s)"
              (car form) max-args))
     (when (and predicate (not (rx--every predicate (cdr form))))
-      (error "The `%s' form requires arguments satisfying `%s'"
+      (error "The ‘%s’ form requires arguments satisfying ‘%s’"
              (car form) predicate))
     (let ((regexp (funcall fn form)))
       (unless (stringp regexp)
-        (error "The `%s' form did not expand to a string" (car form)))
+        (error "The ‘%s’ form did not expand to a string" (car form)))
       (cons (list regexp) nil))))
 
 (defun rx--substitute (bindings form)
@@ -963,7 +963,7 @@ can expand to any number of values."
 ;; =>
 ;;   "[0-7]"
 ;;
-;; While this would permit more powerful extensions, it's unclear just
+;; While this would permit more powerful extensions, it is unclear just
 ;; how often they would be used in practice.  Let's wait until there is
 ;; demand for it.
 
@@ -975,9 +975,9 @@ can expand to any number of values."
 ;;
 ;; which would have two minor advantages: multiple RXs with implicit
 ;; ‘seq’ in the definition, and the arglist is no longer an optional
-;; element in the middle of the list.  On the other hand, it's less
+;; element in the middle of the list.  On the other hand, it is less
 ;; like traditional lisp arglist constructs (defun, defmacro).
-;; Since it's a Scheme-like syntax, &rest parameters could be done using
+;; Since it is a Scheme-like syntax, &rest parameters could be done using
 ;; dotted lists:
 ;;  (rx-let (((name arg1 arg2 . rest) ...definition...)) ...)
 
@@ -991,14 +991,14 @@ can expand to any number of values."
         ('&rest
          (unless (cdr formals)
            (error
-            "Expanding rx def `%s': missing &rest parameter name" op))
+            "Expanding rx def ‘%s’: missing &rest parameter name" op))
          (push (cons (cadr formals) value-tail) bindings)
          (setq formals nil)
          (setq value-tail nil))
         (name
          (unless value-tail
            (error
-            "Expanding rx def `%s': too few arguments (got %d, need %s%d)"
+            "Expanding rx def ‘%s’: too few arguments (got %d, need %s%d)"
             op (length values)
             (if (memq '&rest arglist) "at least " "")
             (- (length arglist) (length (memq '&rest arglist)))))
@@ -1007,12 +1007,12 @@ can expand to any number of values."
       (setq formals (cdr formals)))
     (when value-tail
       (error
-       "Expanding rx def `%s': too many arguments (got %d, need %d)"
+       "Expanding rx def ‘%s’: too many arguments (got %d, need %d)"
        op (length values) (length arglist)))
     (let ((subst (rx--substitute bindings template)))
       (if (and subst (not (cdr subst)))
           (car subst)
-        (error "Expanding rx def `%s': must result in a single value" op)))))
+        (error "Expanding rx def ‘%s’: must result in a single value" op)))))
 
 (defun rx--translate-form (form)
   "Translate an rx form (list structure).  Return (REGEXP . PRECEDENCE)."
@@ -1059,7 +1059,7 @@ can expand to any number of values."
 
       (op
        (cond
-        ((not (symbolp op)) (error "Bad rx operator `%S'" op))
+        ((not (symbolp op)) (error "Bad rx operator ‘%S’" op))
 
         ((let ((expanded (rx--expand-def form)))
            (and expanded
@@ -1079,7 +1079,7 @@ can expand to any number of values."
                   entry)
                 (rx--translate-compat-form (cdr entry) form))))
 
-        (t (error "Unknown rx form `%s'" op)))))))
+        (t (error "Unknown rx form ‘%s’" op)))))))
 
 (defconst rx--builtin-forms
   '(seq sequence : and or | any in char not-char not intersection
@@ -1128,7 +1128,7 @@ can expand to any number of values."
   "Translate FORM from ‘rx’ sexp syntax into a string regexp.
 The arguments to ‘literal’ and ‘regexp’ forms inside FORM must be
 constant strings.
-If NO-GROUP is non-nil, don't bracket the result in a non-capturing
+If NO-GROUP is non-nil, do not bracket the result in a non-capturing
 group.
 
 For extending the ‘rx’ notation in FORM, use ‘rx-define’ or ‘rx-let-eval’."
@@ -1283,7 +1283,7 @@ TAIL is on the form ([ARGLIST] DEFINITION)."
     (error "Bad ‘rx’ definition name: %S" name))
   ;; FIXME: Consider using a hash table or symbol property, for speed.
   (when (memq name rx--builtin-names)
-    (error "Cannot redefine built-in rx name `%s'" name))
+    (error "Cannot redefine built-in rx name ‘%s’" name))
   (pcase tail
     (`(,def)
      (list def))
@@ -1315,7 +1315,7 @@ For bindings without an ARGS list, NAME is defined as an alias
 for the ‘rx’ expression RX.  Where ARGS is supplied, NAME is
 defined as an ‘rx’ form with ARGS as argument list.  The
 parameters are bound from the values in the (NAME ...) form and
-are substituted in RX.  ARGS can contain `&rest' parameters,
+are substituted in RX.  ARGS can contain ‘&rest’ parameters,
 whose values are spliced into RX where the parameter name occurs.
 
 Any previous definitions with the same names are shadowed during
@@ -1341,7 +1341,7 @@ For bindings without an ARGS list, NAME is defined as an alias
 for the ‘rx’ expression RX.  Where ARGS is supplied, NAME is
 defined as an ‘rx’ form with ARGS as argument list.  The
 parameters are bound from the values in the (NAME ...) form and
-are substituted in RX.  ARGS can contain `&rest' parameters,
+are substituted in RX.  ARGS can contain ‘&rest’ parameters,
 whose values are spliced into RX where the parameter name occurs.
 
 Any previous definitions with the same names are shadowed during
@@ -1366,7 +1366,7 @@ expression RX.
 If the ARGS list is supplied, define NAME as an ‘rx’ form with
 ARGS as argument list.  The parameters are bound from the values
 in the (NAME ...) form and are substituted in RX.
-ARGS can contain `&rest' parameters, whose values are spliced
+ARGS can contain ‘&rest’ parameters, whose values are spliced
 into RX where the parameter name occurs.
 
 Any previous global definition of NAME is overwritten with the new one.
@@ -1443,7 +1443,7 @@ following constructs:
              `(pred (string-match ,regexp)))
             (1
              ;; Create a match value that on a successful regexp match
-             ;; is the submatch value, 0 on failure.  We can't use nil
+             ;; is the submatch value, 0 on failure.  We can not use nil
              ;; for failure because it is a valid submatch value.
              `(app (lambda (s)
                      (if (string-match ,regexp s)

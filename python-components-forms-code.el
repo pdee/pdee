@@ -34,7 +34,7 @@ From a programm, return source of Block at point, a string.
 Optional arg DECORATORS: include decorators when called at def or class.
 Also honors setting of ‘py-mark-decorators’"
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "block" (or decorators py-mark-decorators))
     (py--thing-at-point "block" (or decorators py-mark-decorators))))
 
@@ -46,7 +46,7 @@ From a programm, return source of Block-Or-Clause at point, a string.
 Optional arg DECORATORS: include decorators when called at def or class.
 Also honors setting of ‘py-mark-decorators’"
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "block-or-clause" (or decorators py-mark-decorators))
     (py--thing-at-point "block-or-clause" (or decorators py-mark-decorators))))
 
@@ -55,7 +55,7 @@ Also honors setting of ‘py-mark-decorators’"
 
 From a programm, return source of Buffer at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "buffer")
     (py--thing-at-point "buffer")))
 
@@ -67,7 +67,7 @@ From a programm, return source of Class at point, a string.
 Optional arg DECORATORS: include decorators when called at def or class.
 Also honors setting of ‘py-mark-decorators’"
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "class" (or decorators py-mark-decorators))
     (py--thing-at-point "class" (or decorators py-mark-decorators))))
 
@@ -76,7 +76,7 @@ Also honors setting of ‘py-mark-decorators’"
 
 From a programm, return source of Clause at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "clause")
     (py--thing-at-point "clause")))
 
@@ -88,7 +88,7 @@ From a programm, return source of Def at point, a string.
 Optional arg DECORATORS: include decorators when called at def or class.
 Also honors setting of ‘py-mark-decorators’"
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "def" (or decorators py-mark-decorators))
     (py--thing-at-point "def" (or decorators py-mark-decorators))))
 
@@ -100,7 +100,7 @@ From a programm, return source of Def-Or-Class at point, a string.
 Optional arg DECORATORS: include decorators when called at def or class.
 Also honors setting of ‘py-mark-decorators’"
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "def-or-class" (or decorators py-mark-decorators))
     (py--thing-at-point "def-or-class" (or decorators py-mark-decorators))))
 
@@ -109,7 +109,7 @@ Also honors setting of ‘py-mark-decorators’"
 
 From a programm, return source of Expression at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "expression")
     (py--thing-at-point "expression")))
 
@@ -118,7 +118,7 @@ From a programm, return source of Expression at point, a string."
 
 From a programm, return source of Indent at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "indent")
     (py--thing-at-point "indent")))
 
@@ -127,7 +127,7 @@ From a programm, return source of Indent at point, a string."
 
 From a programm, return source of Line at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "line")
     (py--thing-at-point "line")))
 
@@ -136,7 +136,7 @@ From a programm, return source of Line at point, a string."
 
 From a programm, return source of Minor-Block at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "minor-block")
     (py--thing-at-point "minor-block")))
 
@@ -145,7 +145,7 @@ From a programm, return source of Minor-Block at point, a string."
 
 From a programm, return source of Paragraph at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "paragraph")
     (py--thing-at-point "paragraph")))
 
@@ -154,7 +154,7 @@ From a programm, return source of Paragraph at point, a string."
 
 From a programm, return source of Partial-Expression at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "partial-expression")
     (py--thing-at-point "partial-expression")))
 
@@ -163,7 +163,7 @@ From a programm, return source of Partial-Expression at point, a string."
 
 From a programm, return source of Region at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "region")
     (py--thing-at-point "region")))
 
@@ -172,7 +172,7 @@ From a programm, return source of Region at point, a string."
 
 From a programm, return source of Statement at point, a string."
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "statement")
     (py--thing-at-point "statement")))
 
@@ -184,9 +184,9 @@ From a programm, return source of Top-Level at point, a string.
 Optional arg DECORATORS: include decorators when called at def or class.
 Also honors setting of ‘py-mark-decorators’"
   (interactive)
-  (if (called-interactively-p 'interactive)
+  (if (called-interactively-p (quote interactive))
       (py--mark-base "top-level" (or decorators py-mark-decorators))
     (py--thing-at-point "top-level" (or decorators py-mark-decorators))))
 
 ;; python-components-forms-code.el ends here
-(provide 'python-components-forms-code)
+(provide (quote python-components-forms-code))

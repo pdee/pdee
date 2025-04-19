@@ -60,5 +60,5 @@
   (interactive)
   (py--narrow-prepare "statement"))
 
-(provide 'python-components-narrow)
+(provide (quote python-components-narrow))
 ;;; python-components-narrow.el ends here

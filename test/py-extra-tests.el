@@ -82,7 +82,7 @@ print(u'\\xA9')"
 import os
 os.write"
     'python-mode
-    py-verbose-p
+    'py-verbose-p
     (if (executable-find "python")
         (progn
           (goto-char (point-max))
@@ -111,13 +111,13 @@ os.write"
           (goto-char (point-max))
           (forward-char -1)
           (py-help-at-point)
-          (sit-for 0.1)
+          ;; (sit-for 0.1)
           (set-buffer py-output-buffer)
+          (switch-to-buffer (current-buffer)) 
           (goto-char (point-max))
           (when py-debug-p (switch-to-buffer (current-buffer)))
           (when py-debug-p (message "%s" (current-buffer)))
-          (goto-char comint-last-output-start)
-          (sit-for 0.1)
+          (goto-char (point-min))
           (should (string-match "write" (buffer-substring-no-properties (point) (point-max)))))
       (when py-verbose-p (message "py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2: %s" "No executable python found")))))
 

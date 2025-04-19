@@ -57,7 +57,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'block shell dedicated switch beg end file t))
+  (py--execute-prepare (quote block) shell dedicated switch beg end file t))
 
 (defun py-execute-block-or-clause-fast (&optional shell dedicated switch beg end file)
   "Process block-or-clause at point by a Python interpreter.
@@ -68,7 +68,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'block-or-clause shell dedicated switch beg end file t))
+  (py--execute-prepare (quote block-or-clause) shell dedicated switch beg end file t))
 
 (defun py-execute-class-fast (&optional shell dedicated switch beg end file)
   "Process class at point by a Python interpreter.
@@ -79,7 +79,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'class shell dedicated switch beg end file t))
+  (py--execute-prepare (quote class) shell dedicated switch beg end file t))
 
 (defun py-execute-clause-fast (&optional shell dedicated switch beg end file)
   "Process clause at point by a Python interpreter.
@@ -90,7 +90,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'clause shell dedicated switch beg end file t))
+  (py--execute-prepare (quote clause) shell dedicated switch beg end file t))
 
 (defun py-execute-def-fast (&optional shell dedicated switch beg end file)
   "Process def at point by a Python interpreter.
@@ -101,7 +101,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'def shell dedicated switch beg end file t))
+  (py--execute-prepare (quote def) shell dedicated switch beg end file t))
 
 (defun py-execute-def-or-class-fast (&optional shell dedicated switch beg end file)
   "Process def-or-class at point by a Python interpreter.
@@ -112,7 +112,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'def-or-class shell dedicated switch beg end file t))
+  (py--execute-prepare (quote def-or-class) shell dedicated switch beg end file t))
 
 (defun py-execute-expression-fast (&optional shell dedicated switch beg end file)
   "Process expression at point by a Python interpreter.
@@ -123,7 +123,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'expression shell dedicated switch beg end file t))
+  (py--execute-prepare (quote expression) shell dedicated switch beg end file t))
 
 (defun py-execute-partial-expression-fast (&optional shell dedicated switch beg end file)
   "Process partial-expression at point by a Python interpreter.
@@ -134,7 +134,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'partial-expression shell dedicated switch beg end file t))
+  (py--execute-prepare (quote partial-expression) shell dedicated switch beg end file t))
 
 (defun py-execute-section-fast (&optional shell dedicated switch beg end file)
   "Process section at point by a Python interpreter.
@@ -145,7 +145,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'section shell dedicated switch beg end file t))
+  (py--execute-prepare (quote section) shell dedicated switch beg end file t))
 
 (defun py-execute-statement-fast (&optional shell dedicated switch beg end file)
   "Process statement at point by a Python interpreter.
@@ -156,7 +156,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'statement shell dedicated switch beg end file t))
+  (py--execute-prepare (quote statement) shell dedicated switch beg end file t))
 
 (defun py-execute-top-level-fast (&optional shell dedicated switch beg end file)
   "Process top-level at point by a Python interpreter.
@@ -167,7 +167,7 @@ Optional DEDICATED: run in a dedicated process
 Optional SWITCH: switch to output buffer after executing
 Optional File: execute through running a temp-file"
   (interactive)
-  (py--execute-prepare 'top-level shell dedicated switch beg end file t))
+  (py--execute-prepare (quote top-level) shell dedicated switch beg end file t))
 
-(provide 'python-components-fast-forms)
+(provide (quote python-components-fast-forms))
 ;;; python-components-fast-forms.el ends here

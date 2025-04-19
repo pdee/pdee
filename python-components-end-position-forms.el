@@ -164,5 +164,5 @@
   "Return end of try-block position at ‘beginning-of-line’."
   (save-excursion (py-forward-try-block-bol)))
 
-(provide 'python-components-end-position-forms)
+(provide (quote python-components-end-position-forms))
 ;;; python-components-end-position-forms.el ends here

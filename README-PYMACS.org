@@ -2,7 +2,7 @@
 
   If Pymacs based auto-complete shall be used make sure the directory
   is in your load-path. In case `Pymacs' was installed via ‘make’ on
-  your system, don't activate inlined one. Keep ‘py-load-pymacs-p’
+  your system, do not activate inlined one. Keep ‘py-load-pymacs-p’
   nil.
 
   Otherwise setting ‘py-load-pymacs-p’ to ‘t’ should enable a

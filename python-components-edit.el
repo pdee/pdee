@@ -209,7 +209,7 @@ OUTMOST-ONLY stops circling possible indent.
 When ‘py-tab-shifts-region-p’ is t, not just the current line,
 but the region is shiftet that way.
 
-If ‘py-tab-indents-region-p’ is t and first TAB doesn't shift
+If ‘py-tab-indents-region-p’ is t and first TAB does not shift
 --as indent is at outmost reasonable--, ‘indent-region’ is called.
 
 Optional arg DEDENT: force dedent.
@@ -378,7 +378,7 @@ If IACT is provided, message result"
 (defun py--bounds-of-declarations ()
   "Bounds of consecutive multitude of assigments resp. statements around point.
 
-Indented same level, which don't open blocks.
+Indented same level, which do not open blocks.
 Typically declarations resp. initialisations of variables following
 a class or function definition.
 See also ‘py--bounds-of-statements’"
@@ -416,7 +416,7 @@ See also ‘py--bounds-of-statements’"
 (defun py-backward-declarations ()
   "Got to the beginning of assigments resp. statements.
 
-Move in current level which don't open blocks."
+Move in current level which do not open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (erg (car bounds)))
@@ -426,7 +426,7 @@ Move in current level which don't open blocks."
 (defun py-forward-declarations ()
   "Got to the end of assigments resp. statements.
 
-Move in current level which don't open blocks."
+Move in current level which do not open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-declarations))
          (erg (cdr bounds)))
@@ -436,7 +436,7 @@ Move in current level which don't open blocks."
 (defun py-declarations ()
   "Forms in current level.
 
-Forms don't open blocks or start with a keyword.
+Forms do not open blocks or start with a keyword.
 
 See also ‘py-statements’."
   (interactive)
@@ -470,7 +470,7 @@ Store deleted variables in ‘kill-ring’"
 (defun py--bounds-of-statements ()
   "Bounds of consecutive multitude of statements around point.
 
-Indented same level, which don't open blocks."
+Indented same level, which do not open blocks."
   (interactive)
   (let* ((orig-indent (progn
                         (back-to-indentation)
@@ -486,7 +486,7 @@ Indented same level, which don't open blocks."
                   (setq beg
                         (when (py-backward-statement)
                           (line-beginning-position)))
-		  ;; backward-statement shouldn't stop in string
+		  ;; backward-statement should not stop in string
                   ;; (not (py-in-string-p))
                   (not (py--beginning-of-block-p))
                   (eq (current-indentation) orig-indent)))
@@ -509,7 +509,7 @@ Indented same level, which don't open blocks."
         nil))))
 
 (defun py-backward-statements ()
-  "Got to the beginning of statements in current level which don't open blocks."
+  "Got to the beginning of statements in current level which do not open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
          (erg (car bounds)))
@@ -517,7 +517,7 @@ Indented same level, which don't open blocks."
     erg))
 
 (defun py-forward-statements ()
-  "Got to the end of statements in current level which don't open blocks."
+  "Got to the end of statements in current level which do not open blocks."
   (interactive)
   (let* ((bounds (py--bounds-of-statements))
          (erg (cdr bounds)))
@@ -527,7 +527,7 @@ Indented same level, which don't open blocks."
 (defun py-statements ()
   "Copy and mark simple statements level.
 
-These statements don't open blocks.
+These statements do not open blocks.
 
 More general than ‘py-declarations’."
   (interactive)

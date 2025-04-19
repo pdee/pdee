@@ -170,9 +170,9 @@ Returns value of ‘py-fontify-shell-buffer-p’."
 
 ;;  python-mode-v5-behavior-p forms
 (defun py-toggle-python-mode-v5-behavior-p (&optional arg)
-  "Toggle `python-mode-v5-behavior-p' according to ARG.
+  "Toggle ‘python-mode-v5-behavior-p’ according to ARG.
 
-  Returns value of `python-mode-v5-behavior-p' switched to."
+  Returns value of ‘python-mode-v5-behavior-p’ switched to."
   (interactive)
   (let ((arg (or arg (if python-mode-v5-behavior-p -1 1))))
     (if (< 0 arg)
@@ -182,9 +182,9 @@ Returns value of ‘py-fontify-shell-buffer-p’."
     python-mode-v5-behavior-p))
 
 (defun py-python-mode-v5-behavior-p-on (&optional arg)
-  "To `python-mode-v5-behavior-p' according to ARG.
+  "To ‘python-mode-v5-behavior-p’ according to ARG.
 
-Returns value of `python-mode-v5-behavior-p'."
+Returns value of ‘python-mode-v5-behavior-p’."
   (interactive)
   (let ((arg (or arg 1)))
     (py-toggle-python-mode-v5-behavior-p arg))
@@ -192,9 +192,9 @@ Returns value of `python-mode-v5-behavior-p'."
   python-mode-v5-behavior-p)
 
 (defun py-python-mode-v5-behavior-p-off ()
-  "Make sure, `python-mode-v5-behavior-p' is off.
+  "Make sure, ‘python-mode-v5-behavior-p’ is off.
 
-Returns value of `python-mode-v5-behavior-p'."
+Returns value of ‘python-mode-v5-behavior-p’."
   (interactive)
   (py-toggle-python-mode-v5-behavior-p -1)
   (when (or py-verbose-p (called-interactively-p 'any)) (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p))

@@ -83,7 +83,7 @@
 (require 'org-loaddefs)
 (unless (functionp 'mapcan)
   (require 'cl-extra)
-  ;; mapcan doesn't exist in Emacs 25
+  ;; mapcan does not exist in Emacs 25
   (defalias 'mapcan 'cl-mapcan)
   )
 
@@ -112,7 +112,7 @@
   "Make sure it exists.")
 
 (defcustom py-install-directory nil
-  "Directory where python-mode.el and it's subdirectories should be installed.
+  "Directory where python-mode.el and its subdirectories should be installed.
 
 Needed for completion and other environment stuff only."
 
@@ -160,7 +160,7 @@ See also ‘window-configuration-to-register’"
 (defcustom py-pythonpath ""
   "Define $PYTHONPATH here, if needed.
 
-Emacs doesn't read .bashrc"
+Emacs does not read .bashrc"
 
   :type 'string
   :tag "py-pythonpath"
@@ -213,7 +213,7 @@ Used by virtualenv support."
 (defcustom info-lookup-mode "python"
   "Which Python documentation should be queried.
 
-Make sure it's accessible from Emacs by \\<emacs-lisp-mode-map> \\[info] ...
+Make sure it is accessible from Emacs by \\<emacs-lisp-mode-map> \\[info] ...
 See INSTALL-INFO-FILES for help."
 
   :type 'string
@@ -237,7 +237,7 @@ Results arrive in output buffer, which is not in comint-mode"
 ;; credits to python.el
 (defcustom py-shell-compilation-regexp-alist
   `((,(rx line-start (1+ (any " \t")) "File \""
-          (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
+          (group (1+ (not (any "\"<")))) ; avoid ‘<stdin>’ &c
           "\", line " (group (1+ digit)))
      1 2)
     (,(rx " in file " (group (1+ not-newline)) " on line "
@@ -339,7 +339,7 @@ Return nil otherwise. "
 Removed chars default to values of ‘py-chars-before’ and ‘py-chars-after’
 i.e. spaces, tabs, carriage returns, newlines and newpages
 
-Optional arguments `CHARS-BEFORE' and `CHARS-AFTER' override default"
+Optional arguments ‘CHARS-BEFORE’ and ‘CHARS-AFTER’ override default"
   (let ((s-c-b (or chars-before
                    py-chars-before))
         (s-c-a (or chars-after
@@ -425,7 +425,7 @@ dedicated process is re-used instead of default
   :group 'python-mode)
 
 (defcustom py-store-result-p nil
-  "Put resulting string of `py-execute-...' into ‘kill-ring’.
+  "Put resulting string of ‘py-execute-...’ into ‘kill-ring’.
 
 Default is nil"
 
@@ -439,7 +439,7 @@ Default is nil"
 (defvar py-return-result-p nil
   "Internally used.
 
-When non-nil, return resulting string of `py-execute-...'.
+When non-nil, return resulting string of ‘py-execute-...’.
 Imports will use it with nil.
 Default is nil")
 
@@ -618,7 +618,7 @@ Might not be TRT when a lot of output arrives"
   "If the full PATH/TO/PYTHON be in modeline.
 
 Default is nil. Note: when ‘py-python-command’ is
-specified with path, it's shown as an acronym in
+specified with path, it is shown as an acronym in
 ‘buffer-name’ already."
 
   :type 'boolean
@@ -738,7 +738,7 @@ See also ‘py-tab-indents-region-p’"
   :group 'python-mode)
 
 (defcustom py-tab-indents-region-p nil
-  "When t and first TAB doesn't shift, ‘indent-region’ is called.
+  "When t and first TAB does not shift, ‘indent-region’ is called.
 
 Default is  nil
 See also ‘py-tab-shifts-region-p’"
@@ -768,7 +768,7 @@ Default is nil."
   "If ‘py-complete-initialize’.
 
 Sets up enviroment for Pymacs based py-complete.
- Should load it's keys into ‘python-mode-map’
+ Should load its keys into ‘python-mode-map’
 Default is nil.
 See also resp. edit ‘py-complete-set-keymap’"
 
@@ -783,10 +783,10 @@ See also resp. edit ‘py-complete-set-keymap’"
   :group 'python-mode)
 
 (defvar py-guess-py-install-directory-p nil
-  "If in cases, ‘py-install-directory’ isn't set,  ‘py-set-load-path’ guess it.")
+  "If in cases, ‘py-install-directory’ is not set,  ‘py-set-load-path’ guess it.")
 
 (defcustom py-guess-py-install-directory-p nil
-  "If in cases, ‘py-install-directory’ isn't set, ‘py-set-load-path’ guesses it."
+  "If in cases, ‘py-install-directory’ is not set, ‘py-set-load-path’ guesses it."
   :type 'boolean
   :tag "py-guess-py-install-directory-p"
   :group 'python-mode)
@@ -822,7 +822,7 @@ Default is nil."
   :group 'python-mode)
 
 (defcustom py-close-provides-newline t
-  "If a newline is inserted, when line after block isn't empty.
+  "If a newline is inserted, when line after block is not empty.
 
 Default is non-nil.
 When non-nil, ‘py-forward-def’ and related will work faster"
@@ -1084,7 +1084,7 @@ Default is the empty string."
   :group 'python-mode)
 
 (defvar py-flake8-history nil
-  "Used by flake8, resp. `py-flake8-command'.
+  "Used by flake8, resp. ‘py-flake8-command’.
 
 Default is nil.")
 
@@ -1145,16 +1145,16 @@ Which might slow down the proceeding."
 (defcustom py-block-comment-prefix "##"
   "String used by \\[comment-region] to comment out a block of code.
 This should follow the convention for non-indenting comment lines so
-that the indentation commands won't get confused (i.e., the string
-should be of the form `#x...' where ‘x’ is not a blank or a tab, and
- `...' is arbitrary).  However, this string should not end in whitespace."
+that the indentation commands will not get confused (i.e., the string
+should be of the form ‘#x...’ where ‘x’ is not a blank or a tab, and
+ ‘...’ is arbitrary).  However, this string should not end in whitespace."
   :type 'string
   :tag "py-block-comment-prefix"
   :group 'python-mode)
 
 (defcustom py-indent-offset 4
   "Amount of offset per level of indentation.
-`\\[py-guess-indent-offset]' can usually guess a good value when
+‘\\[py-guess-indent-offset]’ can usually guess a good value when
 you're editing someone else's Python code."
   :type 'integer
   :tag "py-indent-offset"
@@ -1375,7 +1375,7 @@ Before returning to previous position."
   :group 'python-mode)
 
 (defcustom py-python-send-delay 1
-  "Seconds to wait for output, used by `py--send-...' functions.
+  "Seconds to wait for output, used by ‘py--send-...’ functions.
 
 See also ‘py-ipython-send-delay’"
 
@@ -1384,7 +1384,7 @@ See also ‘py-ipython-send-delay’"
   :group 'python-mode)
 
 (defcustom py-python3-send-delay 1
-  "Seconds to wait for output, used by `py--send-...' functions.
+  "Seconds to wait for output, used by ‘py--send-...’ functions.
 
 See also ‘py-ipython-send-delay’"
 
@@ -1393,7 +1393,7 @@ See also ‘py-ipython-send-delay’"
   :group 'python-mode)
 
 (defcustom py-ipython-send-delay 1
-  "Seconds to wait for output, used by `py--send-...' functions.
+  "Seconds to wait for output, used by ‘py--send-...’ functions.
 
 See also ‘py-python-send-delay’"
 
@@ -1459,7 +1459,7 @@ Default is \"\""
   :group 'python-mode)
 
 (defcustom py-pyflakespep8-command (concat py-install-directory "/pyflakespep8.py")
-  "Shell command used to run `pyflakespep8'."
+  "Shell command used to run ‘pyflakespep8’."
   :type 'string
   :tag "py-pyflakespep8-command"
   :group 'python-mode)
@@ -1640,7 +1640,7 @@ Otherwise value of ‘py-ipython-history’ is used."
 (defcustom py-ipython-history "~/.ipython/history"
   "Ipython-history default file.
 
-Used when `py-honor-IPYTHONDIR-p' is nil - th default"
+Used when ‘py-honor-IPYTHONDIR-p’ is nil - th default"
 
   :type 'string
   :tag "py-ipython-history"
@@ -1658,7 +1658,7 @@ Otherwise value of ‘py-python-history’ is used."
 (defcustom py-python-history "~/.python_history"
   "Python-history default file.
 
-Used when `py-honor-PYTHONHISTORY-p' is nil (default)."
+Used when ‘py-honor-PYTHONHISTORY-p’ is nil (default)."
 
   :type 'string
   :tag "py-python-history"
@@ -1706,7 +1706,7 @@ See also ‘py-keep-windows-configuration’"
   "Maximal number of displayed windows.
 
 Honored, when ‘py-split-window-on-execute’ is t, i.e. \"reuse\".
-Don't split when max number of displayed windows is reached."
+Do not split when max number of displayed windows is reached."
   :type 'number
   :tag "py-split-window-on-execute-threshold"
   :group 'python-mode)
@@ -1958,7 +1958,7 @@ Of functions and global variables."
   :tag "py--imenu-create-index-p"
   :group 'python-mode)
 
-(defvar py-history-filter-regexp "\\`\\s-*\\S-?\\S-?\\s-*\\'\\|'''/tmp/"
+(defvar py-history-filter-regexp "\\‘\\s-*\\S-?\\S-?\\s-*\\'\\|''’/tmp/"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters.")
 
@@ -1974,9 +1974,9 @@ Customize ‘py-match-paren-key’ which key to use."
 (defcustom py-match-paren-key "%"
   "String used by \\[comment-region] to comment out a block of code.
 This should follow the convention for non-indenting comment lines so
-that the indentation commands won't get confused (i.e., the string
-should be of the form `#x...' where ‘x’ is not a blank or a tab, and
-                               `...' is arbitrary).
+that the indentation commands will not get confused (i.e., the string
+should be of the form ‘#x...’ where ‘x’ is not a blank or a tab, and
+                               ‘...’ is arbitrary).
 However, this string should not end in whitespace."
   :type 'string
   :tag "py-match-paren-key"
@@ -2007,7 +2007,7 @@ deliver an installer, named-shells pointing to virtualenv's will be available."
   :group 'python-mode)
 
 (defcustom py-edit-only-p nil
-  "Don't check for installed Python executables.
+  "Do not check for installed Python executables.
 
 Default is nil.
 
@@ -2019,7 +2019,7 @@ See bug report at launchpad, lp:944093."
 (defcustom py-force-py-shell-name-p nil
   "When t, execution specified in ‘py-shell-name’ is enforced.
 
-Possibly shebang doesn't take precedence."
+Possibly shebang does not take precedence."
 
   :type 'boolean
   :tag "py-force-py-shell-name-p"
@@ -2036,7 +2036,7 @@ This might fail with certain chars - see UnicodeEncodeError lp:550661"
   :group 'python-mode)
 
 (defun py-toggle-python-mode-v5-behavior ()
-  "Switch the values of `python-mode-v5-behavior-p'."
+  "Switch the values of ‘python-mode-v5-behavior-p’."
   (interactive)
   (setq python-mode-v5-behavior-p (not python-mode-v5-behavior-p))
   (when (called-interactively-p 'interactive)
@@ -2187,7 +2187,7 @@ Use the following as the value of this variable:
 (defvar py-line-re "^"
   "Used by generated functions." )
 
-(defvar py-input-filter-re "\\`\\s-*\\S-?\\S-?\\s-*\\'"
+(defvar py-input-filter-re "\\‘\\s-*\\S-?\\S-?\\s-*\\’"
   "Input matching this regexp is not saved on the history list.
 Default ignores all inputs of 0, 1, or 2 non-blank characters.")
 
@@ -2206,7 +2206,7 @@ See also ‘string-chars-preserve’")
 
  are DJANGO, ONETWO, PEP-257, PEP-257-NN,SYMMETRIC, and NIL.
 
-A value of NIL won't care about quotes
+A value of NIL wo not care about quotes
 position and will treat docstrings a normal string, any other
 value may result in one of the following docstring styles:
 
@@ -2263,7 +2263,7 @@ SYMMETRIC:
     \"\"\""
   :type '(choice
 
-          (const :tag "Don't format docstrings" nil)
+          (const :tag "Do not format docstrings" nil)
           (const :tag "Django's coding standards style." django)
           (const :tag "One newline and start and Two at end style." onetwo)
           (const :tag "PEP-257 with 2 newlines at end of string." pep-257)
@@ -2290,7 +2290,7 @@ See also ‘py-execute-directory’"
   :group 'python-mode)
 
 (defcustom py-keep-shell-dir-when-execute-p nil
-  "Don't change Python shell's current working directory when sending code.
+  "Do not change Python shell's current working directory when sending code.
 
 See also ‘py-execute-directory’"
   :type 'boolean
@@ -2341,7 +2341,7 @@ Default is nil"
   :group 'python-mode)
 
 (defvar py-output-buffer "*Python Output*"
-      "Used if `python-mode-v5-behavior-p' is t.
+      "Used if ‘python-mode-v5-behavior-p’ is t.
 
 Otherwise output buffer is created dynamically according to version process.")
 
@@ -2442,7 +2442,7 @@ Do not set this variable directly.
 
 Iff ‘py-shell--prompt-calculated-input-regexp’
 or ‘py-shell--prompt-calculated-output-regexp’ are set
-‘py-shell-prompt-set-calculated-regexps’ isn't run.")
+‘py-shell-prompt-set-calculated-regexps’ is not run.")
 
 (defvar py-shell--prompt-calculated-output-regexp nil
   "Calculated output prompt regexp for inferior python shell.
@@ -2452,7 +2452,7 @@ Do not set this variable directly.
 
 Iff ‘py-shell--prompt-calculated-input-regexp’
 or ‘py-shell--prompt-calculated-output-regexp’ are set
-‘py-shell-prompt-set-calculated-regexps’ isn't run.")
+‘py-shell-prompt-set-calculated-regexps’ is not run.")
 
 (defvar py-shell-prompt-output-regexp ""
   "See ‘py-shell-prompt-output-regexps’.")
@@ -2475,7 +2475,7 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
 (defvar py-fill-column-orig fill-column
   "Used to reset fill-column")
 
-;; defvared value isn't updated maybe
+;; defvared value is not updated maybe
 (defvar python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
 	  (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
@@ -2483,7 +2483,7 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
     "python-components-mode")
   "Internally used. Reports the ‘python-mode’ branch.")
 
-;; defvared value isn't updated maybe
+;; defvared value is not updated maybe
 (setq python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
 	  (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
@@ -2493,12 +2493,12 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol.
 
-Syntax or has word syntax and isn't a letter.")
+Syntax or has word syntax and is not a letter.")
 
 (setq python-mode-syntax-table
       (let ((table (make-syntax-table)))
         ;; Give punctuation syntax to ASCII that normally has symbol
-        ;; syntax or has word syntax and isn't a letter.
+        ;; syntax or has word syntax and is not a letter.
         (let ((symbol (string-to-syntax "_"))
               (sst (standard-syntax-table)))
           (dotimes (i 128)
@@ -2523,10 +2523,10 @@ Syntax or has word syntax and isn't a letter.")
 (defvar py-ipython-completion-command-string nil
   "Select command according to IPython version.
 
-Either `py-ipython0.10-completion-command-string'
-or `py-ipython0.11-completion-command-string'.
+Either ‘py-ipython0.10-completion-command-string’
+or ‘py-ipython0.11-completion-command-string’.
 
-`py-ipython0.11-completion-command-string' also covers version 0.12")
+‘py-ipython0.11-completion-command-string’ also covers version 0.12")
 
 (defvar py-ipython0.10-completion-command-string
   "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n"
@@ -2575,7 +2575,7 @@ or `py-ipython0.11-completion-command-string'.
           (setq erg (concat "c:" py-separator-char "Users")))
      ;; (funcall ok ".")
      (error
-      "Couldn't find a usable temp directory -- set ‘py-temp-directory’"))
+      "Could not find a usable temp directory -- set ‘py-temp-directory’"))
     (when erg (setq py-temp-directory erg)))
   "Directory used for temporary files created by a *Python* process.
 By default, guesses the first directory from this list that exists and that you
@@ -2901,7 +2901,7 @@ See ‘py-no-outdent-re-raw’ for better readable content")
    "while"
    "with"
    )
-  "Matches the beginning of a compound statement but not it's clause."
+  "Matches the beginning of a compound statement but not its clause."
   :type '(repeat string)
   :tag "py-block-re-raw"
   :group 'python-mode)
@@ -2909,7 +2909,7 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 (defconst py-block-re (concat
 		       ;; "[ \t]*"
 		       (regexp-opt py-block-re-raw 'symbols)
-		       "[:( \n\t]"
+		       ".*[:( \n\t]"
 		       )
   "Matches the beginning of a compound statement.")
 
@@ -2996,7 +2996,7 @@ Second group grabs the name")
    "match"
    "case"
    )
-  "Matches the beginning of a compound statement or it's clause."
+  "Matches the beginning of a compound statement or its clause."
   :type '(repeat string)
   :tag "py-block-or-clause-re-raw"
   :group 'python-mode)
@@ -3027,7 +3027,7 @@ Second group grabs the name")
    "match"
    "case"
    )
-  "Matches the beginning of a compound statement or it's clause."
+  "Matches the beginning of a compound statement or its clause."
   :type '(repeat string)
   :tag "py-extended-block-or-clause-re-raw"
   :group 'python-mode)
@@ -3108,7 +3108,7 @@ Customizing ‘py-block-or-clause-re-raw’  will change values here")
 
 (defcustom py-compilation-regexp-alist
   `((,(rx line-start (1+ (any " \t")) "File \""
-          (group (1+ (not (any "\"<")))) ; avoid `<stdin>' &c
+          (group (1+ (not (any "\"<")))) ; avoid ‘<stdin>’ &c
           "\", line " (group (1+ digit)))
      1 2)
     (,(rx " in file " (group (1+ not-newline)) " on line "
@@ -3127,11 +3127,11 @@ hooked into ‘compilation-error-regexp-alist’"
   "Put ‘syntax-table’ property correctly on triple quote.
 Used for syntactic keywords.  N is the match number (1, 2 or 3)."
   ;; Given a triple quote, we have to check the context to know
-  ;; whether this is an opening or closing triple or whether it's
+  ;; whether this is an opening or closing triple or whether it is
   ;; quoted anyhow, and should be ignored.  (For that we need to do
   ;; the same job as ‘syntax-ppss’ to be correct and it seems to be OK
   ;; to use it here despite initial worries.) We also have to sort
-  ;; out a possible prefix -- well, we don't _have_ to, but I think it
+  ;; out a possible prefix -- well, we do not _have_ to, but I think it
   ;; should be treated as part of the string.
 
   ;; Test cases:
@@ -3654,7 +3654,7 @@ Optional argument SHELL selected shell."
 	 (treffer (string-match "\\([23]*\\.?[0-9\\.]*\\)$" cmd))
          version erg)
     (if treffer
-        ;; if a number if part of python name, assume it's the version
+        ;; if a number if part of python name, assume its the version
         (setq version (substring-no-properties cmd treffer))
       (setq erg (shell-command-to-string (concat cmd " --version")))
       (setq version (cond ((string-match (concat "\\(on top of Python \\)" "\\([0-9]\\.[0-9]+\\)") erg)
@@ -3783,7 +3783,7 @@ Returns t if successful."
 
 Used only, if ‘py-install-directory’ is empty."
   (interactive)
-  (cond (;; don't reset if it already exists
+  (cond (;; do not reset if it already exists
 	 py-install-directory)
         ;; ((locate-library "python-mode")
 	;;  (file-name-directory (locate-library "python-mode")))
@@ -3893,7 +3893,7 @@ Optional argument END specify end."
 	    (if
 		(re-search-backward py-shell-prompt-regexp nil t 1)
 		(goto-char (match-end 0))
-	      ;; (when py-debug-p (message "%s"  "py-count-lines: Don't see a prompt here"))
+	      ;; (when py-debug-p (message "%s"  "py-count-lines: Do not see a prompt here"))
 	      (goto-char beg))
 	  (goto-char beg)))
       (while (and (< (point) end)(not (eobp)) (skip-chars-forward "^\n" end))
@@ -4417,6 +4417,13 @@ Return and move to match-beginning if successful"
 	  (nth 8 (parse-partial-sexp (point-min) (point)))
         erg))))
 
+(defun py--forward-regexp-keep-indent-endform (last orig)
+  (unless
+      (nth 8 (parse-partial-sexp (point-min) (point)))
+    (if last (goto-char last)
+      (back-to-indentation))
+    (and (< orig (point)) (point))))
+
 (defun py--forward-regexp-keep-indent (regexp &optional indent)
   "Search forward next regexp not in string or comment.
 
@@ -4430,17 +4437,15 @@ Return and move to match-beginning if successful"
           last done)
       (forward-line 1)
       (beginning-of-line)
-      (while (and
-	      (not done)
-              (re-search-forward regexp nil 'move 1)
-              (or (nth 8 (parse-partial-sexp (point-min) (point)))
-                  (or (< indent (current-indentation))(setq done t))
-		  (setq last (line-end-position)))))
-      (unless
-          (nth 8 (parse-partial-sexp (point-min) (point)))
-	(if last (goto-char last)
-	  (back-to-indentation))
-        (and (< orig (point)) (point))))))
+      (if (<= (current-indentation) indent)
+          (py--forward-regexp-keep-indent-endform last orig)
+          (while (and
+	          (not done)
+                  (re-search-forward regexp nil 'move 1)
+                  (or (nth 8 (parse-partial-sexp (point-min) (point)))
+                      (or (< indent (current-indentation))(setq done t))
+		      (setq last (line-end-position)))))
+          (py--forward-regexp-keep-indent-endform last orig)))))
 
 (defun py-down-base (regexp &optional indent bol)
   (let ((indent (or indent (current-indentation))))
@@ -4534,7 +4539,7 @@ Return and move to match-beginning if successful"
 If an exception occurred return error-string, otherwise return nil.
 BUF must exist.
 
-Indicate LINE if code wasn't run from a file,
+Indicate LINE if code was not run from a file,
 thus remember ORIGLINE of source buffer"
   (with-current-buffer output-buffer
     (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -4567,7 +4572,7 @@ Delete it here"
   "Provide return values, check result for error, manage windows.
 
 According to OUTPUT-BUFFER ORIGLINE ORIG"
-  ;; py--fast-send-string doesn't set origline
+  ;; py--fast-send-string does not set origline
   (when (or py-return-result-p py-store-result-p)
     (with-current-buffer output-buffer
       (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -4589,7 +4594,7 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
 	      (kill-new py-result))
 	    (when py-verbose-p (message "py-result: %s" py-result))
 	    py-result)
-	(when py-verbose-p (message "py--postprocess: %s" "Don't see any result"))))))
+	(when py-verbose-p (message "py--postprocess: %s" "Do not see any result"))))))
 
 (defun py-fetch-py-master-file ()
   "Lookup if a ‘py-master-file’ is specified.
@@ -4913,7 +4918,7 @@ Depends from kind of Python shell."
                        ((buffer-live-p (get-buffer py-output-buffer))
                         py-output-buffer)
                        (py-last-exeption-buffer (buffer-name py-last-exeption-buffer))
-                       (t (error "Don't see exeption buffer")))))
+                       (t (error "Do not see exeption buffer")))))
     (when buffer (set-buffer (get-buffer buffer)))
     (if (eq direction 'up)
         (if (string= start "TOP")
@@ -4996,7 +5001,7 @@ Avoids ‘recenter’ calls until OUTPUT is completely sent."
        vec (format "unset %s" (mapconcat 'identity unset " ")) t))))
 
 (defun py-shell-calculate-pythonpath ()
-  "Calculate the PYTHONPATH using `python-shell-extra-pythonpaths'."
+  "Calculate the PYTHONPATH using ‘python-shell-extra-pythonpaths’."
   (let ((pythonpath
          (split-string
           (or (getenv "PYTHONPATH") "") path-separator 'omit)))
@@ -5109,7 +5114,7 @@ detection and just returns nil."
                     ;; The list must contain 3 strings, where the first
                     ;; is the input prompt, the second is the block
                     ;; prompt and the last one is the output prompt.  The
-                    ;; input prompt is the only one that can't be empty.
+                    ;; input prompt is the only one that can not be empty.
                     (when (and (= (length res) 3)
                                (cl-every #'stringp res)
                                (not (string= (car res) "")))
@@ -5127,7 +5132,7 @@ detection and just returns nil."
               "‘py-python-command-args’ or add regexps\n"
               "matching shell prompts in the directory-local friendly vars:\n"
               "  + ‘py-shell-prompt-regexp’\n"
-              "  + `py-shell-input-prompt-2-regexp'\n"
+              "  + ‘py-shell-input-prompt-2-regexp’\n"
               "  + ‘py-shell-prompt-output-regexp’\n"
               "Or alternatively in:\n"
               "  + ‘py-shell-input-prompt-regexps’\n"
@@ -5142,7 +5147,7 @@ detection and just returns nil."
   "Validate all user provided regexps for prompts.
 Signals ‘user-error’ if any of these vars contain invalid
 regexps: ‘py-shell-prompt-regexp’,
-`py-shell-input-prompt-2-regexp',
+‘py-shell-input-prompt-2-regexp’,
 ‘py-shell-prompt-pdb-regexp’,
 ‘py-shell-prompt-output-regexp’,
 ‘py-shell-input-prompt-regexps’,
@@ -5156,7 +5161,7 @@ regexps: ‘py-shell-prompt-regexp’,
                           regexps
                         (list regexps))))
       (when (not (python-util-valid-regexp-p regexp))
-        (user-error "Invalid regexp %s in `%s'"
+        (user-error "Invalid regexp %s in ‘%s’"
                     regexp symbol)))))
 
 (defun py-shell-prompt-set-calculated-regexps ()
@@ -5164,7 +5169,7 @@ regexps: ‘py-shell-prompt-regexp’,
 
 Build and set the values for input- and output-prompt regexp
 using the values from ‘py-shell-prompt-regexp’,
-`py-shell-input-prompt-2-regexp', ‘py-shell-prompt-pdb-regexp’,
+‘py-shell-input-prompt-2-regexp’, ‘py-shell-prompt-pdb-regexp’,
 ‘py-shell-prompt-output-regexp’, ‘py-shell-input-prompt-regexps’,
  and detected prompts from ‘py-shell-prompt-detect’."
   (when (not (and py-shell--prompt-calculated-input-regexp
@@ -5268,7 +5273,7 @@ detecting a prompt at the end of the buffer."
 
 With optional Arg PROCESS send to process.
 With optional Arg RESULT store result in var ‘py-result’, also return it.
-With optional Arg NO-OUTPUT don't display any output
+With optional Arg NO-OUTPUT do not display any output
 With optional Arg ORIG deliver original position.
 With optional Arg OUTPUT-BUFFER specify output-buffer"
   (interactive "sPython command: ")
@@ -5467,7 +5472,7 @@ according to ‘py-split-windows-on-execute-function’."
   (or
    ;; (split-window (selected-window) nil ’below)
    (ignore-errors (funcall py-split-windows-on-execute-function))
-   ;; If call didn't succeed according to settings of
+   ;; If call did not succeed according to settings of
    ;; ‘split-height-threshold’, ‘split-width-threshold’
    ;; resp. ‘window-min-height’, ‘window-min-width’
    ;; try alternative split
@@ -5690,7 +5695,7 @@ process buffer for a list of commands.)"
                                 (and (executable-find "python3") "python3")))
 	                   (_ (if (executable-find shell)
 	        	          shell
-	                        (error (concat "py-shell: Can't see an executable for `"shell "' on your system. Maybe needs a link?")))))
+	                        (error (concat "py-shell: Can not see an executable for `"shell "' on your system. Maybe needs a link?")))))
 	               (py-choose-shell)))
 	      (args (or args (car (py--provide-command-args shell fast))))
               ;; Make sure a new one is created if required
@@ -5716,9 +5721,9 @@ process buffer for a list of commands.)"
           (setq py-shell-mode-syntax-table python-mode-syntax-table)
 	  (when interactivep
 	    (cond ((string-match "^.I" this-buffer-name)
-		   (message "Waiting according to `py-ipython-send-delay:' %s" delay))
+		   (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
 		  ((string-match "^.+3" this-buffer-name)
-		   (message "Waiting according to `py-python3-send-delay:' %s" delay))))
+		   (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
 	  (setq py-modeline-display (py--update-lighter this-buffer-name)))))
     (if (setq proc (get-buffer-process buffer))
 	(progn
@@ -5747,7 +5752,7 @@ process buffer for a list of commands.)"
           (set-buffer buffer)
           (set-buffer-modified-p 'nil)
           (kill-buffer (current-buffer)))
-      (message "Can't see a buffer %s" buffer))))
+      (message "Can not see a buffer %s" buffer))))
 
 (provide 'python-components-start1)
 ;;; python-components-start1.el ends here

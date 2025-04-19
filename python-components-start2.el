@@ -122,31 +122,43 @@ This function does not modify point or mark."
   (save-excursion
     (progn
       (cond
-       ((eq position 'bol) (beginning-of-line))
-       ((eq position 'eol) (end-of-line))
-       ((eq position 'bod) (py-backward-def-or-class))
-       ((eq position 'eod) (py-forward-def-or-class))
+       ((eq position (quote bol)) (beginning-of-line))
+       ((eq position (quote eol)) (end-of-line))
+       ((eq position (quote bod)) (py-backward-def-or-class))
+       ((eq position (quote eod)) (py-forward-def-or-class))
        ;; Kind of funny, I know, but useful for py-up-exception.
-       ((eq position 'bob) (goto-char (point-min)))
-       ((eq position 'eob) (goto-char (point-max)))
-       ((eq position 'boi) (back-to-indentation))
-       ((eq position 'bos) (py-backward-statement))
+       ((eq position (quote bob)) (goto-char (point-min)))
+       ((eq position (quote eob)) (goto-char (point-max)))
+       ((eq position (quote boi)) (back-to-indentation))
+       ((eq position (quote bos)) (py-backward-statement))
        (t (error "Unknown buffer position requested: %s" position))))))
+
+;; (defun py-backward-top-level ()
+;;   "Go up to beginning of statments until level of indentation is null.
+
+;; Returns position if successful, nil otherwise "
+;;   (interactive)
+;;   (let (erg done)
+;;     (unless (bobp)
+;;       (while (and (not done)(not (bobp))
+;;                   (setq erg (re-search-backward "^[[:alpha:]_'\"]" nil t 1)))
+;;         (if
+;;             (nth 8 (parse-partial-sexp (point-min) (point)))
+;;             (setq erg nil)
+;;           (setq done t)))
+;;       erg)))
 
 (defun py-backward-top-level ()
   "Go up to beginning of statments until level of indentation is null.
 
 Returns position if successful, nil otherwise "
   (interactive)
-  (let (erg done)
-    (unless (bobp)
-      (while (and (not done)(not (bobp))
-                  (setq erg (re-search-backward "^[[:alpha:]_'\"]" nil t 1)))
-        (if
-            (nth 8 (parse-partial-sexp (point-min) (point)))
-            (setq erg nil)
-          (setq done t)))
-      erg)))
+  (let ((orig (point)))
+    (while (and
+            (not (bobp))
+            (re-search-backward "^[[:alpha:]_'\"]" nil t 1)
+            (nth 8 (parse-partial-sexp (point-min) (point)))))
+    (and (< (point) orig)(point))))
 
 ;; might be slow due to repeated calls of ‘py-down-statement’
 (defun py-forward-top-level ()
@@ -175,5 +187,5 @@ Returns position if successful, nil otherwise"
           (setq erg (py-forward-statement))))
       erg)))
 
-(provide 'python-components-start2)
+(provide (quote python-components-start2))
 ;;; python-components-start2.el ends here

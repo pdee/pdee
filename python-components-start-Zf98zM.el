@@ -1,6 +1,6 @@
-;;; python-components-start-Zf98zM.el -- Searching downwards in buffer -*- lexical-binding: t; -*-
+;;; py-start-Zf98zM.el -- Searching downwards in buffer -*- lexical-binding: t; -*-
 
-;; URL: https://gitlab.com/python-mode-devs
+;; URL: https://gitlab.com/ar-mode-devs
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@ Default is nil.
 
 Also used by navigation"
   :type 'boolean
-  :tag "py-mark-decorators")
+  :tag "ar-mark-decorators")
 
 (defun py-end-of-string ()
   "Go to end of string at point if any, if successful return position. "
@@ -195,7 +195,7 @@ DONE - transaktional argument
 LIMIT - honor limit
 IGNORE-IN-STRING-P - also much inside a string
 REPEAT - count and consider repeats
-Optional MAXINDENT: don't stop if indentation is larger"
+Optional MAXINDENT: do not stop if indentation is larger"
   (interactive)
   (save-restriction
     (unless (bobp)
@@ -209,7 +209,7 @@ Optional MAXINDENT: don't stop if indentation is larger"
  	;;        (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
 	 ((< py-max-specpdl-size repeat)
-	  (error "py-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
+	  (error "ar-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
          ((and (bolp) (eolp))
           (skip-chars-backward " \t\r\n\f")
           (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
@@ -461,7 +461,7 @@ SECONDVALUE: travel these expressions
 
 Argument REGEXP: a symbol.
 
-Return a list if found, whose car holds indentation, cdr position in buffer.
+Return position if successful, nil otherwise
 
 Keyword detected from REGEXP
 Honor MAXINDENT if provided
@@ -477,22 +477,21 @@ Optional IGNOREINDENT: find next keyword at any indentation"
 		9999
 	      (or maxindent
                   (if (py-empty-line-p) (current-column) (current-indentation)))))
-           (allvalue (symbol-value (quote py-block-or-clause-re)))
-           erg)
+           (allvalue (symbol-value (quote py-block-or-clause-re))))
       (unless (py--beginning-of-statement-p)
 	(py-backward-statement))
       (when (and (not (string= "" py-block-closing-keywords-re))(looking-at py-block-closing-keywords-re))
         (setq maxindent (min maxindent (- (current-indentation) py-indent-offset))))
       (cond
        ((and (looking-at regexpvalue)(< (point) orig))
-        (setq erg (point)))
-        (t (while
+        (point))
+       (t (while
               (not (or (bobp) (and (looking-at regexpvalue)(< (point) orig) (not (nth 8 (parse-partial-sexp (point-min) (point)))))))
-             ;; search backward and reduce maxindent, if non-matching forms suggest it
-              (setq erg (py--backward-regexp regexp maxindent
-                                         (or condition '<=)
-                                         orig allvalue)))))
-      erg)))
+            ;; search backward and reduce maxindent, if non-matching forms suggest it
+            (py--backward-regexp regexp maxindent
+                                 (or condition '<=)
+                                 orig allvalue))))
+      (and (< (point) orig)(point)))))
 
 (defun py-up-base (regexp &optional indent)
   "Expects a symbol as REGEXP like `(quote py-clause-re)'
@@ -645,5 +644,5 @@ Arg REGEXP, a symbol"
 		 (when (py--down-according-to-indent regexp secondvalue nil t)
 		   (py--end-base regexp (point) bol (1+ repeat))))))))))
 
-;; python-components-start-Zf98zM.el ends here
+;; py-start-Zf98zM.el ends here
 (provide 'python-components-start-Zf98zM)

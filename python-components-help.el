@@ -59,7 +59,7 @@ Used with ‘eval-after-load’."
 	    ;; First look for Info files corresponding to the version
 	    ;; of the interpreter we're running.
 	    (condition-case ()
-		;; Don't use ‘info’ because it would pop-up a *info* buffer.
+		;; Do not use ‘info’ because it would pop-up a *info* buffer.
 		(progn
 		  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
 					  version))
@@ -197,7 +197,7 @@ not inside a defun."
 (defun py-help-at-point ()
   "Print help on symbol at point.
 
-If symbol is defined in current buffer, jump to it's definition"
+If symbol is defined in current buffer, jump to its definition"
   (interactive)
   (let* ((orig (point))
 	 (beg (and (use-region-p) (region-beginning)))
@@ -263,7 +263,7 @@ If symbol is defined in current buffer, jump to it's definition"
 Knows about Python indentation, tokens, comments and continuation lines.
 Paragraphs are separated by blank lines only.
 
-Major sections below begin with the string `@'; specific function and
+Major sections below begin with the string ‘@’; specific function and
 variable docs begin with ->.
 
 @EXECUTING PYTHON CODE
@@ -316,7 +316,7 @@ Although all comment lines are treated alike by Python, Python mode
 recognizes two kinds that act differently with respect to indentation.
 
 An `indenting comment line' is a comment line with a blank, tab or
-nothing after the initial `#'.  The indentation commands (see below)
+nothing after the initial ‘#’.  The indentation commands (see below)
 treat these exactly as if they were code lines: a line following an
 indenting comment line will be indented like the comment line.  All
 other comment lines (those with a non-whitespace character immediately
@@ -335,7 +335,7 @@ like these:
 \t\treturn a
 
 Since the `#...’ and ‘##' comment lines have a non-whitespace
-character following the initial `#', Python mode ignores them when
+character following the initial ‘#’, Python mode ignores them when
 computing the proper indentation for the next line.
 
 Continuation Lines and Statements
@@ -374,7 +374,7 @@ the indentation of preceding statements.  E.g., assuming
 py-indent-offset is 4, after you enter
 \tif a > 0: \\[py-newline-and-indent]
 the cursor will be moved to the position of the ‘_’ (_ is not a
-character in the file, it's just used here to indicate the location of
+character in the file, it is just used here to indicate the location of
 the cursor):
 \tif a > 0:
 \t _
@@ -390,19 +390,19 @@ to
 was your intent.  In general, ‘python-mode’ either reproduces the
 indentation of the (closest code or indenting-comment) preceding
 statement, or adds an extra py-indent-offset blanks if the preceding
-statement has `:' as its last significant (non-whitespace and non-
+statement has ‘:’ as its last significant (non-whitespace and non-
 comment) character.  If the suggested indentation is too much, use
 \\[py-electric-backspace] to reduce it.
 
-Continuation lines are given extra indentation.  If you don't like the
+Continuation lines are given extra indentation.  If you do not like the
 suggested indentation, change it to something you do like, and Python-
 mode will strive to indent later lines of the statement in the same way.
 
 If a line is a continuation line by virtue of being in an unclosed
 paren/bracket/brace structure (‘list’, for short), the suggested
 indentation depends on whether the current line contains the first item
-in the list.  If it does, it's indented py-indent-offset columns beyond
-the indentation of the line containing the open bracket.  If you don't
+in the list.  If it does, it is indented py-indent-offset columns beyond
+the indentation of the line containing the open bracket.  If you do not
 like that, change it by hand.  The remaining items in the list will mimic
 whatever indentation you give to the first item.
 
@@ -411,19 +411,19 @@ a backslash, the third and following lines of the statement inherit their
 indentation from the line preceding them.  The indentation of the second
 line in the statement depends on the form of the first (base) line:  if
 the base line is an assignment statement with anything more interesting
-than the backslash following the leftmost assigning `=', the second line
-is indented two columns beyond that `='.  Else it's indented to two
+than the backslash following the leftmost assigning ‘=’, the second line
+is indented two columns beyond that ‘=’.  Else it is indented to two
 columns beyond the leftmost solid chunk of non-whitespace characters on
 the base line.
 
 Warning:  indent-region should not normally be used!  It calls \\[indent-for-tab-command]
-repeatedly, and as explained above, \\[indent-for-tab-command] can't guess the block
+repeatedly, and as explained above, \\[indent-for-tab-command] can not guess the block
 structure you intend.
 %c:indent-for-tab-command
 %c:py-newline-and-indent
 %c:py-electric-backspace
 
-The next function may be handy when editing code you didn't write:
+The next function may be handy when editing code you did not write:
 %c:py-guess-indent-offset
 
 The remaining ‘indent’ functions apply to a region of Python code.  They
@@ -476,22 +476,22 @@ Or do \\[py-previous-statement] with a huge prefix argument.
 \\[set-selective-display] with a ‘small’ prefix arg is ideally suited for viewing the
 overall class and def structure of a module.
 
-`\\[back-to-indentation]' moves point to a line's first non-blank character.
+‘\\[back-to-indentation]’ moves point to a line's first non-blank character.
 
-`\\[indent-relative]' is handy for creating odd indentation.
+‘\\[indent-relative]’ is handy for creating odd indentation.
 
 @OTHER EMACS HINTS
 
-If you don't like the default value of a variable, change its value to
+If you do not like the default value of a variable, change its value to
 whatever you do like by putting a ‘setq’ line in your .emacs file.
 E.g., to set the indentation increment to 4, put this line in your
 .emacs:
 \t(setq py-indent-offset 4)
-To see the value of a variable, do `\\[describe-variable]' and enter the variable
+To see the value of a variable, do ‘\\[describe-variable]’ and enter the variable
 name at the prompt.
 
 When entering a key sequence like `C-c C-n', it is not necessary to
-release the CONTROL key after doing the `C-c' part -- it suffices to
+release the CONTROL key after doing the ‘C-c’ part -- it suffices to
 press the CONTROL key, press and release ‘c’ (while still holding down
 CONTROL), press and release ‘n’ (while still holding down CONTROL), &
 then release CONTROL.
@@ -685,7 +685,7 @@ Calls `pylint --full-documentation'"
    (let* ((py-pyflakes3-command
            (if (string= "" py-pyflakes3-command)
                (or (executable-find "pyflakes3")
-                   (error "Don't see \"pyflakes3\" on your system.
+                   (error "Do not see \"pyflakes3\" on your system.
 Consider \"pip install pyflakes3\" resp. visit \"pypi.python.org\""))
              py-pyflakes3-command))
           (default
@@ -853,7 +853,7 @@ See ‘py-check-command’ for the default."
    (let* ((py-flake8-command
            (if (string= "" py-flake8-command)
                (or (executable-find "flake8")
-                   (error "Don't see \"flake8\" on your system.
+                   (error "Do not see \"flake8\" on your system.
 Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
              py-flake8-command))
           (default
@@ -915,7 +915,7 @@ Consider \"pip install flake8\" resp. visit \"pypi.python.org\""))
 Takes NAME COMMAND"
   (unless (string-match "pyflakespep8" name)
     (unless (executable-find name)
-      (when py-verbose-p (message "Don't see %s. Use ‘easy_install’ %s? " name name))))
+      (when py-verbose-p (message "Do not see %s. Use ‘easy_install’ %s? " name name))))
   (if (py--buffer-filename-remote-maybe)
       (let* ((temp-file (if (functionp 'flymake-proc-init-create-temp-buffer-copy)
 			    (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
@@ -998,7 +998,7 @@ Assumes vars are defined in current source buffer"
                   (prin1-to-string (symbol-value name)))))
           (if state
               (push (cons (prin1-to-string name) state) variableslist)
-            (message "don't see a state for %s" (prin1-to-string name))))
+            (message "do not see a state for %s" (prin1-to-string name))))
         (forward-line 1))
       (setq variableslist (nreverse variableslist))
       (set-buffer (get-buffer-create "State-of-Python-mode-variables.org"))

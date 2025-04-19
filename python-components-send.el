@@ -53,5 +53,5 @@ Optional BEG END"
     erg))
 
 
-(provide 'python-components-send)
+(provide (quote python-components-send))
 ;;; python-components-send.el ends here

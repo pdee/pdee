@@ -98,7 +98,7 @@ Returns value of ‘py-switch-buffers-on-execute-p’."
   py-switch-buffers-on-execute-p)
 
 (defun py-guess-default-python ()
-  "Defaults to \"python\", if guessing didn't succeed."
+  "Defaults to \"python\", if guessing did not succeed."
   (interactive)
   (let* ((ptn (or py-shell-name (py-choose-shell) "python"))
          (erg (if py-edit-only-p ptn (executable-find ptn))))
@@ -364,9 +364,9 @@ If the file local variable ‘py-master-file’ is non-nil, import or
 reload the named file instead of the buffer's file.  The file may be
 saved based on the value of ‘py-execute-import-or-reload-save-p’.
 
-See also `\\[py-execute-region]'.
+See also ‘\\[py-execute-region]’.
 
-This may be preferable to `\\[py-execute-buffer]' because:
+This may be preferable to ‘\\[py-execute-buffer]’ because:
 
  - Definitions stay in their module rather than appearing at top
    level, where they would clutter the global namespace and not affect

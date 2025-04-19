@@ -505,5 +505,5 @@ If already at the beginning of a block, move these form upward."
       (re-search-backward comint-prompt-regexp nil t 1)
     (comint-skip-prompt)))
 
-(provide 'python-components-move)
+(provide (quote python-components-move))
 ;;;  python-components-move.el ends here

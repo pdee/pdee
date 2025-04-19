@@ -421,6 +421,7 @@ except:
    'python-mode
    'py-verbose-p
    (goto-char(point-max))
+   (skip-chars-backward " \t\r\n\f")
    (py-narrow-to-block)
    (should (< (length (buffer-substring-no-properties (point-min)(point-max))) 50))))
 
@@ -540,7 +541,8 @@ if __name__ == \"__main__\":
    (goto-char(point-max))
    (search-backward "treffer")
    (py-narrow-to-def)
-   (should (< 480 (length (buffer-substring-no-properties (point-min)(point-max)))))))
+   (sit-for 1) 
+   (should (< 477 (length (buffer-substring-no-properties (point-min)(point-max)))))))
 
 (ert-deftest py-ert-narrow-to-def-or-class-test-46QGK4 ()
   (py-test

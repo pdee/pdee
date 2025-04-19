@@ -232,5 +232,5 @@
     (or (py--beginning-of-try-block-bol-p)
         (py-backward-try-block-bol))))
 
-(provide 'python-components-beginning-position-forms)
+(provide (quote python-components-beginning-position-forms))
 ;;; python-components-beginning-position-forms.el ends here

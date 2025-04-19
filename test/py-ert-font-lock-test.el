@@ -1,4 +1,4 @@
-;;; py-ert-font-lock-test.el --- py-execute-region tests
+;;; py-ert-font-lock-test.el --- py-execute-region tests -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience

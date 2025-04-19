@@ -239,7 +239,7 @@ Matches lists, but also block, statement, string and comment. "
 	;; Python specific blocks
 	(py--match-paren-blocks))))))
 
-(unless (functionp 'in-string-p)
+(unless (functionp (quote in-string-p))
   (defun in-string-p (&optional pos)
     (interactive)
     (let ((orig (or pos (point))))
@@ -249,7 +249,7 @@ Matches lists, but also block, statement, string and comment. "
           (beginning-of-defun)
           (numberp
            (progn
-             (if (featurep 'xemacs)
+             (if (featurep (quote xemacs))
                  (nth 3 (parse-partial-sexp (point) orig)
                       (nth 3 (parse-partial-sexp (point-min) (point))))))))))))
 
@@ -264,7 +264,7 @@ Matches lists, but also block, statement, string and comment. "
                (if (not word) (error "No pydoc args given")
                  word) ;sinon word
              input)))) ;sinon input
-  (shell-command (concat py-shell-name " -c \"from pydoc import help;help(\'" w "\')\"") "*PYDOCS*")
+  (shell-command (concat py-shell-name " -c \"from pydoc import help;help('" w "')\"") "*PYDOCS*")
   (view-buffer-other-window "*PYDOCS*" t 'kill-buffer-and-window))
 
 (defun pst-here ()
@@ -322,7 +322,7 @@ I.e. switch it from \"True\" to \"False\" and vice versa"
            (replace-match "False"))
           ((looking-at "False")
            (replace-match "True"))
-          (t (message "%s" "Can't see \"True or False\" here")))))
+          (t (message "%s" "Can not see \"True or False\" here")))))
 
 (provide 'python-components-extensions)
 ;;; python-components-extensions.el ends here

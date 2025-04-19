@@ -122,11 +122,11 @@
 (define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
-To submit a report, enter `\\[py-submit-bug-report]'
+To submit a report, enter ‘\\[py-submit-bug-report]’
 from a‘python-mode’ buffer.
-Do `\\[py-describe-mode]' for detailed documentation.
+Do ‘\\[py-describe-mode]’ for detailed documentation.
 To see what version of ‘python-mode’ you are running,
-enter `\\[py-version]'.
+enter ‘\\[py-version]’.
 
 This mode knows about Python indentation,
 tokens, comments (and continuation lines.
@@ -295,7 +295,7 @@ VARIABLES
 Variables
 ‘py-shell-prompt-regexp’,
 ‘py-shell-prompt-output-regexp’,
-`py-shell-input-prompt-2-regexp',
+‘py-shell-input-prompt-2-regexp’,
 ‘py-shell-fontify-p’,
 ‘py-completion-setup-code’,
 ‘py-shell-completion-string-code’,

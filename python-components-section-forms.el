@@ -65,5 +65,5 @@
   (interactive)
   (py-execute-section-prepare "jython"))
 
-(provide 'python-components-section-forms)
+(provide (quote python-components-section-forms))
 ;;; python-components-section-forms.el ends here

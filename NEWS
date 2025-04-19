@@ -35,7 +35,7 @@ Prepared for version 6.3.2
 - Customizable boolean ‘py-do-completion-p’ 
   permits disabling python-mode native completion.
 
-- `isympy3', am IPython console for SymPy
+- ‘isympy3’, am IPython console for SymPy
 - ‘run-travis-ci.sh’ renamed into generic ‘run-tests.sh’
 
 New in version 6.3.1
@@ -186,7 +186,7 @@ New customizables:
   If pdb should provide suggestions WRT file and pdb-path.
 
 - py-split-window-on-execute-threshold, default is 3
-  Don't split when max number of displayed windows is reached.
+  Do not split when max number of displayed windows is reached.
 
 Renamed:
 - py-beginning-of-commented-section --> py-beginning-of-comments
@@ -357,7 +357,7 @@ Boolean ‘py-set-fill-column-p’ renamed ‘py-auto-fill-mode’
 
 New booleans
 - py-fast-process-p
-  If ‘t’, stuff is executed through `py-fast-...'-
+  If ‘t’, stuff is executed through ‘py-fast-...’-
   commands, suitable for large output. Result arrives
   in py-fast-output-buffer, which is not in comint-mode
 
@@ -494,9 +494,9 @@ New in version 6.1.2
 ---------------------
 - simplified menu
 
-- `py-execute-...'-commands return result as string
+- ‘py-execute-...’-commands return result as string
   Controlled by boolean ‘py-store-result-p’, Default is nil
-  When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked.
+  When non-nil, put resulting string of ‘py-execute-...’ into kill-ring, so it might be yanked.
 
 - commands deleting all commented lines:
   ‘py-delete-comments-in-def-or-class’
@@ -658,7 +658,7 @@ New in version 6.1.0
   When ‘py-use-current-dir-when-execute-p’ is non-nil and no buffer-file exists, value of ‘default-directory’ sets current working directory of Python output shell"
 
   py-keep-shell-dir-when-execute-p, default nil
-  Don't change Python shell's current working directory when sending code.
+  Do not change Python shell's current working directory when sending code.
 
   ‘py-execute-directory’, default nil
 
@@ -768,8 +768,8 @@ New in version 6.0.12
        |_________________________|
 
   When traversing code, ‘py-partial-expression’ climbs down and up
-  all levels encountered, i.e. at opening `[' ‘py-expression’ would return ['spam', 'eggs', 100, 1234], while one char behind at `''
-  it yields `'spam','
+  all levels encountered, i.e. at opening ‘[’ ‘py-expression’ would return ['spam', 'eggs', 100, 1234], while one char behind at ‘'’
+  it yields ‘'spam',’
 
 - ‘py-find-definition’ also detects non-imported definition in current buffer
 
@@ -903,8 +903,8 @@ New in version 6.0.8
 
 --------------------
 
-- `py-pep8-run', new command checking formatting
-   `py-pep8-help'
+- ‘py-pep8-run’, new command checking formatting
+   ‘py-pep8-help’
 
 - ‘py-pyflake-run’, new command
    Pyflakes is a simple program which checks Python
@@ -929,7 +929,7 @@ New in version 6.0.8
 - py-pyflakespep8-run, combines calls to pyflakes and pep8
 
 - respective flymake-modes,
-  `pyflakespep8-flymake-mode', ‘pylint-flymake-mode’
+  ‘pyflakespep8-flymake-mode’, ‘pylint-flymake-mode’
   etc. See meny PyTools
 
 New in version 6.0.7
@@ -1011,7 +1011,7 @@ New in version 6.0.5
   ‘py-shell-local-path’
 
 - ‘py-toggle-shells’ alias of more powerful ‘py-switch-shells’
-  Toggles between the interpreter customized in `py-shell-toggle-1' resp. `py-shell-toggle-2'. Was hard-coded CPython and Jython in earlier versions, now starts with Python2 and Python3 by default.
+  Toggles between the interpreter customized in ‘py-shell-toggle-1’ resp. ‘py-shell-toggle-2’. Was hard-coded CPython and Jython in earlier versions, now starts with Python2 and Python3 by default.
 
 - ‘py-shell-name’ accepts PATH/TO/EXECUTABLE
   in addition to name of an installed default Python-Shell.
@@ -1088,7 +1088,7 @@ New in version 6.0.4
 
 - py-down-FORM-lc commands
   Goto beginning of line following end of FORM.
-  \"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst `py-end-of-FORM' stops at right corner.
+  \"-lc\" stands for \"left-corner\" - a complementary command travelling left, whilst ‘py-end-of-FORM’ stops at right corner.
   Implemented forms are "block", "clause", "def", "class", "statement".
 
 - py-down-FORM commands
@@ -1104,7 +1104,7 @@ New in version 6.0.3
 
 - ipython integration started
 
-- commands ‘ipython’, `python2', `python3', ‘jython’, ‘python’
+- commands ‘ipython’, ‘python2’, ‘python3’, ‘jython’, ‘python’
   opening a respective python shell
 
 -  py-shift-block-left, py-shift-block-right etc.
@@ -1157,22 +1157,22 @@ New in version 6.0.3
   body, likewise global stuff at the head of a file.
 
 - column-marker.el
-  Commands `column-marker-1', `column-marker-2', and
-  `column-marker-3' each highlight a given column
+  Commands ‘column-marker-1’, ‘column-marker-2’, and
+  ‘column-marker-3’ each highlight a given column
   (using different background colors by default).
 
   M-x column-marker-1 highlights the column where the
-  cursor is, in face `column-marker-1'.
+  cursor is, in face ‘column-marker-1’.
 
   C-u 70 M-x column-marker-2 highlights column 70 in
-  face `column-marker-2'.
+  face ‘column-marker-2’.
 
   C-u 70 M-x column-marker-3 highlights column 70 in
-  face `column-marker-3'. The face `column-marker-2'
+  face ‘column-marker-3’. The face ‘column-marker-2’
   highlighting no longer shows.
 
   C-u M-x column-marker-3 turns off highlighting for
-  column-marker-3, so face `column-marker-2'
+  column-marker-3, so face ‘column-marker-2’
   highlighting shows again for column 70.
 
   C-u C-u M-x column-marker-1 (or -2 or -3) erases all

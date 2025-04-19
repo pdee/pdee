@@ -33,7 +33,7 @@
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty
+If final line is not empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
@@ -44,7 +44,7 @@ insert a newline."
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty
+If final line is not empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
@@ -55,7 +55,7 @@ insert a newline."
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty
+If final line is not empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
@@ -66,7 +66,7 @@ insert a newline."
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty
+If final line is not empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
@@ -77,7 +77,7 @@ insert a newline."
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty
+If final line is not empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
@@ -88,7 +88,7 @@ insert a newline."
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty
+If final line is not empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
@@ -99,7 +99,7 @@ insert a newline."
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty
+If final line is not empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
@@ -110,11 +110,11 @@ insert a newline."
 
 Set indent level to that of beginning of function definition.
 
-If final line isn't empty
+If final line is not empty
 and ‘py-close-block-provides-newline’ non-nil,
 insert a newline."
   (interactive "*")
   (py--close-intern (quote py-statement-re)))
 
-(provide 'python-components-close-forms)
+(provide (quote python-components-close-forms))
 ;;; python-components-close-forms.el ends here

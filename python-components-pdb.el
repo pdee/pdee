@@ -77,7 +77,7 @@ Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
 (declare-function gud-query-cmdline "gud" ())
 
 (defun py-pdb (command-line)
-  "Run pdb on program FILE in buffer `*gud-FILE*'.
+  "Run pdb on program FILE in buffer ‘*gud-FILE*’.
 The directory containing FILE becomes the initial working directory
 and source-file directory for your debugger.
 

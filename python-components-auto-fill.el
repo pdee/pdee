@@ -22,7 +22,7 @@
 
 ;; http://stackoverflow.com/questions/11969442/comment-mode-in-emacs
 
-;; I commonly program in languages that don't have any
+;; I commonly program in languages that do not have any
 ;; sort of block/multiline comment (e.g. python [#] and
 ;; fortran [c or !].). Is there any way to define a
 ;; minor mode in emacs that would allow me to enter
@@ -34,5 +34,5 @@
 
 ;;; Code:
 
-(provide 'python-components-auto-fill)
+(provide (quote python-components-auto-fill))
 ;;; python-components-auto-fill.el ends here

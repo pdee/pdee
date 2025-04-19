@@ -35,7 +35,7 @@
 (defun virtualenv-filter (predicate sequence)
   "Return a list of each SEQUENCE element for which the PREDICATE is non-nil.
 The order of elements in SEQUENCE is retained."
-  (let ((retlist '()))
+  (let ((retlist (quote ())))
     (dolist (element sequence (nreverse retlist))
       (when (funcall predicate element)
         (push element retlist)))))
@@ -100,10 +100,10 @@ For example:
     ;; Get only the basename from the list of the virtual environments
     ;; paths
     (mapcar
-     'file-name-nondirectory
+     (quote file-name-nondirectory)
      ;; Filter the directories and then the virtual environments
-     (virtualenv-filter 'virtualenv-p
-                        (virtualenv-filter 'file-directory-p filelist)))))
+     (virtualenv-filter (quote virtualenv-p)
+                        (virtualenv-filter (quote file-directory-p) filelist)))))
 
 (defun virtualenv-workon (name)
   "Issue a virtualenvwrapper-like virtualenv-workon NAME command."
@@ -116,6 +116,6 @@ For example:
                           (py--normalize-directory virtualenv-workon-home)
                           name))))
 
-(provide 'python-components-virtualenv)
+(provide (quote python-components-virtualenv))
 
 ;;; python-components-virtualenv.el ends here

@@ -352,5 +352,5 @@ Return outmost indentation reached."
   (interactive "*P")
   (py--shift-forms-base "top-level" (- (or arg py-indent-offset))))
 
-(provide 'python-components-shift-forms)
+(provide (quote python-components-shift-forms))
 ;;; python-components-shift-forms.el ends here

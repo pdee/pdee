@@ -29,10 +29,10 @@
 Start an IPython interpreter."]
 
        ["Ipython2\.7" ipython2\.7
-	:help " `ipython2\.7'"]
+	:help " ‘ipython2\.7’"]
 
        ["Ipython3" ipython3
-	:help " `ipython3'
+	:help " ‘ipython3’
 Start an IPython3 interpreter."]
 
        ["Jython" jython
@@ -44,14 +44,14 @@ Start an Jython interpreter."]
 Start an Python interpreter."]
 
        ["Python2" python2
-	:help " `python2'
+	:help " ‘python2’
 Start an Python2 interpreter."]
 
        ["Python3" python3
-	:help " `python3'
+	:help " ‘python3’
 Start an Python3 interpreter."]
        ["SymPy" isympy3
-	:help " `isympy3'
+	:help " ‘isympy3’
 Start an SymPy interpreter."])
 
       ("Edit"
@@ -811,7 +811,7 @@ Send block-or-clause at point to interpreter."]
 
        ["Execute buffer" py-execute-buffer
 	:help " ‘py-execute-buffer’
-:around advice: `ad-Advice-py-execute-buffer'"]
+:around advice: ‘ad-Advice-py-execute-buffer’"]
 
        ["Execute class" py-execute-class
 	:help " ‘py-execute-class’
@@ -931,115 +931,115 @@ Send statement at point to IPython interpreter."]
 Send top-level at point to IPython interpreter."])
 	("IPython2"
 	 ["Execute block ipython2" py-execute-block-ipython2
-	  :help " `py-execute-block-ipython2'"]
+	  :help " ‘py-execute-block-ipython2’"]
 
 	 ["Execute block or clause ipython2" py-execute-block-or-clause-ipython2
-	  :help " `py-execute-block-or-clause-ipython2'"]
+	  :help " ‘py-execute-block-or-clause-ipython2’"]
 
 	 ["Execute buffer ipython2" py-execute-buffer-ipython2
-	  :help " `py-execute-buffer-ipython2'"]
+	  :help " ‘py-execute-buffer-ipython2’"]
 
 	 ["Execute class ipython2" py-execute-class-ipython2
-	  :help " `py-execute-class-ipython2'"]
+	  :help " ‘py-execute-class-ipython2’"]
 
 	 ["Execute clause ipython2" py-execute-clause-ipython2
-	  :help " `py-execute-clause-ipython2'"]
+	  :help " ‘py-execute-clause-ipython2’"]
 
 	 ["Execute def ipython2" py-execute-def-ipython2
-	  :help " `py-execute-def-ipython2'"]
+	  :help " ‘py-execute-def-ipython2’"]
 
 	 ["Execute def or class ipython2" py-execute-def-or-class-ipython2
-	  :help " `py-execute-def-or-class-ipython2'"]
+	  :help " ‘py-execute-def-or-class-ipython2’"]
 
 	 ["Execute expression ipython2" py-execute-expression-ipython2
-	  :help " `py-execute-expression-ipython2'"]
+	  :help " ‘py-execute-expression-ipython2’"]
 
 	 ["Execute indent ipython2" py-execute-indent-ipython2
-	  :help " `py-execute-indent-ipython2'"]
+	  :help " ‘py-execute-indent-ipython2’"]
 
 	 ["Execute line ipython2" py-execute-line-ipython2
-	  :help " `py-execute-line-ipython2'"]
+	  :help " ‘py-execute-line-ipython2’"]
 
 	 ["Execute minor block ipython2" py-execute-minor-block-ipython2
-	  :help " `py-execute-minor-block-ipython2'"]
+	  :help " ‘py-execute-minor-block-ipython2’"]
 
 	 ["Execute paragraph ipython2" py-execute-paragraph-ipython2
-	  :help " `py-execute-paragraph-ipython2'"]
+	  :help " ‘py-execute-paragraph-ipython2’"]
 
 	 ["Execute partial expression ipython2" py-execute-partial-expression-ipython2
-	  :help " `py-execute-partial-expression-ipython2'"]
+	  :help " ‘py-execute-partial-expression-ipython2’"]
 
 	 ["Execute region ipython2" py-execute-region-ipython2
-	  :help " `py-execute-region-ipython2'"]
+	  :help " ‘py-execute-region-ipython2’"]
 
 	 ["Execute statement ipython2" py-execute-statement-ipython2
-	  :help " `py-execute-statement-ipython2'"]
+	  :help " ‘py-execute-statement-ipython2’"]
 
 	 ["Execute top level ipython2" py-execute-top-level-ipython2
-	  :help " `py-execute-top-level-ipython2'"])
+	  :help " ‘py-execute-top-level-ipython2’"])
 	("IPython3"
 	 ["Execute block ipython3" py-execute-block-ipython3
-	  :help " `py-execute-block-ipython3'
+	  :help " ‘py-execute-block-ipython3’
 Send block at point to IPython interpreter."]
 
 	 ["Execute block or clause ipython3" py-execute-block-or-clause-ipython3
-	  :help " `py-execute-block-or-clause-ipython3'
+	  :help " ‘py-execute-block-or-clause-ipython3’
 Send block-or-clause at point to IPython interpreter."]
 
 	 ["Execute buffer ipython3" py-execute-buffer-ipython3
-	  :help " `py-execute-buffer-ipython3'
+	  :help " ‘py-execute-buffer-ipython3’
 Send buffer at point to IPython interpreter."]
 
 	 ["Execute class ipython3" py-execute-class-ipython3
-	  :help " `py-execute-class-ipython3'
+	  :help " ‘py-execute-class-ipython3’
 Send class at point to IPython interpreter."]
 
 	 ["Execute clause ipython3" py-execute-clause-ipython3
-	  :help " `py-execute-clause-ipython3'
+	  :help " ‘py-execute-clause-ipython3’
 Send clause at point to IPython interpreter."]
 
 	 ["Execute def ipython3" py-execute-def-ipython3
-	  :help " `py-execute-def-ipython3'
+	  :help " ‘py-execute-def-ipython3’
 Send def at point to IPython interpreter."]
 
 	 ["Execute def or class ipython3" py-execute-def-or-class-ipython3
-	  :help " `py-execute-def-or-class-ipython3'
+	  :help " ‘py-execute-def-or-class-ipython3’
 Send def-or-class at point to IPython interpreter."]
 
 	 ["Execute expression ipython3" py-execute-expression-ipython3
-	  :help " `py-execute-expression-ipython3'
+	  :help " ‘py-execute-expression-ipython3’
 Send expression at point to IPython interpreter."]
 
 	 ["Execute indent ipython3" py-execute-indent-ipython3
-	  :help " `py-execute-indent-ipython3'
+	  :help " ‘py-execute-indent-ipython3’
 Send indent at point to IPython interpreter."]
 
 	 ["Execute line ipython3" py-execute-line-ipython3
-	  :help " `py-execute-line-ipython3'
+	  :help " ‘py-execute-line-ipython3’
 Send line at point to IPython interpreter."]
 
 	 ["Execute minor block ipython3" py-execute-minor-block-ipython3
-	  :help " `py-execute-minor-block-ipython3'
+	  :help " ‘py-execute-minor-block-ipython3’
 Send minor-block at point to IPython interpreter."]
 
 	 ["Execute paragraph ipython3" py-execute-paragraph-ipython3
-	  :help " `py-execute-paragraph-ipython3'
+	  :help " ‘py-execute-paragraph-ipython3’
 Send paragraph at point to IPython interpreter."]
 
 	 ["Execute partial expression ipython3" py-execute-partial-expression-ipython3
-	  :help " `py-execute-partial-expression-ipython3'
+	  :help " ‘py-execute-partial-expression-ipython3’
 Send partial-expression at point to IPython interpreter."]
 
 	 ["Execute region ipython3" py-execute-region-ipython3
-	  :help " `py-execute-region-ipython3'
+	  :help " ‘py-execute-region-ipython3’
 Send region at point to IPython interpreter."]
 
 	 ["Execute statement ipython3" py-execute-statement-ipython3
-	  :help " `py-execute-statement-ipython3'
+	  :help " ‘py-execute-statement-ipython3’
 Send statement at point to IPython interpreter."]
 
 	 ["Execute top level ipython3" py-execute-top-level-ipython3
-	  :help " `py-execute-top-level-ipython3'
+	  :help " ‘py-execute-top-level-ipython3’
 Send top-level at point to IPython interpreter."])
 	("Jython"
 	 ["Execute block jython" py-execute-block-jython
@@ -1171,131 +1171,131 @@ Send statement at point to default interpreter."]
 Send top-level at point to default interpreter."])
 	("Python2"
 	 ["Execute block python2" py-execute-block-python2
-	  :help " `py-execute-block-python2'
+	  :help " ‘py-execute-block-python2’
 Send block at point to Python2 interpreter."]
 
 	 ["Execute block or clause python2" py-execute-block-or-clause-python2
-	  :help " `py-execute-block-or-clause-python2'
+	  :help " ‘py-execute-block-or-clause-python2’
 Send block-or-clause at point to Python2 interpreter."]
 
 	 ["Execute buffer python2" py-execute-buffer-python2
-	  :help " `py-execute-buffer-python2'
+	  :help " ‘py-execute-buffer-python2’
 Send buffer at point to Python2 interpreter."]
 
 	 ["Execute class python2" py-execute-class-python2
-	  :help " `py-execute-class-python2'
+	  :help " ‘py-execute-class-python2’
 Send class at point to Python2 interpreter."]
 
 	 ["Execute clause python2" py-execute-clause-python2
-	  :help " `py-execute-clause-python2'
+	  :help " ‘py-execute-clause-python2’
 Send clause at point to Python2 interpreter."]
 
 	 ["Execute def python2" py-execute-def-python2
-	  :help " `py-execute-def-python2'
+	  :help " ‘py-execute-def-python2’
 Send def at point to Python2 interpreter."]
 
 	 ["Execute def or class python2" py-execute-def-or-class-python2
-	  :help " `py-execute-def-or-class-python2'
+	  :help " ‘py-execute-def-or-class-python2’
 Send def-or-class at point to Python2 interpreter."]
 
 	 ["Execute expression python2" py-execute-expression-python2
-	  :help " `py-execute-expression-python2'
+	  :help " ‘py-execute-expression-python2’
 Send expression at point to Python2 interpreter."]
 
 	 ["Execute indent python2" py-execute-indent-python2
-	  :help " `py-execute-indent-python2'
+	  :help " ‘py-execute-indent-python2’
 Send indent at point to Python2 interpreter."]
 
 	 ["Execute line python2" py-execute-line-python2
-	  :help " `py-execute-line-python2'
+	  :help " ‘py-execute-line-python2’
 Send line at point to Python2 interpreter."]
 
 	 ["Execute minor block python2" py-execute-minor-block-python2
-	  :help " `py-execute-minor-block-python2'
+	  :help " ‘py-execute-minor-block-python2’
 Send minor-block at point to Python2 interpreter."]
 
 	 ["Execute paragraph python2" py-execute-paragraph-python2
-	  :help " `py-execute-paragraph-python2'
+	  :help " ‘py-execute-paragraph-python2’
 Send paragraph at point to Python2 interpreter."]
 
 	 ["Execute partial expression python2" py-execute-partial-expression-python2
-	  :help " `py-execute-partial-expression-python2'
+	  :help " ‘py-execute-partial-expression-python2’
 Send partial-expression at point to Python2 interpreter."]
 
 	 ["Execute region python2" py-execute-region-python2
-	  :help " `py-execute-region-python2'
+	  :help " ‘py-execute-region-python2’
 Send region at point to Python2 interpreter."]
 
 	 ["Execute statement python2" py-execute-statement-python2
-	  :help " `py-execute-statement-python2'
+	  :help " ‘py-execute-statement-python2’
 Send statement at point to Python2 interpreter."]
 
 	 ["Execute top level python2" py-execute-top-level-python2
-	  :help " `py-execute-top-level-python2'
+	  :help " ‘py-execute-top-level-python2’
 Send top-level at point to Python2 interpreter."])
 	("Python3"
 	 ["Execute block python3" py-execute-block-python3
-	  :help " `py-execute-block-python3'
+	  :help " ‘py-execute-block-python3’
 Send block at point to Python3 interpreter."]
 
 	 ["Execute block or clause python3" py-execute-block-or-clause-python3
-	  :help " `py-execute-block-or-clause-python3'
+	  :help " ‘py-execute-block-or-clause-python3’
 Send block-or-clause at point to Python3 interpreter."]
 
 	 ["Execute buffer python3" py-execute-buffer-python3
-	  :help " `py-execute-buffer-python3'
+	  :help " ‘py-execute-buffer-python3’
 Send buffer at point to Python3 interpreter."]
 
 	 ["Execute class python3" py-execute-class-python3
-	  :help " `py-execute-class-python3'
+	  :help " ‘py-execute-class-python3’
 Send class at point to Python3 interpreter."]
 
 	 ["Execute clause python3" py-execute-clause-python3
-	  :help " `py-execute-clause-python3'
+	  :help " ‘py-execute-clause-python3’
 Send clause at point to Python3 interpreter."]
 
 	 ["Execute def python3" py-execute-def-python3
-	  :help " `py-execute-def-python3'
+	  :help " ‘py-execute-def-python3’
 Send def at point to Python3 interpreter."]
 
 	 ["Execute def or class python3" py-execute-def-or-class-python3
-	  :help " `py-execute-def-or-class-python3'
+	  :help " ‘py-execute-def-or-class-python3’
 Send def-or-class at point to Python3 interpreter."]
 
 	 ["Execute expression python3" py-execute-expression-python3
-	  :help " `py-execute-expression-python3'
+	  :help " ‘py-execute-expression-python3’
 Send expression at point to Python3 interpreter."]
 
 	 ["Execute indent python3" py-execute-indent-python3
-	  :help " `py-execute-indent-python3'
+	  :help " ‘py-execute-indent-python3’
 Send indent at point to Python3 interpreter."]
 
 	 ["Execute line python3" py-execute-line-python3
-	  :help " `py-execute-line-python3'
+	  :help " ‘py-execute-line-python3’
 Send line at point to Python3 interpreter."]
 
 	 ["Execute minor block python3" py-execute-minor-block-python3
-	  :help " `py-execute-minor-block-python3'
+	  :help " ‘py-execute-minor-block-python3’
 Send minor-block at point to Python3 interpreter."]
 
 	 ["Execute paragraph python3" py-execute-paragraph-python3
-	  :help " `py-execute-paragraph-python3'
+	  :help " ‘py-execute-paragraph-python3’
 Send paragraph at point to Python3 interpreter."]
 
 	 ["Execute partial expression python3" py-execute-partial-expression-python3
-	  :help " `py-execute-partial-expression-python3'
+	  :help " ‘py-execute-partial-expression-python3’
 Send partial-expression at point to Python3 interpreter."]
 
 	 ["Execute region python3" py-execute-region-python3
-	  :help " `py-execute-region-python3'
+	  :help " ‘py-execute-region-python3’
 Send region at point to Python3 interpreter."]
 
 	 ["Execute statement python3" py-execute-statement-python3
-	  :help " `py-execute-statement-python3'
+	  :help " ‘py-execute-statement-python3’
 Send statement at point to Python3 interpreter."]
 
 	 ["Execute top level python3" py-execute-top-level-python3
-	  :help " `py-execute-top-level-python3'
+	  :help " ‘py-execute-top-level-python3’
 Send top-level at point to Python3 interpreter."])
 	("Ignoring defaults "
 	 :help "`M-x py-execute-statement- TAB' for example list commands ignoring defaults
@@ -1482,7 +1482,7 @@ Execute statement running pdb."]
 
        ["Pdb" pdb
 	:help " ‘pdb’
-Run pdb on program FILE in buffer `*gud-FILE*'."])
+Run pdb on program FILE in buffer ‘*gud-FILE*’."])
       ("Checks"
        ("Pylint"
 	["Pylint run" py-pylint-run
@@ -1498,15 +1498,15 @@ Display Pylint command line help messages."]
 Toggle ‘pylint’ ‘flymake-mode’."])
        ("Pep8"
 	["Pep8 run" py-pep8-run
-	 :help " `py-pep8-run'
+	 :help " ‘py-pep8-run’
 *Run pep8, check formatting - default on the file currently visited."]
 
 	["Pep8 help" py-pep8-help
-	 :help " `py-pep8-help'
+	 :help " ‘py-pep8-help’
 Display pep8 command line help messages."]
 
 	["Pep8 flymake mode" pep8-flymake-mode
-	 :help " `pep8-flymake-mode'
+	 :help " ‘pep8-flymake-mode’
 Toggle `pep8’ ‘flymake-mode’."])
        ("Pyflakes3"
 	["Pyflakes3 run" py-pyflakes3-run
@@ -1522,21 +1522,21 @@ Display Pyflakes3 command line help messages."]
 Toggle ‘pyflakes’ ‘flymake-mode’."])
        ("Flake8"
 	["Flake8 run" py-flake8-run
-	 :help " `py-flake8-run'
+	 :help " ‘py-flake8-run’
 Flake8 is a wrapper around these tools:"]
 
 	["Flake8 help" py-flake8-help
-	 :help " `py-flake8-help'
+	 :help " ‘py-flake8-help’
 Display flake8 command line help messages."]
 	("Pyflakes-pep8"
 	 ["Pyflakes pep8 run" py-pyflakes3-pep8-run
-	  :help " `py-pyflakes-pep8-run'"]
+	  :help " ‘py-pyflakes-pep8-run’"]
 
 	 ["Pyflakes pep8 help" py-pyflakes-pep8-help
-	  :help " `py-pyflakes-pep8-help'"]
+	  :help " ‘py-pyflakes-pep8-help’"]
 
 	 ["Pyflakes pep8 flymake mode" pyflakes-pep8-flymake-mode
-	  :help " `pyflakes-pep8-flymake-mode'"])
+	  :help " ‘pyflakes-pep8-flymake-mode’"])
         ))
       ("Customize"
 
@@ -1583,7 +1583,7 @@ Otherwise value of py-python-history is used. Use `M-x customize-variable' to se
 	 ["Enforce py-shell-name" force-py-shell-name-p-on
 	  :help "Enforce customized default ‘py-shell-name’ should upon execution. "]
 
-	 ["Don't enforce default interpreter" force-py-shell-name-p-off
+	 ["Do not enforce default interpreter" force-py-shell-name-p-off
 	  :help "Make execute commands guess interpreter from environment"]
 	 )
 
@@ -1613,7 +1613,7 @@ Use `M-x customize-variable' to set it permanently"
 	 ["Force shell name "
 	  (setq py-force-py-shell-name-p
 		(not py-force-py-shell-name-p))
-	  :help "When ‘t’, execution with kind of Python specified in ‘py-shell-name’ is enforced, possibly shebang doesn't take precedence. Use `M-x customize-variable' to set it permanently"
+	  :help "When ‘t’, execution with kind of Python specified in ‘py-shell-name’ is enforced, possibly shebang does not take precedence. Use `M-x customize-variable' to set it permanently"
 	  :style toggle :selected py-force-py-shell-name-p]
 
 	 ["Execute \"if name == main\" blocks p"
@@ -1639,7 +1639,7 @@ Otherwise, all modified buffers are saved without asking.Use `M-x customize-vari
 		(not py-store-result-p))
 	  :help " ‘py-store-result-p’
 
-When non-nil, put resulting string of `py-execute-...' into kill-ring, so it might be yanked. "
+When non-nil, put resulting string of ‘py-execute-...’ into kill-ring, so it might be yanked. "
 	  :style toggle :selected py-store-result-p]
 
 	 ["Prompt on changed "
@@ -1679,7 +1679,7 @@ In experimental state yet "
 	  ["Set Pymacs-based complete keymap "
 	   (setq py-set-complete-keymap-p
 		 (not py-set-complete-keymap-p))
-	   :help "If ‘py-complete-initialize’, which sets up enviroment for Pymacs based py-complete, should load it's keys into ‘python-mode-map’
+	   :help "If ‘py-complete-initialize’, which sets up enviroment for Pymacs based py-complete, should load its keys into ‘python-mode-map’
 
 Default is nil.
 See also resp. edit ‘py-complete-set-keymap’ Use `M-x customize-variable' to set it permanently"
@@ -1710,12 +1710,12 @@ Use `M-x customize-variable' to set it permanently"
 Set py-docstring-style to nil, format string normally. "]
 
 	   ["pep-257-nn" py-set-pep-257-nn-docstring-style
-	    :help " `py-set-pep-257-nn-docstring-style'
+	    :help " ‘py-set-pep-257-nn-docstring-style’
 
 Set py-docstring-style to 'pep-257-nn "]
 
 	   ["pep-257" py-set-pep-257-docstring-style
-	    :help " `py-set-pep-257-docstring-style'
+	    :help " ‘py-set-pep-257-docstring-style’
 
 Set py-docstring-style to 'pep-257 "]
 
@@ -1781,7 +1781,7 @@ Use `M-x customize-variable' to set it permanently"
 	   ["Tab indents region "
 	    (setq py-tab-indents-region-p
 		  (not py-tab-indents-region-p))
-	    :help "When ‘t’ and first TAB doesn't shift, indent-region is called.
+	    :help "When ‘t’ and first TAB does not shift, indent-region is called.
 
 Default is nil
 See also ‘py-tab-shifts-region-p’
@@ -1992,7 +1992,7 @@ mark-defun marks top-level form at point etc. "
 	 ["Close provides newline"
 	  (setq py-close-provides-newline
 		(not py-close-provides-newline))
-	  :help "If a newline is inserted, when line after block isn't empty. Default is non-nil. Use `M-x customize-variable' to set it permanently"
+	  :help "If a newline is inserted, when line after block is not empty. Default is non-nil. Use `M-x customize-variable' to set it permanently"
 	  :style toggle :selected py-close-provides-newline]
 
 	 ["Block comment prefix "
@@ -2074,9 +2074,9 @@ Use `M-x customize-variable' to set it permanently"
 		(not py-keep-windows-configuration))
 	  :help "If a windows is splitted displaying results, this is directed by variable ‘py-split-window-on-execute’\. Also setting ‘py-switch-buffers-on-execute-p’ affects window-configuration\. While commonly a screen splitted into source and Python-shell buffer is assumed, user may want to keep a different config\.
 
-Setting ‘py-keep-windows-configuration’ to ‘t’ will restore windows-config regardless of settings mentioned above\. However, if an error occurs, it's displayed\.
+Setting ‘py-keep-windows-configuration’ to ‘t’ will restore windows-config regardless of settings mentioned above\. However, if an error occurs, it is displayed\.
 
-To suppres window-changes due to error-signaling also: M-x customize-variable RET. Set `py-keep-4windows-configuration' onto 'force
+To suppres window-changes due to error-signaling also: M-x customize-variable RET. Set ‘py-keep-4windows-configuration’ onto 'force
 
 Default is nil Use `M-x customize-variable' to set it permanently"
 	  :style toggle :selected py-keep-windows-configuration]
@@ -2088,7 +2088,7 @@ Default is nil Use `M-x customize-variable' to set it permanently"
 	      (setq py-split-windows-on-execute-function 'split-window-vertically))
 	    (message "py-split-windows-on-execute-function set to: %s" py-split-windows-on-execute-function))
 
-	  :help "If ‘split-window-vertically’ or `...-horizontally'. Use `M-x customize-variable' RET ‘py-split-windows-on-execute-function’ RET to set it permanently"
+	  :help "If ‘split-window-vertically’ or ‘...-horizontally’. Use `M-x customize-variable' RET ‘py-split-windows-on-execute-function’ RET to set it permanently"
 	  :style toggle :selected py-split-windows-on-execute-function]
 
 	 ["Modeline display full path "
@@ -2096,7 +2096,7 @@ Default is nil Use `M-x customize-variable' to set it permanently"
 		(not py-modeline-display-full-path-p))
 	  :help "If the full PATH/TO/PYTHON should be displayed in shell modeline.
 
-Default is nil. Note: when ‘py-shell-name’ is specified with path, it's shown as an acronym in buffer-name already. Use `M-x customize-variable' to set it permanently"
+Default is nil. Note: when ‘py-shell-name’ is specified with path, it is shown as an acronym in buffer-name already. Use `M-x customize-variable' to set it permanently"
 	  :style toggle :selected py-modeline-display-full-path-p]
 
 	 ["Modeline acronym display home "
@@ -2190,7 +2190,7 @@ Use `M-x customize-variable' to set it permanently"
 	  ["Guess install directory "
 	   (setq py-guess-py-install-directory-p
 		 (not py-guess-py-install-directory-p))
-	   :help "If in cases, ‘py-install-directory’ isn't set,  ‘py-set-load-path’should guess it from ‘buffer-file-name’. Use `M-x customize-variable' to set it permanently"
+	   :help "If in cases, ‘py-install-directory’ is not set,  ‘py-set-load-path’should guess it from ‘buffer-file-name’. Use `M-x customize-variable' to set it permanently"
 	   :style toggle :selected py-guess-py-install-directory-p]
 
 	  ["Use local default"
@@ -2214,7 +2214,7 @@ See also ‘py-execute-directory’Use `M-x customize-variable' to set it perman
 	  ["Keep shell dir when execute "
 	   (setq py-keep-shell-dir-when-execute-p
 		 (not py-keep-shell-dir-when-execute-p))
-	   :help "Don't change Python shell's current working directory when sending code.
+	   :help "Do not change Python shell's current working directory when sending code.
 
 See also ‘py-execute-directory’Use `M-x customize-variable' to set it permanently"
 	   :style toggle :selected py-keep-shell-dir-when-execute-p]
@@ -2401,10 +2401,10 @@ Delete the following character or all following whitespace"])
 	 :help " ‘py-fill-string-onetwo’"]
 
 	["Py fill string pep 257" py-fill-string-pep-257
-	 :help " `py-fill-string-pep-257'"]
+	 :help " ‘py-fill-string-pep-257’"]
 
 	["Py fill string pep 257 nn" py-fill-string-pep-257-nn
-	 :help " `py-fill-string-pep-257-nn'"]
+	 :help " ‘py-fill-string-pep-257-nn’"]
 
 	["Py fill string symmetric" py-fill-string-symmetric
 	 :help " ‘py-fill-string-symmetric’"])

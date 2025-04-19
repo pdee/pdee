@@ -38,7 +38,7 @@
            (inhibit-read-only t))
       (if (and beg end)
           (progn
-            (hs-make-overlay beg end 'code)
+            (hs-make-overlay beg end (quote code))
             (set-buffer-modified-p modified))
         (error (concat "No " (format "%s" form) " at point"))))))
 
@@ -55,7 +55,7 @@
       (if (and beg end)
           (if (overlays-in beg end)
               (hs-discard-overlays beg end)
-            (hs-make-overlay beg end 'code))
+            (hs-make-overlay beg end (quote code)))
         (error (concat "No " (format "%s" form) " at point")))
       (set-buffer-modified-p modified))))
 
@@ -83,7 +83,7 @@
   (interactive
    (list
     (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
-  (py-hide-base 'region beg end))
+  (py-hide-base (quote region) beg end))
 
 (defun py-show-region (beg end)
   "Un-hide active region."
@@ -95,107 +95,107 @@
 (defun py-hide-block ()
   "Hide block at point."
   (interactive)
-  (py-hide-base 'block))
+  (py-hide-base (quote block)))
 
 (defun py-hide-block-or-clause ()
   "Hide block-or-clause at point."
   (interactive)
-  (py-hide-base 'block-or-clause))
+  (py-hide-base (quote block-or-clause)))
 
 (defun py-hide-class ()
   "Hide class at point."
   (interactive)
-  (py-hide-base 'class))
+  (py-hide-base (quote class)))
 
 (defun py-hide-clause ()
   "Hide clause at point."
   (interactive)
-  (py-hide-base 'clause))
+  (py-hide-base (quote clause)))
 
 (defun py-hide-comment ()
   "Hide comment at point."
   (interactive)
-  (py-hide-base 'comment))
+  (py-hide-base (quote comment)))
 
 (defun py-hide-def ()
   "Hide def at point."
   (interactive)
-  (py-hide-base 'def))
+  (py-hide-base (quote def)))
 
 (defun py-hide-def-or-class ()
   "Hide def-or-class at point."
   (interactive)
-  (py-hide-base 'def-or-class))
+  (py-hide-base (quote def-or-class)))
 
 (defun py-hide-elif-block ()
   "Hide elif-block at point."
   (interactive)
-  (py-hide-base 'elif-block))
+  (py-hide-base (quote elif-block)))
 
 (defun py-hide-else-block ()
   "Hide else-block at point."
   (interactive)
-  (py-hide-base 'else-block))
+  (py-hide-base (quote else-block)))
 
 (defun py-hide-except-block ()
   "Hide except-block at point."
   (interactive)
-  (py-hide-base 'except-block))
+  (py-hide-base (quote except-block)))
 
 (defun py-hide-expression ()
   "Hide expression at point."
   (interactive)
-  (py-hide-base 'expression))
+  (py-hide-base (quote expression)))
 
 (defun py-hide-for-block ()
   "Hide for-block at point."
   (interactive)
-  (py-hide-base 'for-block))
+  (py-hide-base (quote for-block)))
 
 (defun py-hide-if-block ()
   "Hide if-block at point."
   (interactive)
-  (py-hide-base 'if-block))
+  (py-hide-base (quote if-block)))
 
 (defun py-hide-indent ()
   "Hide indent at point."
   (interactive)
-  (py-hide-base 'indent))
+  (py-hide-base (quote indent)))
 
 (defun py-hide-line ()
   "Hide line at point."
   (interactive)
-  (py-hide-base 'line))
+  (py-hide-base (quote line)))
 
 (defun py-hide-minor-block ()
   "Hide minor-block at point."
   (interactive)
-  (py-hide-base 'minor-block))
+  (py-hide-base (quote minor-block)))
 
 (defun py-hide-paragraph ()
   "Hide paragraph at point."
   (interactive)
-  (py-hide-base 'paragraph))
+  (py-hide-base (quote paragraph)))
 
 (defun py-hide-partial-expression ()
   "Hide partial-expression at point."
   (interactive)
-  (py-hide-base 'partial-expression))
+  (py-hide-base (quote partial-expression)))
 
 (defun py-hide-section ()
   "Hide section at point."
   (interactive)
-  (py-hide-base 'section))
+  (py-hide-base (quote section)))
 
 (defun py-hide-statement ()
   "Hide statement at point."
   (interactive)
-  (py-hide-base 'statement))
+  (py-hide-base (quote statement)))
 
 (defun py-hide-top-level ()
   "Hide top-level at point."
   (interactive)
-  (py-hide-base 'top-level))
+  (py-hide-base (quote top-level)))
 
 (defun py-dynamically-hide-indent ()
   (interactive)
@@ -211,4 +211,4 @@
   (py-hide-indent)))
 
 ;; python-components-hide-show.el ends here
-(provide 'python-components-hide-show)
+(provide (quote python-components-hide-show))

@@ -95,5 +95,5 @@ With optional \\[universal-argument] get a new dedicated shell."
     (goto-char (point-max)) 
     buffer))
 
-(provide 'python-components-named-shells)
+(provide (quote python-components-named-shells))
 ;;; python-components-named-shells.el ends here

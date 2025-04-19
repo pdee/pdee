@@ -1,4 +1,4 @@
-;;; py-execute-region-commandp-test.el --- Test execute region forms
+;;; py-execute-region-commandp-test.el --- Test execute region forms -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience

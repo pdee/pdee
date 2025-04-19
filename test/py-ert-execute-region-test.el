@@ -1,4 +1,4 @@
-;;; py-ert-execute-region-test.el --- py-execute-region tests
+;;; py-ert-execute-region-test.el --- py-execute-region tests -*- lexical-binding: t; -*- -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience

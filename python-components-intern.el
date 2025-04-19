@@ -70,7 +70,7 @@ Calls ‘py-shell’
 (defun py-load-file (file-name)
   "Load a Python file FILE-NAME into the Python process.
 
-If the file has extension `.py' import or reload it as a module.
+If the file has extension ‘.py’ import or reload it as a module.
 Treating it as a module keeps the global namespace clean, provides
 function location information for debugging, and supports users of
 module-qualified names."
@@ -84,7 +84,7 @@ module-qualified names."
   (add-hook 'python-mode-hook (quote py--warn-tmp-files-left)))
 
 (defun py-guess-pdb-path ()
-  "If py-pdb-path isn't set, find location of pdb.py. "
+  "If py-pdb-path is not set, find location of pdb.py. "
   (interactive)
   (let ((ele (split-string (shell-command-to-string "whereis python")))
         erg)
@@ -157,7 +157,7 @@ module-qualified names."
   ;; disable company
   ;; (when company-mode (company-mode))
   (let ((modified (buffer-chars-modified-tick)))
-    ;; don't try completion if buffer wasn't modified
+    ;; do not try completion if buffer was not modified
     (unless (eq modified py-complete-last-modified)
       (if py-auto-completion-mode-p
           (if (string= "*PythonCompletions*" (buffer-name (current-buffer)))
@@ -716,15 +716,15 @@ If BOL is t, mark from beginning-of-line"
 	(or (setq beg (funcall begcheckform))
 	    (if (functionp begform)
 		(setq beg (funcall begform))
-	      (error (concat "py--mark-base-bol: " begform " don't exist!" ))))
-      (error (concat "py--mark-base-bol: " begcheckform " don't exist!" )))
+	      (error (concat "py--mark-base-bol: " begform " do not exist!" ))))
+      (error (concat "py--mark-base-bol: " begcheckform " do not exist!" )))
     (when mark-decorators
       (save-excursion
         (when (setq erg (py-backward-decorator))
           (setq beg erg))))
     (if (functionp endform)
 	(setq end (funcall endform))
-      (error (concat "py--mark-base-bol: " endform " don't exist!" )))
+      (error (concat "py--mark-base-bol: " endform " do not exist!" )))
     (push-mark beg t t)
     (unless end (when (< beg (point))
                   (setq end (point))))
@@ -792,7 +792,7 @@ Use current region unless optional args BEG END are delivered."
       (insert py-section-start)
       (goto-char end)
       (unless (py-empty-line-p) (newline 1))
-      (indent-according-to-mode) 
+      (indent-according-to-mode)
       (insert py-section-end))))
 
 (defun py-execute-section-prepare (&optional shell)
@@ -810,7 +810,7 @@ Use current region unless optional args BEG END are delivered."
             (if shell
                 (funcall (car (read-from-string (concat "py-execute-region-" shell))) start (point))
               (py-execute-region start (point))))
-        (error "Can't see ‘py-section-start’ resp. ‘py-section-end’")))))
+        (error "Can not see ‘py-section-start’ resp. ‘py-section-end’")))))
 
 (defun py--narrow-prepare (name)
   "Used internally. "
@@ -822,6 +822,7 @@ Use current region unless optional args BEG END are delivered."
                        ((funcall (car (read-from-string (concat "py--statement-opens-" name "-p")))))
                        (t (funcall (car (read-from-string (concat "py-backward-" name))))))))
       (funcall (car (read-from-string (concat "py-forward-" name))))
+      ;; (sit-for 1)
       (narrow-to-region (point) start))))
 
 (defun py--forms-report-result (erg &optional iact)
@@ -851,7 +852,8 @@ Use current region unless optional args BEG END are delivered."
   (let ((cui (and
               (or (and (looking-at (symbol-value regexp))
                        (not (nth 8 (parse-partial-sexp (point-min) (point)))))
-                  (py--go-to-keyword regexp))
+                       (py--go-to-keyword regexp)
+                       (current-indentation))
               (current-indentation))))
     (when py-verbose-p (message "%s" cui))
     (py--end-base regexp (point))
@@ -916,7 +918,7 @@ Optional END: used by tests
 Optional NO-CHECK: used by tests
 "
   (interactive "*")
-  (or no-check (use-region-p) (error "Don't see an active region"))
+  (or no-check (use-region-p) (error "Do not see an active region"))
   (let ((end (copy-marker (or end (region-end)))))
     (goto-char (or beg (region-beginning)))
     (beginning-of-line)
