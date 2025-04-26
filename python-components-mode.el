@@ -111,6 +111,7 @@
 (require (quote python-components-hide-show))
 (require (quote python-components-ffap))
 
+;; (require (quote py-setup-ert-tests))
 ;; (require (quote python-components-eldoc))
 
 ;; (provide (quote python-components-mode))

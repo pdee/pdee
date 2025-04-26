@@ -56,15 +56,15 @@ echo "\$PWD: $PWD"
 # IFLOCAL set in .bashrc, thus unset remotly
 IFLOCAL=${IFLOCAL:=1}
 echo "\$IFLOCAL: $IFLOCAL"
-TESTDIR=$PDIR/test
+TESTDIR=$PWD/test
 export TESTDIR
 
 # EMACS_TEST_VERBOSE
 
-if [ -s $PDIR/python-mode.el ]; then
-    PYTHONMODE=$PDIR/python-mode.el
-elif [ -s $PDIR/python-components-mode.el ]; then
-    PYTHONMODE=$PDIR/python-components-mode.el
+if [ -s $PWD/python-mode.el ]; then
+    PYTHONMODE=$PWD/python-mode.el
+elif [ -s $PWD/python-components-mode.el ]; then
+    PYTHONMODE=$PWD/python-components-mode.el
 fi
 
 echo "\$PYTHONMODE: $PYTHONMODE"
@@ -94,14 +94,14 @@ TEST21=$TESTDIR/py-ert-ipython-tests.el
 TEST22=$TESTDIR/py-interactive-tests.el
 echo "\$EMACS: $EMACS"
 
-PYCO="$PDIR/completion/pycomplete.el"
+PYCO="$PWD/completion/pycomplete.el"
 
 h1() { 
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(setq py-verbose-p nil)" \
---eval "(setq py-install-dir \"$PDIR\")" \
+--eval "(setq py-install-dir \"$PWD\")" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
