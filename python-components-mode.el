@@ -52,7 +52,9 @@
 
 ;; used by py-hungry-delete-backwards
 (require (quote cc-cmds))
+(require (quote python-components-vars))
 (require (quote python-components-rx))
+(require (quote python-components-statement))
 (require (quote python-components-foot))
 (require (quote python-components-start1))
 (require (quote python-components-extra))

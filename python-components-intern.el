@@ -769,7 +769,7 @@ If no further element at same level, go one level up."
 ;; If no further element at same level, go one level up."
 ;;   (interactive)
 ;;   (let (erg)
-;;     (unless (py-beginning-of-statement-p)
+;;     (unless (py--beginning-of-statement-p)
 ;;       (py-backward-statement))
 ;;     (setq erg (py-down (current-indentation)))
 ;;     erg))
