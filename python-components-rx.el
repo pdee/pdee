@@ -1473,4 +1473,4 @@ following constructs:
 
 (provide 'python-components-rx)
 
-;;; rx.el ends here
+;;; python-components-rx.el ends here
