@@ -6,7 +6,7 @@
 
 ;; Package-Requires: ((emacs "24"))
 
-;; Author: 2015-2023 https://gitlab.com/groups/python-mode-devs
+;; Author: 2015-2025 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
 ;;         1992-1994 Tim Peters
@@ -87,7 +87,19 @@
   (defalias 'mapcan 'cl-mapcan)
   )
 
-;; (require 'org)
+(define-minor-mode py-electric-backspace-mode
+  "When on, <backspace> key will delete all whitespace chars before point.
+
+Default is nil"
+  :group 'python-mode
+  :lighter " eb"
+  (if py-electric-backspace-mode
+      (if (ignore-errors (functionp 'keymap-local-set))
+          (keymap-local-set "<backspace>" 'py-electric-backspace)
+        (local-set-key "<backspace>" 'py-electric-backspace))
+    (if (ignore-errors (functionp 'keymap-local-unset))
+        (keymap-local-unset "<backspace>")
+      (local-unset-key "<backspace>"))))
 
 (defvar comint-mime-setup-script-dir nil
   "Avoid compiler warning")
@@ -3432,6 +3444,21 @@ def __FFAP_get_module_path(objstr):
   "Internal use only - when ‘py-up-exception’ is called.
 
 In source-buffer, this will deliver the exception-buffer again.")
+
+(defcustom py-electric-backspace-p nil
+  "When ‘t’, <backspace> key will delete all whitespace chars before point.
+
+Default nil"
+
+  :type 'boolean
+  :tag "py-electric-backspace-p"
+  :group 'python-mode
+  :safe 'booleanp
+  :set (lambda (symbol value)
+         (set-default symbol value)
+         (py-electric-backspace-mode (if value 1 0))))
+
+
 
 (provide 'python-components-vars)
 ;;; python-components-vars.el ends here
