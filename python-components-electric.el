@@ -330,7 +330,6 @@ Pass ARG to the command ‘yank’."
 (defun py-toggle-py-electric-backspace ()
   "Toggle py-electric-backspace-mode."
   (interactive)
-  ;; (py-electric-backspace-mode))
   (setq py-electric-backspace-mode (not py-electric-backspace-mode))
   (if py-electric-backspace-mode  (py-electric-backspace-mode 1) (py-electric-backspace-mode -1))
   (when (and py-verbose-p (called-interactively-p 'interactive)) (message "py-electric-backspace-mode: %s" py-electric-backspace-mode)))
@@ -346,32 +345,7 @@ Pass ARG to the command ‘yank’."
 (put (quote py-electric-delete) 'delete-selection 'supersede) ;delsel
 (put (quote py-electric-delete) 'pending-delete 'supersede) ;pending-del
 
-(define-minor-mode py-electric-backspace-mode
-  "When on, <backspace> key will delete all whitespace chars before point.
 
-Default is nil"
-  :group 'python-mode
-  :lighter " eb"
-  (if py-electric-backspace-mode
-      (if (ignore-errors (functionp 'keymap-local-set))
-          (keymap-local-set "<backspace>" 'py-electric-backspace)
-        (local-set-key "<backspace>" 'py-electric-backspace))
-    (if (ignore-errors (functionp 'keymap-local-unset))
-        (keymap-local-unset "<backspace>")
-      (local-unset-key "<backspace>"))))
-
-(defcustom py-electric-backspace-p nil
-  "When ‘t’, <backspace> key will delete all whitespace chars before point.
-
-Default nil"
-
-  :type 'boolean
-  :tag "py-electric-backspace-p"
-  :group 'python-mode
-  :safe 'booleanp
-  :set (lambda (symbol value)
-         (set-default symbol value)
-         (py-electric-backspace-mode (if value 1 0))))
 
 (provide 'python-components-electric)
 ;;; python-components-electric.el ends here

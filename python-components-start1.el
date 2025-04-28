@@ -394,32 +394,7 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 (make-variable-buffer-local 'py-pdbtrack-do-tracking-p)
 
- ;; PEP 318 decorators
-
 ;; subr-x.el might not exist yet
-;; #73, Byte compilation on Emacs 25.3 fails on different trim-right signature
-
-(defsubst py--string-trim-left (strg &optional regexp)
-  "Trim STRING of leading string matching REGEXP.
-
-REGEXP defaults to \"[ \\t\\n\\r]+\"."
-  (if (string-match (concat "\\`\\(?:" (or regexp "[ \t\n\r]+") "\\)") strg)
-      (replace-match "" t t strg)
-    strg))
-
-(defsubst py--string-trim-right (strg &optional regexp)
-  "Trim STRING of trailing string matching REGEXP.
-
-REGEXP defaults to \"[ \\t\\n\\r]+\"."
-  (if (string-match (concat "\\(?:" (or regexp "[ \t\n\r]+") "\\)\\'") strg)
-      (replace-match "" t t strg)
-    strg))
-
-(defsubst py--string-trim (strg &optional trim-left trim-right)
-  "Trim STRING of leading and trailing strings matching TRIM-LEFT and TRIM-RIGHT.
-
-TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
-  (py--string-trim-left (py--string-trim-right strg trim-right) trim-left))
 
 (defun py-toggle-imenu-create-index ()
   "Toggle value of ‘py--imenu-create-index-p’."
@@ -943,11 +918,19 @@ Return position of moved, nil otherwise."
   (load (concat py-install-directory "/extensions/python-components-skeletons.el")))
 
 (defun py--kill-emacs-hook ()
-  "Delete files in ‘py-file-queue’.
+  "Delete files in ‘ar-file-queue’.
 These are Python temporary files awaiting execution."
-  (mapc #'(lambda (filename)
-            (ignore-errors (delete-file filename)))
-        py-file-queue))
+  (when (and py-file-queue (listp py-file-queue))
+    (dolist (ele py-file-queue)
+      (ignore-errors (delete-file ele)))))
+
+;; (defun py--kill-emacs-hook ()
+;;   "Delete files in ‘py-file-queue’.
+;; These are Python temporary files awaiting execution."
+;;   (when py-file-queue
+;;     (mapc #'(lambda (filename)
+;;               (ignore-errors (delete-file filename)))
+;;           py-file-queue)))
 
 (add-hook 'kill-emacs-hook 'py--kill-emacs-hook)
 

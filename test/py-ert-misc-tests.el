@@ -263,42 +263,35 @@ GeomSim."
       (py-shift-region-right)
       (should (eq 4 (current-indentation))))))
 
-;; (ert-deftest py-syntax-highlighting-for-builtin-functions-55-test-qijqlm ()
-;;   (py-test
-;;       "range(len(list((1, 2, 3))))"
-;;     (font-lock-fontify-region (point-min) (point-max))
-;;     (goto-char (point-max))
-;;     (search-backward "e")
-;;     (sit-for 0.1)
-;;     (should (face-equal (face-at-point) 'py-builtins-face))))
-
 (ert-deftest py-named-shell-python3-794850-test-P6QZmU ()
-  (py-test-mode-explizit
-      "foo"
-    'fundamental-mode
-    py-debug-p
-    ;; (switch-to-buffer (current-buffer))
-    (call-interactively 'python3)
-    (should (buffer-live-p (get-buffer "*Python3*")))
-    (py-kill-buffer-unconditional (get-buffer "*Python3*"))))
+  (py-test
+   "foo"
+   'fundamental-mode
+   'py-debug-p
+   (when (executable-find "python3")
+     (call-interactively 'python3)
+     (should (buffer-live-p (get-buffer "*Python3*")))
+     (py-kill-buffer-unconditional (get-buffer "*Python3*")))))
 
 (ert-deftest py-named-shell-ipython3-794850-test-P6QZmU ()
-  (py-test-mode-explizit
-      "foo"
-    'fundamental-mode
-    py-debug-p
-    (call-interactively 'ipython3)
-    (should (buffer-live-p (get-buffer "*IPython3*")))
-    (py-kill-buffer-unconditional (get-buffer "*IPython3*"))))
+  (py-test
+   "foo"
+   'fundamental-mode
+   'py-debug-p
+   (when (executable-find "ipython3")
+     (call-interactively 'ipython3)
+     (should (buffer-live-p (get-buffer "*IPython3*")))
+     (py-kill-buffer-unconditional (get-buffer "*IPython3*")))))
 
 (ert-deftest py-named-shell-ipython-794850-test-P6QZmU ()
-  (py-test-mode-explizit
-      "foo"
-    'fundamental-mode
-    py-debug-p
-    (call-interactively 'ipython)
-    (should (buffer-live-p (get-buffer "*IPython*")))
-    (py-kill-buffer-unconditional (get-buffer "*IPython*"))))
+  (py-test
+   "foo"
+   'fundamental-mode
+   'py-debug-p
+   (when (executable-find "ipython")
+     (call-interactively 'ipython)
+     (should (buffer-live-p (get-buffer "*IPython*")))
+     (py-kill-buffer-unconditional (get-buffer "*IPython*")))))
 
 (when (featurep  'comint-mime)
   (ert-deftest py-comint-mime-test-7JbtYW ()

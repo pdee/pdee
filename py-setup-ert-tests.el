@@ -108,36 +108,7 @@ Preserves the `buffer-modified-p' state of the current buffer."
      (with-silent-modifications
        ,@body)))
 
-(defmacro py-test-mode-explizit (contents mode debug &rest body)
-  "Create temp buffer inserting CONTENTS.
 
-BODY is code to be executed within the temp buffer "
-  (declare (indent 1) (debug t))
-  `(with-temp-buffer
-     (let (hs-minor-mode)
-       (funcall ,mode)
-       (insert ,contents)
-       (when ,debug
-	 (switch-to-buffer (current-buffer))
-	 (save-excursion (font-lock-fontify-region (point-min)(point-max)))
-       ,@body))
-  ;; (sit-for 0.1)
-  ))
-
-(defmacro py-test-mode-explizit-point-min (contents mode debug &rest body)
-  "Create temp buffer inserting CONTENTS.
-BODY is code to be executed within the temp buffer.  Point is
- at the beginning of buffer."
-  (declare (indent 1) (debug t))
-  `(with-temp-buffer
-     (let (hs-minor-mode)
-       (funcall ,mode)
-       (insert ,contents)
-       (goto-char (point-min))
-       (when ,debug
-	 (switch-to-buffer (current-buffer))
-	 (save-excursion (font-lock-fontify-region (point-min)(point-max))))
-       ,@body)))
 
 (provide 'py-setup-ert-tests)
 ;; py-setup-ert-tests.el ends here
