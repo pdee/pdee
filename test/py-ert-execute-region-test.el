@@ -23,7 +23,7 @@
 (require 'py-setup-ert-tests)
 
 (ert-deftest py-ert-execute-region-python-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "print(\"one\")
 print(\"two\")"
     'python-mode
@@ -31,7 +31,6 @@ print(\"two\")"
     (if
         (executable-find "python")
         (let ((buffer "*Python*"))
-          (require 'python)
           (py-execute-region-python (point-min) (point-max))
           ;; (sit-for 0.5 t)
           (set-buffer buffer)
@@ -40,7 +39,7 @@ print(\"two\")"
     (when py-verbose-p (message "%s" "Don't see a ‘python’ executable"))))
 
 (ert-deftest py-ert-execute-region-python3-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "print(\"one\")
 print(\"two\")"
     'python-mode
@@ -48,17 +47,14 @@ print(\"two\")"
     (if
         (executable-find "python3")
         (let ((buffer "*Python3*"))
-          (require 'python)
           (py-execute-region-python3 (point-min) (point-max))
-          (set-buffer buffer)
+          (set-buffer (get-buffer buffer))
           (goto-char (point-max))
-          (sit-for 1)
-          ;; (font-lock-ensure)
           (should (search-backward "two")))
       (when py-verbose-p (message "%s" "Don't see a ‘python3’ executable")))))
 
 (ert-deftest py-ert-execute-region-ipython-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "print(\"one\")
 print(\"two\")"
     'python-mode
@@ -66,7 +62,6 @@ print(\"two\")"
     (if
         (ignore-errors (executable-find "ipython"))
         (let ((buffer "*IPython*"))
-          (require 'python)
           (py-execute-region-ipython (point-min) (point-max))
           (set-buffer buffer)
           ;; (accept-process-output (get-buffer-process buffer) 0.1)
@@ -79,7 +74,7 @@ print(\"two\")"
 
 
 (ert-deftest py-ert-execute-region-ipython3-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "print(\"one\")
 print(\"two\")"
     'python-mode
@@ -89,7 +84,6 @@ print(\"two\")"
         (let ((buffer "*IPython3*")
               ;; (buffer (py--choose-buffer-name "ipython3"))
 	      (inhibit-point-motion-hooks t))
-          (require 'python)
           (py-execute-region-ipython3 (point-min) (point-max))
           (set-buffer buffer)
           (when py-debug-p (message "current-buffer0: %s" (current-buffer))
@@ -109,7 +103,7 @@ print(\"two\")"
       (message "py-ert-execute-region-ipython3-test: %s" "No executable found!"))))
 
 (ert-deftest py-ert-execute-region-jython-test ()
-  (py-test-with-temp-buffer
+  (py-test
       "print(\"one\")
 print(\"two\")"
     'python-mode
@@ -117,13 +111,9 @@ print(\"two\")"
     (if
         (executable-find "jython")
         (let ((buffer "*Jython*"))
-          (require 'python)
           (py-execute-region-jython (point-min) (point-max))
           (set-buffer buffer)
-          ;; (switch-to-buffer (current-buffer))
           (goto-char (point-max))
-          ;; (font-lock-ensure)
-          (sit-for 0.1)
           (should (search-backward "two"))))
     (when py-verbose-p
       (message "py-ert-execute-region-jython-test: %s" "No executable found!"))))

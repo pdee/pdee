@@ -284,7 +284,7 @@ class bar:
    (should (eq (char-before) ?:))))
 
 (ert-deftest py-ert-forward-for-block-test ()
-  (py-test-point-min
+  (py-test
    "# {{
 class bar:
     def foo ():
@@ -305,7 +305,8 @@ class bar:
 "
    'python-mode
    'py-verbose-p
-   (search-forward "for")
+   (goto-char (point-max)) 
+   (search-backward "for")
    (py-forward-for-block)
    (should (looking-back "pass" (line-beginning-position)))))
 
@@ -390,7 +391,7 @@ class bar:
    (should (eq (char-before) ?2))))
 
 (ert-deftest py-ert-forward-partial-expression-test ()
-  (py-test-point-min
+  (py-test
    "# {{
 class bar:
     def foo ():
@@ -411,7 +412,8 @@ class bar:
 "
    'python-mode
    'py-verbose-p
-   (search-forward "Pyt")
+   (goto-char (point-max))
+   (search-backward "Pyt")
    (py-forward-partial-expression)
    (should (eq (char-before) ?n))))
 

@@ -1802,7 +1802,6 @@ At GNU systems see /usr/bin/python3"
 
 (defcustom py-ipython-command
   (if (eq system-type 'windows-nt)
-      ;; "ipython"
     "C:\\Python27\\python"
     ;; "C:/Python33/Lib/site-packages/IPython"
     ;; "/usr/bin/ipython"
@@ -2249,7 +2248,7 @@ Default is nil"
   :tag "py-keep-windows-configuration"
   :group 'python-mode)
 
-(defvar py-output-buffer "*Python Output*"
+(defvar py-output-buffer ""
       "Used if ‘python-mode-v5-behavior-p’ is t.
 
 Otherwise output buffer is created dynamically according to version process.")

@@ -171,10 +171,21 @@ Optional MAXINDENT: do not stop if indentation is larger"
 	  ;; (setq pps (parse-partial-sexp (line-beginning-position) (point)))
 	  (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
          ((nth 1 pps)
-          (goto-char (1- (nth 1 pps)))
+          (if (and
+               (< (nth 1 pps) (line-beginning-position))
+               (save-excursion
+                 (beginning-of-line)
+                 (skip-chars-backward ",] \t\r\n\f")
+                 (< (nth 1 pps) (nth 1 (parse-partial-sexp (point-min) (point))))))
+              (progn
+                (beginning-of-line)
+                (skip-chars-backward ",] \t\r\n\f")
+                (goto-char (nth 1 (parse-partial-sexp (point-min) (point)))))
+            (goto-char (1- (nth 1 pps))))
 	  (when (py--skip-to-semicolon-backward (save-excursion (back-to-indentation) (point)))
 	    (setq done t))
-          (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))
+          ;; (py-backward-statement orig done limit ignore-in-string-p repeat maxindent)
+          )
          ((py-preceding-line-backslashed-p)
           (forward-line -1)
           (back-to-indentation)

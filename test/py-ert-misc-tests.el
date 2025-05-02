@@ -154,11 +154,12 @@ def baz(self):
 
 (ert-deftest py-test-embedded-51-test-sgaO9V ()
   (py-test
-      "from PrintEngine import *
-GeomSim."
+      "from Foo import *
+FooFoo."
     'python-mode
     'py-verbose-p
     (goto-char(point-max))
+    (skip-chars-backward " \t\r\n\f") 
     (ignore-errors (py-indent-or-complete))
     ;; (sit-for 0.1)
     (should (eq (char-before) ?.))))
@@ -265,33 +266,51 @@ GeomSim."
 
 (ert-deftest py-named-shell-python3-794850-test-P6QZmU ()
   (py-test
-   "foo"
-   'fundamental-mode
-   'py-debug-p
-   (when (executable-find "python3")
-     (call-interactively 'python3)
-     (should (buffer-live-p (get-buffer "*Python3*")))
-     (py-kill-buffer-unconditional (get-buffer "*Python3*")))))
+      "foo"
+    'python-mode
+    'py-debug-p
+    (let (;; also set in run-tests.sh
+          (python-mode-v5-behavior-p t))
+      (when (executable-find "python3")
+        (call-interactively 'python3)
+        (should (buffer-live-p (get-buffer "*Python Output*")))
+        (py-kill-buffer-unconditional (get-buffer "*Python3*"))))))
 
 (ert-deftest py-named-shell-ipython3-794850-test-P6QZmU ()
   (py-test
-   "foo"
-   'fundamental-mode
-   'py-debug-p
-   (when (executable-find "ipython3")
-     (call-interactively 'ipython3)
-     (should (buffer-live-p (get-buffer "*IPython3*")))
-     (py-kill-buffer-unconditional (get-buffer "*IPython3*")))))
+      "foo"
+    'python-mode
+    'py-debug-p
+    (let (;; also set in run-tests.sh
+          (python-mode-v5-behavior-p t))
+      (when (executable-find "ipython3")
+        (let ((erg (buffer-name (call-interactively 'ipython3))))
+          (should (string= "*Python Output*" erg)))
+        (py-kill-buffer-unconditional (get-buffer "*IPython3*"))))))
+
+(ert-deftest py-named-shell-ipython3-794850-test-3U5kpY ()
+  (py-test
+      "foo"
+    'python-mode
+    'py-debug-p
+    (when (executable-find "ipython3")
+      (let (;; also set in run-tests.sh
+            (python-mode-v5-behavior-p t)
+            (erg (buffer-name (py-shell nil nil nil "ipython3"))))
+        (should (string= "*Python Output*" erg)))
+      (py-kill-buffer-unconditional (get-buffer "*IPython3*")))))
 
 (ert-deftest py-named-shell-ipython-794850-test-P6QZmU ()
   (py-test
    "foo"
-   'fundamental-mode
+   'python-mode
    'py-debug-p
+   (let (;; also set in run-tests.sh
+         (python-mode-v5-behavior-p t))
    (when (executable-find "ipython")
      (call-interactively 'ipython)
-     (should (buffer-live-p (get-buffer "*IPython*")))
-     (py-kill-buffer-unconditional (get-buffer "*IPython*")))))
+     (should (buffer-live-p (get-buffer "Python Output*")))
+     (py-kill-buffer-unconditional (get-buffer "*IPython*"))))))
 
 (when (featurep  'comint-mime)
   (ert-deftest py-comint-mime-test-7JbtYW ()

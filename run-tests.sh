@@ -46,7 +46,8 @@ else
     EMACS=emacs
 fi
 
-echo "before shift \$EMACS: $EMACS"
+echo "
+before shift \$EMACS: $EMACS"
 shift
 echo "after shift \$EMACS: $EMACS"
 echo "\$*: $*"
@@ -104,6 +105,7 @@ h1() {
 --eval "(setq py-install-dir \"$PWD\")" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+--eval "(add-to-list 'load-path \"$PWD/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
 -l $TEST1 \
@@ -210,7 +212,6 @@ h10() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
---eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \

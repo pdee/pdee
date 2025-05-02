@@ -210,7 +210,7 @@ Unless DIRECTION is symbol \\='forward, go backward first"
   (if (and filename wholebuf (not (buffer-modified-p)))
       (py--execute-file-base filename proc nil procbuf origline fast)
     (let* ((tempfile (concat (expand-file-name py-temp-directory) py-separator-char "temp" (md5 (format "%s" (nth 3 (current-time)))) ".py")))
-      (sit-for 0.1) 
+      (sit-for 0.1)
       (with-temp-buffer
 	(insert strg)
 	(write-file tempfile)
@@ -282,24 +282,29 @@ thus remember line of source buffer"
 		  (push (quote py-error) ecode))))))
 	py-error))))
 
-(defun py-execute-python-mode-v5 (start end origline filename)
+(defun py-execute-python-mode-v5 (start end &optional origline filename)
   "Take START END &optional EXCEPTION-BUFFER ORIGLINE."
-  (interactive "r")
-  (let ((output-buffer "*Python Output*")
+  (interactive
+   (list (region-beginning) (region-end) (py-count-lines)(and (buffer-file-name) (buffer-file-name))))
+  (let ((python-mode-v5-behavior-p t)
+        (output-buffer "*Python Output*")
 	(py-split-window-on-execute 'just-two)
 	(pcmd (concat py-shell-name (if (string-equal py-which-bufname
                                                       "Jython")
                                         " -"
                                       ;; " -c "
-                                      ""))))
+                                      "")))
+        ;; (filename (and (buffer-file-name) (buffer-file-name)))
+        )
     (save-excursion
       (shell-command-on-region start end
                                pcmd output-buffer))
     (if (not (get-buffer output-buffer))
-        (message "No output.")
-      (setq py-result (py--fetch-result (get-buffer  output-buffer) nil))
+        (message "py-execute-python-mode-v5: No output.")
+      (setq py-result (py--fetch-result (with-temp-buffer  (get-buffer output-buffer))))
       (if (string-match "Traceback" py-result)
 	  (message "%s" (setq py-error (py--fetch-error output-buffer origline filename)))
+        (when py-verbose-p (message "%s" py-result))
 	py-result))))
 
 (defun py--execute-ge24.3 (start end execute-directory which-shell &optional exception-buffer proc file origline)
@@ -428,7 +433,8 @@ START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
 
          ;; (split (if python-mode-v5-behavior-p 'just-two split))
          )
-    (setq py-output-buffer (or (and python-mode-v5-behavior-p py-output-buffer) (and proc (buffer-name (process-buffer proc)))
+    (setq py-output-buffer (or (and python-mode-v5-behavior-p "*Python Output*")
+                               (and proc (buffer-name (process-buffer proc)))
 			       (py--choose-buffer-name shell dedicated fast)))
     (py--execute-base-intern strg filename proc wholebuf py-output-buffer origline execute-directory start end fast)))
 

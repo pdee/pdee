@@ -3062,7 +3062,7 @@ ausgabe = kugel.ausgabe"
         dict.__init__(self, d)"
    'python-mode
    'py-verbose-p
-   (goto-char (point-max)) 
+   (goto-char (point-max))
    (search-backward "\"")
    (forward-char 1)
    (py-down-statement)
@@ -6731,6 +6731,56 @@ for file in a:
    (should (char-equal (char-after) ?c))
    (py-backward-def-or-class)
    (should (char-equal (char-after) ?d))))
+
+
+(ert-deftest py-backward-statement-test-Wowy4a ()
+  (py-test
+   "nested_list = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+    ]
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (skip-chars-backward "] \t\r\n\f")
+   (py-backward-statement)
+   (should (looking-at "\\[7, 8, 9]"))
+   ))
+
+(ert-deftest py-backward-statement-test-MXIhxi ()
+  (py-test
+   "nested_list = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+    ]
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (search-backward "[")
+   (py-backward-statement)
+   (should (looking-at "\\[4"))
+   ))
+
+(ert-deftest py-backward-statement-test-esbn2V ()
+  (py-test
+   "nested_list = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+    ]
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (search-backward "[1")
+   (py-backward-statement)
+   (should (looking-at "nested"))
+   ))
+
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

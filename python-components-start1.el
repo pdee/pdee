@@ -1375,16 +1375,16 @@ thus remember ORIGLINE of source buffer"
       (setq py-error (buffer-substring-no-properties (point) (point-max))))
         py-error))
 
-(defun py--fetch-result (buffer limit &optional cmd)
+(defun py--fetch-result (buffer  &optional limit cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
   (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
   (cond (python-mode-v5-behavior-p
 	 (with-current-buffer buffer
 	   (py--string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n")))
-	((and cmd (< limit (point-max)))
+	((and cmd limit (< limit (point-max)))
 	 (replace-regexp-in-string cmd "" (py--string-trim (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max))))))
-	(t (when (< limit (point-max))
+	(t (when (and limit (< limit (point-max)))
 	     (py--string-trim (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max))))))))
 
 (defun py--postprocess (output-buffer origline limit &optional cmd filename)

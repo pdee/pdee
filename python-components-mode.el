@@ -53,6 +53,7 @@
 ;; used by py-hungry-delete-backwards
 (require (quote cc-cmds))
 (require (quote python-components-vars))
+(require (quote py-setup-ert-tests))
 (require (quote python-components-rx))
 (require (quote python-components-statement))
 (require (quote python-components-foot))
@@ -111,7 +112,6 @@
 (require (quote python-components-hide-show))
 (require (quote python-components-ffap))
 
-;; (require (quote py-setup-ert-tests))
 ;; (require (quote python-components-eldoc))
 
 ;; (provide (quote python-components-mode))
