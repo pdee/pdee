@@ -239,16 +239,16 @@ Optional arg DEDENT: force dedent.
 		 (py-guess-indent-offset))
 		((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
 		 py-already-guessed-indent-offset)
-		(t (default-value (quote py-indent-offset)))))
+		(t py-indent-offset)))
     (setq outmost (py-compute-indentation nil nil nil nil nil nil nil this-indent-offset))
     ;; now choose the indent
     (unless (and (not dedent)(not (eq this-command last-command))(eq outmost (current-indentation)))
       (setq need
 	    (cond ((eq this-command last-command)
-		     (if (bolp)
-			 ;; jump forward to max indent
-			 outmost
-		       (py--calculate-indent-backwards cui this-indent-offset)))
+		   (if (bolp)
+		       ;; jump forward to max indent
+		       outmost
+		     (py--calculate-indent-backwards cui this-indent-offset)))
 		  ;; (py--calculate-indent-backwards cui this-indent-offset)))))
 		  (t
 		   outmost

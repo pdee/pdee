@@ -6781,6 +6781,22 @@ for file in a:
    (should (looking-at "nested"))
    ))
 
+(ert-deftest py-backward-statement-test-xNh4nO ()
+  (py-test
+"a, *b, c = range(10)
+inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
+(a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (search-backward "range")
+   (end-of-line) 
+   (py-forward-statement)
+   (should (eq (char-before) ?'))
+   ))
+
+
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here
