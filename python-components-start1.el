@@ -241,22 +241,6 @@ Argument ELE: a shell name, a string."
 
 ;; "/usr/bin/python3"
 
-(defun py-toggle-python-mode-v5-behavior ()
-  "Switch the values of ‘python-mode-v5-behavior-p’."
-  (interactive)
-  (setq python-mode-v5-behavior-p (not python-mode-v5-behavior-p))
-  (when (called-interactively-p 'interactive)
-    (message "python-mode-v5-behavior-p: %s" python-mode-v5-behavior-p)))
-
-(defun py-toggle-py-verbose-p ()
-  "Switch the values of ‘py-verbose-p’.
-
-Default is nil.
-If on, messages value of ‘py-result’ for instance."
-  (interactive)
-  (setq py-verbose-p (not py-verbose-p))
-  (when (called-interactively-p 'interactive)
-    (message "py-verbose-p: %s" py-verbose-p)))
 
 (setq python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
