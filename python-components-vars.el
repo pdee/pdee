@@ -101,6 +101,15 @@ Default is nil"
         (keymap-local-unset "<backspace>")
       (local-unset-key "<backspace>"))))
 
+(defvar py-comment-start-re           "[ \t]*#"
+  "Beginning of a comment")
+
+(defvar py-comment-end-re "\n"
+  "Regexp to match the end of a comment.")
+
+(defvar py-comment-start-skip-re      "#+ *"
+"Regexp to match the start of a comment plus everything up to its body.")
+
 (defvar comint-mime-setup-script-dir nil
   "Avoid compiler warning")
 
@@ -1109,6 +1118,7 @@ you're editing someone else's Python code."
   :tag "py-indent-offset"
   :group 'python-mode)
 (make-variable-buffer-local 'py-indent-offset)
+(put 'py-indent-offset 'safe-local-variable 'integerp)
 
 (defcustom py-backslashed-lines-indent-offset 5
   "Amount of offset per level of indentation of backslashed.
@@ -3029,8 +3039,6 @@ hooked into ‘compilation-error-regexp-alist’"
 
 ;; (setq py--windows-config-register 313;; 465889)
 
-(put 'py-indent-offset 'safe-local-variable 'integerp)
-
 ;; testing
 (defvar py-ert-test-default-executables
   (list "python" "python3" "ipython")
@@ -3456,8 +3464,6 @@ Default nil"
   :set (lambda (symbol value)
          (set-default symbol value)
          (py-electric-backspace-mode (if value 1 0))))
-
-
 
 (provide 'python-components-vars)
 ;;; python-components-vars.el ends here

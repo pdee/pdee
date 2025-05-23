@@ -183,8 +183,10 @@ VARIABLES
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'comment-use-syntax) t)
-  (set (make-local-variable 'comment-start) "#")
-  (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+  ;; (set (make-local-variable 'comment-start) "#")
+  (set (make-local-variable 'comment-start) py-comment-start-re)
+  ;; (set (make-local-variable 'comment-start-skip) "^[ \t]*#+ *")
+  (set (make-local-variable 'comment-start-skip) py-comment-start-skip-re)
 
   (if py-empty-comment-line-separates-paragraph-p
       (progn
@@ -395,7 +397,7 @@ may want to re-add custom functions to it using the
 (puthash "python-"
          (append (gethash "python" definition-prefixes) '("python-mode"))
          definition-prefixes)
-(
-provide 'python-components-foot)
+
+(provide 'python-components-foot)
 
 ;;; python-components-foot.el ends here

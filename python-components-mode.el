@@ -56,7 +56,6 @@
 (require (quote py-setup-ert-tests))
 (require (quote python-components-rx))
 (require (quote python-components-statement))
-(require (quote python-components-foot))
 (require (quote python-components-start1))
 (require (quote python-components-extra))
 (require (quote python-components-shift-forms))
@@ -111,6 +110,7 @@
 (require (quote python-components-narrow))
 (require (quote python-components-hide-show))
 (require (quote python-components-ffap))
+(require (quote python-components-foot))
 
 ;; (require (quote python-components-eldoc))
 

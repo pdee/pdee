@@ -241,7 +241,6 @@ Argument ELE: a shell name, a string."
 
 ;; "/usr/bin/python3"
 
-
 (setq python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
 	  (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
@@ -366,10 +365,6 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
      ;; Otherwise (we're in a non-matching string) the property is
      ;; nil, which is OK.
      )))
-
-;; (setq py--windows-config-register 313;; 465889)
-
-(put 'py-indent-offset 'safe-local-variable 'integerp)
 
 ;; testing
 
