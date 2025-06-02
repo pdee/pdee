@@ -2619,7 +2619,12 @@ stop at it.")
 (defvar py-partial-expression-re (concat "[" py-partial-expression-stop-backward-chars (substring py-partial-expression-forward-chars 1) "]+"))
 (setq py-partial-expression-re (concat "[" py-partial-expression-stop-backward-chars "]+"))
 
-(defvar py-statement-re py-partial-expression-re)
+
+;; (defvar py-statement-re py-partial-expression-re)
+(defvar py-statement-re "[^] .=,\"'()[{}:#	
+]+" "Match beginning of a statement")
+
+
 (defvar py-indent-re ".+"
   "This var is introduced for regularity only.")
 (setq py-indent-re ".+")

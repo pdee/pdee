@@ -1259,6 +1259,7 @@ Return and move to match-beginning if successful"
 
 (defun py--beginning-of-statement-p (&optional pps)
   "Return ‘t’, if cursor is at the beginning of a ‘statement’, nil otherwise."
+  (interactive) 
   (save-excursion
     (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
       (and (not (or (nth 8 pps) (nth 1 pps)))

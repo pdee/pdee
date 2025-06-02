@@ -41,13 +41,13 @@ If on, messages value of ‘py-result’ for instance."
   (when (called-interactively-p 'interactive)
     (message "py-verbose-p: %s" py-verbose-p)))
 
-(defun py-switch-py-verbose-on ()
-  "Switch the value of ‘py-verbose-p’."
+(defun py-verbose-on ()
+  "Switch the value of ‘py-verbose-p’ on."
   (interactive)
   (setq py-verbose-p t))
 
-(defun py-switch-py-verbose-off ()
-  "Switch the value of ‘py-verbose-p’"
+(defun py-verbose-off ()
+  "Switch the value of ‘py-verbose-p’ off."
   (interactive)
   (setq py-verbose-p nil))
 
