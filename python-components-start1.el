@@ -1259,7 +1259,7 @@ Return and move to match-beginning if successful"
 
 (defun py--beginning-of-statement-p (&optional pps)
   "Return ‘t’, if cursor is at the beginning of a ‘statement’, nil otherwise."
-  (interactive) 
+  (interactive)
   (save-excursion
     (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
       (and (not (or (nth 8 pps) (nth 1 pps)))
@@ -2520,11 +2520,19 @@ process buffer for a list of commands.)"
 	(setq py-modeline-display (py--update-lighter this-buffer-name))))
     (if (setq proc (get-buffer-process buffer))
 	(progn
-	  (with-current-buffer buffer
-            (when py-register-shell-buffer-p
-              (funcall (lambda nil (window-configuration-to-register 121))))
-	    (unless fast (py-shell-mode))
-	    (and internal (set-process-query-on-exit-flag proc nil)))
+          (when py-register-shell-buffer-p
+            (save-excursion
+              (save-restriction
+                (delete-other-windows)
+	        (with-current-buffer buffer
+                  (switch-to-buffer (current-buffer))
+                  (goto-char (point-max))
+                  (sit-for 0.1) 
+                  ;; (funcall 'window-configuration-to-register 121)))))
+                  (funcall 'window-configuration-to-register py-register-char)
+                  ))))
+	  (unless fast (py-shell-mode))
+	  (and internal (set-process-query-on-exit-flag proc nil))
 	  (when (or interactivep
 		    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
 	    (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
