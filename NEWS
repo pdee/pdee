@@ -23,9 +23,13 @@ Prepared for version 6.3.2
   according to ‘py-register-char’, default is ‘y’
   C-x r j y
   then should jump to the py-shell buffer
-  
+
+- ‘py-toggle-py-register-shell-buffer-p’  new command
+
 - Use ‘pyflakes3’
+
 - ‘py-python-edit-version’ now defaults to "python3",
+
 - ‘py-up’ as pythonic ‘backward-sexp’,
   ‘py-down’ as ‘forward-sexp’
    consider  
@@ -36,6 +40,7 @@ Prepared for version 6.3.2
   permits disabling python-mode native completion.
 
 - ‘isympy3’, am IPython console for SymPy
+
 - ‘run-travis-ci.sh’ renamed into generic ‘run-tests.sh’
 
 New in version 6.3.1

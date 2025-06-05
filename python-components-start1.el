@@ -2523,12 +2523,10 @@ process buffer for a list of commands.)"
           (when py-register-shell-buffer-p
             (save-excursion
               (save-restriction
-                (delete-other-windows)
 	        (with-current-buffer buffer
-                  (switch-to-buffer (current-buffer))
+                  (switch-to-buffer (current-buffer)) 
                   (goto-char (point-max))
                   (sit-for 0.1) 
-                  ;; (funcall 'window-configuration-to-register 121)))))
                   (funcall 'window-configuration-to-register py-register-char)
                   ))))
 	  (unless fast (py-shell-mode))

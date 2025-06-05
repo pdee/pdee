@@ -108,7 +108,8 @@ REPEAT - count and consider repeats"
 	;; (setq done t)
 	(py-forward-statement orig done repeat))
        ((eq (current-indentation) (current-column))
-	(setq done (< 0 (abs (py--skip-to-comment-or-semicolon))))
+        ;; ‘py--skip-to-comment-or-semicolon’ may return nil
+	(setq done (ignore-errors (< 0 (ignore-errors (abs (py--skip-to-comment-or-semicolon))))))
         (and done (skip-chars-backward " \t\r\n\f"))
 	(setq pps (parse-partial-sexp orig (point)))
 	(if (nth 1 pps)
