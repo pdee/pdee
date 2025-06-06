@@ -327,17 +327,13 @@ Pass ARG to the command ‘yank’."
   (setq py-electric-colon-active-p (not py-electric-colon-active-p))
   (when (and py-verbose-p (called-interactively-p 'interactive)) (message "py-electric-colon-active-p: %s" py-electric-colon-active-p)))
 
-(defun py-toggle-py-electric-backspace ()
+(defun py-toggle-py-electric-backspace-mode ()
   "Toggle py-electric-backspace-mode."
   (interactive)
   (setq py-electric-backspace-mode (not py-electric-backspace-mode))
   (if py-electric-backspace-mode  (py-electric-backspace-mode 1) (py-electric-backspace-mode -1))
   (when (and py-verbose-p (called-interactively-p 'interactive)) (message "py-electric-backspace-mode: %s" py-electric-backspace-mode)))
 
-;; TODO: PRouleau: It might be beneficial to have toggle commands for all
-;;       the electric behaviours, not just the electric colon.
-
-;; required for pending-del and delsel modes
 (put (quote py-electric-colon) 'delete-selection t) ;delsel
 (put (quote py-electric-colon) 'pending-delete t) ;pending-del
 (put (quote py-electric-backspace) 'delete-selection 'supersede) ;delsel

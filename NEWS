@@ -1,11 +1,19 @@
 Python Mode News
 ================
 
-Prepared for version 6.3.2
+New in version 6.3.1
 -----------------------
+- ‘py-up’ new command as pythonic ‘backward-sexp’,
+  ‘py-down’ as ‘forward-sexp’
+   consider  
+   (define-key python-mode-map [(control meta f)] (quote py-down))
+   (define-key python-mode-map [(control meta b)] (quote py-up))
+
 - ‘py-electric-backspace-mode’ is a minor-mode now.
 
-  Call M-x customize-variable ‘py-electric-backspace-p’ RET in
+  ‘py-toggle-py-electric-backspace-mode’ new command
+
+  M-x customize-variable ‘py-electric-backspace-p’ RET in
   order to change the default.
 
 - TAB calls ‘py-indent-line’ by default.
@@ -30,23 +38,10 @@ Prepared for version 6.3.2
 
 - ‘py-python-edit-version’ now defaults to "python3",
 
-- ‘py-up’ as pythonic ‘backward-sexp’,
-  ‘py-down’ as ‘forward-sexp’
-   consider  
-   (define-key python-mode-map [(control meta f)] (quote py-down))
-   (define-key python-mode-map [(control meta b)] (quote py-up))
-
 - Customizable boolean ‘py-do-completion-p’ 
   permits disabling python-mode native completion.
 
-- ‘isympy3’, am IPython console for SymPy
-
 - ‘run-travis-ci.sh’ renamed into generic ‘run-tests.sh’
-
-New in version 6.3.1
------------------------
-
-Minor bugfixes
 
 New in version 6.3.0
 -----------------------
