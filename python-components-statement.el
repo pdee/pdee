@@ -1,6 +1,6 @@
 ;;; python-components-statement.el -- Searching downwards in buffer -*- lexical-binding: t; -*-
 
-;; URL: https://gitlab.com/ar-mode-devs
+;; URL: https://gitlab.com/groups/python-mode-devs
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,6 @@ REPEAT - count and consider repeats"
       ;; (origline (or origline (py-count-lines)))
       (cond
        ;; which-function-mode, lp:1235375
-       ;; (re-search-forward "'ar-\\([[:alpha:]-]+" nil t 1)
        ((< py-max-specpdl-size repeat)
 	(error "forward-statement reached loops max. If no error, customize ‘max-specpdl-size’"))
        ((looking-at (symbol-value (quote py-def-or-class-re)))
@@ -157,7 +156,7 @@ Optional MAXINDENT: do not stop if indentation is larger"
  	;;        (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
 	 ((< py-max-specpdl-size repeat)
-	  (error "ar-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
+	  (error "py-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
          ((and (bolp) (eolp))
           (skip-chars-backward " \t\r\n\f")
           (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))

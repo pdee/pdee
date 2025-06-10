@@ -1,6 +1,6 @@
 ;;; python-components-start-Zf98zM.el -- Searching downwards in buffer -*- lexical-binding: t; -*-
 
-;; URL: https://gitlab.com/ar-mode-devs
+;; URL: https://gitlab.com/groups/python-mode-devs
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@ Default is nil.
 
 Also used by navigation"
   :type 'boolean
-  :tag "ar-mark-decorators")
+  :tag "py-mark-decorators")
 
 (defun py-end-of-string ()
   "Go to end of string at point if any, if successful return position. "

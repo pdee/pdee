@@ -1,7 +1,7 @@
 ;;; py-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*-
 
 
-;; URL: https://gitlab.com/ar-mode-devs
+;; URL: https://gitlab.com/groups/python-mode-devs
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify

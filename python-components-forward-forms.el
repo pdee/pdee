@@ -3,7 +3,7 @@
 ;; This file is generated. Edits here might not be persistent.
 
 
-;; URL: https://gitlab.com/ar-mode-devs
+;; URL: https://gitlab.com/groups/python-mode-devs
 ;; Keywords: languages
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -39,7 +39,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘assignment’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-assignment’."
+See also ‘py-down-assignment’."
   (interactive)
   (py-forward-assignment nil t))
 
@@ -66,7 +66,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-block’."
+See also ‘py-down-block’."
   (interactive)
   (py-forward-block nil t))
 
@@ -87,7 +87,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘block-or-clause’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-block-or-clause’."
+See also ‘py-down-block-or-clause’."
   (interactive)
   (py-forward-block-or-clause nil t))
 
@@ -108,7 +108,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘class’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-class’."
+See also ‘py-down-class’."
   (interactive)
   (py-forward-class nil t))
 
@@ -129,7 +129,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘clause’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-clause’."
+See also ‘py-down-clause’."
   (interactive)
   (py-forward-clause nil t))
 
@@ -150,7 +150,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘def’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-def’."
+See also ‘py-down-def’."
   (interactive)
   (py-forward-def nil t))
 
@@ -171,7 +171,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘def-or-class’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-def-or-class’."
+See also ‘py-down-def-or-class’."
   (interactive)
   (py-forward-def-or-class nil t))
 
@@ -192,7 +192,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘elif-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-elif-block’."
+See also ‘py-down-elif-block’."
   (interactive)
   (py-forward-elif-block nil t))
 
@@ -213,7 +213,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘else-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-else-block’."
+See also ‘py-down-else-block’."
   (interactive)
   (py-forward-else-block nil t))
 
@@ -234,7 +234,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘except-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-except-block’."
+See also ‘py-down-except-block’."
   (interactive)
   (py-forward-except-block nil t))
 
@@ -255,7 +255,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘for-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-for-block’."
+See also ‘py-down-for-block’."
   (interactive)
   (py-forward-for-block nil t))
 
@@ -276,7 +276,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘if-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-if-block’."
+See also ‘py-down-if-block’."
   (interactive)
   (py-forward-if-block nil t))
 
@@ -297,7 +297,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘minor-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-minor-block’."
+See also ‘py-down-minor-block’."
   (interactive)
   (py-forward-minor-block nil t))
 
@@ -318,7 +318,7 @@ Optional BOL: go to beginning of line following end-position"
   "Goto beginning of line following end of ‘try-block’.
 
 Return position reached, if successful, nil otherwise.
-See also ‘ar-down-try-block’."
+See also ‘py-down-try-block’."
   (interactive)
   (py-forward-try-block nil t))
 
