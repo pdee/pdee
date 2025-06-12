@@ -245,7 +245,7 @@ New in version 6.2.0
 
 - ‘py-shell’ uses new ‘py-shell-mode’, ‘py-shell-mode-map’
   M-x describe-mode RET mentions edit available commands
-  Menu "Py-Shell"
+  Menu "py-Shell"
 
 - Improved customization of Python2, Python3, IPython executables
   receive defaults depending from system
@@ -286,7 +286,7 @@ New in version 6.2.0
   Return the Python symbol under cursor
 
 - py-report-comint-variable-setting
-  Display Py-shell' comint-mode variables of interest.
+  Display py-shell' comint-mode variables of interest.
 
 - variables-state
   Diplays state of python-mode variables in an org-mode buffer

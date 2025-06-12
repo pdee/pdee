@@ -2224,7 +2224,7 @@ See also ‘py-execute-directory’Use `M-x customize-variable' to set it perman
 		 (not py-fileless-buffer-use-default-directory-p))
 	   :help "When ‘py-use-current-dir-when-execute-p’ is non-nil and no buffer-file exists, value of ‘default-directory’ sets current working directory of Python output shellUse `M-x customize-variable' to set it permanently"
 	   :style toggle :selected py-fileless-buffer-use-default-directory-p])
-         ["Py-electric-backspace-mode" py-electric-backspace-mode
+         ["py-electric-backspace-mode" py-electric-backspace-mode
 	  :help " ‘py-electric-backspace-mode’
 If <backspace> key deletes one or more of whitespace chars left from point .
 Default is nil."
@@ -2329,7 +2329,7 @@ set it permanently"
 See bug report at launchpad, lp:944093. Use `M-x customize-variable' to set it permanently"
 	  :style toggle :selected py-edit-only-p])))
       ("Other"
-       ["Py-electric-backspace-mode" py-electric-backspace-mode
+       ["py-electric-backspace-mode" py-electric-backspace-mode
 	:help " ‘py-electric-backspace-mode’
 If <backspace> key deletes one or more of whitespace chars left from point ."]
        ["Boolswitch" py-boolswitch

@@ -2473,8 +2473,8 @@ or ‘py-ipython0.11-completion-command-string’.
           (if (funcall ok py-custom-temp-directory)
               (setq erg (expand-file-name py-custom-temp-directory))
             (if (file-directory-p (expand-file-name py-custom-temp-directory))
-                (error "Py-custom-temp-directory set but not writable")
-              (error "Py-custom-temp-directory not an existing directory"))))
+                (error "py-custom-temp-directory set but not writable")
+              (error "py-custom-temp-directory not an existing directory"))))
      (and (funcall ok (getenv "TMPDIR"))
           (setq erg (getenv "TMPDIR")))
      (and (funcall ok (getenv "TEMP/TMP"))
@@ -3022,7 +3022,7 @@ Customizing ‘py-block-or-clause-re-raw’  will change values here")
     (,(rx line-start "> " (group (1+ (not (any "(\"<"))))
           "(" (group (1+ digit)) ")" (1+ (not (any "("))) "()")
      1 2))
-  "Fetch errors from Py-shell.
+  "Fetch errors from py-shell.
 hooked into ‘compilation-error-regexp-alist’"
   :type '(alist string)
   :tag "py-compilation-regexp-alist"

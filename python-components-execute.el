@@ -160,7 +160,7 @@ Receives a ‘buffer-name’ as argument"
   "Guess the ‘buffer-name’ core string according to ARGPROMPT DEDICATED."
   (when (and (not dedicated) argprompt
 	     (eq 4 (prefix-numeric-value argprompt)))
-    (read-buffer "Py-Shell buffer: "
+    (read-buffer "py-Shell buffer: "
 		 (generate-new-buffer-name (py--choose-buffer-name)))))
 
 (defun py--configured-shell (name)

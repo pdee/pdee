@@ -106,54 +106,6 @@
 
 (defun all-mode-setting ()
   (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
-  )
-
-(defun py--update-version-dependent-keywords ()
-  (let ((kw-py2 '(("\\<print\\>" . 'font-lock-keyword-face)
-                  ("\\<file\\>" . 'py-builtins-face)))
-        (kw-py3 '(("\\<print\\>" . 'py-builtins-face))))
-    (font-lock-remove-keywords 'python-mode kw-py3)
-    (font-lock-remove-keywords 'python-mode kw-py2)
-    ;; avoid to run py-choose-shell again from ‘py--fix-start’
-    (cond ((string-match "ython3" py-python-edit-version)
-           (font-lock-add-keywords 'python-mode kw-py3 t))
-          (t (font-lock-add-keywords 'python-mode kw-py2 t)))))
-
-(define-derived-mode python-mode prog-mode python-mode-modeline-display
-  "Major mode for editing Python files.
-
-To submit a report, enter ‘\\[py-submit-bug-report]’
-from a‘python-mode’ buffer.
-Do ‘\\[py-describe-mode]’ for detailed documentation.
-To see what version of ‘python-mode’ you are running,
-enter ‘\\[py-version]’.
-
-This mode knows about Python indentation,
-tokens, comments (and continuation lines.
-Paragraphs are separated by blank lines only.
-
-COMMANDS
-
-‘py-shell’\tStart an interactive Python interpreter in another window
-‘py-execute-statement’\tSend statement at point to Python default interpreter
-‘py-backward-statement’\tGo to the initial line of a simple statement
-
-etc.
-
-See available commands listed in files commands-python-mode at directory doc
-
-VARIABLES
-
-‘py-indent-offset’	indentation increment
-‘py-shell-name’		shell command to invoke Python interpreter
-‘py-split-window-on-execute’		When non-nil split windows
-‘py-switch-buffers-on-execute-p’	When non-nil switch to the Python output buffer
-
-\\{python-mode-map}"
-  :group 'python-mode
-  ;; load known shell listed in
-  ;; Local vars
-  (all-mode-setting)
   (set (make-local-variable 'electric-indent-inhibit) nil)
   (set (make-local-variable 'outline-regexp)
        (concat (mapconcat 'identity
@@ -290,6 +242,53 @@ VARIABLES
   (when py-use-menu-p
     (py-define-menu python-mode-map))
   (force-mode-line-update))
+
+(defun py--update-version-dependent-keywords ()
+  (let ((kw-py2 '(("\\<print\\>" . 'font-lock-keyword-face)
+                  ("\\<file\\>" . 'py-builtins-face)))
+        (kw-py3 '(("\\<print\\>" . 'py-builtins-face))))
+    (font-lock-remove-keywords 'python-mode kw-py3)
+    (font-lock-remove-keywords 'python-mode kw-py2)
+    ;; avoid to run py-choose-shell again from ‘py--fix-start’
+    (cond ((string-match "ython3" py-python-edit-version)
+           (font-lock-add-keywords 'python-mode kw-py3 t))
+          (t (font-lock-add-keywords 'python-mode kw-py2 t)))))
+
+(define-derived-mode python-mode prog-mode python-mode-modeline-display
+  "Major mode for editing Python files.
+
+To submit a report, enter ‘\\[py-submit-bug-report]’
+from a‘python-mode’ buffer.
+Do ‘\\[py-describe-mode]’ for detailed documentation.
+To see what version of ‘python-mode’ you are running,
+enter ‘\\[py-version]’.
+
+This mode knows about Python indentation,
+tokens, comments (and continuation lines.
+Paragraphs are separated by blank lines only.
+
+COMMANDS
+
+‘py-shell’\tStart an interactive Python interpreter in another window
+‘py-execute-statement’\tSend statement at point to Python default interpreter
+‘py-backward-statement’\tGo to the initial line of a simple statement
+
+etc.
+
+See available commands listed in files commands-python-mode at directory doc
+
+VARIABLES
+
+‘py-indent-offset’	indentation increment
+‘py-shell-name’		shell command to invoke Python interpreter
+‘py-split-window-on-execute’		When non-nil split windows
+‘py-switch-buffers-on-execute-p’	When non-nil switch to the Python output buffer
+
+\\{python-mode-map}"
+  :group 'python-mode
+  ;; load known shell listed in
+  ;; Local vars
+  (all-mode-setting))
 
 (define-derived-mode py-shell-mode comint-mode py-modeline-display
   "Major mode for Python shell process.

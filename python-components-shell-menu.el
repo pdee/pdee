@@ -1,4 +1,4 @@
-;; python-components-shell-menu.el --- Provide the Py-Shell mode menu -*- lexical-binding: t; -*-
+;; python-components-shell-menu.el --- Provide the py-Shell mode menu -*- lexical-binding: t; -*-
 
 ;; This file not shipped as part of GNU Emacs.
 
@@ -26,8 +26,8 @@
      ;; (easy-menu-define py-menu map "Python Tools"
      ;;           `("PyTools"
      (easy-menu-define
-       py-shell-menu py-shell-mode-map "Py-Shell Mode menu"
-       `("Py-Shell"
+       py-shell-menu py-shell-mode-map "py-Shell Mode menu"
+       `("py-Shell"
          ("Edit"
           ("Shift"
            ("Shift right"
