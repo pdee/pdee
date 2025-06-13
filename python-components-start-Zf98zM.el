@@ -75,7 +75,7 @@ Also used by navigation"
   "Goto beginning of line where statement start.
 Returns position reached, if successful, nil otherwise.
 
-See also ‘ar-up-statement’"
+See also ‘py-up-statement’"
   (interactive)
   (let* ((orig (point))
          erg)
