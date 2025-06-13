@@ -102,7 +102,7 @@
 ;; (require (quote python-components-named-shells))
 (require (quote python-components-electric))
 (require (quote python-components-virtualenv))
-(require (quote python-abbrev-propose))
+(require (quote python-components-abbrev-propose))
 (require (quote python-components-paragraph))
 (require (quote python-components-section-forms))
 (require (quote python-components-comment))
