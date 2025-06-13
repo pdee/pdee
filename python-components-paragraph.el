@@ -136,13 +136,13 @@
   (interactive "*")
   (save-excursion
     (let* ((strg-start-pos (when (nth 3 pps) (nth 8 pps)))
-	   (n8pps (or strg-start-pos
-		      (when
-			  (equal (string-to-syntax "|")
-				 (syntax-after (point)))
-			(and
-			 (< 0 (skip-chars-forward "\"'"))
-			 (nth 3 (parse-partial-sexp (point-min) (point))))))))
+           (n8pps (or strg-start-pos
+                      (when
+                          (equal (string-to-syntax "|")
+                                 (syntax-after (point)))
+                        (and
+                         (< 0 (skip-chars-forward "\"'"))
+                         (nth 3 (parse-partial-sexp (point-min) (point))))))))
       (and n8pps (py--docstring-p n8pps)))))
 
 (defun py--string-fence-delete-spaces (&optional start)
@@ -196,7 +196,7 @@
     (forward-line 1)
     (back-to-indentation)
     (unless (or (< end (point)) (py-empty-line-p))
-	  (split-line))))
+          (split-line))))
 
 (defun py-travel-single-words-and-symbols (beg end)
   (skip-chars-forward " \t\r\n\f" end)
@@ -234,24 +234,24 @@ See lp:1066489 "
                                           (skip-chars-forward " \t\r\n\f")
                                           (py--skip-raw-string-front-fence)
                                           (skip-syntax-forward "^|")
-		                          (1+ (point)))))))
+                                          (1+ (point)))))))
     (save-restriction
       ;; do not go backward beyond beginning of string
       (narrow-to-region beg end)
       (let* (;; Paragraph starts with beginning of string, skip the fence-chars
-	     (innerbeg (copy-marker
+             (innerbeg (copy-marker
                         (progn (goto-char docstring)
                                ;; (max
                                ;;  (py--skip-raw-string-front-fence)
-		               ;;  (progn (unless (looking-at paragraph-start)
-		               ;;           (backward-paragraph))
+                               ;;  (progn (unless (looking-at paragraph-start)
+                               ;;           (backward-paragraph))
                                ;;         (skip-chars-forward " \t\r\n\f")
-		               ;;         (point)))
+                               ;;         (point)))
                                ;; (max
                                (py--skip-raw-string-front-fence)
                                (point))))
-	     (innerend (copy-marker (progn (goto-char end) (skip-chars-backward "\\'\"") (skip-chars-backward " \t\r\n\f") (point))))
-	     (multi-line-p (string-match "\n" (buffer-substring-no-properties innerbeg innerend)))
+             (innerend (copy-marker (progn (goto-char end) (skip-chars-backward "\\'\"") (skip-chars-backward " \t\r\n\f") (point))))
+             (multi-line-p (string-match "\n" (buffer-substring-no-properties innerbeg innerend)))
              ;; (paragraph-separate (concat py-symbol-re "\\|" py-star-labelled-re "\\|" py-colon-labelled-re "\\|" paragraph-separate))
              ;; (paragraph-start (concat py-symbol-re "\\|" py-star-labelled-re "\\|" py-colon-labelled-re "\\|"  paragraph-start))
              parabeg paraend on-first-line)
@@ -290,47 +290,47 @@ JUSTIFY should be used (if applicable) as in ‘fill-paragraph’.
 Fill according to ‘py-docstring-style’ "
   (interactive "*")
   (let* ((justify (or justify (if current-prefix-arg 'full t)))
-	 ;; (style (or style py-docstring-style))
-	 (pps (or pps (parse-partial-sexp (point-min) (point))))
-	 (orig (copy-marker (point)))
-	 ;; (docstring (or docstring (py--in-or-behind-or-before-a-docstring pps)))
-	 (docstring (cond (docstring
-			   (if (not (number-or-marker-p docstring))
-			       (py--in-or-behind-or-before-a-docstring pps))
-			   docstring)
-			  (t (py--in-or-behind-or-before-a-docstring pps))))
-	 (beg (and (nth 3 pps) (nth 8 pps)))
-	 (tqs (progn (and beg (goto-char beg) (looking-at "\"\"\"\\|'''"))))
-	 (end (copy-marker (if tqs
-			       (or
-				(progn (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
-				(goto-char orig)
-				(line-end-position))
-			     (or (progn (goto-char beg) (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
-				 (goto-char orig)
-				 (line-end-position))))))
+         ;; (style (or style py-docstring-style))
+         (pps (or pps (parse-partial-sexp (point-min) (point))))
+         (orig (copy-marker (point)))
+         ;; (docstring (or docstring (py--in-or-behind-or-before-a-docstring pps)))
+         (docstring (cond (docstring
+                           (if (not (number-or-marker-p docstring))
+                               (py--in-or-behind-or-before-a-docstring pps))
+                           docstring)
+                          (t (py--in-or-behind-or-before-a-docstring pps))))
+         (beg (and (nth 3 pps) (nth 8 pps)))
+         (tqs (progn (and beg (goto-char beg) (looking-at "\"\"\"\\|'''"))))
+         (end (copy-marker (if tqs
+                               (or
+                                (progn (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
+                                (goto-char orig)
+                                (line-end-position))
+                             (or (progn (goto-char beg) (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
+                                 (goto-char orig)
+                                 (line-end-position))))))
     (save-restriction
       ;; do not go backward beyond beginning of string
       (narrow-to-region beg (point-max))
       (goto-char orig)
       (when beg
         (if docstring
-	    (py--fill-docstring docstring beg end)
-	  (if (not tqs)
-	      (if (py-preceding-line-backslashed-p)
-		  (progn
-		    (setq end (copy-marker (line-end-position)))
-		    (narrow-to-region (line-beginning-position) end)
-		    (fill-region (line-beginning-position) end justify t)
-		    (when (< 1 (py-count-lines))
-		      (py--continue-lines-region (point-min) end)))
-		(narrow-to-region beg end)
-		(fill-region beg end justify t)
-		(when
-		    ;; counting in narrowed buffer
-		    (< 1 (py-count-lines))
-		  (py--continue-lines-region beg end)))
-	    (fill-region beg end justify)))))))
+            (py--fill-docstring docstring beg end)
+          (if (not tqs)
+              (if (py-preceding-line-backslashed-p)
+                  (progn
+                    (setq end (copy-marker (line-end-position)))
+                    (narrow-to-region (line-beginning-position) end)
+                    (fill-region (line-beginning-position) end justify t)
+                    (when (< 1 (py-count-lines))
+                      (py--continue-lines-region (point-min) end)))
+                (narrow-to-region beg end)
+                (fill-region beg end justify t)
+                (when
+                    ;; counting in narrowed buffer
+                    (< 1 (py-count-lines))
+                  (py--continue-lines-region beg end)))
+            (fill-region beg end justify)))))))
 
 (defun py--continue-lines-region (beg end)
   (save-excursion
@@ -344,42 +344,42 @@ Fill according to ‘py-docstring-style’ "
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
   (let* ((pps (or pps (parse-partial-sexp (point-min) (point))))
-	 (docstring (unless (not py-docstring-style) (py--in-or-behind-or-before-a-docstring pps)))
-	 (fill-column py-comment-fill-column)
-	 (in-string (nth 3 pps)))
+         (docstring (unless (not py-docstring-style) (py--in-or-behind-or-before-a-docstring pps)))
+         (fill-column py-comment-fill-column)
+         (in-string (nth 3 pps)))
     (cond ((or (nth 4 pps)
-	       (and (bolp) (looking-at "[ \t]*#[# \t]*")))
-	   (py-fill-comment))
-	  (docstring
-	   (setq fill-column py-docstring-fill-column)
-	   (py--fill-docstring docstring
-			       ;; current indentation
-			       ;; (save-excursion (and (nth 3 pps) (goto-char (nth 8 pps)) (current-indentation)))
+               (and (bolp) (looking-at "[ \t]*#[# \t]*")))
+           (py-fill-comment))
+          (docstring
+           (setq fill-column py-docstring-fill-column)
+           (py--fill-docstring docstring
+                               ;; current indentation
+                               ;; (save-excursion (and (nth 3 pps) (goto-char (nth 8 pps)) (current-indentation)))
                                ))
-	  (t
-	   (let* ((beg (or beg (save-excursion
-				 (if (looking-at paragraph-start)
-				     (point)
-				   (backward-paragraph)
-				   (when (looking-at paragraph-start)
-				     (point))))
-			   (and (nth 3 pps) (nth 8 pps))))
-		  (end (or end
-			   (when beg
-			     (save-excursion
-			       (or
-				(and in-string
-				     (progn
-				       (goto-char (nth 8 pps))
-				       (setq tqs (looking-at "\"\"\"\\|'''"))
-				       (forward-sexp) (point)))
-				(progn
-				  (forward-paragraph)
-				  (when (looking-at paragraph-separate)
-				    (point)))))))))
-	     (and beg end (fill-region beg end))
-	     (when (and in-string (not tqs))
-	       (py--continue-lines-region beg end))))))
+          (t
+           (let* ((beg (or beg (save-excursion
+                                 (if (looking-at paragraph-start)
+                                     (point)
+                                   (backward-paragraph)
+                                   (when (looking-at paragraph-start)
+                                     (point))))
+                           (and (nth 3 pps) (nth 8 pps))))
+                  (end (or end
+                           (when beg
+                             (save-excursion
+                               (or
+                                (and in-string
+                                     (progn
+                                       (goto-char (nth 8 pps))
+                                       (setq tqs (looking-at "\"\"\"\\|'''"))
+                                       (forward-sexp) (point)))
+                                (progn
+                                  (forward-paragraph)
+                                  (when (looking-at paragraph-separate)
+                                    (point)))))))))
+             (and beg end (fill-region beg end))
+             (when (and in-string (not tqs))
+               (py--continue-lines-region beg end))))))
   (jump-to-register py--windows-config-register))
 
 (defun py-fill-string-or-comment ()
@@ -387,7 +387,7 @@ Fill according to ‘py-docstring-style’ "
   (unless (< (current-column) fill-column)
   (let ((pps (parse-partial-sexp (point-min) (point))))
     (if (nth 3 pps)
-	(py-fill-string nil nil pps)
+        (py-fill-string nil nil pps)
       ;; (py-fill-comment pps)
       (do-auto-fill)
       ))))

@@ -37,14 +37,14 @@
   (save-excursion
     (beginning-of-line)
     (unless
-	;; in string
-	(nth 3 (parse-partial-sexp (point-min) (point)))
+        ;; in string
+        (nth 3 (parse-partial-sexp (point-min) (point)))
       (and (eq (current-indentation)  0)
-	   (looking-at "[[:alpha:]_]+")
-	   ;; (or (looking-at py-def-or-class-re)
+           (looking-at "[[:alpha:]_]+")
+           ;; (or (looking-at py-def-or-class-re)
            ;;     (looking-at py-block-or-clause-re)
-	   ;;     (looking-at py-assignment-re))
-	   ))))
+           ;;     (looking-at py-assignment-re))
+           ))))
 
 (defun py-indent-line-outmost (&optional arg)
   "Indent the current line to the outmost reasonable indent.
@@ -89,10 +89,10 @@ Requires BEG, END as the boundery of region"
       (narrow-to-region beg end)
       (goto-char beg)
       (let ((end (copy-marker end)))
-	(forward-line 1)
-	(narrow-to-region (line-beginning-position) end)
-	(py--re-indent-line)
-	(while (< (line-end-position) end)
+        (forward-line 1)
+        (narrow-to-region (line-beginning-position) end)
+        (py--re-indent-line)
+        (while (< (line-end-position) end)
           (forward-line 1)
           (py--re-indent-line))))))
 
@@ -108,44 +108,44 @@ Requires BEG, END as the boundery of region"
 (defun py--indent-line-intern (need cui indent col &optional beg end region dedent)
   (let (erg)
     (if py-tab-indent
-	(progn
-	  (and py-tab-indents-region-p region
-	       (py--indent-fix-region-intern beg end))
-	  (cond
-	   ((bolp)
-	    (if (and py-tab-shifts-region-p region)
+        (progn
+          (and py-tab-indents-region-p region
+               (py--indent-fix-region-intern beg end))
+          (cond
+           ((bolp)
+            (if (and py-tab-shifts-region-p region)
                 (while (< (current-indentation) need)
                   (py-shift-region-right 1))
-	      (beginning-of-line)
-	      (delete-horizontal-space)
-	      (indent-to need)))
+              (beginning-of-line)
+              (delete-horizontal-space)
+              (indent-to need)))
            ;;
-	   ((< need cui)
-	    (if (and py-tab-shifts-region-p region)
-		(progn
-		  (when (eq (point) (region-end))
-		    (exchange-point-and-mark))
-		  (while (< 0 (current-indentation))
-		    (py-shift-region-left 1)))
-	      (beginning-of-line)
-	      (delete-horizontal-space)
-	      (indent-to need)))
+           ((< need cui)
+            (if (and py-tab-shifts-region-p region)
+                (progn
+                  (when (eq (point) (region-end))
+                    (exchange-point-and-mark))
+                  (while (< 0 (current-indentation))
+                    (py-shift-region-left 1)))
+              (beginning-of-line)
+              (delete-horizontal-space)
+              (indent-to need)))
            ;;
-	   ((eq need cui)
-	    (if (or dedent
-		    (eq this-command last-command)
-		    (eq this-command (quote py-indent-line)))
-		(if (and py-tab-shifts-region-p region)
-		    (while (and (goto-char beg) (< 0 (current-indentation)))
-		      (py-shift-region-left 1))
-		  (beginning-of-line)
-		  (delete-horizontal-space)
-		  (if (<= (line-beginning-position) (+ (point) (- col cui)))
-		      (forward-char (- col cui))
-		    (beginning-of-line)))))
+           ((eq need cui)
+            (if (or dedent
+                    (eq this-command last-command)
+                    (eq this-command (quote py-indent-line)))
+                (if (and py-tab-shifts-region-p region)
+                    (while (and (goto-char beg) (< 0 (current-indentation)))
+                      (py-shift-region-left 1))
+                  (beginning-of-line)
+                  (delete-horizontal-space)
+                  (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                      (forward-char (- col cui))
+                    (beginning-of-line)))))
            ;;
-	   ((< cui need)
-	    (if (and py-tab-shifts-region-p region)
+           ((< cui need)
+            (if (and py-tab-shifts-region-p region)
                 (py-shift-region-right 1)
               (beginning-of-line)
               (delete-horizontal-space)
@@ -156,31 +156,31 @@ Requires BEG, END as the boundery of region"
                 (indent-to erg))
               (forward-char (- col cui))))
            ;;
-	   (t
-	    (if (and py-tab-shifts-region-p region)
+           (t
+            (if (and py-tab-shifts-region-p region)
                 (while (< (current-indentation) need)
                   (py-shift-region-right 1))
-	      (beginning-of-line)
-	      (delete-horizontal-space)
-	      (indent-to need)
-	      (back-to-indentation)
-	      (if (<= (line-beginning-position) (+ (point) (- col cui)))
-		  (forward-char (- col cui))
-		(beginning-of-line))))))
+              (beginning-of-line)
+              (delete-horizontal-space)
+              (indent-to need)
+              (back-to-indentation)
+              (if (<= (line-beginning-position) (+ (point) (- col cui)))
+                  (forward-char (- col cui))
+                (beginning-of-line))))))
       (insert-tab))))
 
 (defun py--indent-line-or-region-base (beg end region cui need arg this-indent-offset col &optional dedent)
   (cond ((eq 4 (prefix-numeric-value arg))
-	 (if (and (eq cui (current-indentation))
-		  (<= need cui))
-	     (if indent-tabs-mode (insert "\t")(insert (make-string py-indent-offset 32)))
-	   (beginning-of-line)
-	   (delete-horizontal-space)
-	   (indent-to (+ need py-indent-offset))))
-	((not (eq 1 (prefix-numeric-value arg)))
-	 (py-smart-indentation-off)
-	 (py--indent-line-intern need cui this-indent-offset col beg end region dedent))
-	(t (py--indent-line-intern need cui this-indent-offset col beg end region dedent))))
+         (if (and (eq cui (current-indentation))
+                  (<= need cui))
+             (if indent-tabs-mode (insert "\t")(insert (make-string py-indent-offset 32)))
+           (beginning-of-line)
+           (delete-horizontal-space)
+           (indent-to (+ need py-indent-offset))))
+        ((not (eq 1 (prefix-numeric-value arg)))
+         (py-smart-indentation-off)
+         (py--indent-line-intern need cui this-indent-offset col beg end region dedent))
+        (t (py--indent-line-intern need cui this-indent-offset col beg end region dedent))))
 
 (defun py--calculate-indent-backwards (cui indent-offset)
   "Return the next reasonable indent lower than current indentation.
@@ -219,45 +219,45 @@ Optional arg DEDENT: force dedent.
   (unless (eq this-command last-command)
     (setq py-already-guessed-indent-offset nil))
   (let ((orig (copy-marker (point)))
-	;; TAB-leaves-point-in-the-wrong-lp-1178453-test
-	(region (use-region-p))
+        ;; TAB-leaves-point-in-the-wrong-lp-1178453-test
+        (region (use-region-p))
         cui
-	outmost
-	col
-	beg
-	end
-	need
-	this-indent-offset)
+        outmost
+        col
+        beg
+        end
+        need
+        this-indent-offset)
     (and region
-	 (setq beg (region-beginning))
-	 (setq end (region-end))
-	 (goto-char beg))
+         (setq beg (region-beginning))
+         (setq end (region-end))
+         (goto-char beg))
     (setq cui (current-indentation))
     (setq col (current-column))
     (setq this-indent-offset
-	  (cond ((and py-smart-indentation (not (eq this-command last-command)))
-		 (py-guess-indent-offset))
-		((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
-		 py-already-guessed-indent-offset)
-		(t py-indent-offset)))
+          (cond ((and py-smart-indentation (not (eq this-command last-command)))
+                 (py-guess-indent-offset))
+                ((and py-smart-indentation (eq this-command last-command) py-already-guessed-indent-offset)
+                 py-already-guessed-indent-offset)
+                (t py-indent-offset)))
     (setq outmost (py-compute-indentation nil nil nil nil nil nil nil this-indent-offset))
     ;; now choose the indent
     (unless (and (not dedent)(not (eq this-command last-command))(eq outmost (current-indentation)))
       (setq need
-	    (cond ((eq this-command last-command)
-		   (if (bolp)
-		       ;; jump forward to max indent
-		       outmost
-		     (py--calculate-indent-backwards cui this-indent-offset)))
-		  ;; (py--calculate-indent-backwards cui this-indent-offset)))))
-		  (t
-		   outmost
-		   )))
+            (cond ((eq this-command last-command)
+                   (if (bolp)
+                       ;; jump forward to max indent
+                       outmost
+                     (py--calculate-indent-backwards cui this-indent-offset)))
+                  ;; (py--calculate-indent-backwards cui this-indent-offset)))))
+                  (t
+                   outmost
+                   )))
       (py--indent-line-or-region-base beg end region cui need arg this-indent-offset col dedent)
       (and region (or py-tab-shifts-region-p
-		      py-tab-indents-region-p)
-	   (not (eq (point) orig))
-	   (exchange-point-and-mark))
+                      py-tab-indents-region-p)
+           (not (eq (point) orig))
+           (exchange-point-and-mark))
       (current-indentation))))
 
 (defun py--delete-trailing-whitespace (orig)
@@ -271,42 +271,42 @@ Start from position ORIG"
   (when (or py-newline-delete-trailing-whitespace-p py-trailing-whitespace-smart-delete-p)
     (let ((pos (copy-marker (point))))
       (save-excursion
-	(goto-char orig)
-	(if (py-empty-line-p)
-	    (if (py---emacs-version-greater-23)
-		(delete-trailing-whitespace (line-beginning-position) pos)
-	      (save-restriction
-		(narrow-to-region (line-beginning-position) pos)
-		(delete-trailing-whitespace)))
-	  (skip-chars-backward " \t")
-	  (if (py---emacs-version-greater-23)
-	      (delete-trailing-whitespace (line-beginning-position) pos)
-	    (save-restriction
-	      (narrow-to-region (point) pos)
-	      (delete-trailing-whitespace))))))))
+        (goto-char orig)
+        (if (py-empty-line-p)
+            (if (py---emacs-version-greater-23)
+                (delete-trailing-whitespace (line-beginning-position) pos)
+              (save-restriction
+                (narrow-to-region (line-beginning-position) pos)
+                (delete-trailing-whitespace)))
+          (skip-chars-backward " \t")
+          (if (py---emacs-version-greater-23)
+              (delete-trailing-whitespace (line-beginning-position) pos)
+            (save-restriction
+              (narrow-to-region (point) pos)
+              (delete-trailing-whitespace))))))))
 
 (defun py-newline-and-indent ()
   "Add a newline and indent to outmost reasonable indent.
 When indent is set back manually, this is honoured in following lines."
   (interactive "*")
   (let* ((orig (point))
-	 ;; lp:1280982, deliberatly dedented by user
-	 (this-dedent
-	  (when
-	      ;; (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*" (line-beginning-position)))
-	      (looking-back "^[ \t]+" (line-beginning-position))
-	    (current-column)))
-	 erg)
+         ;; lp:1280982, deliberatly dedented by user
+         (this-dedent
+          (when
+              ;; (and (or (eq 10 (char-after))(eobp))(looking-back "^[ \t]*" (line-beginning-position)))
+              (looking-back "^[ \t]+" (line-beginning-position))
+            (current-column)))
+         erg)
     (newline 1)
     (py--delete-trailing-whitespace orig)
     (setq erg
-	  (cond (this-dedent
-		 (indent-to-column this-dedent))
-		((and py-empty-line-closes-p (or (eq this-command last-command)(py--after-empty-line)))
-		 (indent-to-column (save-excursion (py-backward-statement)(- (current-indentation) py-indent-offset))))
-		(t
-		 (fixup-whitespace)
-		 (indent-to-column (py-compute-indentation)))))
+          (cond (this-dedent
+                 (indent-to-column this-dedent))
+                ((and py-empty-line-closes-p (or (eq this-command last-command)(py--after-empty-line)))
+                 (indent-to-column (save-excursion (py-backward-statement)(- (current-indentation) py-indent-offset))))
+                (t
+                 (fixup-whitespace)
+                 (indent-to-column (py-compute-indentation)))))
     erg))
 
 (defun py-newline-and-dedent ()
@@ -486,7 +486,7 @@ Indented same level, which do not open blocks."
                   (setq beg
                         (when (py-backward-statement)
                           (line-beginning-position)))
-		  ;; backward-statement should not stop in string
+                  ;; backward-statement should not stop in string
                   ;; (not (py-in-string-p))
                   (not (py--beginning-of-block-p))
                   (eq (current-indentation) orig-indent)))
@@ -632,16 +632,16 @@ Returns the string inserted."
 (defun py--edit-set-vars ()
   (save-excursion
     (let ((py--editbeg (when (use-region-p) (region-beginning)))
-	  (py--editend (when (use-region-p) (region-end)))
-	  (pps (parse-partial-sexp (point-min) (point))))
+          (py--editend (when (use-region-p) (region-end)))
+          (pps (parse-partial-sexp (point-min) (point))))
       (when (nth 3 pps)
-	(setq py--editbeg (or py--editbeg (progn (goto-char (nth 8 pps))
-						 (skip-chars-forward (char-to-string (char-after)))(push-mark) (point))))
-	(setq py--editend (or py--editend
-			      (progn (goto-char (nth 8 pps))
-				     (forward-sexp)
-				     (skip-chars-backward (char-to-string (char-before)))
-				     (point)))))
+        (setq py--editbeg (or py--editbeg (progn (goto-char (nth 8 pps))
+                                                 (skip-chars-forward (char-to-string (char-after)))(push-mark) (point))))
+        (setq py--editend (or py--editend
+                              (progn (goto-char (nth 8 pps))
+                                     (forward-sexp)
+                                     (skip-chars-backward (char-to-string (char-before)))
+                                     (point)))))
       (cons (copy-marker py--editbeg) (copy-marker py--editend)))))
 
 (defun py--write-edit ()
@@ -650,7 +650,7 @@ Returns the string inserted."
   (goto-char (point-min))
   (while (re-search-forward "[\"']" nil t 1)
     (or (py-escaped-p)
-	(replace-match (concat "\\\\" (match-string-no-properties 0)))))
+        (replace-match (concat "\\\\" (match-string-no-properties 0)))))
   (jump-to-register py--edit-register)
   ;; (py-restore-window-configuration)
   (delete-region py--docbeg py--docend)
@@ -667,23 +667,23 @@ arg MODE: which buffer-mode used in edit-buffer"
       (window-configuration-to-register py--edit-register)
       (setq py--oldbuf (current-buffer))
       (let* ((orig (point))
-	     (bounds (or (and beg end) (py--edit-set-vars)))
-	     relpos editstrg)
-	(setq py--docbeg (or beg (car bounds)))
-	(setq py--docend (or end (cdr bounds)))
-	;; store relative position in editstrg
-	(setq relpos (1+ (- orig py--docbeg)))
-	(setq editstrg (buffer-substring py--docbeg py--docend))
-	(set-buffer (get-buffer-create buffer-name))
-	(erase-buffer)
-	(switch-to-buffer (current-buffer))
-	(when prefix (insert prefix))
-	(insert editstrg)
-	(when suffix (insert suffix))
-	(funcall mode)
-	(local-set-key [(control c) (control c)] (quote py--write-edit))
-	(goto-char relpos)
-	(message "%s" "Type C-c C-c writes contents back")))))
+             (bounds (or (and beg end) (py--edit-set-vars)))
+             relpos editstrg)
+        (setq py--docbeg (or beg (car bounds)))
+        (setq py--docend (or end (cdr bounds)))
+        ;; store relative position in editstrg
+        (setq relpos (1+ (- orig py--docbeg)))
+        (setq editstrg (buffer-substring py--docbeg py--docend))
+        (set-buffer (get-buffer-create buffer-name))
+        (erase-buffer)
+        (switch-to-buffer (current-buffer))
+        (when prefix (insert prefix))
+        (insert editstrg)
+        (when suffix (insert suffix))
+        (funcall mode)
+        (local-set-key [(control c) (control c)] (quote py--write-edit))
+        (goto-char relpos)
+        (message "%s" "Type C-c C-c writes contents back")))))
 
 (defun py-edit-docstring ()
   "Edit docstring or active region in ‘python-mode’."
@@ -695,17 +695,17 @@ arg MODE: which buffer-mode used in edit-buffer"
   (interactive "*")
   (save-excursion
     (let* ((beg (py-beginning-of-assignment))
-	   (end (copy-marker (py-forward-assignment)))
-	   last)
+           (end (copy-marker (py-forward-assignment)))
+           last)
       (goto-char beg)
       (while (and (not (eobp))(re-search-forward "^\\([ \t]*\\)\[\]\"'{}]" end t 1) (setq last (copy-marker (point))))
-	(save-excursion (goto-char (match-end 1))
-			(when (eq (current-column) (current-indentation)) (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point)))))
-	(when last (goto-char last))))))
+        (save-excursion (goto-char (match-end 1))
+                        (when (eq (current-column) (current-indentation)) (delete-region (point) (progn (skip-chars-backward " \t\r\n\f") (point)))))
+        (when last (goto-char last))))))
 
 (defun py--prettyprint-assignment-intern (beg end name buffer)
   (let ((proc (get-buffer-process buffer))
-	erg)
+        erg)
     ;; (py-send-string "import pprint" proc nil t)
     (py-fast-send-string "import json" proc buffer)
     ;; send the dict/assigment
@@ -724,9 +724,9 @@ arg MODE: which buffer-mode used in edit-buffer"
   (window-configuration-to-register py--windows-config-register)
   (save-excursion
     (let* ((beg (py-beginning-of-assignment))
-	   (name (py-expression))
-	   (end (py-forward-assignment))
-	   (proc-buf (py-shell nil nil "Fast Intern Utility Re-Use")))
+           (name (py-expression))
+           (end (py-forward-assignment))
+           (proc-buf (py-shell nil nil "Fast Intern Utility Re-Use")))
       (py--prettyprint-assignment-intern beg end name proc-buf)))
   (py-restore-window-configuration))
 

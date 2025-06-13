@@ -54,7 +54,7 @@ If region is active, restrict uncommenting at region "
   (dolist (ele py-known-shells)
     (let ((erg (py-install-named-shells-fix-doc ele)))
       (eval (fset (car (read-from-string ele)) (car
-						(read-from-string (concat "(lambda (&optional dedicated args) \"Start a `" erg "' interpreter.
+                                                (read-from-string (concat "(lambda (&optional dedicated args) \"Start a `" erg "' interpreter.
 Optional DEDICATED: with \\\\[universal-argument] start in a new
 dedicated shell.
 Optional ARGS overriding `py-" ele "-command-args'.
@@ -113,7 +113,7 @@ module-qualified names."
   "Toggles comment-auto-fill mode"
   (interactive "P")
   (if (or (and arg (< 0 (prefix-numeric-value arg)))
-	  (and (boundp (quote py-comment-auto-fill-p))(not py-comment-auto-fill-p)))
+          (and (boundp (quote py-comment-auto-fill-p))(not py-comment-auto-fill-p)))
       (progn
         (set (make-local-variable (quote py-comment-auto-fill-p)) t)
         (setq fill-column py-comment-fill-column)
@@ -226,11 +226,11 @@ Return ‘t’, nil otherwise. "
 When already at end, go to EOB."
   (end-of-line)
   (while (and (py--forward-regexp (or regexp "^[[:graph:]]"))
-	      (save-excursion
-		(beginning-of-line)
-		(or
-		 (looking-at py-clause-re)
-		 (looking-at comment-start)))))
+              (save-excursion
+                (beginning-of-line)
+                (or
+                 (looking-at py-clause-re)
+                 (looking-at comment-start)))))
   (beginning-of-line)
   (and (looking-at regexp) (point)))
 
@@ -429,15 +429,15 @@ Eval resulting buffer to install it, see customizable ‘py-extensions’. "
   ;; (message "py--report-end-marker in %s" (current-buffer))
   (if (derived-mode-p 'comint-mode)
       (if (bound-and-true-p comint-last-prompt)
-	  (car-safe comint-last-prompt)
-	(dotimes (_ 3) (when (not (bound-and-true-p comint-last-prompt))(sit-for 1 t)))
-	(and (bound-and-true-p comint-last-prompt)
-	     (car-safe comint-last-prompt)))
+          (car-safe comint-last-prompt)
+        (dotimes (_ 3) (when (not (bound-and-true-p comint-last-prompt))(sit-for 1 t)))
+        (and (bound-and-true-p comint-last-prompt)
+             (car-safe comint-last-prompt)))
     (if (markerp (process-mark process))
-	(process-mark process)
+        (process-mark process)
       (progn
-	(dotimes (_ 3) (when (not (markerp (process-mark process)))(sit-for 1 t)))
-	(process-mark process)))))
+        (dotimes (_ 3) (when (not (markerp (process-mark process)))(sit-for 1 t)))
+        (process-mark process)))))
 
 (defun py-which-def-or-class (&optional orig)
   "Returns concatenated ‘def’ and ‘class’ names.
@@ -703,8 +703,8 @@ If BOL is t, mark from beginning-of-line"
                   (setq end (point))))
     (if (and beg end (<= beg orig) (<= orig end))
         (progn
-	  (cons beg end)
-	  (exchange-point-and-mark))
+          (cons beg end)
+          (exchange-point-and-mark))
       nil)))
 
 (defun py--mark-base-bol (form &optional mark-decorators)
@@ -713,17 +713,17 @@ If BOL is t, mark from beginning-of-line"
          (begcheckform (intern-soft (concat "py--beginning-of-" form "-bol-p")))
          beg end erg)
     (if (functionp begcheckform)
-	(or (setq beg (funcall begcheckform))
-	    (if (functionp begform)
-		(setq beg (funcall begform))
-	      (error (concat "py--mark-base-bol: " begform " do not exist!" ))))
+        (or (setq beg (funcall begcheckform))
+            (if (functionp begform)
+                (setq beg (funcall begform))
+              (error (concat "py--mark-base-bol: " begform " do not exist!" ))))
       (error (concat "py--mark-base-bol: " begcheckform " do not exist!" )))
     (when mark-decorators
       (save-excursion
         (when (setq erg (py-backward-decorator))
           (setq beg erg))))
     (if (functionp endform)
-	(setq end (funcall endform))
+        (setq end (funcall endform))
       (error (concat "py--mark-base-bol: " endform " do not exist!" )))
     (push-mark beg t t)
     (unless end (when (< beg (point))
@@ -839,7 +839,7 @@ Use current region unless optional args BEG END are delivered."
 
   (if (setq py-shell-fontify-p (not py-shell-fontify-p))
       (progn
-	(py-shell-font-lock-turn-on))
+        (py-shell-font-lock-turn-on))
     (py-shell-font-lock-turn-off))
     (when msg (message "py-shell-fontify-p set to: %s" py-shell-fontify-p)))
 
@@ -899,7 +899,7 @@ BEG END deliver the boundaries of region to work within"
   ;; (forward-line 1)
   (while (< (line-end-position) end)
     (if (py-empty-line-p)
-	(forward-line 1)
+        (forward-line 1)
       (py-indent-and-forward)))
   (unless (py-empty-line-p) (py-indent-and-forward)))
 
@@ -934,36 +934,36 @@ Returns imports"
   (let (imports erg)
     (save-excursion
       (if (eq major-mode 'comint-mode)
-	  (progn
-	    (re-search-backward comint-prompt-regexp nil t 1)
-	    (goto-char (match-end 0))
-	    (while (re-search-forward
-		    "import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
-	      (setq imports
-		    (concat
-		     imports
-		     (replace-regexp-in-string
-		      "[\\]\r?\n?\s*" ""
-		      (buffer-substring-no-properties (match-beginning 0) (point))) ";")))
-	    (when (ignore-errors (string-match ";" imports))
-	      (setq imports (split-string imports ";" t))
-	      (dolist (ele imports)
-		(and (string-match "import" ele)
-		     (if erg
-			 (setq erg (concat erg ";" ele))
-		       (setq erg ele)))
-		(setq imports erg))))
-	(goto-char (point-min))
-	(while (re-search-forward
-		"^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
-	  (unless (py--end-of-statement-p)
-	    (py-forward-statement))
-	  (setq imports
-		(concat
-		 imports
-		 (replace-regexp-in-string
-		  "[\\]\r*\n*\s*" ""
-		  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
+          (progn
+            (re-search-backward comint-prompt-regexp nil t 1)
+            (goto-char (match-end 0))
+            (while (re-search-forward
+                    "import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
+              (setq imports
+                    (concat
+                     imports
+                     (replace-regexp-in-string
+                      "[\\]\r?\n?\s*" ""
+                      (buffer-substring-no-properties (match-beginning 0) (point))) ";")))
+            (when (ignore-errors (string-match ";" imports))
+              (setq imports (split-string imports ";" t))
+              (dolist (ele imports)
+                (and (string-match "import" ele)
+                     (if erg
+                         (setq erg (concat erg ";" ele))
+                       (setq erg ele)))
+                (setq imports erg))))
+        (goto-char (point-min))
+        (while (re-search-forward
+                "^import *[A-Za-z_][A-Za-z_0-9].*\\|^from +[A-Za-z_][A-Za-z_0-9.]+ +import .*" nil t)
+          (unless (py--end-of-statement-p)
+            (py-forward-statement))
+          (setq imports
+                (concat
+                 imports
+                 (replace-regexp-in-string
+                  "[\\]\r*\n*\s*" ""
+                  (buffer-substring-no-properties (match-beginning 0) (point))) ";")))))
     ;; (and imports
     ;; (setq imports (replace-regexp-in-string ";$" "" imports)))
     (when (and py-verbose-p (called-interactively-p 'any)) (message "%s" imports))

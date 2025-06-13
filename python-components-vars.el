@@ -552,7 +552,7 @@ Any non-integer value means do not use a different value of
 Any non-integer value means do not use a different value of
 ‘fill-column’ when filling docstrings."
   :type '(choice (integer)
-		 (const :tag "Use the current ‘fill-column’" t))
+                 (const :tag "Use the current ‘fill-column’" t))
   :tag "py-comment-fill-column"
   :group 'python-mode)
 
@@ -1008,7 +1008,7 @@ Normally ‘python-mode’ knows best which function to use."
           (const :tag "Pymacs and company based py-complete" py-complete)
           (const :tag "py-shell-complete" py-shell-complete)
           (const :tag "py-indent-or-complete" py-indent-or-complete)
-	  (const :tag "py-fast-complete" py-fast-complete)
+          (const :tag "py-fast-complete" py-fast-complete)
           )
   :tag "py-complete-function"
   :group 'python-mode)
@@ -1268,10 +1268,10 @@ Edit for your needs."
 
 (defcustom py-known-shells-extended-commands
   (list "ipython"
-	"python"
-	"python3"
-	"pypy"
-	)
+        "python"
+        "python3"
+        "pypy"
+        )
   "A list of shells for finer grained commands.
 like ‘py-execute-statement-ipython’
 Expects its executables installed
@@ -1496,38 +1496,38 @@ It should not contain a caret (^) at the beginning.")
 
 (defvar py-shell-prompt-regexp
   (concat "\\("
-	  (mapconcat 'identity
-		     (delq nil
-			   (list
-			    py-shell-input-prompt-1-regexp
-			    py-shell-input-prompt-2-regexp
-			    py-ipython-input-prompt-re
-			    py-ipython-output-prompt-re
-			    py-pdbtrack-input-prompt
-			    py-pydbtrack-input-prompt
-			    "[.]\\{3,\\}:? *"
-			    ))
-		     "\\|")
-	  "\\)")
+          (mapconcat 'identity
+                     (delq nil
+                           (list
+                            py-shell-input-prompt-1-regexp
+                            py-shell-input-prompt-2-regexp
+                            py-ipython-input-prompt-re
+                            py-ipython-output-prompt-re
+                            py-pdbtrack-input-prompt
+                            py-pydbtrack-input-prompt
+                            "[.]\\{3,\\}:? *"
+                            ))
+                     "\\|")
+          "\\)")
   "Internally used by ‘py-fast-filter’.
 ‘ansi-color-filter-apply’ might return
 Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
 
 (defvar py-fast-filter-re
   (concat "\\("
-	  (mapconcat 'identity
-		     (delq nil
-			   (list
-			    py-shell-input-prompt-1-regexp
-			    py-shell-input-prompt-2-regexp
-			    py-ipython-input-prompt-re
-			    py-ipython-output-prompt-re
-			    py-pdbtrack-input-prompt
-			    py-pydbtrack-input-prompt
-			    "[.]\\{3,\\}:? *"
-			    ))
-		     "\\|")
-	  "\\)")
+          (mapconcat 'identity
+                     (delq nil
+                           (list
+                            py-shell-input-prompt-1-regexp
+                            py-shell-input-prompt-2-regexp
+                            py-ipython-input-prompt-re
+                            py-ipython-output-prompt-re
+                            py-pdbtrack-input-prompt
+                            py-pydbtrack-input-prompt
+                            "[.]\\{3,\\}:? *"
+                            ))
+                     "\\|")
+          "\\)")
   "Internally used by ‘py-fast-filter’.
 ‘ansi-color-filter-apply’ might return
 Result: \"\\nIn [10]:    ....:    ....:    ....: 1\\n\\nIn [11]: \"")
@@ -1550,19 +1550,19 @@ Setting this variable will only effect new shells."
 
 (setq py-fast-filter-re
   (concat "\\("
-	  (mapconcat 'identity
-		     (delq nil
-			   (list
-			    py-shell-input-prompt-1-regexp
-			    py-shell-input-prompt-2-regexp
-			    py-ipython-input-prompt-re
-			    py-ipython-output-prompt-re
-			    py-pdbtrack-input-prompt
-			    py-pydbtrack-input-prompt
-			    "[.]\\{3,\\}:? *"
-			    ))
-		     "\\|")
-	  "\\)"))
+          (mapconcat 'identity
+                     (delq nil
+                           (list
+                            py-shell-input-prompt-1-regexp
+                            py-shell-input-prompt-2-regexp
+                            py-ipython-input-prompt-re
+                            py-ipython-output-prompt-re
+                            py-pdbtrack-input-prompt
+                            py-pydbtrack-input-prompt
+                            "[.]\\{3,\\}:? *"
+                            ))
+                     "\\|")
+          "\\)"))
 
 (defcustom py-honor-IPYTHONDIR-p nil
   "When non-nil ipython-history file is constructed by $IPYTHONDIR.
@@ -1632,7 +1632,7 @@ visible, open them manually and set ‘py-keep-windows-configuration’ to t.
 See also ‘py-keep-windows-configuration’"
   :type `(choice
           (const :tag "default" just-two)
-	  (const :tag "reuse" t)
+          (const :tag "reuse" t)
           (const :tag "no split" nil)
           (const :tag "always" always))
   :tag "py-split-window-on-execute"
@@ -1663,7 +1663,7 @@ INPUT will leave output unfontified.
 At any case only current input gets fontified."
   :type '(choice (const :tag "Default" all)
                  (const :tag "Input" input)
-		 (const :tag "Nil" nil)
+                 (const :tag "Nil" nil)
                  )
   :tag "py-shell-fontify-p"
   :group 'python-mode)
@@ -1838,7 +1838,7 @@ Else /usr/bin/ipython"
       '("-i" "C:\\Python27\\Scripts\\ipython-script.py")
     ;; --simple-prompt seems to exist from IPython 5.
     (if (string-match "^[0-4]" (ignore-errors (shell-command-to-string (concat "ipython" " -V"))))
-	'("--pylab" "--automagic")
+        '("--pylab" "--automagic")
       '("--pylab" "--automagic" "--simple-prompt")))
   "String arguments to be used when starting a IPython shell.
 
@@ -2093,12 +2093,12 @@ Use the following as the value of this variable:
 (defcustom py--imenu-create-index-function 'py--imenu-index
   "Switch between ‘py--imenu-create-index-new’  and series 5. index-machine."
   :type '(choice
-	  (const :tag "'py--imenu-create-index-new, also lists modules variables " py--imenu-create-index-new)
+          (const :tag "'py--imenu-create-index-new, also lists modules variables " py--imenu-create-index-new)
 
-	  (const :tag "py--imenu-create-index, series 5. index-machine" py--imenu-create-index)
-	  (const :tag "py--imenu-index, honor type annotations" py--imenu-index)
+          (const :tag "py--imenu-create-index, series 5. index-machine" py--imenu-create-index)
+          (const :tag "py--imenu-index, honor type annotations" py--imenu-index)
 
-	  )
+          )
   :tag "py--imenu-create-index-function"
   :group 'python-mode)
 
@@ -2396,7 +2396,7 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
 ;; defvared value is not updated maybe
 (defvar python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
-	  (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
+          (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
       "python-mode.el"
     "python-components-mode")
   "Internally used. Reports the ‘python-mode’ branch.")
@@ -2404,7 +2404,7 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
 ;; defvared value is not updated maybe
 (setq python-mode-message-string
   (if (or (string= "python-mode.el" (buffer-name))
-	  (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
+          (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
       "python-mode.el"
     "python-components-mode"))
 
@@ -2621,7 +2621,7 @@ stop at it.")
 
 
 ;; (defvar py-statement-re py-partial-expression-re)
-(defvar py-statement-re "[^] .=,\"'()[{}:#	
+(defvar py-statement-re "[^] .=,\"'()[{}:#      
 ]+" "Match beginning of a statement")
 
 
@@ -2824,23 +2824,23 @@ See ‘py-no-outdent-re-raw’ for better readable content")
   :group 'python-mode)
 
 (defconst py-block-re (concat
-		       ;; "[ \t]*"
-		       (regexp-opt py-block-re-raw 'symbols)
-		       ".*[:( \n\t]"
-		       )
+                       ;; "[ \t]*"
+                       (regexp-opt py-block-re-raw 'symbols)
+                       ".*[:( \n\t]"
+                       )
   "Matches the beginning of a compound statement.")
 
 (defconst py-minor-block-re-raw (list
-				      "async for"
-				      "async with"
+                                      "async for"
+                                      "async with"
                                       "case"
-				      "except"
-				      "for"
-				      "if"
+                                      "except"
+                                      "for"
+                                      "if"
                                       "match"
-				      "try"
-				      "with"
-				      )
+                                      "try"
+                                      "with"
+                                      )
   "Matches the beginning of an case ‘for’, ‘if’, ‘try’, ‘except’ or ‘with’ block.")
 
 (defconst py-minor-block-re

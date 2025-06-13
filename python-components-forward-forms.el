@@ -1,4 +1,4 @@
-;;; py-forward-forms.el -- Go to the end of forms -*- lexical-binding: t; -*-
+;;; python-components-forward-forms.el -- Go to the end of forms -*- lexical-binding: t; -*-
 
 ;; This file is generated. Edits here might not be persistent.
 
@@ -322,5 +322,5 @@ See also ‘py-down-try-block’."
   (interactive)
   (py-forward-try-block nil t))
 
-;; py-forward-forms.el ends here
 (provide 'python-components-forward-forms)
+;;; python-components-forward-forms.el ends here

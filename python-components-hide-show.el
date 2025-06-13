@@ -66,7 +66,7 @@
     (save-excursion
       (back-to-indentation)
       (let ((end (next-overlay-change (point))))
-	(hs-discard-overlays (point) end)))))
+        (hs-discard-overlays (point) end)))))
 
 (defun py-show-all ()
   "Remove invisibility of hidden forms in buffer."
@@ -75,8 +75,8 @@
     (goto-char (point-min))
     (let (end)
       (while (and (not (eobp))  (setq end (next-overlay-change (point))))
-	(hs-discard-overlays (point) end)
-	(goto-char end)))))
+        (hs-discard-overlays (point) end)
+        (goto-char end)))))
 
 (defun py-hide-region (beg end)
   "Hide active region."

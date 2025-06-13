@@ -44,11 +44,11 @@ If already at end, go to end of next paragraph downwards"
 
 With optional INDENT travel bigger or equal indentation"
   (let ((indent (or indent (current-indentation)))
-	last)
+        last)
     (while (and (not (bobp))
-		(py-backward-statement)
-		(<= indent (current-indentation))
-		(setq last (point))))
+                (py-backward-statement)
+                (<= indent (current-indentation))
+                (setq last (point))))
     (when last (goto-char last))
     last))
 
@@ -70,8 +70,8 @@ Returns final position when called from inside section, nil otherwise"
 Travel this INDENT backward until bol"
   (let (erg)
     (while (and (py-backward-statement-bol)
-		(or indent (setq indent (current-indentation)))
-		(eq indent (current-indentation))(setq erg (point)) (not (bobp))))
+                (or indent (setq indent (current-indentation)))
+                (eq indent (current-indentation))(setq erg (point)) (not (bobp))))
     (when erg (goto-char erg))))
 
 (defun py-backward-indent-bol ()
@@ -83,7 +83,7 @@ Returns final position when called from inside section, nil otherwise"
   (interactive)
   (unless (bobp)
     (let ((indent (when (eq (current-indentation) (current-column)) (current-column)))
-	  erg)
+          erg)
       (setq erg (py--travel-this-indent-backward-bol indent))
       erg)))
 
@@ -93,8 +93,8 @@ Returns final position when called from inside section, nil otherwise"
 Travel this INDENT forward"
   (let (last erg)
     (while (and (py-down-statement)
-		(eq indent (current-indentation))
-		(setq last (point))))
+                (eq indent (current-indentation))
+                (setq last (point))))
     (when last (goto-char last))
     (setq erg (py-forward-statement))
     erg))
@@ -107,11 +107,11 @@ Returns final position when moved, nil otherwise"
   (interactive "P")
   (skip-chars-forward " \t\r\n\f")
   (let (done
-	(orig (line-beginning-position))
-	(indent (current-indentation))
-	(last (progn (back-to-indentation) (point))))
+        (orig (line-beginning-position))
+        (indent (current-indentation))
+        (last (progn (back-to-indentation) (point))))
     (while (and (not (eobp)) (not done)
-		(progn (forward-line 1) (back-to-indentation) (or (and (py-empty-line-p)(not stop-at-empty-line)) (and (<= indent (current-indentation))(< last (point))))))
+                (progn (forward-line 1) (back-to-indentation) (or (and (py-empty-line-p)(not stop-at-empty-line)) (and (<= indent (current-indentation))(< last (point))))))
       (unless (py-empty-line-p) (skip-chars-forward " \t\r\n\f")(setq last (point)))
       (when (or (and (py-empty-line-p)stop-at-empty-line) (and (not (py-empty-line-p))(< (current-indentation) indent)))
                  (setq done t))
@@ -141,10 +141,10 @@ Returns final position when called from inside section, nil otherwise"
 ;;     (let (erg indent)
 ;;       ;; (when (py-forward-statement)
 ;;       (when (py-forward-indent)
-;; 	;; (save-excursion
-;;       	;; (setq indent (and (py-backward-statement)(current-indentation))))
-;; 	;; (setq erg (py--travel-this-indent-forward indent))
-;; 	(unless (eobp) (forward-line 1) (beginning-of-line) (setq erg (point))))
+;;      ;; (save-excursion
+;;              ;; (setq indent (and (py-backward-statement)(current-indentation))))
+;;      ;; (setq erg (py--travel-this-indent-forward indent))
+;;      (unless (eobp) (forward-line 1) (beginning-of-line) (setq erg (point))))
 ;;       erg)))
 
 (defun py-backward-expression (&optional orig done repeat)
@@ -160,35 +160,35 @@ REPEAT - count and consider repeats"
   (unless (bobp)
     (unless done (skip-chars-backward " \t\r\n\f"))
     (let ((repeat (or (and repeat (1+ repeat)) 0))
-	  (pps (parse-partial-sexp (point-min) (point)))
+          (pps (parse-partial-sexp (point-min) (point)))
           (orig (or orig (point)))
           erg)
       (if (< py-max-specpdl-size repeat)
-	  (error "‘py-backward-expression’ reached loops max")
-	(cond
-	 ;; comments
-	 ((nth 8 pps)
-	  (goto-char (nth 8 pps))
-	  (py-backward-expression orig done repeat))
-	 ;; lists
-	 ((nth 1 pps)
-	  (goto-char (nth 1 pps))
-	  (skip-chars-backward py-expression-skip-chars)
-	  )
-	 ;; in string
-	 ((nth 3 pps)
-	  (goto-char (nth 8 pps)))
-	 ;; after operator
-	 ((and (not done) (looking-back py-operator-re (line-beginning-position)))
-	  (skip-chars-backward "^ \t\r\n\f")
-	  (skip-chars-backward " \t\r\n\f")
-	  (py-backward-expression orig done repeat))
-	 ((and (not done)
-	       (< 0 (abs (skip-chars-backward py-expression-skip-chars))))
-	  (setq done t)
-	  (py-backward-expression orig done repeat))))
+          (error "‘py-backward-expression’ reached loops max")
+        (cond
+         ;; comments
+         ((nth 8 pps)
+          (goto-char (nth 8 pps))
+          (py-backward-expression orig done repeat))
+         ;; lists
+         ((nth 1 pps)
+          (goto-char (nth 1 pps))
+          (skip-chars-backward py-expression-skip-chars)
+          )
+         ;; in string
+         ((nth 3 pps)
+          (goto-char (nth 8 pps)))
+         ;; after operator
+         ((and (not done) (looking-back py-operator-re (line-beginning-position)))
+          (skip-chars-backward "^ \t\r\n\f")
+          (skip-chars-backward " \t\r\n\f")
+          (py-backward-expression orig done repeat))
+         ((and (not done)
+               (< 0 (abs (skip-chars-backward py-expression-skip-chars))))
+          (setq done t)
+          (py-backward-expression orig done repeat))))
       (unless (or (eq (point) orig)(and (bobp)(eolp)))
-	(setq erg (point)))
+        (setq erg (point)))
       erg)))
 
 (defun py-forward-expression (&optional orig done repeat)
@@ -202,55 +202,55 @@ REPEAT - count and consider repeats"
   (unless done (skip-chars-forward " \t\r\n\f"))
   (unless (eobp)
     (let ((repeat (or (and repeat (1+ repeat)) 0))
-	  (pps (parse-partial-sexp (point-min) (point)))
+          (pps (parse-partial-sexp (point-min) (point)))
           (orig (or orig (point)))
           erg)
       (if (< py-max-specpdl-size repeat)
-	  (error "‘py-forward-expression’ reached loops max")
-	(cond
-	 ;; in comment
-	 ((nth 4 pps)
-	  (or (< (point) (progn (forward-comment 1) (point)))(forward-line 1))
-	  (py-forward-expression orig done repeat))
-	 ;; empty before comment
-	 ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
-	  (while (and (looking-at "[ \t]*#") (not (eobp)))
-	    (forward-line 1))
-	  (py-forward-expression orig done repeat))
-	 ;; inside string
-	 ((nth 3 pps)
-	  (goto-char (nth 8 pps))
-	  (goto-char (scan-sexps (point) 1))
-	  (setq done t)
-	  (py-forward-expression orig done repeat))
-	 ((looking-at "\"\"\"\\|'''\\|\"\\|'")
-	  (goto-char (scan-sexps (point) 1))
-	  (setq done t)
-	  (py-forward-expression orig done repeat))
-	 ;; looking at opening delimiter
-	 ((eq 4 (car-safe (syntax-after (point))))
-	  (goto-char (scan-sexps (point) 1))
-	  (skip-chars-forward py-expression-skip-chars)
-	  (setq done t))
-	 ((nth 1 pps)
-	  (goto-char (nth 1 pps))
-	  (goto-char (scan-sexps (point) 1))
-	  (skip-chars-forward py-expression-skip-chars)
-	  (setq done t)
-	  (py-forward-expression orig done repeat))
-	 ((and (eq orig (point)) (looking-at py-operator-re))
-	  (goto-char (match-end 0))
-	  (py-forward-expression orig done repeat))
-	 ((and (not done)
-	       (< 0 (skip-chars-forward py-expression-skip-chars)))
-	  (setq done t)
-	  (py-forward-expression orig done repeat))
-	 ;; at colon following arglist
-	 ((looking-at ":[ \t]*$")
-	  (forward-char 1)))
-	(unless (or (eq (point) orig)(and (eobp) (bolp)))
-	  (setq erg (point)))
-	erg))))
+          (error "‘py-forward-expression’ reached loops max")
+        (cond
+         ;; in comment
+         ((nth 4 pps)
+          (or (< (point) (progn (forward-comment 1) (point)))(forward-line 1))
+          (py-forward-expression orig done repeat))
+         ;; empty before comment
+         ((and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
+          (while (and (looking-at "[ \t]*#") (not (eobp)))
+            (forward-line 1))
+          (py-forward-expression orig done repeat))
+         ;; inside string
+         ((nth 3 pps)
+          (goto-char (nth 8 pps))
+          (goto-char (scan-sexps (point) 1))
+          (setq done t)
+          (py-forward-expression orig done repeat))
+         ((looking-at "\"\"\"\\|'''\\|\"\\|'")
+          (goto-char (scan-sexps (point) 1))
+          (setq done t)
+          (py-forward-expression orig done repeat))
+         ;; looking at opening delimiter
+         ((eq 4 (car-safe (syntax-after (point))))
+          (goto-char (scan-sexps (point) 1))
+          (skip-chars-forward py-expression-skip-chars)
+          (setq done t))
+         ((nth 1 pps)
+          (goto-char (nth 1 pps))
+          (goto-char (scan-sexps (point) 1))
+          (skip-chars-forward py-expression-skip-chars)
+          (setq done t)
+          (py-forward-expression orig done repeat))
+         ((and (eq orig (point)) (looking-at py-operator-re))
+          (goto-char (match-end 0))
+          (py-forward-expression orig done repeat))
+         ((and (not done)
+               (< 0 (skip-chars-forward py-expression-skip-chars)))
+          (setq done t)
+          (py-forward-expression orig done repeat))
+         ;; at colon following arglist
+         ((looking-at ":[ \t]*$")
+          (forward-char 1)))
+        (unless (or (eq (point) orig)(and (eobp) (bolp)))
+          (setq erg (point)))
+        erg))))
 
 (defun py-backward-partial-expression ()
   "Backward partial-expression."
@@ -268,8 +268,8 @@ REPEAT - count and consider repeats"
       (while (and (not (bobp)) (py--in-comment-p) (< 0 (abs (skip-chars-backward py-partial-expression-stop-backward-chars))))))
     (when (< (point) orig)
       (unless
-	  (and (bobp) (member (char-after) (list ?\ ?\t ?\r ?\n ?\f)))
-	(point)))))
+          (and (bobp) (member (char-after) (list ?\ ?\t ?\r ?\n ?\f)))
+        (point)))))
 
 (defun py-forward-partial-expression ()
   "Forward partial-expression.
@@ -406,7 +406,7 @@ Return position if successful"
   (interactive)
   (let ((orig (point)))
     (while (and (re-search-backward py-section-start nil t 1)
-		(nth 8 (parse-partial-sexp (point-min) (point)))))
+                (nth 8 (parse-partial-sexp (point-min) (point)))))
     (when (and (looking-at py-section-start)(< (point) orig))
       (point))))
 
@@ -416,12 +416,12 @@ Return position if successful"
 Return position if successful"
   (interactive)
   (let ((orig (point))
-	last)
+        last)
     (while (and (re-search-forward py-section-end nil t 1)
-		(setq last (point))
-		(goto-char (match-beginning 0))
-		(nth 8 (parse-partial-sexp (point-min) (point)))
-		(goto-char (match-end 0))))
+                (setq last (point))
+                (goto-char (match-beginning 0))
+                (nth 8 (parse-partial-sexp (point-min) (point)))
+                (goto-char (match-end 0))))
     (and last (goto-char last))
     (when (and (looking-back py-section-end (line-beginning-position))(< orig (point)))
       (point))))
@@ -432,14 +432,14 @@ Return position if successful"
 Return position of successful, nil of not started from inside."
   (interactive)
   (let* (last
-	 (erg
-	  (or (py--beginning-of-assignment-p)
-	      (progn
-		(while (and (setq last (py-backward-statement))
-			    (not (looking-at py-assignment-re))
-			    ;; (not (bolp))
-			    ))
-		(and (looking-at py-assignment-re) last)))))
+         (erg
+          (or (py--beginning-of-assignment-p)
+              (progn
+                (while (and (setq last (py-backward-statement))
+                            (not (looking-at py-assignment-re))
+                            ;; (not (bolp))
+                            ))
+                (and (looking-at py-assignment-re) last)))))
     erg))
 
 ;; (defun py--forward-assignment-intern ()
@@ -456,21 +456,21 @@ Return position of successful, nil of not started from inside."
 ;;   (interactive)
 ;;   (unless (eobp)
 ;;     (if (eq last-command (quote py-backward-assignment))
-;; 	;; assume at start of an assignment
-;; 	(py--forward-assignment-intern)
+;;      ;; assume at start of an assignment
+;;      (py--forward-assignment-intern)
 ;;       ;; ‘py-backward-assignment’ here, avoid ‘py--beginning-of-assignment-p’ a second time
 ;;       (let* (last
-;; 	     (beg
-;; 	      (or (py--beginning-of-assignment-p)
-;; 		  (progn
-;; 		    (while (and (setq last (py-backward-statement))
-;; 				(not (looking-at py-assignment-re))
-;; 				;; (not (bolp))
-;; 				))
-;; 		    (and (looking-at py-assignment-re) last))))
-;; 	     erg)
-;; 	(and beg (setq erg (py--forward-assignment-intern)))
-;; 	erg))))
+;;           (beg
+;;            (or (py--beginning-of-assignment-p)
+;;                (progn
+;;                  (while (and (setq last (py-backward-statement))
+;;                              (not (looking-at py-assignment-re))
+;;                              ;; (not (bolp))
+;;                              ))
+;;                  (and (looking-at py-assignment-re) last))))
+;;           erg)
+;;      (and beg (setq erg (py--forward-assignment-intern)))
+;;      erg))))
 
 (defun py-up ()
   "Go to the beginning of current syntactic form in buffer.

@@ -159,23 +159,23 @@ Receives a ‘buffer-name’ as argument"
 (defun py--guess-buffer-name (argprompt dedicated)
   "Guess the ‘buffer-name’ core string according to ARGPROMPT DEDICATED."
   (when (and (not dedicated) argprompt
-	     (eq 4 (prefix-numeric-value argprompt)))
+             (eq 4 (prefix-numeric-value argprompt)))
     (read-buffer "py-Shell buffer: "
-		 (generate-new-buffer-name (py--choose-buffer-name)))))
+                 (generate-new-buffer-name (py--choose-buffer-name)))))
 
 (defun py--configured-shell (name)
   "Return the configured PATH/TO/STRING if any according to NAME."
   (if (string-match "//\\|\\\\" name)
       name
     (cond ((string-match "^[Ii]" name)
-	   (or py-ipython-command name))
-	  ((string-match "[Pp]ython3" name)
-	   (or py-python3-command name))
-	  ((string-match "[Pp]ython2" name)
-	   (or py-python2-command name))
-	  ((string-match "[Jj]ython" name)
-	   (or py-jython-command name))
-	  (t (or py-python-command name)))))
+           (or py-ipython-command name))
+          ((string-match "[Pp]ython3" name)
+           (or py-python3-command name))
+          ((string-match "[Pp]ython2" name)
+           (or py-python2-command name))
+          ((string-match "[Jj]ython" name)
+           (or py-jython-command name))
+          (t (or py-python-command name)))))
 
 (defun py--determine-local-default ()
   (if (not (string= "" py-shell-local-path))
@@ -198,9 +198,9 @@ Receives a ‘buffer-name’ as argument"
   "Return the directory of current python SHELL."
   (interactive)
   (let* ((proc (get-buffer-process (current-buffer)))
-	 erg)
+         erg)
     (if proc
-	(setq erg (py-execute-string (concat "import os\;os.getcwd()") proc nil t))
+        (setq erg (py-execute-string (concat "import os\;os.getcwd()") proc nil t))
       (setq erg (replace-regexp-in-string "\n" "" (shell-command-to-string (concat py-shell-name " -c \"import os; print(os.getcwd())\"")))))
     (when (called-interactively-p 'interactive)
       (message "CWD: %s" erg))
@@ -212,8 +212,8 @@ Receives a ‘buffer-name’ as argument"
 When given, to value of ‘py-default-working-directory’ otherwise"
   (interactive)
   (let* ((proc (get-buffer-process (current-buffer)))
-	 (dir (or directory py-default-working-directory))
-	 erg)
+         (dir (or directory py-default-working-directory))
+         erg)
     ;; (py-execute-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
     (py-execute-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
     (setq erg (py-execute-string "os.getcwd()" proc nil t))
@@ -224,7 +224,7 @@ When given, to value of ‘py-default-working-directory’ otherwise"
 (defun py--update-execute-directory-intern (dir proc procbuf fast)
   (let ((strg (concat "import os\;os.chdir(\"" dir "\")")))
     (if fast
-	(py-fast-send-string strg proc procbuf t t)
+        (py-fast-send-string strg proc procbuf t t)
       (py-execute-string strg proc nil t))))
 ;; (comint-send-string proc (concat "import os;os.chdir(\"" dir "\")\n")))
 
@@ -232,7 +232,7 @@ When given, to value of ‘py-default-working-directory’ otherwise"
   (with-current-buffer procbuf
     (let ((cwd (py-current-working-directory)))
       (unless (string= execute-directory (concat cwd "/"))
-	(py--update-execute-directory-intern (or py-execute-directory execute-directory) proc procbuf fast)))))
+        (py--update-execute-directory-intern (or py-execute-directory execute-directory) proc procbuf fast)))))
 
 (defun py--close-execution (tempbuf tempfile)
   "Delete TEMPBUF and TEMPFILE."
@@ -243,11 +243,11 @@ When given, to value of ‘py-default-working-directory’ otherwise"
   "Send setup code to BUFFER according to NAME, a string."
   (save-excursion
     (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-" name "-setup-code.py"))
-	  py-return-result-p py-store-result-p)
+          py-return-result-p py-store-result-p)
       (unless (file-readable-p setup-file)
-	(with-temp-buffer
-	  (insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
-	  (write-file setup-file)))
+        (with-temp-buffer
+          (insert (eval (car (read-from-string (concat "py-" name "-setup-code")))))
+          (write-file setup-file)))
       (py--execute-file-base setup-file (get-buffer-process buffer) nil buffer)
       )))
 
@@ -263,8 +263,8 @@ Used by ‘py-ipython-module-completion-string’"
   (let ((setup-file (concat (py--normalize-directory py-temp-directory) "py-ipython-module-completion.py")))
     (unless (file-readable-p setup-file)
       (with-temp-buffer
-	(insert py-ipython-module-completion-code)
-	(write-file setup-file)))
+        (insert py-ipython-module-completion-code)
+        (write-file setup-file)))
     (py--execute-file-base setup-file nil nil (current-buffer) nil t)))
 
 (defun py-delete-temporary (&optional file filebuf)
@@ -313,11 +313,11 @@ See also ‘py-execute-region’."
 (or (functionp 'indent-rigidly-left)
     (defun indent-rigidly--pop-undo ()
       (and (memq last-command '(indent-rigidly-left indent-rigidly-right
-						    indent-rigidly-left-to-tab-stop
-						    indent-rigidly-right-to-tab-stop))
-	   (consp buffer-undo-list)
-	   (eq (car buffer-undo-list) nil)
-	   (pop buffer-undo-list)))
+                                                    indent-rigidly-left-to-tab-stop
+                                                    indent-rigidly-right-to-tab-stop))
+           (consp buffer-undo-list)
+           (eq (car buffer-undo-list) nil)
+           (pop buffer-undo-list)))
 
     (defun indent-rigidly-left (beg end)
       "Indent all lines between BEG and END leftward by one space."

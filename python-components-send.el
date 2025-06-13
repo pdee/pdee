@@ -46,9 +46,9 @@ Optional BEG END"
   (interactive "*")
   (let (erg)
     (while
-	(not (equal erg (setq erg (replace-regexp-in-string
-				   (concat "\\(\n\\|" py-shell-input-prompt-1-regexp "\\|"
-					   py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") "" strg))))
+        (not (equal erg (setq erg (replace-regexp-in-string
+                                   (concat "\\(\n\\|" py-shell-input-prompt-1-regexp "\\|"
+                                           py-shell-input-prompt-2-regexp "\\|" "^In \\[[0-9]+\\]: *" "\\)") "" strg))))
       (sit-for 0.1 t))
     erg))
 

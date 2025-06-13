@@ -115,9 +115,9 @@ of how this works."
   (let (index-alist)
     (save-excursion
       (setq py-imenu-generic-regexp (car py-imenu-generic-expression)
-	    py-imenu-generic-parens (if py-imenu-show-method-args-p
-				        py-imenu-method-arg-parens
-				      py-imenu-method-no-arg-parens))
+            py-imenu-generic-parens (if py-imenu-show-method-args-p
+                                        py-imenu-method-arg-parens
+                                      py-imenu-method-no-arg-parens))
       (goto-char (point-min))
       ;; Warning: When the buffer has no classes or functions, this will
       ;; return nil, which seems proper according to the Imenu API, but
@@ -249,7 +249,7 @@ of the first definition found."
             (while (and (re-search-forward "^[ \t]*\\(def\\|class\\)[ \t]+\\(\\sw+\\)" (or thisend end) t 1)(not (nth 8 (parse-partial-sexp (point-min) (point)))))
               (let* ((pos (match-beginning 0))
                      (name (match-string-no-properties 2)))
-		(push (cons (concat " " name) pos) sublist)))
+                (push (cons (concat " " name) pos) sublist)))
             (if classname
                 (progn
                   (setq sublist (nreverse sublist))
@@ -311,11 +311,11 @@ It must be a function with two arguments: TYPE and NAME.")
   (let* ((label
          (funcall py-imenu-format-item-label-function type name))
         ;; (jump-label
-	;; (funcall py-imenu-format-parent-item-jump-label-function type name))
-	(jump-label label
+        ;; (funcall py-imenu-format-parent-item-jump-label-function type name))
+        (jump-label label
          ;; (funcall py-imenu-format-parent-item-jump-label-function type name)
-	 )
-	)
+         )
+        )
     (if (not tree)
         (cons label pos)
       (cons label (cons (cons jump-label pos) tree)))))
@@ -329,48 +329,48 @@ not be passed explicitly unless you know what you are doing."
   (save-restriction
     (narrow-to-region (point-min) (point))
     (let* ((pos
-	    (progn
-	      ;; finds a top-level class
-	      (py-backward-def-or-class)
-	      ;; stops behind the indented form at EOL
-	      (py-forward-def-or-class)
-	      ;; may find an inner def-or-class
-	      (py-backward-def-or-class)))
-	   type
-	   (name (when (and pos (looking-at py-def-or-class-re))
-		   (let ((split (split-string (match-string-no-properties 0))))
-		     (setq type (car split))
-		     (cadr split))))
-	   (label (when name
-		    (funcall py-imenu-format-item-label-function type name)))
-	   (indent (current-indentation))
-	   (children-indent-limit (+ py-indent-offset min-indent)))
+            (progn
+              ;; finds a top-level class
+              (py-backward-def-or-class)
+              ;; stops behind the indented form at EOL
+              (py-forward-def-or-class)
+              ;; may find an inner def-or-class
+              (py-backward-def-or-class)))
+           type
+           (name (when (and pos (looking-at py-def-or-class-re))
+                   (let ((split (split-string (match-string-no-properties 0))))
+                     (setq type (car split))
+                     (cadr split))))
+           (label (when name
+                    (funcall py-imenu-format-item-label-function type name)))
+           (indent (current-indentation))
+           (children-indent-limit (+ py-indent-offset min-indent)))
       (cond ((not pos)
-	     ;; Nothing found, probably near to bobp.
-	     nil)
-	    ((<= indent min-indent)
-	     ;; The current indentation points that this is a parent
-	     ;; node, add it to the tree and stop recursing.
-	     (py-imenu--put-parent type name pos tree))
-	    (t
-	     (py-imenu--build-tree
-	      min-indent
-	      indent
-	      (if (<= indent children-indent-limit)
-		  (cons (cons label pos) tree)
-		(cons
-		 (py-imenu--build-tree
-		  prev-indent indent (list (cons label pos)))
-		 tree))))))))
+             ;; Nothing found, probably near to bobp.
+             nil)
+            ((<= indent min-indent)
+             ;; The current indentation points that this is a parent
+             ;; node, add it to the tree and stop recursing.
+             (py-imenu--put-parent type name pos tree))
+            (t
+             (py-imenu--build-tree
+              min-indent
+              indent
+              (if (<= indent children-indent-limit)
+                  (cons (cons label pos) tree)
+                (cons
+                 (py-imenu--build-tree
+                  prev-indent indent (list (cons label pos)))
+                 tree))))))))
 
 (defun py--imenu-index ()
   "Return tree Imenu alist for the current Python buffer. "
   (save-excursion
     (goto-char (point-max))
     (let ((index)
-	  (tree))
+          (tree))
       (while (setq tree (py-imenu--build-tree))
-	(setq index (cons tree index)))
+        (setq index (cons tree index)))
       index)))
 
 (provide (quote python-components-imenu))

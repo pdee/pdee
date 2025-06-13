@@ -64,14 +64,14 @@ Optional LINE FILE CONDITION"
 Return \"pdb[VERSION]\" if executable found, just \"pdb\" otherwise"
   (interactive)
   (let ((erg (when (string-match "[23]" py-shell-name)
-	       ;; versions-part
-	       (substring py-shell-name (string-match "[23]" py-shell-name)))))
+               ;; versions-part
+               (substring py-shell-name (string-match "[23]" py-shell-name)))))
     (if erg
-	(cond ((executable-find (concat "pdb" erg))
-	       (concat "pdb" erg))
-	      ((and (string-match "\\." erg)
-		    (executable-find (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
-	       (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
+        (cond ((executable-find (concat "pdb" erg))
+               (concat "pdb" erg))
+              ((and (string-match "\\." erg)
+                    (executable-find (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
+               (concat "pdb" (substring erg 0 (string-match "\\." erg)))))
       "pdb")))
 
 (declare-function gud-query-cmdline "gud" ())
@@ -90,12 +90,12 @@ Argument COMMAND-LINE TBD."
    (progn
      (require 'gud)
      (list (gud-query-cmdline
-	    (if (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-		(car (read-from-string py-python-ms-pdb-command))
-	      ;; sys.version_info[0]
-	      ;; (car (read-from-string (py--pdb-version)))
-	      'pdb)
-	    (py--buffer-filename-remote-maybe)))))
+            (if (or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
+                (car (read-from-string py-python-ms-pdb-command))
+              ;; sys.version_info[0]
+              ;; (car (read-from-string (py--pdb-version)))
+              'pdb)
+            (py--buffer-filename-remote-maybe)))))
   (pdb command-line))
 
 (defun py--pdb-current-executable ()
@@ -111,21 +111,21 @@ Otherwise return resuslt from ‘executable-find’"
 If pdb is called at a Python buffer."
   (interactive)
   (let* (;; PATH/TO/pdb
-	 (first (cond ((and gud-pdb-history (ignore-errors (car gud-pdb-history)))
-		       (replace-regexp-in-string "^\\([^ ]+\\) +.+$" "\\1" (car gud-pdb-history)))
-		      (py-pdb-executable
-		       py-pdb-executable)
-		      ((or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
-		       ;; lp:963253
-		       "c:/python27/python\ -i\ c:/python27/Lib/pdb.py")
-		      (t
-		       (py--pdb-current-executable))))
-	 ;; file to debug
+         (first (cond ((and gud-pdb-history (ignore-errors (car gud-pdb-history)))
+                       (replace-regexp-in-string "^\\([^ ]+\\) +.+$" "\\1" (car gud-pdb-history)))
+                      (py-pdb-executable
+                       py-pdb-executable)
+                      ((or (eq system-type 'ms-dos)(eq system-type 'windows-nt))
+                       ;; lp:963253
+                       "c:/python27/python\ -i\ c:/python27/Lib/pdb.py")
+                      (t
+                       (py--pdb-current-executable))))
+         ;; file to debug
          (second (cond ((not (ignore-errors
-			       (py--buffer-filename-remote-maybe)))
-			(error "%s" "Buffer must be saved first."))
-		       ((py--buffer-filename-remote-maybe))
-		       (t (and gud-pdb-history (stringp (car gud-pdb-history)) (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history))))))
+                               (py--buffer-filename-remote-maybe)))
+                        (error "%s" "Buffer must be saved first."))
+                       ((py--buffer-filename-remote-maybe))
+                       (t (and gud-pdb-history (stringp (car gud-pdb-history)) (replace-regexp-in-string "^\\([^ ]+\\) +\\(.+\\)$" "\\2" (car gud-pdb-history))))))
          (erg (and first second (concat first " " second))))
     (when erg
       (push erg gud-pdb-history))))
@@ -135,7 +135,7 @@ If pdb is called at a Python buffer."
   (interactive
    (list (gud-query-cmdline py-pdb-path
                             ;; (file-name-nondirectory buffer-file-name)
-			    (file-name-nondirectory (py--buffer-filename-remote-maybe)) ))))
+                            (file-name-nondirectory (py--buffer-filename-remote-maybe)) ))))
 
 ;; tbreak [ ([filename:]lineno | function) [, condition] ]
 ;;         Same arguments as break, but sets a temporary breakpoint: it
@@ -147,9 +147,9 @@ If pdb is called at a Python buffer."
   "Insert a temporary break."
   (interactive)
   (let (
-	(py-python-command-args '("-i -c \"b 30\" -c c \"eyp.py\""))
-	(py-python3-command-args '("-i -c \"b 30\" -c c \"eyp.py\""))
-	)
+        (py-python-command-args '("-i -c \"b 30\" -c c \"eyp.py\""))
+        (py-python3-command-args '("-i -c \"b 30\" -c c \"eyp.py\""))
+        )
     (py-execute-buffer)))
 
 
@@ -214,7 +214,7 @@ script, and set to python-mode, and pdbtrack will find it.)"
             (setq target_lineno (car target))
             (setq target_buffer (cadr target))
             (setq target_fname
-		  (py--buffer-filename-remote-maybe target_buffer))
+                  (py--buffer-filename-remote-maybe target_buffer))
             (switch-to-buffer-other-window target_buffer)
             (goto-char (point-min))
             (forward-line (1- target_lineno))
@@ -250,10 +250,10 @@ problem as best as we can determine."
   (if (and (not (string-match py-pdbtrack-stack-entry-regexp block))
            ;; pydb integration still to be done
            ;; (not (string-match py-pydbtrack-stack-entry-regexp block))
-	   )
+           )
       (prog1
-	  "Traceback cue not found"
-	(message "Block: %s" block))
+          "Traceback cue not found"
+        (message "Block: %s" block))
     (let* ((remote-prefix (or (file-remote-p default-directory) ""))
            (filename (concat remote-prefix
                              (match-string
@@ -281,12 +281,12 @@ problem as best as we can determine."
                        (+ lineno
                           (save-excursion
                             (with-current-buffer funcbuffer
-			      (count-lines
-			       (point-min)
-			       (max (point-min)
-				    (string-match "^\\([^#]\\|#[^#]\\|#$\\)"
-						  (buffer-substring (point-min)
-								    (point-max))))))))))
+                              (count-lines
+                               (point-min)
+                               (max (point-min)
+                                    (string-match "^\\([^#]\\|#[^#]\\|#$\\)"
+                                                  (buffer-substring (point-min)
+                                                                    (point-max))))))))))
              (list lineno funcbuffer))
 
             ((= (elt filename 0) ?\<)
@@ -306,8 +306,8 @@ named for funcname or define a function funcname."
       (setq buf (car buffers)
             buffers (cdr buffers))
       (if (and (save-excursion
-		 (with-current-buffer buf
-		   (string= major-mode "python-mode")))
+                 (with-current-buffer buf
+                   (string= major-mode "python-mode")))
                (or (string-match funcname (buffer-name buf))
                    (string-match (concat "^\\s-*\\(def\\|class\\)\\s-+"
                                          funcname "\\s-*(")

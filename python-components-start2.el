@@ -58,31 +58,31 @@ Takes STRG
 Avoid empty lines at the beginning."
   ;; (when py-debug-p (message "py--fix-start:"))
   (let (py--imenu-create-index-p
-	py-guess-py-install-directory-p
-	;; py-autopair-mode
-	py-complete-function
-	py-load-pymacs-p
-	py-load-skeletons-p
-	erg)
+        py-guess-py-install-directory-p
+        ;; py-autopair-mode
+        py-complete-function
+        py-load-pymacs-p
+        py-load-skeletons-p
+        erg)
     (with-temp-buffer
       (with-current-buffer (current-buffer)
         (python-mode)
-	(when py-debug-p
-	  (switch-to-buffer (current-buffer)))
-	;; (python-mode)
-	(insert strg)
-	(goto-char (point-min))
-	(when (< 0 (setq erg (skip-chars-forward " \t\r\n\f" (line-end-position))))
-	  (dotimes (_ erg)
-	    (indent-rigidly-left (point-min) (point-max))))
-	(unless (py--beginning-of-statement-p)
-	  (py-forward-statement))
-	(while (not (eq (current-indentation) 0))
-	  (py-shift-left py-indent-offset))
-	(goto-char (point-max))
-	(unless (py-empty-line-p)
-	  (newline 1))
-	(buffer-substring-no-properties 1 (point-max))))))
+        (when py-debug-p
+          (switch-to-buffer (current-buffer)))
+        ;; (python-mode)
+        (insert strg)
+        (goto-char (point-min))
+        (when (< 0 (setq erg (skip-chars-forward " \t\r\n\f" (line-end-position))))
+          (dotimes (_ erg)
+            (indent-rigidly-left (point-min) (point-max))))
+        (unless (py--beginning-of-statement-p)
+          (py-forward-statement))
+        (while (not (eq (current-indentation) 0))
+          (py-shift-left py-indent-offset))
+        (goto-char (point-max))
+        (unless (py-empty-line-p)
+          (newline 1))
+        (buffer-substring-no-properties 1 (point-max))))))
 
 (defun py-fast-send-string (strg  &optional proc output-buffer result no-output argprompt args dedicated shell exception-buffer)
   (interactive
@@ -97,13 +97,13 @@ Avoid empty lines at the beginning."
 
 Optional STRG PROC OUTPUT-BUFFER RETURN"
   (let ((output-buffer (or output-buffer (process-buffer proc)))
-	(inhibit-read-only t))
+        (inhibit-read-only t))
     ;; (switch-to-buffer (current-buffer))
     (with-current-buffer output-buffer
       ;; (erase-buffer)
       (py-fast-send-string strg
-			   proc
-			   output-buffer result))))
+                           proc
+                           output-buffer result))))
 
 (defun py--point (position)
   "Returns the value of point at certain commonly referenced POSITIONs.

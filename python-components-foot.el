@@ -30,48 +30,48 @@
   ;; (unless (and (eq last-command 'self-insert-command) (eq (char-before) 32))
   ;; (< (abs (save-excursion (skip-chars-backward "^ \t\r\n\f"))) 2))
   (let* ((pps (parse-partial-sexp (line-beginning-position) (point)))
-	 (start (if (and (nth 8 pps) (nth 1 pps))
-		    (max (nth 1 pps) (nth 8 pps))
-		  (or (nth 1 pps) (nth 8 pps)))))
+         (start (if (and (nth 8 pps) (nth 1 pps))
+                    (max (nth 1 pps) (nth 8 pps))
+                  (or (nth 1 pps) (nth 8 pps)))))
     (when (or start
-	      (setq start (ignore-errors (cdr comint-last-prompt))))
+              (setq start (ignore-errors (cdr comint-last-prompt))))
       (let* ((input (buffer-substring-no-properties
-		     start (point-max)))
-	     (buffer-undo-list t)
-	     (replacement
-	      (save-current-buffer
-		(set-buffer py-shell--font-lock-buffer)
-		(erase-buffer)
-		(insert input)
-		;; Ensure buffer is fontified, keeping it
-		;; compatible with Emacs < 24.4.
-		(if (fboundp 'font-lock-ensure)
-		    (funcall 'font-lock-ensure)
-		  (font-lock-default-fontify-buffer))
-		(buffer-substring (point-min) (point-max))))
-	     (replacement-length (length replacement))
-	     (i 0))
-	;; Inject text properties to get input fontified.
-	(while (not (= i replacement-length))
-	  (let* ((plist (text-properties-at i replacement))
-		 (next-change (or (next-property-change i replacement)
-				  replacement-length))
-		 (plist (let ((face (plist-get plist 'face)))
-			  (if (not face)
-			      plist
-			    ;; Replace FACE text properties with
-			    ;; FONT-LOCK-FACE so input is fontified.
-			    (plist-put plist 'face nil)
-			    (plist-put plist 'font-lock-face face)))))
-	    (set-text-properties
-	     (+ start i) (+ start next-change) plist)
-	    (setq i next-change)))))))
+                     start (point-max)))
+             (buffer-undo-list t)
+             (replacement
+              (save-current-buffer
+                (set-buffer py-shell--font-lock-buffer)
+                (erase-buffer)
+                (insert input)
+                ;; Ensure buffer is fontified, keeping it
+                ;; compatible with Emacs < 24.4.
+                (if (fboundp 'font-lock-ensure)
+                    (funcall 'font-lock-ensure)
+                  (font-lock-default-fontify-buffer))
+                (buffer-substring (point-min) (point-max))))
+             (replacement-length (length replacement))
+             (i 0))
+        ;; Inject text properties to get input fontified.
+        (while (not (= i replacement-length))
+          (let* ((plist (text-properties-at i replacement))
+                 (next-change (or (next-property-change i replacement)
+                                  replacement-length))
+                 (plist (let ((face (plist-get plist 'face)))
+                          (if (not face)
+                              plist
+                            ;; Replace FACE text properties with
+                            ;; FONT-LOCK-FACE so input is fontified.
+                            (plist-put plist 'face nil)
+                            (plist-put plist 'font-lock-face face)))))
+            (set-text-properties
+             (+ start i) (+ start next-change) plist)
+            (setq i next-change)))))))
 
 (defun py-message-which-python-mode ()
   (if (buffer-file-name)
       (if (string= "python-mode-el" (buffer-file-name))
-	  (message "%s" "python-mode loaded from python-mode-el")
-	(message "%s" "python-mode loaded from python-components-mode"))
+          (message "%s" "python-mode loaded from python-mode-el")
+        (message "%s" "python-mode loaded from python-components-mode"))
     (message "python-mode loaded from: %s" python-mode-message-string)))
 
 (defalias 'py-next-statement 'py-forward-statement)
@@ -89,17 +89,17 @@
   ;; (when company-mode (company-mode))
   (if py-auto-completion-mode-p
       (progn
-	(setq py-auto-completion-mode-p nil
-	      py-auto-completion-buffer nil)
-	(when (timerp py--auto-complete-timer)(cancel-timer py--auto-complete-timer)))
+        (setq py-auto-completion-mode-p nil
+              py-auto-completion-buffer nil)
+        (when (timerp py--auto-complete-timer)(cancel-timer py--auto-complete-timer)))
     (setq py-auto-completion-mode-p t
-	  py-auto-completion-buffer (current-buffer))
+          py-auto-completion-buffer (current-buffer))
     (setq py--auto-complete-timer
-	  (run-with-idle-timer
-	   py--auto-complete-timer-delay
-	   ;; 1
-	   t
-	   #'py-complete-auto)))
+          (run-with-idle-timer
+           py--auto-complete-timer-delay
+           ;; 1
+           t
+           #'py-complete-auto)))
   (force-mode-line-update))
 
 (autoload 'python-mode "python-mode" "Python Mode." t)
@@ -114,24 +114,24 @@
                           "\\|")))
   (when py-font-lock-defaults-p
     (if py-use-font-lock-doc-face-p
-	(set (make-local-variable 'font-lock-defaults)
+        (set (make-local-variable 'font-lock-defaults)
              '(python-font-lock-keywords nil nil nil nil
-					 (font-lock-syntactic-keywords
-					  . py-font-lock-syntactic-keywords)
-					 (font-lock-syntactic-face-function
-					  . py--font-lock-syntactic-face-function)))
+                                         (font-lock-syntactic-keywords
+                                          . py-font-lock-syntactic-keywords)
+                                         (font-lock-syntactic-face-function
+                                          . py--font-lock-syntactic-face-function)))
       (set (make-local-variable 'font-lock-defaults)
            '(python-font-lock-keywords nil nil nil nil
-				       (font-lock-syntactic-keywords
-					. py-font-lock-syntactic-keywords)))))
+                                       (font-lock-syntactic-keywords
+                                        . py-font-lock-syntactic-keywords)))))
   (py--update-version-dependent-keywords)
   ;; (cond ((string-match "ython3" py-python-edit-version)
   ;;        (font-lock-add-keywords 'python-mode
-  ;;       			 '(("\\<print\\>" . 'py-builtins-face)
-  ;;       			   ("\\<file\\>" . nil))))
+  ;;                             '(("\\<print\\>" . 'py-builtins-face)
+  ;;                               ("\\<file\\>" . nil))))
   ;;       (t (font-lock-add-keywords 'python-mode
-  ;;       			   '(("\\<print\\>" . 'font-lock-keyword-face)
-  ;;       			     ("\\<file\\>" . 'py-builtins-face)))))
+  ;;                               '(("\\<print\\>" . 'font-lock-keyword-face)
+  ;;                                 ("\\<file\\>" . 'py-builtins-face)))))
   (set (make-local-variable 'which-func-functions) 'py-which-def-or-class)
   (set (make-local-variable 'parse-sexp-lookup-properties) t)
   (set (make-local-variable 'comment-use-syntax) t)
@@ -144,9 +144,9 @@
       (progn
         (set (make-local-variable 'paragraph-separate) (concat "\f\\|^[\t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[\t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
         (set (make-local-variable 'paragraph-start)
-	     (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
-	(set (make-local-variable 'paragraph-separate)
-	     (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")))
+             (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
+        (set (make-local-variable 'paragraph-separate)
+             (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")))
     (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
     (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
   (set (make-local-variable 'comment-column) 40)
@@ -279,10 +279,10 @@ See available commands listed in files commands-python-mode at directory doc
 
 VARIABLES
 
-‘py-indent-offset’	indentation increment
-‘py-shell-name’		shell command to invoke Python interpreter
-‘py-split-window-on-execute’		When non-nil split windows
-‘py-switch-buffers-on-execute-p’	When non-nil switch to the Python output buffer
+‘py-indent-offset’ indentation increment
+‘py-shell-name’ shell command to invoke Python interpreter
+‘py-split-window-on-execute’ When non-nil split windowas
+‘py-switch-buffers-on-execute-p’ When non-nil switch to the Python output buffer
 
 \\{python-mode-map}"
   :group 'python-mode
@@ -325,7 +325,7 @@ may want to re-add custom functions to it using the
        py-shell-compilation-regexp-alist)
   (compilation-shell-minor-mode 1)
   (add-hook 'completion-at-point-functions
-	    #'py-shell-completion-at-point nil 'local)
+            #'py-shell-completion-at-point nil 'local)
   (define-key py-shell-mode-map [(control c) (control r)] 'py-nav-last-prompt)
   (make-local-variable 'py-pdbtrack-buffers-to-kill)
   ;; (make-local-variable 'py-shell-fast-last-output)
@@ -334,7 +334,7 @@ may want to re-add custom functions to it using the
   (py-shell-prompt-set-calculated-regexps)
   (if py-shell-fontify-p
       (progn
-  	(py-shell-font-lock-turn-on))
+        (py-shell-font-lock-turn-on))
     (py-shell-font-lock-turn-off)))
 
 (make-obsolete 'jpython-mode 'jython-mode nil)

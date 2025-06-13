@@ -1,4 +1,4 @@
-;;; py-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*-
+;;; python-components-backward-forms.el --- Go to beginning of form or further backward -*- lexical-binding: t; -*-
 
 
 ;; URL: https://gitlab.com/groups/python-mode-devs
@@ -267,4 +267,4 @@ Return beginning of ‘try-block’ if successful, nil otherwise"
        (progn (beginning-of-line)(point))))
 
 (provide 'python-components-backward-forms)
-;;; py-backward-forms.el ends here
+;;; python-components-backward-forms.el ends here

@@ -49,46 +49,46 @@ Tries to take account of versioned Python Info files, e.g. Debian's
 python2.5-ref.info.gz.
 Used with ‘eval-after-load’."
   (let* ((version (let ((s (shell-command-to-string (concat py-python-command
-							    " -V"))))
-		    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
-		    (match-string 1 s)))
-	 ;; Whether info files have a Python version suffix, e.g. in Debian.
-	 (versioned
-	  (with-temp-buffer
-	    (Info-mode)
-	    ;; First look for Info files corresponding to the version
-	    ;; of the interpreter we're running.
-	    (condition-case ()
-		;; Do not use ‘info’ because it would pop-up a *info* buffer.
-		(progn
-		  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
-					  version))
-		  t)
-	      (error
-	       ;; Otherwise see if we actually have an un-versioned one.
-	       (condition-case ()
-		   (progn
-		     (Info-goto-node
-		      (format "(python%s-lib)Miscellaneous Index" version))
-		     nil)
-		 (error
-		  ;; Otherwise look for any versioned Info file.
-		  (condition-case ()
-		      (let (found)
-			(dolist (dir (or Info-directory-list
-					 Info-default-directory-list))
-			  (unless found
-			    (let ((file (car (file-expand-wildcards
-					      (expand-file-name "python*-lib*"
-								dir)))))
-			      (if (and file
-				       (string-match
-					"\\<python\\([0-9]+\\.[0-9]+\\>\\)-"
-					file))
-				  (setq version (match-string 1 file)
-					found t)))))
-			found)
-		    (error)))))))))
+                                                            " -V"))))
+                    (string-match "^Python \\([0-9]+\\.[0-9]+\\>\\)" s)
+                    (match-string 1 s)))
+         ;; Whether info files have a Python version suffix, e.g. in Debian.
+         (versioned
+          (with-temp-buffer
+            (Info-mode)
+            ;; First look for Info files corresponding to the version
+            ;; of the interpreter we're running.
+            (condition-case ()
+                ;; Do not use ‘info’ because it would pop-up a *info* buffer.
+                (progn
+                  (Info-goto-node (format "(python%s-lib)Miscellaneous Index"
+                                          version))
+                  t)
+              (error
+               ;; Otherwise see if we actually have an un-versioned one.
+               (condition-case ()
+                   (progn
+                     (Info-goto-node
+                      (format "(python%s-lib)Miscellaneous Index" version))
+                     nil)
+                 (error
+                  ;; Otherwise look for any versioned Info file.
+                  (condition-case ()
+                      (let (found)
+                        (dolist (dir (or Info-directory-list
+                                         Info-default-directory-list))
+                          (unless found
+                            (let ((file (car (file-expand-wildcards
+                                              (expand-file-name "python*-lib*"
+                                                                dir)))))
+                              (if (and file
+                                       (string-match
+                                        "\\<python\\([0-9]+\\.[0-9]+\\>\\)-"
+                                        file))
+                                  (setq version (match-string 1 file)
+                                        found t)))))
+                        found)
+                    (error)))))))))
     (info-lookup-maybe-add-help
      :mode 'python-mode
      :regexp "[[:alnum:]_]+"
@@ -98,23 +98,23 @@ Used with ‘eval-after-load’."
      ;; (Miscellaneous in -ref first prefers lookup of keywords, for
      ;; instance.)
      (if versioned
-	 ;; The empty prefix just gets us highlighted terms.
-	 `((,(concat "(python" version "-ref)Miscellaneous Index"))
-	   (,(concat "(python" version "-ref)Module Index"))
-	   (,(concat "(python" version "-ref)Function-Method-Variable Index"))
-	   (,(concat "(python" version "-ref)Class-Exception-Object Index"))
-	   (,(concat "(python" version "-lib)Module Index"))
-	   (,(concat "(python" version "-lib)Class-Exception-Object Index"))
-	   (,(concat "(python" version "-lib)Function-Method-Variable Index"))
-	   (,(concat "(python" version "-lib)Miscellaneous Index")))
+         ;; The empty prefix just gets us highlighted terms.
+         `((,(concat "(python" version "-ref)Miscellaneous Index"))
+           (,(concat "(python" version "-ref)Module Index"))
+           (,(concat "(python" version "-ref)Function-Method-Variable Index"))
+           (,(concat "(python" version "-ref)Class-Exception-Object Index"))
+           (,(concat "(python" version "-lib)Module Index"))
+           (,(concat "(python" version "-lib)Class-Exception-Object Index"))
+           (,(concat "(python" version "-lib)Function-Method-Variable Index"))
+           (,(concat "(python" version "-lib)Miscellaneous Index")))
        '(("(python-ref)Miscellaneous Index")
-	 ("(python-ref)Module Index")
-	 ("(python-ref)Function-Method-Variable Index")
-	 ("(python-ref)Class-Exception-Object Index")
-	 ("(python-lib)Module Index")
-	 ("(python-lib)Class-Exception-Object Index")
-	 ("(python-lib)Function-Method-Variable Index")
-	 ("(python-lib)Miscellaneous Index"))))))
+         ("(python-ref)Module Index")
+         ("(python-ref)Function-Method-Variable Index")
+         ("(python-ref)Class-Exception-Object Index")
+         ("(python-lib)Module Index")
+         ("(python-lib)Class-Exception-Object Index")
+         ("(python-lib)Function-Method-Variable Index")
+         ("(python-lib)Miscellaneous Index"))))))
 
 ;;  (if (featurep 'info-look)
 ;;      (python-after-info-look))
@@ -182,13 +182,13 @@ not inside a defun."
 (defalias (quote py-describe-symbol) (quote py-help-at-point))
 (defun py--help-at-point-intern (sym orig)
   (let* ((origfile (py--buffer-filename-remote-maybe))
-	 (cmd (py-find-imports))
-	 (oldbuf (current-buffer))
-	 )
+         (cmd (py-find-imports))
+         (oldbuf (current-buffer))
+         )
     (when (not py-remove-cwd-from-path)
       (setq cmd (concat cmd "import sys\n"
-			"sys.path.insert(0, '"
-			(file-name-directory origfile) "')\n")))
+                        "sys.path.insert(0, '"
+                        (file-name-directory origfile) "')\n")))
     ;; (setq cmd (concat cmd "pydoc.help('" sym "')\n"))
     (py-execute-string (concat cmd "help('" sym "')\n") nil t nil orig nil nil nil nil nil nil oldbuf t)
     (display-buffer oldbuf)))
@@ -200,16 +200,16 @@ not inside a defun."
 If symbol is defined in current buffer, jump to its definition"
   (interactive)
   (let* ((orig (point))
-	 (beg (and (use-region-p) (region-beginning)))
-	 (end (and (use-region-p) (region-end)))
-	 (symbol
-	  (or (and beg end
-		   (buffer-substring-no-properties beg end))
-	      ;; (thing-at-point 'symbol t)
-	      (py-symbol-at-point))))
+         (beg (and (use-region-p) (region-beginning)))
+         (end (and (use-region-p) (region-end)))
+         (symbol
+          (or (and beg end
+                   (buffer-substring-no-properties beg end))
+              ;; (thing-at-point 'symbol t)
+              (py-symbol-at-point))))
     (and symbol (unless (string= "" symbol)
-		  (py--help-at-point-intern symbol orig))
-	 )))
+                  (py--help-at-point-intern symbol orig))
+         )))
 
 (defun py--dump-help-string (str)
   (with-output-to-temp-buffer "*Help*"
@@ -522,11 +522,11 @@ local bindings to py-newline-and-indent."))
   (when (find-file sourcefile)
     (goto-char (point-min))
     (when
-	(or (re-search-forward (concat py-def-or-class-re symbol) nil t 1)
-	    (progn
-	      ;; maybe a variable definition?
-	      (goto-char (point-min))
-	      (re-search-forward (concat "^.+ " symbol) nil t 1)))
+        (or (re-search-forward (concat py-def-or-class-re symbol) nil t 1)
+            (progn
+              ;; maybe a variable definition?
+              (goto-char (point-min))
+              (re-search-forward (concat "^.+ " symbol) nil t 1)))
       (push-mark)
       (goto-char (match-beginning 0))
       (exchange-point-and-mark))))
@@ -536,7 +536,7 @@ local bindings to py-newline-and-indent."))
 (defun py--find-definition-question-type (symbol imports)
   (let (erg)
     (cond ((setq erg (py-execute-string (concat "import inspect;inspect.isbuiltin(\"" symbol "\")"))))
-	  (t (setq erg (py-execute-string (concat imports "import inspect;inspect.getmodule(\"" symbol "\")")))))
+          (t (setq erg (py-execute-string (concat imports "import inspect;inspect.getmodule(\"" symbol "\")")))))
     erg))
 
 (defun py-find-definition (&optional symbol)
@@ -546,33 +546,33 @@ Interactively, prompt for SYMBOL."
   (interactive)
   ;; (set-register 98888888 (list (current-window-configuration) (point-marker)))
   (let* (;; end
-	 ;; (last-window-configuration
+         ;; (last-window-configuration
          ;;  (current-window-configuration))
-	 (orig (point))
+         (orig (point))
          ;; (exception-buffer (current-buffer))
          (imports (py-find-imports))
          (symbol-raw (or symbol (with-syntax-table py-dotted-expression-syntax-table
-				  (current-word))))
+                                  (current-word))))
          ;; (enable-recursive-minibuffers t)
          (symbol (if (called-interactively-p 'interactive)
-		     (read-string (format "Find location of (default %s): " symbol-raw)
-		                  symbol-raw nil symbol-raw)
-		   symbol-raw))
+                     (read-string (format "Find location of (default %s): " symbol-raw)
+                                  symbol-raw nil symbol-raw)
+                   symbol-raw))
          (local (progn (goto-char (point-min)) (re-search-forward (concat "^[ \t]*" "\\(def\\|class\\)" "[ \t]" symbol) orig t))))
     ;; ismethod(), isclass(), isfunction() or isbuiltin()
     ;; ismethod isclass isfunction isbuiltin)
     (if local
         (progn
-	  (goto-char orig)
-	  (split-window-vertically)
-	  (other-buffer)
-	  (goto-char local)
-	  (beginning-of-line)
+          (goto-char orig)
+          (split-window-vertically)
+          (other-buffer)
+          (goto-char local)
+          (beginning-of-line)
           (push-mark)
-	  (message "%s" (current-buffer))
-	  (exchange-point-and-mark))
+          (message "%s" (current-buffer))
+          (exchange-point-and-mark))
       (with-help-window (help-buffer)
-	(princ (py--find-definition-question-type symbol imports))))))
+        (princ (py--find-definition-question-type symbol imports))))))
 
 (defun py-update-imports ()
   "Return imports.
@@ -643,14 +643,14 @@ For help see \\[pylint-help] resp. \\[pylint-long-help].
 Home-page: http://www.logilab.org/project/pylint"
   (interactive
    (let ((default (format "%s %s %s" py-pylint-command
-			  (mapconcat 'identity py-pylint-command-args " ")
-			  (py--buffer-filename-remote-maybe)))
+                          (mapconcat 'identity py-pylint-command-args " ")
+                          (py--buffer-filename-remote-maybe)))
          (last (and py-pylint-history (car py-pylint-history))))
      (list (funcall (if (fboundp 'read-shell-command)
-			'read-shell-command 'read-string)
-		    "Run pylint like this: "
-		    (or default last)
-		    (quote py-pylint-history)))))
+                        'read-shell-command 'read-string)
+                    "Run pylint like this: "
+                    (or default last)
+                    (quote py-pylint-history)))))
     (save-some-buffers (not py-ask-about-save))
   (set-buffer (get-buffer-create "*Pylint*"))
   (erase-buffer)
@@ -786,8 +786,8 @@ Default on the file currently visited."
    (let ((default
            (if (py--buffer-filename-remote-maybe)
                (format "%s %s %s" py-pychecker-command
-		       py-pychecker-command-args
-		       (py--buffer-filename-remote-maybe))
+                       py-pychecker-command-args
+                       (py--buffer-filename-remote-maybe))
              (format "%s %s" py-pychecker-command py-pychecker-command-args)))
          (last (when py-pychecker-history
                  (let* ((lastcmd (car py-pychecker-history))
@@ -829,9 +829,9 @@ See ‘py-check-command’ for the default."
   (require 'compile)                    ;To define compilation-* variables.
   (save-some-buffers (not compilation-ask-about-save) nil)
   (let ((compilation-error-regexp-alist py-compilation-regexp-alist)
-	;; (cons '("(\\([^,]+\\), line \\([0-9]+\\))" 1)
-	;; compilation-error-regexp-alist)
-	)
+        ;; (cons '("(\\([^,]+\\), line \\([0-9]+\\))" 1)
+        ;; compilation-error-regexp-alist)
+        )
     (compilation-start command)))
 
 ;;  flake8
@@ -918,15 +918,15 @@ Takes NAME COMMAND"
       (when py-verbose-p (message "Do not see %s. Use ‘easy_install’ %s? " name name))))
   (if (py--buffer-filename-remote-maybe)
       (let* ((temp-file (if (functionp 'flymake-proc-init-create-temp-buffer-copy)
-			    (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
-			  (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
-			  ))
+                            (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
+                          (flymake-proc-init-create-temp-buffer-copy 'flymake-create-temp-inplace)
+                          ))
              (local-file (file-relative-name
                           temp-file
                           (file-name-directory (py--buffer-filename-remote-maybe)))))
-	(if (boundp 'flymake-proc-allowed-file-name-masks)
+        (if (boundp 'flymake-proc-allowed-file-name-masks)
             (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-proc-allowed-file-name-masks)
-	  (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-proc-allowed-file-name-masks))
+          (push (car (read-from-string (concat "(\"\\.py\\'\" flymake-" name ")"))) flymake-proc-allowed-file-name-masks))
         (list command (list local-file)))
     (message "%s" "flymake needs a ‘file-name’. Please save before calling.")))
 

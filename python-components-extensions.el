@@ -85,8 +85,8 @@ Affected by ‘py-dedent-keep-relative-column’. "
   (interactive)
   (save-excursion
     (let* ((beg (py-backward-class))
-	   (end (py-forward-class))
-	   (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
+           (end (py-forward-class))
+           (res (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
       res)))
 
 (defun py-backward-function ()
@@ -108,7 +108,7 @@ Returns position."
   (interactive)
   (save-excursion
     (let* ((beg (py-backward-function))
-	   (end (py-forward-function)))
+           (end (py-forward-function)))
       (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end)))))
 
 ;; Functions for marking regions
@@ -117,7 +117,7 @@ Returns position."
   "Return line as string. "
   (interactive)
   (let* ((beg (line-beginning-position))
-	 (end (line-end-position)))
+         (end (line-end-position)))
     (when (and (numberp beg)(numberp end)(< beg end)) (buffer-substring-no-properties beg end))))
 
 (defun py-match-paren-mode (&optional arg)
@@ -125,22 +125,22 @@ Returns position."
   (interactive "P")
   (if (or arg (not py-match-paren-mode))
       (progn
-	(setq py-match-paren-mode t)
+        (setq py-match-paren-mode t)
         (setq py-match-paren-mode nil))))
 
 (defun py--match-end-finish (cui)
   (let (skipped)
     (unless (eq (current-column) cui)
       (when (< (current-column) cui)
-	(setq skipped (skip-chars-forward " \t" (line-end-position)))
-	(setq cui (- cui skipped))
-	;; may current-column greater as needed indent?
-	(if (< 0 cui)
-	    (progn
-	      (unless (py-empty-line-p) (split-line))
-	      (indent-to cui))
-	  (forward-char cui))
-	(unless (eq (char-before) 32)(insert 32)(forward-char -1))))))
+        (setq skipped (skip-chars-forward " \t" (line-end-position)))
+        (setq cui (- cui skipped))
+        ;; may current-column greater as needed indent?
+        (if (< 0 cui)
+            (progn
+              (unless (py-empty-line-p) (split-line))
+              (indent-to cui))
+          (forward-char cui))
+        (unless (eq (char-before) 32)(insert 32)(forward-char -1))))))
 
 (defun py--match-paren-forward ()
   (setq py--match-paren-forward-p t)
@@ -174,27 +174,27 @@ Returns position."
       (py-forward-statement-bol)
       (py--match-end-finish cui))
      (t (py-forward-statement)
-	(py--match-end-finish cui)))))
+        (py--match-end-finish cui)))))
 
 (defun py--match-paren-backward ()
   (setq py--match-paren-forward-p nil)
   (let* ((cui (current-indentation))
-	 (cuc (current-column))
-	 (cui (min cuc cui)))
+         (cuc (current-column))
+         (cui (min cuc cui)))
     (if (eq 0 cui)
-	(py-backward-top-level)
+        (py-backward-top-level)
       (when (py-empty-line-p) (delete-region (line-beginning-position) (point)))
       (py-backward-statement)
       (unless (< (current-column) cuc)
       (while (and (not (bobp))
-		  (< cui (current-column))
-		  (py-backward-statement)))))))
+                  (< cui (current-column))
+                  (py-backward-statement)))))))
 
 (defun py--match-paren-blocks ()
   (cond
    ((and (looking-back "^[ \t]*" (line-beginning-position))(if (eq last-command (quote py-match-paren))(not py--match-paren-forward-p)t)
-	 ;; (looking-at py-extended-block-or-clause-re)
-	 (looking-at "[[:alpha:]_]"))
+         ;; (looking-at py-extended-block-or-clause-re)
+         (looking-at "[[:alpha:]_]"))
     ;; from beginning of top-level, block, clause, statement
     (py--match-paren-forward))
    (t
@@ -212,32 +212,32 @@ Matches lists, but also block, statement, string and comment. "
       (cond
        ;; if inside string, go to beginning
        ((nth 3 pps)
-	(goto-char (nth 8 pps)))
+        (goto-char (nth 8 pps)))
        ;; if inside comment, go to beginning
        ((nth 4 pps)
-	(py-backward-comment))
+        (py-backward-comment))
        ;; at comment start, go to end of commented section
        ((and
-	 ;; unless comment starts where jumped to some end
-	 (not py--match-paren-forward-p)
-	 (eq 11 (car-safe (syntax-after (point)))))
-	(py-forward-comment))
+         ;; unless comment starts where jumped to some end
+         (not py--match-paren-forward-p)
+         (eq 11 (car-safe (syntax-after (point)))))
+        (py-forward-comment))
        ;; at string start, go to end
        ((or (eq 15 (car-safe (syntax-after (point))))
-	    (eq 7 (car (syntax-after (point)))))
-	(goto-char (scan-sexps (point) 1))
-	(forward-char -1))
+            (eq 7 (car (syntax-after (point)))))
+        (goto-char (scan-sexps (point) 1))
+        (forward-char -1))
        ;; open paren
        ((eq 4 (car (syntax-after (point))))
-	(goto-char (scan-sexps (point) 1))
-	(forward-char -1))
+        (goto-char (scan-sexps (point) 1))
+        (forward-char -1))
        ((eq 5 (car (syntax-after (point))))
-	(goto-char (scan-sexps (1+ (point)) -1)))
+        (goto-char (scan-sexps (1+ (point)) -1)))
        ((nth 1 pps)
-	(goto-char (nth 1 pps)))
+        (goto-char (nth 1 pps)))
        (t
-	;; Python specific blocks
-	(py--match-paren-blocks))))))
+        ;; Python specific blocks
+        (py--match-paren-blocks))))))
 
 (unless (functionp (quote in-string-p))
   (defun in-string-p (&optional pos)
@@ -287,8 +287,8 @@ With optional \\[universal-argument] print as string"
          ;; guess if doublequotes or parentheses are needed
          (numbered (not (eq 4 (prefix-numeric-value arg))))
          (form (if numbered
-		   (concat "print(\"" name ": %s \" % (" name "))")
-		 (concat "print(\"" name ": %s \" % \"" name "\")"))))
+                   (concat "print(\"" name ": %s \" % (" name "))")
+                 (concat "print(\"" name ": %s \" % \"" name "\")"))))
     (insert form)))
 
 (defun py-print-formatform-insert (&optional strg)

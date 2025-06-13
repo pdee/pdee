@@ -1,4 +1,4 @@
-;;; python-abbrev-propose.el --- initial content for mode-abbrevs -*- lexical-binding: t; -*- 
+;;; python-components-abbrev-propose.el --- initial content for mode-abbrevs -*- lexical-binding: t; -*- 
 
 ;; URL: https://gitlab.com/python-mode-devs
 
@@ -73,5 +73,5 @@
            (error "No per-mode abbrev table")))
      "Mode" arg)))
 
-(provide 'python-abbrev-propose)
-;;; mode-abbrev-propose.el ends here
+(provide 'python-components-abbrev-propose)
+;;; python-components-abbrev-propose.el ends here

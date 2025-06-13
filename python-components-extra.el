@@ -61,12 +61,12 @@ completion."
   (with-current-buffer (process-buffer process)
     (let ((completions
            (ignore-errors
-	     (py--string-trim
-	      (py-send-string-no-output
-	       (format
-		(concat py-completion-setup-code
-			"\nprint (" py-shell-completion-string-code ")")
-		input)
+             (py--string-trim
+              (py-send-string-no-output
+               (format
+                (concat py-completion-setup-code
+                        "\nprint (" py-shell-completion-string-code ")")
+                input)
                process (buffer-name (current-buffer)))))))
       (when (> (length completions) 2)
         (split-string completions
@@ -80,30 +80,30 @@ using that one instead of current buffer's process."
   (let*
       ((process (or process (get-buffer-process (current-buffer))))
        (line-start (if (derived-mode-p 'py-shell-mode)
-		       ;; Working on a shell buffer: use prompt end.
-		       (or (cdr (py-util-comint-last-prompt))
-			   (line-beginning-position))
-		     (line-beginning-position)))
+                       ;; Working on a shell buffer: use prompt end.
+                       (or (cdr (py-util-comint-last-prompt))
+                           (line-beginning-position))
+                     (line-beginning-position)))
        (import-statement
-	(when (string-match-p
-	       (rx (* space) word-start (or "from" "import") word-end space)
-	       (buffer-substring-no-properties line-start (point)))
-	  (buffer-substring-no-properties line-start (point))))
+        (when (string-match-p
+               (rx (* space) word-start (or "from" "import") word-end space)
+               (buffer-substring-no-properties line-start (point)))
+          (buffer-substring-no-properties line-start (point))))
        (start
-	(save-excursion
-	  (if (not (re-search-backward
-		    ;; (py-rx
-		    ;;  (or whitespace open-paren close-paren string-delimiter simple-operator))
-		    "[[:space:]]\\|[([{]\\|[])}]\\|\\(?:[^\"'\\]\\|\\=\\|\\(?:[^\\]\\|\\=\\)\\\\\\(?:\\\\\\\\\\)*[\"']\\)\\(?:\\\\\\\\\\)*\\(\\(?:\"\"\"\\|'''\\|[\"']\\)\\)\\|[%&*+/<->^|~-]"
-		    line-start
-		    t 1))
-	      line-start
-	    (forward-char (length (match-string-no-properties 0)))
-	    (point))))
+        (save-excursion
+          (if (not (re-search-backward
+                    ;; (py-rx
+                    ;;  (or whitespace open-paren close-paren string-delimiter simple-operator))
+                    "[[:space:]]\\|[([{]\\|[])}]\\|\\(?:[^\"'\\]\\|\\=\\|\\(?:[^\\]\\|\\=\\)\\\\\\(?:\\\\\\\\\\)*[\"']\\)\\(?:\\\\\\\\\\)*\\(\\(?:\"\"\"\\|'''\\|[\"']\\)\\)\\|[%&*+/<->^|~-]"
+                    line-start
+                    t 1))
+              line-start
+            (forward-char (length (match-string-no-properties 0)))
+            (point))))
        (end (point))
               (completion-fn
-	(with-current-buffer (process-buffer process)
-	  #'py-shell-completion-get-completions)))
+        (with-current-buffer (process-buffer process)
+          #'py-shell-completion-get-completions)))
     (list start end
           (completion-table-dynamic
            (apply-partially
@@ -155,16 +155,16 @@ also ‘with-current-buffer’."
   (declare (indent 0) (debug t))
   `(save-current-buffer
      (when (not (and py-shell--font-lock-buffer
-		     (get-buffer py-shell--font-lock-buffer)))
+                     (get-buffer py-shell--font-lock-buffer)))
        (setq py-shell--font-lock-buffer
-	     (py-shell-font-lock-get-or-create-buffer)))
+             (py-shell-font-lock-get-or-create-buffer)))
      (set-buffer py-shell--font-lock-buffer)
      (when (not font-lock-mode)
        (font-lock-mode 1))
      (set (make-local-variable 'delay-mode-hooks) t)
      (let (py-smart-indentation)
        (when (not (derived-mode-p 'python-mode))
-	 (python-mode))
+         (python-mode))
        ,@body)))
 
 (defun py-shell-font-lock-cleanup-buffer ()
@@ -196,9 +196,9 @@ goes wrong and syntax highlighting in the shell gets messed up."
 (defun py-font-lock-post-command-hook ()
   "Fontifies current line in shell buffer."
   (let ((prompt-end
-	 (or (cdr (py-util-comint-last-prompt))
-	     (progn (sit-for 0.1)
-		    (cdr (py-util-comint-last-prompt))))))
+         (or (cdr (py-util-comint-last-prompt))
+             (progn (sit-for 0.1)
+                    (cdr (py-util-comint-last-prompt))))))
     (when (and prompt-end (> (point) prompt-end)
                (process-live-p (get-buffer-process (current-buffer))))
       (let* ((input (buffer-substring-no-properties
@@ -215,10 +215,10 @@ goes wrong and syntax highlighting in the shell gets messed up."
                 (insert input)
                 ;; Ensure buffer is fontified, keeping it
                 ;; compatible with Emacs < 24.4.
-		(when py-shell-fontify-p
-		    (if (fboundp 'font-lock-ensure)
-			(funcall 'font-lock-ensure)
-		      (font-lock-default-fontify-buffer)))
+                (when py-shell-fontify-p
+                    (if (fboundp 'font-lock-ensure)
+                        (funcall 'font-lock-ensure)
+                      (font-lock-default-fontify-buffer)))
                 (buffer-substring font-lock-buffer-pos
                                   (point-max))))
              (replacement-length (length replacement))
@@ -247,7 +247,7 @@ With argument MSG show activation message."
     (py-font-lock-kill-buffer)
     (set (make-local-variable 'py-shell--font-lock-buffer) nil)
     (add-hook 'post-command-hook
-	      #'py-font-lock-post-command-hook nil 'local)
+              #'py-font-lock-post-command-hook nil 'local)
     (add-hook 'kill-buffer-hook
               #'py-font-lock-kill-buffer nil 'local)
     (add-hook 'comint-output-filter-functions
@@ -317,12 +317,12 @@ Setup code specific to ‘py-shell-mode’."
 
   (add-hook 'py-shell-mode-hook 'comint-mime-setup-py-shell)
   (push '(py-shell-mode . comint-mime-setup-py-shell)
-	comint-mime-setup-function-alist)
+        comint-mime-setup-function-alist)
   ;; (setq py-python-command "ipython3"
-  ;; 	py-ipython-command "ipython3"
-  ;; 	py-python-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt")
-  ;; 	;; "-i" does not work with ‘isympy3’
-  ;; 	py-ipython-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt"))
+  ;;    py-ipython-command "ipython3"
+  ;;    py-python-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt")
+  ;;    ;; "-i" does not work with ‘isympy3’
+  ;;    py-ipython-command-args '("--pylab" "--matplotlib=inline" "--automagic" "--simple-prompt"))
   )
 
 (provide 'python-components-extra)

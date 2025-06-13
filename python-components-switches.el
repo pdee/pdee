@@ -385,7 +385,7 @@ Valid in current session only.
 At start may be set by custom-file"
   (interactive)
   (setq py-closing-list-dedents-bos
-	(not py-closing-list-dedents-bos))
+        (not py-closing-list-dedents-bos))
   (when (or py-verbose-p (called-interactively-p 'any)) (message "py-closing-list-dedents-bos: %s" py-closing-list-dedents-bos)))
 
 (defun py-toggle-py-register-shell-buffer-p ()
@@ -395,7 +395,7 @@ Valid in current session only.
 At start may be set by custom-file"
   (interactive)
   (setq py-register-shell-buffer-p
-	(not py-register-shell-buffer-p))
+        (not py-register-shell-buffer-p))
   (when (or py-verbose-p (called-interactively-p 'any)) (message "py-register-shell-buffer-p: %s" py-register-shell-buffer-p)))
 
 (provide 'python-components-switches)
