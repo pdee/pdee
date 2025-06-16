@@ -217,7 +217,7 @@ Unless DIRECTION is symbol \\='forward, go backward first"
         (sit-for 0.1))
       (unwind-protect
           (py--execute-file-base tempfile proc nil procbuf origline fast)
-        (and (file-readable-p tempfile) (delete-file tempfile py-debug-p))))))
+        (and (sit-for 1) (file-readable-p tempfile) (delete-file tempfile py-debug-p))))))
 
 (defun py--postprocess-intern (&optional origline exception-buffer output-buffer)
   "Highlight exceptions found in BUF.
