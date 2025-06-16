@@ -897,7 +897,7 @@ Return position of moved, nil otherwise."
   (load (concat py-install-directory "/extensions/python-components-skeletons.el")))
 
 (defun py--kill-emacs-hook ()
-  "Delete files in ‘ar-file-queue’.
+  "Delete files in ‘py-file-queue’.
 These are Python temporary files awaiting execution."
   (when (and py-file-queue (listp py-file-queue))
     (dolist (ele py-file-queue)

@@ -132,8 +132,8 @@ REPEAT - count and consider repeats"
 Statement is understood in an editorial sense, not syntactically.
 Nonetheless, while travelling code, it should match syntactic bounderies too.
 
-For beginning of compound statement use ‘ar-backward-block’.
-For beginning of clause ‘ar-backward-clause’.
+For beginning of compound statement use ‘py-backward-block’.
+For beginning of clause ‘py-backward-clause’.
 
 ‘ignore-in-string-p’ allows moves inside a docstring, used when
 computing indents
@@ -156,7 +156,7 @@ Optional MAXINDENT: do not stop if indentation is larger"
         ;;        (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
         (cond
          ((< py-max-specpdl-size repeat)
-          (error "py-forward-statement reached loops max. If no error, customize ‘ar-max-specpdl-size’"))
+          (error "py-forward-statement reached loops max. If no error, customize ‘py-max-specpdl-size’"))
          ((and (bolp) (eolp))
           (skip-chars-backward " \t\r\n\f")
           (py-backward-statement orig done limit ignore-in-string-p repeat maxindent))

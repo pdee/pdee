@@ -16,7 +16,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary: ‘ar--go-to-keyword’ and related fundamental stuff
+;;; Commentary: ‘py--go-to-keyword’ and related fundamental stuff
 
 ;;; Code:
 
@@ -315,8 +315,8 @@ Optional ENFORCE-REGEXP: search for regexp only."
                           (symbol-value regexp)))
            (lastvalue (and secondvalue
                            (pcase regexp
-                             (`ar-try-re (concat py-finally-re "\\|" py-except-re "\\|" py-else-re))
-                             (`ar-if-re py-else-re))))
+                             (`py-try-re (concat py-finally-re "\\|" py-except-re "\\|" py-else-re))
+                             (`py-if-re py-else-re))))
            last)
       (if (eq regexp (quote py-clause-re))
           (py-forward-clause-intern indent)

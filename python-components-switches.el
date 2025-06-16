@@ -399,4 +399,4 @@ At start may be set by custom-file"
   (when (or py-verbose-p (called-interactively-p 'any)) (message "py-register-shell-buffer-p: %s" py-register-shell-buffer-p)))
 
 (provide 'python-components-switches)
-;;;  python-components-switches.el ends here
+;;; python-components-switches.el ends here
