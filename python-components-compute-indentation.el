@@ -272,16 +272,19 @@ LIEP stores line-end-position at point-of-interest
                           (back-to-indentation)
                           (current-indentation))))
                      ;; string in list
-                     ((save-excursion (goto-char (nth 8 pps))(nth 0 (parse-partial-sexp (point-min) (point))))
+                     ;; ;; data = {'key': {
+                     ;;     'objlist': [
+                     ;;         {'pk': 1,
+                     ;;          'name': 'first'},
+                     ;;         {'pk': 2,
+                     ;;          'name': 'second'}
+                     ;;     ]
+                     ;; }}
+                     ((goto-char (nth 8 pps))
                       (if
-                          (or line (save-excursion (goto-char (nth 8 pps))(< (py-count-lines (point-min) (point)) origline)))
-                          (progn
-                            (goto-char (nth 8 pps)) (current-column))
-                        (goto-char (nth 8 pps))
-                        (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep beg)))
-                     ((or line (< (py-count-lines (point-min) (point)) origline))
-                      (goto-char (nth 8 pps))(current-indentation))
-                     (t 0)))
+                          (or line (< (py-count-lines (point-min) (point)) origline))
+                          (current-column)
+                        (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep beg)))))
                    ((and (looking-at "\"\"\"\\|'''") (not (bobp)))
                     (py-backward-statement)
                     (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep beg))

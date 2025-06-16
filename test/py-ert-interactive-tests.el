@@ -708,14 +708,14 @@ def baz():
   (py-test
    "def foo():
     print(\"\"\"
-Bar
+    Bar
 \"\"\")
 "
    'python-mode
    'py-verbose-p
    (goto-char (point-max))
-   (forward-line -3)
-   (should (eq 10 (py-compute-indentation)))))
+   (search-backward "Bar")
+   (should (eq 0 (py-compute-indentation)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-76Aw4O ()
   (py-test-point-min
