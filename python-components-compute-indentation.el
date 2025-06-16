@@ -437,7 +437,7 @@ LIEP stores line-end-position at point-of-interest
                     (py-compute-indentation iact orig origline closing line nesting repeat indent-offset liep beg))
                    (t (current-indentation))))
             ;; (when (or (eq 1 (prefix-numeric-value iact)) py-verbose-p) (message "%s" indent))
-            (when py-verbose-p (message "%s" indent))
+            (when (or iact py-verbose-p) (message "%s" indent))
             indent))))))
 
 (provide (quote python-components-compute-indentation))
