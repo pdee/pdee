@@ -402,9 +402,5 @@ This may be preferable to ‘\\[py-execute-buffer]’ because:
                                   (py-execute-file-command file))))
       (py-execute-buffer))))
 
-(provide 'python-components-execute);
-;;;  python-components-execute.el ends here
-
 (provide 'python-components-execute)
-
 ;;; python-components-execute.el ends here
