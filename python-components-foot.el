@@ -199,14 +199,6 @@
    (py-do-completion-p
     (add-hook 'completion-at-point-functions
               'py-shell-complete nil 'local)))
-  ;; #'python-shell-completion-at-point nil 'local)))
-  ;; (if py-auto-complete-p
-  ;; (add-hook 'python-mode-hook 'py--run-completion-timer)
-  ;; (remove-hook 'python-mode-hook 'py--run-completion-timer))
-  ;; (when py-auto-complete-p
-  ;; (add-hook 'python-mode-hook
-  ;; (lambda ()
-  ;; (run-with-idle-timer 1 t 'py-shell-complete))))
   (add-hook 'python-mode-hook
             (lambda ()
               (if py-electric-backspace-p (py-electric-backspace-mode 1)

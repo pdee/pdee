@@ -91,10 +91,10 @@
 
 (or
  py-install-directory
- (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python--mode.el"))))
-      (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-mode.el"))))))
+ (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python-mode.el")))) ;; mark for a generic mode
+      (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer "python-mode.el"))))))
  (and (buffer-live-p (ignore-errors (set-buffer (get-buffer "python-components-mode.el"))))
-      (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el")))))))
+      (setq py-install-directory (ignore-errors (file-name-directory (buffer-file-name (get-buffer "python-components-mode.el")))))))
 
 ;; credits to python.el
 
@@ -240,12 +240,6 @@ Argument ELE: a shell name, a string."
 ;;   :group 'python-mode)
 
 ;; "/usr/bin/python3"
-
-(setq python-mode-message-string
-  (if (or (string= "python-mode.el" (buffer-name))
-          (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
-      "python-mode.el"
-    "python-components-mode"))
 
 (setq python-mode-syntax-table
       (let ((table (make-syntax-table)))

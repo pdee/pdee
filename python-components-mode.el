@@ -112,8 +112,5 @@
 (require (quote python-components-ffap))
 (require (quote python-components-foot))
 
-;; (require (quote python-components-eldoc))
-
-;; (provide (quote python-components-mode))
-(provide (quote python-mode))
+(provide 'python-mode)
 ;;; python-components-mode.el ends her

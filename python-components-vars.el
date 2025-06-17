@@ -2398,7 +2398,7 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
   (if (or (string= "python-mode.el" (buffer-name))
           (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
       "python-mode.el"
-    "python-components-mode")
+    "python-components-mode") ;; generic mark
   "Internally used. Reports the ‘python-mode’ branch.")
 
 ;; defvared value is not updated maybe
@@ -2406,7 +2406,7 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
   (if (or (string= "python-mode.el" (buffer-name))
           (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
       "python-mode.el"
-    "python-components-mode"))
+    "python-components-mode")) ;; generic mark
 
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol.

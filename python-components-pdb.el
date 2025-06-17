@@ -342,22 +342,12 @@ Returns the tracked buffer."
 (defun py-pdbtrack-toggle-stack-tracking (arg)
   "Set variable ‘py-pdbtrack-do-tracking-p’. "
   (interactive "P")
-  ;; (if (not (get-buffer-process (current-buffer)))
-  ;; (error "No process associated with buffer '%s'" (current-buffer)))
-
-  ;; missing or 0 is toggle, >0 turn on, <0 turn off
   (cond ((not arg)
          (setq py-pdbtrack-do-tracking-p (not py-pdbtrack-do-tracking-p)))
         ((zerop (prefix-numeric-value arg))
          (setq py-pdbtrack-do-tracking-p nil))
         ((> (prefix-numeric-value arg) 0)
          (setq py-pdbtrack-do-tracking-p t)))
-  ;; (if py-pdbtrack-do-tracking-p
-  ;;     (progn
-  ;;       (add-hook 'comint-output-filter-functions (quote py--pdbtrack-track-stack-file))
-  ;;       (remove-hook 'comint-output-filter-functions 'python-pdbtrack-track-stack-file))
-  ;;   (remove-hook 'comint-output-filter-functions (quote py--pdbtrack-track-stack-file))
-  ;;   )
   (message "%sabled Python's pdbtrack"
            (if py-pdbtrack-do-tracking-p "En" "Dis")))
 
