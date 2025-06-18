@@ -20,15 +20,6 @@
 
 ;;; Code:
 
-(defcustom py-mark-decorators nil
-  "If decorators should be marked too.
-
-Default is nil.
-
-Also used by navigation"
-  :type 'boolean
-  :tag "py-mark-decorators")
-
 (defun py-end-of-string ()
   "Go to end of string at point if any, if successful return position. "
   (interactive)

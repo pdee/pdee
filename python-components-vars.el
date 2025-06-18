@@ -2398,7 +2398,7 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
   (if (or (string= "python-mode.el" (buffer-name))
           (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
       "python-mode.el"
-    "python-components-mode") ;; generic mark
+    "python-components-mode")
   "Internally used. Reports the ‘python-mode’ branch.")
 
 ;; defvared value is not updated maybe
@@ -2406,7 +2406,7 @@ See also command ‘py-toggle-underscore-word-syntax-p’")
   (if (or (string= "python-mode.el" (buffer-name))
           (ignore-errors (string-match "python-mode.el" (py--buffer-filename-remote-maybe))))
       "python-mode.el"
-    "python-components-mode")) ;; generic mark
+    "python-components-mode"))
 
 (defvar python-mode-syntax-table nil
   "Give punctuation syntax to ASCII that normally has symbol.
@@ -2619,11 +2619,9 @@ stop at it.")
 (defvar py-partial-expression-re (concat "[" py-partial-expression-stop-backward-chars (substring py-partial-expression-forward-chars 1) "]+"))
 (setq py-partial-expression-re (concat "[" py-partial-expression-stop-backward-chars "]+"))
 
-
 ;; (defvar py-statement-re py-partial-expression-re)
-(defvar py-statement-re "[^] .=,\"'()[{}:#      
+(defvar py-statement-re "[^] .=,\"'()[{}:#
 ]+" "Match beginning of a statement")
-
 
 (defvar py-indent-re ".+"
   "This var is introduced for regularity only.")
@@ -3469,6 +3467,15 @@ Default nil"
   :set (lambda (symbol value)
          (set-default symbol value)
          (py-electric-backspace-mode (if value 1 0))))
+
+(defcustom py-mark-decorators nil
+  "If decorators should be marked too.
+
+Default is nil.
+
+Also used by navigation"
+  :type 'boolean
+  :tag "py-mark-decorators")
 
 (provide 'python-components-vars)
 ;;; python-components-vars.el ends here

@@ -112,5 +112,5 @@
 (require (quote python-components-ffap))
 (require (quote python-components-foot))
 
-(provide 'python-mode)
+(provide 'python-mode) ;; generic mark 
 ;;; python-components-mode.el ends her

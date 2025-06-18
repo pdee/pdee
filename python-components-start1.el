@@ -631,11 +631,11 @@ Used only, if ‘py-install-directory’ is empty."
                     (buffer-file-name (get-buffer  "python-mode.el")))
                (setq py-install-directory (file-name-directory (buffer-file-name (get-buffer  "python-mode.el"))))
              (if
-                 (and (get-buffer "python-components-mode.el")
-                      (set-buffer (get-buffer "python-components-mode.el"))
-                      (buffer-file-name (get-buffer  "python-components-mode.el")))
-                 (setq py-install-directory (file-name-directory (buffer-file-name (get-buffer  "python-components-mode.el"))))))
-           )))
+                 (and
+                  (get-buffer "python-components-mode.el")
+                  (set-buffer (get-buffer "python-components-mode.el"))
+                  (buffer-file-name (get-buffer "python-components-mode.el")))
+                 (setq py-install-directory (file-name-directory (buffer-file-name (get-buffer "python-components-mode.el")))))))))
 
 (defun py--fetch-pythonpath ()
   "Consider settings of ‘py-pythonpath’."
@@ -2518,9 +2518,9 @@ process buffer for a list of commands.)"
             (save-excursion
               (save-restriction
                 (with-current-buffer buffer
-                  (switch-to-buffer (current-buffer)) 
+                  (switch-to-buffer (current-buffer))
                   (goto-char (point-max))
-                  (sit-for 0.1) 
+                  (sit-for 0.1)
                   (funcall 'window-configuration-to-register py-register-char)
                   ))))
           (unless fast (py-shell-mode))

@@ -210,5 +210,5 @@
   (py-forward-indent)
   (py-hide-indent)))
 
-;; python-components-hide-show.el ends here
 (provide (quote python-components-hide-show))
+;;; python-components-hide-show.el ends here

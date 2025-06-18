@@ -33,8 +33,6 @@
 ;; Olin Shivers's SRE, with concessions to Emacs regexp peculiarities,
 ;; and the older Emacs package Sregex.
 
-;;; Code:
-
 ;; The ‘rx--translate...’ functions below return (REGEXP . PRECEDENCE),
 ;; where REGEXP is a list of string expressions that will be
 ;; concatenated into a regexp, and PRECEDENCE is one of
@@ -55,6 +53,7 @@
 ;;         \   /
 ;;          nil         lowest precedence
 
+;;; Code:
 
 (defconst rx--char-classes
   '((digit         . digit)
@@ -1123,7 +1122,6 @@ can expand to any number of values."
     (rx--translate-form item))
    (t (error "Bad rx expression: %S" item))))
 
-
 (defun rx-to-string (form &optional no-group)
   "Translate FORM from ‘rx’ sexp syntax into a string regexp.
 The arguments to ‘literal’ and ‘regexp’ forms inside FORM must be
@@ -1158,7 +1156,6 @@ For extending the ‘rx’ notation in FORM, use ‘rx-define’ or ‘rx-let-ev
     (cond ((null args) "")                             ; 0 args
           ((cdr args) (cons 'concat (nreverse args)))  ; ≥2 args
           (t (car args)))))                            ; 1 arg
-
 
 (defmacro rx (&rest regexps)
   "Translate regular expressions REGEXPS in sexp form to a regexp string.
