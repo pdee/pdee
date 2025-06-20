@@ -297,7 +297,7 @@ LIEP stores line-end-position at point-of-interest
                      (and (eq 11 (syntax-after (point))) line py-indent-honors-inline-comment))
                     (py-compute-comment-indentation pps iact orig origline closing line nesting repeat indent-offset liep))
                    ;; lists
-                   ((and (nth 1 pps)(or (< 1 (nth 0 pps))(eq major-mode (quote python-mode))))
+                   ((nth 1 pps)
                     (py-compute-indentation-according-to-list-style pps (line-beginning-position)))
                    ;; Compute according to ‘py-indent-list-style’
 
