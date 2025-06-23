@@ -223,7 +223,8 @@ SECONDVALUE: travel these expressions
             (and
              (setq pps (nth 8 (parse-partial-sexp (point-min) (point))))
              (goto-char pps))
-            (unless (and (< (point) orig) (not (looking-at regexpvalue)) (looking-at secondvalue))
+            ;; (unless (and (< (point) orig) (not (looking-at regexpvalue)) (looking-at secondvalue))
+            (unless (and (< (point) orig) (or (looking-at regexpvalue) (looking-at secondvalue)))
               (py--backward-regexp regexp (current-indentation) condition orig))
             (unless (or (eq (point) orig)(bobp)) (back-to-indentation))))
         (and (looking-at secondvalue) (not (nth 8 (parse-partial-sexp (point-min) (point))))(point))))))

@@ -372,8 +372,8 @@ LIEP stores line-end-position at point-of-interest
                    ((looking-at py-extended-block-or-clause-re)
                     (cond ((and (not line)
                                 (eq liep (line-end-position)))
-                           (when (py--line-backward-maybe) (setq line t))
-                           (py-compute-indentation iact orig origline closing line nesting (+ repeat 1) indent-offset liep beg))
+                           (when (py--line-backward-maybe)
+                             (py-compute-indentation iact orig origline closing t nesting (+ repeat 1) indent-offset liep beg)))
                           (t (+
                               (cond (indent-offset)
                                     (py-smart-indentation

@@ -1612,7 +1612,25 @@ else: #<- this else is not possible to indent 1 tab
     'py-verbose-p
     (goto-char (point-max))
     (search-backward "else" nil t 2)
-    (beginning-of-line) 
+    (beginning-of-line)
+    (should (eq 4 (py-compute-indentation)))))
+
+(ert-deftest py-else-test-YYL42q ()
+  (py-test
+  "def foo():
+    if True:
+        pass
+    else:
+        if True:
+            pass
+        else:
+           pass
+"
+    'python-mode
+    'py-verbose-p
+    (goto-char (point-max))
+    (search-backward "else" nil t 2)
+    (beginning-of-line)
     (should (eq 4 (py-compute-indentation)))))
 
 
