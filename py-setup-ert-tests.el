@@ -26,7 +26,7 @@
 BODY is code to be executed within the temp buffer "
   (declare (indent 1) (debug t))
   `(with-temp-buffer
-     (let (hs-minor-mode py--imenu-create-index-p)
+     (let (hs-minor-mode py--imenu-create-index-p python-indent-guess-indent-offset-verbose) 
        (insert ,contents)
        (funcall ,mode)
        (when ,verbose
@@ -40,7 +40,7 @@ BODY is code to be executed within the temp buffer.  Point is
  at the beginning of buffer."
   (declare (debug t))
   `(with-temp-buffer
-     (let (hs-minor-mode py--imenu-create-index-p)
+     (let (hs-minor-mode py--imenu-create-index-p python-indent-guess-indent-offset-verbose)
        (insert ,contents)
        (funcall ,mode)
        (goto-char (point-min))
