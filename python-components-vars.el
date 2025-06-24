@@ -123,7 +123,7 @@ Default is nil"
   "Avoid compiler warning")
 
 (defgroup python-mode nil
-  "Support for the Python programming language, <http://www.python.org/>"
+  "Support for the programming language"
   :group 'languages
   :prefix "py-")
 

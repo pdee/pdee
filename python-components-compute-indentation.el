@@ -383,16 +383,20 @@ LIEP stores line-end-position at point-of-interest
                    ((and
                      (< (line-end-position) liep)
                      (eq (current-column) (current-indentation)))
-                    (and
-                     (looking-at py-assignment-re)
-                     (goto-char (match-end 0)))
-                    ;; multiline-assignment
-                    (if (and nesting (looking-at " *[[{(]") (not (looking-at ".+[]})][ \t]*$")))
-                        (+ (current-indentation) (or indent-offset py-indent-offset))
-                      (current-indentation)))
-                   ((looking-at py-assignment-re)
-                    (py-backward-statement)
-                    (py-compute-indentation iact orig origline closing line nesting (+ repeat 1) indent-offset liep beg))
+                    ;; from beginning of previous line
+                    (cond
+                     ((looking-at py-assignment-re)
+                      (goto-char (match-end 0))
+                      ;; multiline-assignment
+                      (if (and nesting (looking-at " *[[{(]") (not (looking-at ".+[]})][ \t]*$")))
+                          (+ (current-indentation) (or indent-offset py-indent-offset))
+                        (current-indentation)))
+                     ((looking-at py-assignment-re)
+                      (py-backward-statement)
+                      (py-compute-indentation iact orig origline closing line nesting (+ repeat 1) indent-offset liep beg))
+                     ((looking-at py-block-or-clause-re)
+                      (+ (current-indentation) py-indent-offset))
+                     (t (current-indentation))))
                    ((and (< (current-indentation) (current-column))(not line))
                     (back-to-indentation)
                     (unless line
