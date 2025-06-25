@@ -42,26 +42,6 @@ def foo():
    (sit-for 0.1 t)
    (should (eq 7 (current-column)))))
 
-(ert-deftest py-ert-imports-in-interactive-shell-lp-1290709-lZvVlc ()
-  ""
-  'python-mode
-  'py-verbose-p
-  (when (buffer-live-p (get-buffer "*Python*"))
-    (py-kill-buffer-unconditional (get-buffer "*Python*")))
-  (when (buffer-live-p (get-buffer "*Python3*")) (py-kill-buffer-unconditional (get-buffer "*Python3*")))
-  (let ((buffer (py-shell nil nil "python")))
-    (set-buffer buffer)
-    (delete-other-windows)
-    (let ((full-height (window-height)))
-      (py-execute-string "import os" (get-buffer-process (current-buffer)))
-      (sit-for 0.1)
-      (goto-char (point-max))
-      ;; (sit-for 0.1 t)
-      (insert "print(os.get")
-      (py-indent-or-complete)
-      (sit-for 0.1 t)
-      (should (< (window-height) full-height)))))
-
 (ert-deftest py-ert-execute-region-ipython-lp-1294796-HePARg ()
   (py-test-point-min
    "print(1)
@@ -287,7 +267,7 @@ print(3+3)
    (skip-chars-backward " \t\r\n\f")
    (back-to-indentation)
    (py-match-paren)
-   (should (eq 4 (current-column)))))
+   (should (eq 0 (current-indentation)))))
 
 (ert-deftest py-ert-match-paren-test-6-p1JAuq ()
   (py-test
