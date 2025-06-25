@@ -2518,11 +2518,12 @@ process buffer for a list of commands.)"
             (save-excursion
               (save-restriction
                 (with-current-buffer buffer
-                  (switch-to-buffer (current-buffer))
+                  (when (or switch py-switch-buffers-on-execute-p py-split-window-on-execute)
+                    (switch-to-buffer (current-buffer))
                   (goto-char (point-max))
                   (sit-for 0.1)
                   (funcall 'window-configuration-to-register py-register-char)
-                  ))))
+                  )))))
           (unless fast (py-shell-mode))
           (and internal (set-process-query-on-exit-flag proc nil))
           (when (or interactivep

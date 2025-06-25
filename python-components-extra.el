@@ -78,7 +78,8 @@ Optional argument PROCESS forces completions to be retrieved
 using that one instead of current buffer's process."
   ;; (setq process (or process (get-buffer-process (current-buffer))))
   (let*
-      ((process (or process (get-buffer-process (current-buffer))))
+      (py-switch-buffers-on-execute-p py-split-window-on-execute
+       (process (or process (get-buffer-process (current-buffer)) (get-buffer-process (py-shell))))
        (line-start (if (derived-mode-p 'py-shell-mode)
                        ;; Working on a shell buffer: use prompt end.
                        (or (cdr (py-util-comint-last-prompt))
