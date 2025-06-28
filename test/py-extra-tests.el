@@ -34,6 +34,7 @@
 (require 'py-setup-ert-tests)
 
 (ert-deftest py-ert-moves-up-execute-statement-test-RdqUKX ()
+  ""
   (py-test-point-min
    "print(\"I'm the py-execute-statement-test\")"
    'python-mode
@@ -61,6 +62,7 @@
    (when py-debug-p (message "py-ert-moves-up-execute-statement-test-RdqUKX: %s" "Can't see python2"))))
 
 (ert-deftest UnicodeEncodeError-lp-550661-test-1oxvP0 ()
+  ""
   (py-test
    "#! /usr/bin/env python3
 print(u'\\xA9')"
@@ -76,6 +78,7 @@ print(u'\\xA9')"
      (should (string= "©" py-result)))))
 
 (ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2 ()
+  ""
   (py-test
       "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -99,6 +102,7 @@ os.write"
       (when py-verbose-p (message "py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2: %s" "No executable python found")))))
 
 (ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test-MppJiJ ()
+  ""
   (py-test
       "#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -122,6 +126,7 @@ os.write"
       (when py-verbose-p (message "py-describe-symbol-fails-on-modules-lp-919719-test-9UErj2: %s" "No executable python found")))))
 
 (ert-deftest py-ert-execute-block-fast-9Ui5ja-zo3sa5 ()
+  ""
   (py-test-point-min
    "try:
     a
@@ -143,6 +148,7 @@ finally:
      (should (string-match "[0-9]" py-result)))))
 
 (ert-deftest py-ert-execute-block-9Ui5ja-DUvXA6 ()
+  ""
   (py-test-point-min
    "try:
     a
@@ -165,6 +171,7 @@ finally:
      (should (string-match "[0-9]+" py-result)))))
 
 (ert-deftest py-ert-moves-up-execute-statement-python3-dedicated-test-zI51W7 ()
+  ""
   (py-test-point-min
    "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
    'python-mode
@@ -180,6 +187,7 @@ finally:
      (should (search-forward "py-execute-statement-python3-dedicated-test" nil t 1)))))
 
 (ert-deftest py-ert-execute-statement-fast-7XrRee ()
+  ""
   (py-test-point-min
    "print(2)"
    'python-mode
@@ -193,6 +201,7 @@ finally:
 
 ;; adapted from python.el
 (ert-deftest py-syntax-after-backspace-TwyMwn-xjlPqf ()
+  ""
   (py-test
    "\"\""
    'python-mode
@@ -202,6 +211,7 @@ finally:
    (should (null (nth 3 (parse-partial-sexp (point-min) (point)))))))
 
 (ert-deftest py-ert-execute-statement-fast-test-noYr4j ()
+  ""
   (py-test-point-min
    "print(123234)"
    'python-mode
@@ -219,6 +229,7 @@ finally:
      (should (search-backward "123234")))))
 
 (ert-deftest py-ert-fast-complete-vS8fnm ()
+  ""
   (py-test
    "obj"
    'python-mode
@@ -231,6 +242,7 @@ finally:
    (should (search-backward "ect"))))
 
 (ert-deftest py-execute-string-text-dtOWbA1 ()
+  ""
   (py-test
    ""
    'python-mode
@@ -240,6 +252,7 @@ finally:
      (should (string= py-result "foo")))))
 
 (ert-deftest py-ert-class-definitions-lp-1018164-test-3pDuRq ()
+  ""
   (py-test
    "#! /usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -960,6 +973,7 @@ class EmacsFrameThemeManager(datatypes.Singleton, metaclass=cldef.metaClass):
    (should (looking-back "return themes" (line-beginning-position)))))
 
 (ert-deftest py-execute-region-ipython-test-1gyFLs ()
+  ""
   (py-test
    "#! /usr/bin/env python3
 print(u'\\xA9')"
@@ -975,6 +989,7 @@ print(u'\\xA9')"
      (string-match "@" (buffer-substring-no-properties (point-min) (point-max))))))
 
 (ert-deftest py-ert-respect-paragraph-1294829-test-dpmi5s ()
+  ""
   (py-test-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
@@ -1059,6 +1074,7 @@ by the
     (should (eq (char-after) ?\n))))
 
 (ert-deftest py-ert-respect-paragraph-1294829-test-s7lFth ()
+  ""
   (py-test-point-min
       "# py-fill-paragraph doesn\';t respect existing paragraph breaks when
 # reflowing the docstring, e.g.
@@ -1145,6 +1161,7 @@ by the
     (should (eq (char-after) ?\n))))
 
 (ert-deftest py-indent-bug63959-test-6ZlhPF ()
+  ""
   (py-test
    "def f():
     \"\"\"
@@ -1163,6 +1180,7 @@ by the
 
 
 (ert-deftest py-indent-bug63959-test-Bfr7rA ()
+  ""
   (py-test
    "def f():
     \"\"\"
@@ -1179,6 +1197,7 @@ by the
    (should (eq 4 (py-compute-indentation)))))
 
 (ert-deftest py-indent-or-complete-7NWa5T ()
+  ""
   (py-test
    "def foo:
     pass\n\npri"
@@ -1190,11 +1209,13 @@ by the
    (should (looking-back "print.?" (line-beginning-position)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-BBJoDt ()
+  ""
   (let ((py-docstring-style 'pep-257-nn))
     (py-test-point-min
      "# r1416
 def baz():
     \"\"\"Hello there. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. Not unhappy.
+
     Now this is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very glad.
     \"\"\"
     return 7
@@ -1218,6 +1239,7 @@ def baz():
      )))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-BVA4Jt ()
+  ""
   (let ((py-docstring-style 'django))
     (py-test-point-min
      "# r1416
@@ -1237,6 +1259,7 @@ def baz():
      (should (py-empty-line-p)))))
 
 (ert-deftest py-fast-send-string-no-output-VxbcvH ()
+  ""
   (py-test
    "print(234)"
    'python-mode
@@ -1248,6 +1271,7 @@ def baz():
    (should (eq 1 (point-max)))))
 
 (ert-deftest py-send-string-no-output-VxbcvH ()
+  ""
   (py-test
    "print(234)"
    'python-mode
@@ -1260,6 +1284,7 @@ def baz():
    (should-not (looking-back "123" (line-beginning-position)))))
 
 (ert-deftest py-pdbtrack-test-H6CpKY ()
+  ""
   (py-test
    "import pdb
 import sys
@@ -1293,6 +1318,7 @@ def main():
        (should (string-match "Pdb" (buffer-substring-no-properties (line-beginning-position) (point-max))))))))
 
 (ert-deftest highlight-typed-variables-in-python-41684-test-ZFhHGT ()
+  ""
   (py-test
    ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2020-06/msg00128.html
    "foo: int = 1"

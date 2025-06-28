@@ -69,7 +69,9 @@ elif [ -s $PWD/python-components-mode.el ]; then
 fi
 
 echo "\$PYTHONMODE: $PYTHONMODE"
-SETUP=${PWD}/py-setup-ert-tests.el
+
+SETUP=py-setup-ert-tests.el
+echo "\$SETUP: $SETUP"
 
 TEST1=$TESTDIR/py-ert-indent-tests.el
 TEST2=$TESTDIR/py-ert-beginning-tests.el

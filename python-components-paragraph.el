@@ -1,6 +1,5 @@
 ;;; python-components-paragraph.el --- filling -*- lexical-binding: t; -*-
 
-;; Original Author: Fabián E. Gallina <fabian@anue.biz>
 ;; Maintainer https://gitlab.com/groups/python-mode-devs
 
 ;; Keywords: languages
@@ -133,17 +132,17 @@
     t))
 
 (defun py--in-or-behind-or-before-a-docstring (pps)
+  "Return start/end position of a docstring, if inside.
+
+Nil otherwise"
   (interactive "*")
   (save-excursion
-    (let* ((strg-start-pos (when (nth 3 pps) (nth 8 pps)))
-           (n8pps (or strg-start-pos
-                      (when
+    (py--docstring-p (or (and (nth 3 pps) (nth 8 pps))
+                         (and
                           (equal (string-to-syntax "|")
                                  (syntax-after (point)))
-                        (and
-                         (< 0 (skip-chars-forward "\"'"))
-                         (nth 3 (parse-partial-sexp (point-min) (point))))))))
-      (and n8pps (py--docstring-p n8pps)))))
+                          (< 0 (skip-chars-forward "\"'"))
+                          (nth 3 (parse-partial-sexp (point-min) (point))))))))
 
 (defun py--string-fence-delete-spaces (&optional start)
   "Delete spaces following or preceding delimiters of string at point. "
@@ -226,21 +225,23 @@ See lp:1066489 "
     (fill-region-as-paragraph (line-beginning-position) end)
     (setq fill-prefix old-fill-prefix)))
 
-(defun py--fill-docstring (docstring &optional beg end)
+(defun py--fill-docstring (docstring)
   "Fills paragraph in docstring below or at cursor position."
   (let* ((orig (point))
-         (beg (or beg (progn (goto-char docstring) (line-beginning-position))))
-         (end (copy-marker (or end (progn (goto-char beg)
-                                          (skip-chars-forward " \t\r\n\f")
-                                          (py--skip-raw-string-front-fence)
-                                          (skip-syntax-forward "^|")
-                                          (1+ (point)))))))
+         (beg (car docstring))
+         (end (copy-marker (cadr docstring)))
+               ;; (or end (progn (goto-char beg)
+               ;;                            (skip-chars-forward " \t\r\n\f")
+               ;;                            (py--skip-raw-string-front-fence)
+               ;;                            (skip-syntax-forward "^|")
+               ;;                            (1+ (point))))
+               )
     (save-restriction
       ;; do not go backward beyond beginning of string
       (narrow-to-region beg end)
       (let* (;; Paragraph starts with beginning of string, skip the fence-chars
              (innerbeg (copy-marker
-                        (progn (goto-char docstring)
+                        (progn (goto-char beg)
                                ;; (max
                                ;;  (py--skip-raw-string-front-fence)
                                ;;  (progn (unless (looking-at paragraph-start)
@@ -255,6 +256,7 @@ See lp:1066489 "
              ;; (paragraph-separate (concat py-symbol-re "\\|" py-star-labelled-re "\\|" py-colon-labelled-re "\\|" paragraph-separate))
              ;; (paragraph-start (concat py-symbol-re "\\|" py-star-labelled-re "\\|" py-colon-labelled-re "\\|"  paragraph-start))
              parabeg paraend on-first-line)
+        ;;
         (setq paraend
               (copy-marker
                (save-excursion
@@ -267,7 +269,7 @@ See lp:1066489 "
                             (save-excursion (goto-char orig) (forward-paragraph) (point)) innerend))
                    (progn (forward-paragraph) (skip-chars-backward " \t\r\n\f" orig) (min (point) innerend))))))
         (setq parabeg (max (progn (goto-char paraend) (backward-paragraph) (skip-chars-forward " \t\r\n\f") (point)) innerbeg))
-        (setq on-first-line (< (line-beginning-position) docstring))
+        (setq on-first-line (< (line-beginning-position) beg))
         (if (or (string-match (concat "^" py-colon-labelled-re) (buffer-substring-no-properties parabeg paraend))
                 (string-match (concat "^" py-star-labelled-re) (buffer-substring-no-properties parabeg paraend)))
             (py-fill-labelled-string parabeg paraend)
@@ -315,7 +317,7 @@ Fill according to ‘py-docstring-style’ "
       (goto-char orig)
       (when beg
         (if docstring
-            (py--fill-docstring docstring beg end)
+            (py--fill-docstring docstring)
           (if (not tqs)
               (if (py-preceding-line-backslashed-p)
                   (progn
@@ -341,6 +343,7 @@ Fill according to ‘py-docstring-style’ "
       (ignore-errors (forward-line 1)))))
 
 (defun py-fill-paragraph (&optional pps beg end tqs)
+  "Fill the paragraph at point."
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
   (let* ((pps (or pps (parse-partial-sexp (point-min) (point))))

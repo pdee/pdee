@@ -400,22 +400,25 @@ Used for syntactic keywords.  N is the match number (1, 2 or 3)."
 
 If succesful, returns beginning of docstring position in buffer"
   (save-excursion
-    (let ((erg
-           (progn
-             (goto-char pos)
-             (and (looking-at "\"\"\"\\|'''")
-                  ;; https://github.com/swig/swig/issues/889
-                  ;; def foo(rho, x):
-                  ;;     r"""Calculate :math:`D^\nu \rho(x)`."""
-                  ;;     return True
-                  (if (py--at-raw-string)
-                      (progn
-                        (forward-char -1)
-                        (point))
-                    (point))))))
-      (when (and erg (py-backward-statement))
-        (when (or (bobp) (looking-at py-def-or-class-re)(looking-at "\\_<__[[:alnum:]_]+__\\_>"))
-          erg)))))
+    (and
+     (progn
+       (goto-char pos)
+       (and (looking-at "\"\"\"\\|'''")
+            ;; https://github.com/swig/swig/issues/889
+            ;; def foo(rho, x):
+            ;;     r"""Calculate :math:`D^\nu \rho(x)`."""
+            ;;     return True
+            (if (py--at-raw-string)
+                (progn
+                  (forward-char -1)
+                  (point))
+              (point))))
+     (or (bobp) (py-backward-statement))
+     (or (bobp)
+         ;;  the core thing
+         (looking-at py-def-or-class-re)
+         (looking-at "\\_<__[[:alnum:]_]+__\\_>"))
+     (list erg (progn (goto-char erg) (forward-sexp) (point))))))
 
 (defun py--font-lock-syntactic-face-function (state)
   "STATE expected as result von (parse-partial-sexp (point-min) (point)."
