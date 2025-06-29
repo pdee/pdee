@@ -2888,7 +2888,7 @@ print(\"%(language)s has %(number)03d quote types.\" %
    (goto-char (point-min) )
    (py-forward-statement)
    (py-forward-statement)
-   (should (eobp))))
+   (should (eq (char-before) ?\)))))
 
 (ert-deftest py-backward-clause-test-p52Dcj ()
   (py-test

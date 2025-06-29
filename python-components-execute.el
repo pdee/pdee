@@ -212,8 +212,8 @@ Receives a ‘buffer-name’ as argument"
 When given, to value of ‘py-default-working-directory’ otherwise"
   (interactive)
   (let* ((proc (get-buffer-process (current-buffer)))
-         (dir (or directory py-default-working-directory))
-         erg)
+        (dir (or directory py-default-working-directory))
+        erg)
     ;; (py-execute-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
     (py-execute-string (concat "import os\;os.chdir(\"" dir "\")") proc nil t)
     (setq erg (py-execute-string "os.getcwd()" proc nil t))

@@ -117,14 +117,11 @@ REPEAT - count and consider repeats"
             (py-forward-statement orig done repeat))))
        ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon))
         (py-forward-statement orig done repeat)))
-      (unless
-          (or
-           (eq (point) orig)
-           (member (char-before) (list 10 32 9 ?#)))
-        (setq erg (point)))
-      (if (and py-verbose-p err)
-          (py--message-error err))
-      erg)))
+      (or err
+          (and (< orig (point))
+               (not (member (char-before) (list 10 32 9 ?#)))
+               (point))))))
+
 
 (defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat maxindent)
   "Go to the initial line of a simple statement.
