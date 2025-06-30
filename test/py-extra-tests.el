@@ -1267,7 +1267,8 @@ def baz():
    (set-buffer "*Python3 Fast*")
    ;; (when py-debug-p (switch-to-buffer (current-buffer)))
    (when py-debug-p (switch-to-buffer "*Python3 Fast*"))
-   (should (eq 1 (point-max)))))
+   (goto-char (point-max))
+   (should (search-backward "234"))))
 
 (ert-deftest py-send-string-no-output-VxbcvH ()
   ""

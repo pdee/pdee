@@ -28,10 +28,10 @@ REPEAT - count and consider repeats"
   (unless (eobp)
     (let ((repeat (or (and repeat (1+ repeat)) 0))
           (orig (or orig (point)))
-          erg last
+          last
           ;; use by scan-lists
+          (pps (parse-partial-sexp (point-min) (point)))
           forward-sexp-function pps err)
-      (setq pps (parse-partial-sexp (point-min) (point)))
       ;; (origline (or origline (py-count-lines)))
       (cond
        ;; which-function-mode, lp:1235375
