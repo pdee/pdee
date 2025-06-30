@@ -2822,7 +2822,14 @@ See ‘py-no-outdent-re-raw’ for better readable content")
   :group 'python-mode)
 
 (defconst py-block-re (concat
-                       ;; "[ \t]*"
+                       ;; def main():
+                       ;; |   if len(sys.argv) == 1:
+                       ;;         usage()
+                       ;;         # sys.exit()
+
+                       ;;     class asdf(object):
+
+                       "[ \t]*"
                        (regexp-opt py-block-re-raw 'symbols)
                        ".*[:( \n\t]"
                        )

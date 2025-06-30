@@ -188,7 +188,7 @@ SECONDVALUE: travel these expressions
   (unless (bobp)
     (save-match-data
       (unless (py--beginning-of-statement-p) (skip-chars-backward " \t\r\n\f")
-              (py-backward-comment (point)))
+              (py-backward-comment))
       (let* (pps
              (regexpvalue (symbol-value regexp))
              (secondvalue (or secondvalue (symbol-value regexp)))
@@ -316,10 +316,15 @@ Optional ENFORCE-REGEXP: search for regexp only."
             (and
              (not done)
              (progn (end-of-line)
-                    (cond (use-regexp
-                           ;; using regexpvalue might stop behind global settings, missing the end of form
-                           (re-search-forward (concat "^ \\{0,"(format "%s" indent) "\\}"regexpvalue) nil 'move 1))
-                          (t (re-search-forward (concat "^ \\{"(format "0,%s" indent) "\\}[[:alnum:]_@]+") nil 'move 1))))
+                    (pcase indent
+                      (0
+                       (cond (use-regexp
+                              (re-search-forward (concat "^" regexpvalue) nil 'move 1))
+                             (t (re-search-forward "^[[:alnum:]_@]+" nil 'move 1))))
+                      (_
+                       (cond (use-regexp
+                              (re-search-forward (concat "^ \\{0,"(format "%s" indent) "\\}"regexpvalue) nil 'move 1))
+                             (t (re-search-forward (concat "^ \\{"(format "0,%s" indent) "\\}[[:alnum:]_@]+") nil 'move 1))))))
              (or (nth 8 (parse-partial-sexp (point-min) (point)))
                  (progn (back-to-indentation) (py--forward-string-maybe (nth 8 (parse-partial-sexp orig (point)))))
                  (and secondvalue (looking-at secondvalue) (setq last (point)))
@@ -341,7 +346,7 @@ Arg REGEXP, a symbol"
           (use-regexp (member regexp (list (quote py-def-re) (quote py-class-re) (quote py-def-or-class-re))))
           (orig (or orig (point))))
       (unless (eobp)
-        (unless (py--beginning-of-statement-p)
+        (unless (py--beginning-of-statement-p nil bol)
           (py-backward-statement))
         (let* (;; when at block-start, be specific
                ;; (regexp (py--refine-regexp-maybe regexp))
@@ -354,7 +359,7 @@ Arg REGEXP, a symbol"
                ;; return current-indentation, position and possibly needed clause-regexps (secondvalue)
                (res
                 (cond
-                 ((and (py--beginning-of-statement-p)
+                 ((and ;; (py--beginning-of-statement-p)
                        ;; (eq 0 (current-column))
                        (or (looking-at regexpvalue)
                            (and (member regexp (list (quote py-def-re) (quote py-def-or-class-re) (quote py-class-re)))

@@ -22,6 +22,7 @@ jobs:
           name: ERT tests
           command: |
             emacs -Q --batch \
+            --eval "(setq py-debug-p nil)" \
             --eval "(message (emacs-version))" \
             --eval "(message (getenv \"PWD\"))" \
             --eval "(setq python-indent-offset 4)" \
@@ -30,15 +31,15 @@ jobs:
             --eval "(add-to-list 'load-path (getenv \"PWD\"))" \
             --eval "(load \"/root/pdee/python-components-mode.el\")" \
             --eval "(load \"/root/pdee/test/py-setup-ert-tests.el\")" \
-            --eval "(setq py-debug-p nil)" \
             --eval "(load \"/root/pdee/test/py-ert-indent-tests.el\")" \
-            --eval "(load \"/root/pdee/test/py-ert-misc-tests.el\")" \
-            --eval "(load \"/root/pdee/test/py-ert-scope-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-beginning-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-forward-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-misc-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-scope-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-function-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-variablen-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-navigation-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-delete-tests.el\")" \
             --eval "(sit-for 1)" \
             -f ert-run-tests-batch-and-exit
 

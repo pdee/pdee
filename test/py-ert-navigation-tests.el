@@ -839,7 +839,7 @@
    'py-verbose-p
    (search-forward "elif b:")
    (py-forward-block-or-clause-bol)
-   (should (eobp))))
+   (should (looking-at " +else b:"))))
 
 (ert-deftest py-ert-moves-forward-clause-MHBxwf ()
   (py-test-point-min
@@ -3091,7 +3091,6 @@ ausgabe = kugel.ausgabe"
    'python-mode
    'py-verbose-p
    (goto-char (point-min))
-   ;; (font-lock-ensure)
    (py-down)
    (should (eq (char-before) ?\]))))
 
@@ -3178,7 +3177,6 @@ ausgabe = kugel.ausgabe"
 #    dict.__init__(self, d)"
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    ;; (goto-char (point-max))
    (skip-chars-forward "^\"")
    (py-down)
@@ -3202,7 +3200,6 @@ ausgabe = kugel.ausgabe"
 "
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    (end-of-line)
    (py-down)
    (should (eq (char-before) 34))))
@@ -5133,7 +5130,6 @@ class CFG(object):
 "
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "read_grammar")
    (py-up)
@@ -5246,7 +5242,6 @@ class CFG(object):
 "
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "encoding")
    (py-up)
@@ -5391,7 +5386,6 @@ class CFG(object):
    'python-mode
    'py-verbose-p
    (goto-char (point-max))
-   ;; (font-lock-ensure)
    (search-backward ":param")
    (py-up)
    (sit-for 0.1)
@@ -5731,7 +5725,6 @@ class CFG(object):
 "
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "left, set")
    (py-up)
@@ -5843,7 +5836,6 @@ class CFG(object):
 "
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "update")
    (py-up)
@@ -6181,7 +6173,6 @@ class CFG(object):
    'python-mode
    'py-verbose-p
    (goto-char (point-max))
-   ;; (font-lock-ensure)
    (search-backward "In that case it is better")
    (py-up)
    (should (eq (char-after) ?#))))
@@ -6293,7 +6284,6 @@ class CFG(object):
    'python-mode
    'py-verbose-p
    (goto-char (point-max))
-   ;; (font-lock-ensure)
    (search-backward "10000")
    (py-up)
    (should
@@ -6519,7 +6509,6 @@ var1: int = 5
 "
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    (goto-char (point-min))
    (search-forward "red")
    (end-of-line)
@@ -6545,7 +6534,6 @@ class M:
 "
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "def")
    (py-up)
@@ -6562,7 +6550,6 @@ class M:
 "
    'python-mode
    'py-verbose-p
-   ;; (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "'")
    (py-down)
@@ -6629,7 +6616,6 @@ class M:
    (search-backward "ausgabe" nil nil 2)
    (end-of-line)
    (py-forward-statement)
-   ;; (font-lock-ensure)
    (sit-for 0.1)
    (should (eq (char-before) 41))))
 
@@ -6650,7 +6636,6 @@ class M:
    (goto-char (point-max))
    (search-backward "{" nil nil 2)
    (py-down)
-   ;; (font-lock-ensure)
    (sit-for 0.1)
    (should (eq (char-before) ?}))
    (should (eq (char-after) ?,))))
@@ -6791,10 +6776,33 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    'py-verbose-p
    (goto-char (point-max))
    (search-backward "range")
-   (end-of-line) 
+   (end-of-line)
    (py-forward-statement)
    (should (eq (char-before) ?'))
    ))
+
+(ert-deftest py-forward-block-test-denSFu ()
+  (py-test-point-min
+"def main():
+    if len(sys.argv) == 1:
+        usage()
+        # sys.exit()
+
+    class asdf(object):
+        zeit = time.strftime('%Y%m%d--%H-%M-%S')
+
+        # def Utf8_Exists(filename) -> a[1:2]:
+        def Utf8_Exists(filename):
+            return os.path.exists(filename.encode('utf-8'))    "
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-min))
+   (search-forward "if")
+   (beginning-of-line) 
+   (py-forward-block (point) (bolp))
+   (should (looking-at " +# sys.exit()"))
+   ))
+
 
 
 

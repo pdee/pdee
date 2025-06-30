@@ -1069,21 +1069,18 @@ as it leaves your system default unchanged."
   "Provided for abstract reasons."
   (point-max))
 
-(defun py-backward-comment (&optional pos)
+(defun py-backward-comment ()
   "Got to beginning of a commented section.
 
 Start from POS if specified"
   (interactive)
-  (let ((erg pos)
-        last)
-    (when erg (goto-char erg))
-    (while (and (not (bobp)) (setq erg (py-in-comment-p)))
-      (when (< erg (point))
-        (goto-char erg)
-        (setq last (point)))
+  (let ((last (point))
+        (orig (point)))
+    (while (and (not (bobp))
+                (ignore-errors (< (ignore-errors (goto-char (py-in-comment-p))) last)))
+      (setq last (point))
       (skip-chars-backward " \t\r\n\f"))
-    (when last (goto-char last))
-    last))
+    (and (< (point) orig) (< (point)  last) (goto-char last))))
 
 (defun py-go-to-beginning-of-comment ()
   "Go to the beginning of current line's comment, if any.
@@ -1251,17 +1248,17 @@ Return and move to match-beginning if successful"
              (back-to-indentation))
            (point)))))
 
-(defun py--beginning-of-statement-p (&optional pps)
+(defun py--beginning-of-statement-p (&optional pps bol)
   "Return ‘t’, if cursor is at the beginning of a ‘statement’, nil otherwise."
   (interactive)
   (save-excursion
+    (when (or bol (bolp)) (back-to-indentation))
     (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
       (and (not (or (nth 8 pps) (nth 1 pps)))
            (looking-at py-statement-re)
            (looking-back "[^ \t]*" (line-beginning-position))
            (eq (current-column) (current-indentation))
-           (eq (point) (progn (py-forward-statement) (py-backward-statement)))
-           ))))
+           (eq (point) (progn (py-forward-statement) (py-backward-statement)))))))
 
 (defun py--beginning-of-statement-bol-p (&optional pps)
   "Return position, if cursor is at the beginning of a ‘statement’, nil otherwise."

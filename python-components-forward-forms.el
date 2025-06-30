@@ -57,9 +57,9 @@ Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position"
   (interactive)
   (let (erg)
-    (unless (setq erg (py--end-base (quote py-block-re) orig bol))
+    (unless (setq erg (py--end-base (quote py-block-re) orig (or bol (bolp))))
       (skip-chars-forward " \t\r\n\f")
-      (setq erg (py--end-base (quote py-block-re) orig bol)))
+      (setq erg (py--end-base (quote py-block-re) orig (or bol (bolp)))))
     erg))
 
 (defun py-forward-block-bol ()

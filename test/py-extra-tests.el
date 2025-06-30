@@ -219,14 +219,13 @@ finally:
    (goto-char (point-min))
    (let ((py-split-window-on-execute py-switch-buffers-on-execute-p)
          (shell (py-choose-shell)))
-     ;; delete old buffer if existing
-     ;; (py-kill-buffer-unconditional  (concat "*" (capitalize shell) " Fast*"))
      (py-execute-statement-fast)
-     (set-buffer (concat "*" (capitalize shell) " Fast*"))
-     (sit-for 0.1)
-     (goto-char (point-max))
-     (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))
-     (should (search-backward "123234")))))
+     (save-excursion
+       (set-buffer (concat "*" (capitalize shell) " Fast*"))
+       (goto-char (point-max))
+       ;; (sit-for 0.1)
+       (when py-verbose-p (message "py-ert-execute-statement-fast-test: current-buffer: %s" (current-buffer)))
+       (should (search-backward "123234"))))))
 
 (ert-deftest py-ert-fast-complete-vS8fnm ()
   ""

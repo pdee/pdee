@@ -77,7 +77,7 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   (let* ((completion
           (py--shell-completion-get-completions
            input process code)))
-    (set-buffer exception-buffer)
+    ;; (set-buffer exception-buffer)
     (when completion
       (py--shell-insert-completion-maybe completion input))))
 
