@@ -39,6 +39,13 @@ jobs:
             --eval "(load \"/root/pdee/test/py-ert-function-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-variablen-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-navigation-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-execute-region-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-execute-region-commanp-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-fill-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-extra-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-hide-tests.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-font-lock-test.el\")" \
+            --eval "(load \"/root/pdee/test/py-ert-delete-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-delete-tests.el\")" \
             --eval "(sit-for 1)" \
             -f ert-run-tests-batch-and-exit

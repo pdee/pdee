@@ -47,7 +47,7 @@ else:
    (goto-char (point-min))
    (let (py-font-lock-defaults-p)
      (py-forward-block)
-     (should (eq (char-before) ?s)))))
+     (should (eobp)))))
 
 (ert-deftest py-ert-forward-block-or-clause-test ()
   (py-test-point-min

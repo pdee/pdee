@@ -190,6 +190,23 @@ See also py-closing-list-dedents-bos"
         (match-end 0)
         )))
 
+(defun py--compute-indentation-in-docstring ()
+  ""
+  (save-excursion
+    ;; (goto-char (match-beginning 0))
+    (back-to-indentation)
+    (if (looking-at "[uUrR]?\"\"\"\\|[uUrR]?'''")
+        (progn
+          (skip-chars-backward " \t\r\n\f")
+          (back-to-indentation)
+          (if (looking-at py-def-or-class-re)
+              (+ (current-column) py-indent-offset)
+            (current-indentation)))
+      (beginning-of-line) 
+      (skip-chars-backward " \t\r\n\f")
+      (back-to-indentation)
+      (current-indentation))))
+
 (defun py-compute-indentation (&optional iact orig origline closing line nesting repeat indent-offset liep beg)
   "Compute Python indentation.
 
@@ -214,7 +231,7 @@ LIEP stores line-end-position at point-of-interest
              (point-min))))
     (save-excursion
       (save-restriction
-        (narrow-to-region beg (line-end-position))
+        ;; (narrow-to-region beg (line-end-position))
         ;; in shell, narrow from previous prompt
         ;; needed by closing
         (let* ((orig (or orig (copy-marker (point))))
@@ -256,19 +273,7 @@ LIEP stores line-end-position at point-of-interest
                    ((and (nth 3 pps) (nth 8 pps))
                     (cond
                      ((py--docstring-p (nth 8 pps))
-                      (save-excursion
-                        ;; (goto-char (match-beginning 0))
-                        (back-to-indentation)
-                        (if (looking-at "[uUrR]?\"\"\"\\|[uUrR]?'''")
-                            (progn
-                              (skip-chars-backward " \t\r\n\f")
-                              (back-to-indentation)
-                              (if (looking-at py-def-or-class-re)
-                                  (+ (current-column) py-indent-offset)
-                                (current-indentation)))
-                          (skip-chars-backward " \t\r\n\f")
-                          (back-to-indentation)
-                          (current-indentation))))
+                      (py--compute-indentation-in-docstring))
                      ;; string in list
                      ;; ;; data = {'key': {
                      ;;     'objlist': [
@@ -278,7 +283,7 @@ LIEP stores line-end-position at point-of-interest
                      ;;          'name': 'second'}
                      ;;     ]
                      ;; }}
-                     ((goto-char (nth 8 pps))
+                     (t (goto-char (nth 8 pps))
                       (if
                           (or line (< (py-count-lines (point-min) (point)) origline))
                           (current-column)
