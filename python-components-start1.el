@@ -2406,7 +2406,8 @@ SEPCHAR is the file-path separator of your system."
   (let* ((name-first (or name py-shell-name))
          (erg (when name-first (if (stringp name-first) name-first (prin1-to-string name-first))))
          (fast-process (or fast-process py-fast-process-p))
-         prefix)
+         ;; prefix
+         )
     (when (string-match "^py-" erg)
       (setq erg (nth 1 (split-string erg "-"))))
     ;; remove home-directory from prefix to display
@@ -2415,30 +2416,34 @@ SEPCHAR is the file-path separator of your system."
         (let ((case-fold-search t))
           (when (string-match (concat ".*" (expand-file-name "~")) erg)
             (setq erg (replace-regexp-in-string (concat "^" (expand-file-name "~")) "" erg))))))
-    (if (or (and (setq prefix (split-string erg "\\\\"))
-                 (< 1 (length prefix)))
-            (and (setq prefix (split-string erg "\/"))
-                 (< 1 (length prefix))))
-        (progn
-          ;; exect something like default py-shell-name
-          (setq erg (car (last prefix)))
-          (unless py-modeline-acronym-display-home-p
-            ;; home-directory may still inside
-            (setq prefix (py--remove-home-directory-from-list prefix))
-            (setq prefix (py--compose-buffer-name-initials prefix))))
-      (setq erg (or erg py-shell-name))
-      (setq prefix nil))
+    ;; (if (or (and (setq prefix (split-string erg "\\\\"))
+    ;;              (< 1 (length prefix)))
+    ;;         (and (setq prefix (split-string erg "\/"))
+    ;;              (< 1 (length prefix))))
+    ;;     (progn
+    ;;       ;; exect something like default py-shell-name
+    ;;       (setq erg (car (last prefix)))
+    ;;       (unless py-modeline-acronym-display-home-p
+    ;;         ;; home-directory may still inside
+    ;;         (setq prefix (py--remove-home-directory-from-list prefix))
+    ;;         (setq prefix (py--compose-buffer-name-initials prefix))))
+    ;;   (setq erg (or erg py-shell-name))
+    ;;   (setq prefix nil))
     (when fast-process (setq erg (concat erg " Fast")))
     (setq erg
           (py--prepare-shell-name erg))
     (when (or dedicated py-dedicated-process-p)
       (setq erg (make-temp-name (concat erg "-"))))
-    (cond ((and prefix (string-match "^\*" erg))
-           (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
-          (prefix
-           (setq erg (concat "*" prefix " " erg "*")))
-          (t (unless (string-match "^\*" erg) (setq erg (concat "*" erg "*")))))
-    erg))
+    (if
+        (string-match "^\\*" erg)
+        erg
+      (concat "*" erg "*"))))
+    ;; (cond ((and prefix (string-match "^\*" erg))
+    ;;        (setq erg (replace-regexp-in-string "^\*" (concat "*" prefix " ") erg)))
+    ;;       (prefix
+    ;;        (setq erg (concat "*" prefix " " erg "*")))
+    ;;       (t (unless (string-match "^\*" erg) (setq erg (concat "*" erg "*")))))
+    ;; erg))
 
 (defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch internal)
   "Connect process to BUFFER.
