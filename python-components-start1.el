@@ -2508,11 +2508,11 @@ process buffer for a list of commands.)"
       (setq delay (py--which-delay-process-dependent this-buffer-name))
       (unless fast
         (setq py-shell-mode-syntax-table python-mode-syntax-table)
-        (when interactivep
-          (cond ((string-match "^.I" this-buffer-name)
-                 (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
-                ((string-match "^.+3" this-buffer-name)
-                 (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
+        ;; (when (and interactivep py-verbose-p)
+        ;;   (cond ((string-match "^.I" this-buffer-name)
+        ;;          (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
+        ;;         ((string-match "^.+3" this-buffer-name)
+        ;;          (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
         (setq py-modeline-display (py--update-lighter this-buffer-name))))
     (if (setq proc (get-buffer-process buffer))
         (progn
