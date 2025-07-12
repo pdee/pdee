@@ -381,8 +381,35 @@ may want to re-add custom functions to it using the
 (defalias 'py-hungry-delete-forward 'c-hungry-delete-forward)
 (defalias 'py-hungry-delete-backwards 'c-hungry-delete-backwards)
 
+(defalias 'py-end-of-block 'py-backward-block)
+(defalias 'py-end-of-block-or-clause 'py-backward-block-or-clause)
+(defalias 'py-end-of-class 'py-backward-class)
+(defalias 'py-end-of-clause 'py-backward-clause)
+(defalias 'py-end-of-def 'py-backward-def)
 (defalias 'py-end-of-def-or-class 'py-forward-def-or-class)
+(defalias 'py-end-of-top-level 'py-backward-top-level)
+
+(defalias 'py-beginning-of-block 'py-backward-block)
+(defalias 'py-beginning-of-block-or-clause 'py-backward-block-or-clause)
+(defalias 'py-beginning-of-class 'py-backward-class)
+(defalias 'py-beginning-of-clause 'py-backward-clause)
+(defalias 'py-beginning-of-def 'py-backward-def)
 (defalias 'py-beginning-of-def-or-class 'py-backward-def-or-class)
+(defalias 'py-beginning-of-top-level 'py-backward-top-level)
+
+(defalias 'py-end-of-block-bol 'py-backward-block-bol)
+(defalias 'py-end-of-block-or-clause-bol 'py-backward-block-or-clause-bol)
+(defalias 'py-end-of-class-bol 'py-backward-class-bol)
+(defalias 'py-end-of-clause-bol 'py-backward-clause-bol)
+(defalias 'py-end-of-def-bol 'py-backward-def-bol)
+(defalias 'py-end-of-def-or-class-bol 'py-forward-def-or-class-bol)
+
+(defalias 'py-beginning-of-block-bol 'py-backward-block-bol)
+(defalias 'py-beginning-of-block-or-clause-bol 'py-backward-block-or-clause-bol)
+(defalias 'py-beginning-of-class-bol 'py-backward-class-bol)
+(defalias 'py-beginning-of-clause-bol 'py-backward-clause-bol)
+(defalias 'py-beginning-of-def-bol 'py-backward-def-bol)
+(defalias 'py-beginning-of-def-or-class-bol 'py-backward-def-or-class-bol)
 
 ;; https://gitlab.com/python-mode-devs/python-mode/-/issues/105#note_1095808557
 (puthash "python-"
