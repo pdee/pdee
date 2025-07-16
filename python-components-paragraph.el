@@ -137,12 +137,14 @@
 Nil otherwise"
   (interactive "*")
   (save-excursion
-    (py--docstring-p (or (and (nth 3 pps) (nth 8 pps))
-                         (and
-                          (equal (string-to-syntax "|")
-                                 (syntax-after (point)))
-                          (< 0 (skip-chars-forward "\"'"))
-                          (nth 3 (parse-partial-sexp (point-min) (point))))))))
+    (py--docstring-p
+     (ignore-errors
+       (or (and (nth 3 pps) (nth 8 pps))
+                        (and
+                         (equal (string-to-syntax "|")
+                                (syntax-after (point)))
+                         (< 0 (skip-chars-forward "\"'"))
+                         (nth 3 (parse-partial-sexp (point-min) (point)))))))))
 
 (defun py--string-fence-delete-spaces (&optional start)
   "Delete spaces following or preceding delimiters of string at point. "
@@ -300,7 +302,7 @@ Fill according to ‘py-docstring-style’ "
                            (if (not (number-or-marker-p docstring))
                                (py--in-or-behind-or-before-a-docstring pps))
                            docstring)
-                          (t (py--in-or-behind-or-before-a-docstring pps))))
+                          (t (and (nth 3 pps) (nth 8 pps) (py--in-or-behind-or-before-a-docstring pps)))))
          (beg (and (nth 3 pps) (nth 8 pps)))
          (tqs (progn (and beg (goto-char beg) (looking-at "\"\"\"\\|'''"))))
          (end (copy-marker (if tqs
@@ -347,7 +349,7 @@ Fill according to ‘py-docstring-style’ "
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
   (let* ((pps (or pps (parse-partial-sexp (point-min) (point))))
-         (docstring (unless (not py-docstring-style) (py--in-or-behind-or-before-a-docstring pps)))
+         (docstring (unless (not py-docstring-style) (and (nth 3 pps) (nth 8 pps) (py--in-or-behind-or-before-a-docstring pps))))
          (fill-column py-comment-fill-column)
          (in-string (nth 3 pps)))
     (cond ((or (nth 4 pps)

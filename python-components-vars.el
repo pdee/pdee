@@ -2754,47 +2754,69 @@ for options to pass to the DOCNAME interpreter. \"
   "Regular expression matching keyword which typically closes a function.")
 
 (defcustom py-outdent-re-raw
-  (list
-   "case"
-   "elif"
-   "else"
-   "except"
-   "finally"
-   )
+  (regexp-opt (list
+               "case"
+               "elif"
+               "else"
+               "except"
+               "finally"
+               )
+              'symbols)
   "Used by ‘py-outdent-re’."
   :type '(repeat string)
   :tag "py-outdent-re-raw"
-  :group 'python-mode
-  )
+  :group 'python-mode)
 
 (defconst py-outdent-re
-  (concat
-   "[ \t]*"
-   (regexp-opt py-outdent-re-raw 'symbols)
-   "[)\t]*")
+  (concat "\\(" (mapconcat 'identity
+                           '(
+	                     "case"
+                             "else:"
+                             "except\\(\\s +.*\\)?:"
+                             "finally:"
+                             "elif\\s +.*:")
+                           "\\|")
+          "\\)")
   "Regular expression matching statements to be dedented one level.")
-
-(defcustom py-no-outdent-re-raw
-  (list
-   "break"
-   "continue"
-   "import"
-   "pass"
-   "raise"
-   "return")
-  "Uused by ‘py-no-outdent-re’."
-  :type '(repeat string)
-  :tag "py-no-outdent-re-raw"
-  :group 'python-mode)
 
 (defconst py-no-outdent-re
   (concat
-   "[ \t]*"
-   (regexp-opt py-no-outdent-re-raw 'symbols)
-   "[)\t]*$")
-"Regular expression matching lines not to augment indent after.
+   "\\("
+   (mapconcat 'identity
+              (list "try:"
+                    "except\\(\\s +.*\\)?:"
+                    "while\\s +.*:"
+                    "for\\s +.*:"
+                    "if\\s +.*:"
+                    "elif\\s +.*:"
+                    (concat py-block-closing-keywords-re "[ \t\n]")
+                    )
+              "\\|")
+          "\\)")
+  "Regular expression matching lines not to dedent after.")
 
-See ‘py-no-outdent-re-raw’ for better readable content")
+;; (defcustom py-no-outdent-re-raw
+;;   (regexp-opt (list
+;;                "break"
+;;                "continue"
+;;                "import"
+;;                "pass"
+;;                "raise"
+;;                "return")
+;;               'symbols)
+;;   "Uused by ‘py-no-outdent-re’."
+;;   :type '(repeat string)
+;;   :tag "py-no-outdent-re-raw"
+;;   :group 'python-mode)
+
+;; (defconst py-no-outdent-re
+;;   (concat
+;;    "[ \t]*"
+;;    py-no-outdent-re-raw
+;;    "[)\t]*$")
+;; "Regular expression matching lines not to augment indent after.
+
+;; See ‘py-no-outdent-re-raw’ for better readable content")
 
 (defconst py-assignment-re "\\(\\_<\\w+\\_>[[:alnum:]:, \t]*[ \t]*\\)\\(=\\|+=\\|*=\\|%=\\|&=\\|^=\\|<<=\\|-=\\|/=\\|**=\\||=\\|>>=\\|//=\\)\\(.*\\)"
   "If looking at the beginning of an assignment.")
@@ -2803,19 +2825,20 @@ See ‘py-no-outdent-re-raw’ for better readable content")
 (defconst py-dict-re "'\\_<\\w+\\_>':")
 
 (defcustom py-block-re-raw
-  (list
-   "async def"
-   "async for"
-   "async with"
-   "class"
-   "def"
-   "for"
-   "if"
-   "match"
-   "try"
-   "while"
-   "with"
-   )
+  (regexp-opt (list
+               "async def"
+               "async for"
+               "async with"
+               "class"
+               "def"
+               "for"
+               "if"
+               "match"
+               "try"
+               "while"
+               "with"
+               )
+              'symbols)
   "Matches the beginning of a compound statement but not its clause."
   :type '(repeat string)
   :tag "py-block-re-raw"
@@ -2828,14 +2851,13 @@ See ‘py-no-outdent-re-raw’ for better readable content")
                        ;;         # sys.exit()
 
                        ;;     class asdf(object):
-
-                       "[ \t]*"
-                       (regexp-opt py-block-re-raw 'symbols)
+                       py-block-re-raw
                        ".*[:( \n\t]"
                        )
   "Matches the beginning of a compound statement.")
 
-(defconst py-minor-block-re-raw (list
+(defconst py-minor-block-re-raw (regexp-opt
+                                 (list
                                       "async for"
                                       "async with"
                                       "case"
@@ -2846,19 +2868,22 @@ See ‘py-no-outdent-re-raw’ for better readable content")
                                       "try"
                                       "with"
                                       )
+                                 'symbols)
   "Matches the beginning of an case ‘for’, ‘if’, ‘try’, ‘except’ or ‘with’ block.")
 
 (defconst py-minor-block-re
   (concat
-   "[ \t]*"
-   (regexp-opt py-minor-block-re-raw 'symbols)
+   py-minor-block-re-raw
    "[:( \n\t]")
 
   "Regular expression matching lines not to augment indent after.
 
 See ‘py-minor-block-re-raw’ for better readable content")
 
-(defconst py-try-re "[ \t]*\\_<try\\_>[: \n\t]"
+(defconst py-try-re-raw (regexp-opt (list "try") 'symbols)
+  "Matches the beginning of a ‘try’ block.")
+
+(defconst py-try-re (concat py-try-re-raw "[: \n\t]")
   "Matches the beginning of a ‘try’ block.")
 
 (defconst py-case-re "[ \t]*\\_<case\\_>[: \t][^:]*:"
@@ -2884,10 +2909,23 @@ See ‘py-minor-block-re-raw’ for better readable content")
 ;; (defconst py-elif-block-re "[ \t]*\\_<elif\\_> +[[:alpha:]_][[:alnum:]_]* *[: \n\t]"
 ;;   "Matches the beginning of an ‘elif’ block.")
 
-(defconst py-class-re "[ \t]*\\_<\\(class\\)\\_>[ \n\t]"
+(defconst py-class-re-raw  (regexp-opt (list "class") 'symbol)
   "Matches the beginning of a class definition.")
 
-(defconst py-def-or-class-re "[ \t]*\\_<\\(async def\\|class\\|def\\)\\_>[ \n\t]+\\([[:alnum:]_]*\\)"
+(defconst py-class-re (concat py-class-re-raw "[ \n\t]")
+  "Matches the beginning of a class definition.")
+
+(defconst py-def-or-class-re-raw (regexp-opt
+                                  (list
+                                  "async def"
+                                  "class"
+                                  "def")
+  'symbol)
+"Matches the beginning of a class- or functions definition.")
+
+;; (defconst py-def-or-class-re (concat py-def-or-class-re-raw
+(defconst py-def-or-class-re (concat py-def-or-class-re-raw
+                                     "[ \n\t]+\\([[:alnum:]_]*\\)")
   "Matches the beginning of a class- or functions definition.
 
 Second group grabs the name")
@@ -2895,29 +2933,38 @@ Second group grabs the name")
 ;; (setq py-def-or-class-re "[ \t]*\\_<\\(async def\\|class\\|def\\)\\_>[ \n\t]")
 
 ;; (defconst py-def-re "[ \t]*\\_<\\(async def\\|def\\)\\_>[ \n\t]"
-(defconst py-def-re "[ \t]*\\_<\\(def\\|async def\\)\\_>[ \n\t]"
+
+(defvar py-def-re-raw (regexp-opt (list
+                                   "def"
+                                   "async def"
+                                   )
+                                  'symbol)
+  "Matches the beginning of a functions definition.")
+
+(defconst py-def-re (concat py-def-re-raw "[ \n\t]")
   "Matches the beginning of a functions definition.")
 
 (defcustom py-block-or-clause-re-raw
-  (list
-   "async for"
-   "async with"
-   "async def"
-   "async class"
-   "class"
-   "def"
-   "elif"
-   "else"
-   "except"
-   "finally"
-   "for"
-   "if"
-   "try"
-   "while"
-   "with"
-   "match"
-   "case"
-   )
+  (regexp-opt (list
+               "async for"
+               "async with"
+               "async def"
+               "async class"
+               "class"
+               "def"
+               "elif"
+               "else"
+               "except"
+               "finally"
+               "for"
+               "if"
+               "try"
+               "while"
+               "with"
+               "match"
+               "case"
+               )
+              'symbols)
   "Matches the beginning of a compound statement or its clause."
   :type '(repeat string)
   :tag "py-block-or-clause-re-raw"
@@ -2925,8 +2972,7 @@ Second group grabs the name")
 
 (defvar py-block-or-clause-re
   (concat
-   "[ \t]*"
-   (regexp-opt  py-block-or-clause-re-raw 'symbols)
+   py-block-or-clause-re-raw
    "[( \t]*.*:?")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
 
@@ -2956,7 +3002,6 @@ Second group grabs the name")
 
 (defconst py-extended-block-or-clause-re
   (concat
-   "[ \t]*"
    (regexp-opt  py-extended-block-or-clause-re-raw 'symbols)
    "[( \t:]+")
   "See ‘py-block-or-clause-re-raw’, which it reads.")
@@ -2979,7 +3024,6 @@ Second group grabs the name")
 
 (defconst py-minor-clause-re
   (concat
-   "[ \t]*"
    (regexp-opt  py-minor-clause-re-raw 'symbols)
    "[( \t]*.*:")
   "See ‘py-minor-clause-re-raw’, which it reads.")
@@ -2998,11 +3042,34 @@ Second group grabs the name")
 (defvar py-comment-re "#[ \t]*"
   "Needed for normalized processing.")
 
+(defcustom py-block-re-raw
+  (regexp-opt (list
+               "async for"
+               "async with"
+               "async def"
+               "async class"
+               "class"
+               "def"
+               "for"
+               "if"
+               "try"
+               "while"
+               "with"
+               "match"
+               )
+              'symbols)
+  "Matches the beginning of a compound statement or its clause."
+  :type '(repeat string)
+  :tag "py-block-or-clause-re-raw"
+  :group 'python-mode)
+
 (defconst py-block-keywords
-   (regexp-opt py-block-or-clause-re-raw 'symbols)
+  (concat "[ \t]*"
+          py-block-or-clause-re-raw
+          "[( \t]*.*:")
   "Matches known keywords opening a block.
 
-Customizing ‘py-block-or-clause-re-raw’  will change values here")
+Customizing ‘py-block-re-raw’  will change values here")
 
 (defconst py-try-clause-re
   (concat

@@ -918,12 +918,16 @@ Optional END: used by tests
 Optional NO-CHECK: used by tests
 "
   (interactive "*")
-  (or no-check (use-region-p) (error "Do not see an active region"))
-  (let ((end (copy-marker (or end (region-end)))))
-    (goto-char (or beg (region-beginning)))
-    (beginning-of-line)
-    (setq beg (point))
-    (skip-chars-forward " \t\r\n\f")
+
+  (let ((end
+         ;; work around a bug in Emacs' ‘end-of-defun’, which fiddles
+         ;; after ‘end-of-defun-function’ is called
+         ;; See ‘py-ert-borks-all-lp-1294820-sIKMyz’ test
+         (if (and (and end (save-excursion (goto-char end) (looking-at py-block-or-clause-re))))
+             (copy-marker (- end 1))
+           (copy-marker (or end (region-end) (line-end-position)))))
+        (beg (or beg (region-beginning) (line-beginning-position))))
+    (goto-char beg)
     (py--indent-line-by-line beg end)))
 
 (defun py-find-imports ()

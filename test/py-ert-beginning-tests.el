@@ -544,7 +544,7 @@ class bar:
    (py-backward-statement-bol)
    (should (bolp))))
 
-(ert-deftest py-ert-beginning-of-statement-5JY7mb ()
+(ert-deftest py-ert-beginning-of-def-or-class-5JY7mb ()
   (py-test
    "def foo():
     if True:
@@ -561,9 +561,9 @@ class bar:
    'python-mode
    'py-verbose-p
    (goto-char (point-max))
-   (sit-for 0.1)
+   ;; (sit-for 0.1)
    (py-backward-def-or-class)
-   (sit-for 0.1)
+   ;; (sit-for 0.1)
    (should (looking-at "def foo"))))
 
 (ert-deftest py-ert-beginning-of-block-bol-test ()

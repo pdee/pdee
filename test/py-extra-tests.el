@@ -24,12 +24,12 @@
 
 ;; (setq py-verbose-p t)
 
-(require 'org)
-(org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)
-       ))
+;; (require 'org)
+;; (org-babel-do-load-languages
+;;      'org-babel-load-languages
+;;      '((emacs-lisp . t)
+;;        (python . t)
+;;        ))
 
 (require 'py-setup-ert-tests)
 
@@ -1174,9 +1174,7 @@ by the
    'py-verbose-p
    (goto-char (point-max))
    (search-backward "First")
-   (sit-for 0.1)
    (should (eq 4 (py-compute-indentation)))))
-
 
 (ert-deftest py-indent-bug63959-test-Bfr7rA ()
   ""
@@ -1279,7 +1277,6 @@ def baz():
    (py-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
    (set-buffer "*Python3*")
    (goto-char (point-max))
-   ;; (when py-debug-p (switch-to-buffer (current-buffer)))
    (when py-debug-p (switch-to-buffer "*Python3*"))
    (should-not (looking-back "123" (line-beginning-position)))))
 

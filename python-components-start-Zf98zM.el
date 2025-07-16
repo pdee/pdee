@@ -178,7 +178,7 @@ REGEXP: a symbol"
      (t
       (concat py-except-re "\\|" py-else-re "\\|" py-finally-re))))))
 
-(defun py--backward-regexp (regexp &optional indent condition orig secondvalue)
+(defun py--backward-regexp (regexp &optional indent condition orig)
   "Search backward next regexp not in string or comment.
 
 Return position if successful
@@ -191,43 +191,63 @@ SECONDVALUE: travel these expressions
               (py-backward-comment))
       (let* (pps
              (regexpvalue (symbol-value regexp))
-             (secondvalue (or secondvalue (symbol-value regexp)))
+             (secondvalue (pcase regexp
+                            (py-def-re py-block-re)
+                            ;; (unless (member regexp (list 'py-def-re 'py-class-re))
+                            ;; (or secondvalue (symbol-value regexp))))
+                            ))
              (indent (or indent (current-indentation)))
              (condition (or condition '<=))
-             (orig (or orig (point)))
-             (allvalue-raw (if (member regexp (list (quote py-block-re) (quote py-clause-re) (quote py-def-or-class-re) (quote py-def-re) (quote py-class-re))) secondvalue (symbol-value (quote py-block-or-clause-re))))
-             (allvalue (substring allvalue-raw (string-match "\\\\" allvalue-raw))))
+             (orig (or orig (point))))
         (if (eq (current-indentation) (current-column))
             (while (and (not (bobp))
-                        (re-search-backward (concat "^ \\{0,"(format "%s" indent) "\\}\\(" allvalue "\\)") nil 'move 1)
+                        ;; def foo():
+                        ;;     if True:
+                        ;;         def bar():
+                        ;;             pass
+                        ;;     elif False:
+                        ;;         def baz():
+                        ;;             pass
+                        ;;     else:
+                        ;;         try:
+                        ;;             1 == 1
+                        ;;         except:
+                        ;;             pass
+
+                        ;; When looking for beginning-of-def from EOB,
+                        ;; make sure, the further indented ‘def
+                        ;; baz():’ in the middle isn't matched, but
+                        ;; BOB. Therefor the ‘secondvalue’, which may
+                        ;; correct the required indent
+                        (re-search-backward (concat "^ \\{0,"(format "%s" indent) "\\}\\(" regexpvalue "\\|" secondvalue "\\)") nil 'move 1)
                         (goto-char (match-beginning 1))
                         (not (and (looking-back "async *" (line-beginning-position))
                                   (goto-char (match-beginning 0))))
                         (or (and
                              (setq pps (nth 8 (parse-partial-sexp (point-min) (point))))
                              (goto-char pps))
-                            ;; (not (looking-at secondvalue))
                             (and (not (eq (current-column) 0))
                                  (not (looking-at regexpvalue))
                                  (looking-at secondvalue)
                                  indent
-                                 ;; (or
-                                  ;; (funcall condition (current-indentation) indent)
-                                  ;; (looking-at regexpvalue))
-                                  ))
+                                 ))
                         (prog1 t
-                          (when (< (current-indentation) indent)
-                            (setq indent (current-indentation))))))
+                          (cond ((< (current-indentation) indent)
+                                 (setq indent (current-indentation)))
+                                ((and (not (looking-at regexpvalue))
+                                      (member regexp (list 'py-def-re 'py-class-re 'py-def-or-class-re)) )
+                                 (setq indent (- (current-indentation) py-indent-offset)))))
+                        ))
           (unless (bobp)
             (back-to-indentation)
             (and
              (setq pps (nth 8 (parse-partial-sexp (point-min) (point))))
              (goto-char pps))
             ;; (unless (and (< (point) orig) (not (looking-at regexpvalue)) (looking-at secondvalue))
-            (unless (and (< (point) orig) (or (looking-at regexpvalue) (looking-at secondvalue)))
+            (unless (and (< (point) orig) (or (looking-at regexpvalue) (and secondvalue (looking-at secondvalue))))
               (py--backward-regexp regexp (current-indentation) condition orig))
             (unless (or (eq (point) orig)(bobp)) (back-to-indentation))))
-        (and (looking-at secondvalue) (not (nth 8 (parse-partial-sexp (point-min) (point))))(point))))))
+        (and (looking-at regexpvalue) (not (nth 8 (parse-partial-sexp (point-min) (point))))(point))))))
 
 (defun py--go-to-keyword (regexp &optional condition maxindent ignoreindent)
   "Expects being called from beginning of a statement.
@@ -250,7 +270,9 @@ Optional IGNOREINDENT: find next keyword at any indentation"
                 9999
               (or maxindent
                   (if (py-empty-line-p) (current-column) (current-indentation)))))
-           (allvalue (symbol-value (quote py-block-or-clause-re))))
+
+           ;; (allvalue (symbol-value (quote py-block-or-clause-re)))
+           )
       (unless (py--beginning-of-statement-p)
         (py-backward-statement))
       (when (and (not (string= "" py-block-closing-keywords-re))(looking-at py-block-closing-keywords-re))
@@ -263,7 +285,7 @@ Optional IGNOREINDENT: find next keyword at any indentation"
             ;; search backward and reduce maxindent, if non-matching forms suggest it
             (py--backward-regexp regexp maxindent
                                  (or condition '<=)
-                                 orig allvalue))))
+                                 orig))))
       (and (< (point) orig)(looking-at regexpvalue)(point)))))
 
 (defun py-up-base (regexp &optional indent)
@@ -361,7 +383,7 @@ Arg REGEXP, a symbol"
                 (cond
                  ((and ;; (py--beginning-of-statement-p)
                        ;; (eq 0 (current-column))
-                       (or (looking-at regexpvalue)
+                       (or (looking-at (concat "[ \\ŧ]*" regexpvalue))
                            (and (member regexp (list (quote py-def-re) (quote py-def-or-class-re) (quote py-class-re)))
                                 (looking-at py-decorator-re)
                                 (py-down-def-or-class indent))
