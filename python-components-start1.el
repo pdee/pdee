@@ -2484,16 +2484,16 @@ process buffer for a list of commands.)"
                       ("python"
                        (or (and (executable-find shell) shell)
                            (and (executable-find "python3") "python3")
-                           (and (executable-find "python") "python")
-                           ))
+                           (and (executable-find "python") "python")))
                       ("python3"
                        (or (and (executable-find shell) shell)
                            (and (executable-find "python3") "python3")
-                           (and (executable-find "python") "python")
-                           ))
-                      (_ (if (executable-find shell)
-                             shell
-                           (error (concat "py-shell: Can not see an executable for `"shell "' on your system. Maybe needs a link?")))))
+                           (and (executable-find "python") "python")))
+                      (_ (or
+                          (and (executable-find shell) shell)
+                          (and (executable-find "python3") "python3")
+                          (and (executable-find "python") "python")
+                          (error (concat "py-shell: Can not see an executable for `"shell "' on your system. Maybe needs a link?")))))
                   (py-choose-shell)))
          (args (or args (and shell (car (py--provide-command-args shell fast)))))
          ;; Make sure a new one is created if required
@@ -2531,10 +2531,9 @@ process buffer for a list of commands.)"
                 (with-current-buffer buffer
                   (when (or switch py-switch-buffers-on-execute-p py-split-window-on-execute)
                     (switch-to-buffer (current-buffer))
-                  (goto-char (point-max))
-                  (sit-for 0.1)
-                  (funcall 'window-configuration-to-register py-register-char)
-                  )))))
+                    (goto-char (point-max))
+                    (sit-for 0.1)
+                    (funcall 'window-configuration-to-register py-register-char))))))
           (unless fast (py-shell-mode))
           (and internal (set-process-query-on-exit-flag proc nil))
           (when (or interactivep
