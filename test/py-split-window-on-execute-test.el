@@ -87,8 +87,7 @@ print(\"I'm the py-split-window-on-execute-lp-1361531-jython-test\")"))
 (defun py-split-window-on-execute-lp-1361531-python3-test (&optional arg)
   (interactive "p")
   (let ((py-split-window-on-execute t)
-        (teststring "#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
+        (teststring "# -*- coding: utf-8 -*-
 print(\"I'm the py-split-window-on-execute-lp-1361531-python3-test\")"))
     (py-bug-tests-intern 'py-split-window-on-execute-lp-1361531-python3-base arg teststring)))
 

@@ -75,8 +75,7 @@ print(\"I'm the py-always-split-dedicated-lp-1361531-jython-test\")"
 
 (ert-deftest py-ert-always-split-dedicated-lp-1361531-python3-test ()
   (py-test
-      "#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 print(\"I'm the py-always-split-dedicated-lp-1361531-python3-test\")"
     (delete-other-windows)
     (let* ((py-split-window-on-execute 'always)

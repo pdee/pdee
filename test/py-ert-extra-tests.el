@@ -64,8 +64,7 @@
 (ert-deftest UnicodeEncodeError-lp-550661-test-1oxvP0 ()
   ""
   (py-test
-   "#! /usr/bin/env python3
-print(u'\\xA9')"
+   "print(u'\\xA9')"
    'python-mode
    'py-verbose-p
    (let ((py-return-result-p t)
@@ -104,8 +103,7 @@ os.write"
 (ert-deftest py-describe-symbol-fails-on-modules-lp-919719-test-MppJiJ ()
   ""
   (py-test
-      "#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
+      "# -*- coding: utf-8 -*-
 import os
 os.write"
     'python-mode
@@ -974,8 +972,7 @@ class EmacsFrameThemeManager(datatypes.Singleton, metaclass=cldef.metaClass):
 (ert-deftest py-execute-region-ipython-test-1gyFLs ()
   ""
   (py-test
-   "#! /usr/bin/env python3
-print(u'\\xA9')"
+   "print(u'\\xA9')"
    'python-mode
    'py-verbose-p
    (goto-char (point-max))

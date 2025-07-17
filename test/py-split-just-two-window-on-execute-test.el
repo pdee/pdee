@@ -128,8 +128,7 @@ print(\"I'm the py-split-just-two-window-on-execute-lp-1361531-jython-test\")"))
 (defun py-split-just-two-window-on-execute-lp-1361531-python3-test (&optional arg)
   (interactive "p")
   (let ((py-split-window-on-execute 'just-two)
-        (teststring "#! /usr/bin/env python3
-# -*- coding: utf-8 -*-
+        (teststring "# -*- coding: utf-8 -*-
 print(\"I'm the py-split-just-two-window-on-execute-lp-1361531-python3-test\")"))
     (py-bug-tests-intern 'py-split-just-two-window-on-execute-lp-1361531-python3-base arg teststring)))
 

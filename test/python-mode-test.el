@@ -413,8 +413,7 @@
 
 (defun UnicodeEncodeError-python3-test (&optional arg load-branch-function)
   (interactive "p")
-  (let ((teststring (concat "#! /usr/bin/env python3
-# -\*- coding: utf-8 -\*-\n
+  (let ((teststring (concat "# -\*- coding: utf-8 -\*-\n
 print(\'\\xA9\')
 ")))
     (py-bug-tests-intern 'UnicodeEncodeError-python3-base arg teststring)))
