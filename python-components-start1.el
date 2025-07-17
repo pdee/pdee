@@ -1426,6 +1426,7 @@ See also doku of variable ‘py-master-file’"
                 (t
                  py-python-command-args)))))
     (if (and fast-process (not (member "-u" erg)))
+        ;;  unbuffered output
         (cons "-u" erg)
       erg)))
 
@@ -2494,7 +2495,7 @@ process buffer for a list of commands.)"
                              shell
                            (error (concat "py-shell: Can not see an executable for `"shell "' on your system. Maybe needs a link?")))))
                   (py-choose-shell)))
-         (args (or args (car (py--provide-command-args shell fast))))
+         (args (or args (and shell (car (py--provide-command-args shell fast)))))
          ;; Make sure a new one is created if required
          (this-buffer
           (or (and buffer (stringp buffer) buffer)
