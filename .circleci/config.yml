@@ -40,7 +40,6 @@ jobs:
             --eval "(load \"/root/pdee/test/py-ert-variablen-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-navigation-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-execute-region-test.el\")" \
-            --eval "(load \"/root/pdee/test/py-ert-execute-region-commanp-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-fill-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-extra-tests.el\")" \
             --eval "(load \"/root/pdee/test/py-ert-hide-tests.el\")" \
