@@ -2479,9 +2479,17 @@ process buffer for a list of commands.)"
          (dedicated (or (eq 4 (prefix-numeric-value argprompt)) dedicated py-dedicated-process-p))
          (shell (if shell
                     (pcase shell
+                      ;; systems are not consistent WRT python binary
                       ("python"
                        (or (and (executable-find shell) shell)
-                           (and (executable-find "python3") "python3")))
+                           (and (executable-find "python3") "python3")
+                           (and (executable-find "python") "python")
+                           ))
+                      ("python3"
+                       (or (and (executable-find shell) shell)
+                           (and (executable-find "python3") "python3")
+                           (and (executable-find "python") "python")
+                           ))
                       (_ (if (executable-find shell)
                              shell
                            (error (concat "py-shell: Can not see an executable for `"shell "' on your system. Maybe needs a link?")))))
