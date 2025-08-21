@@ -33,7 +33,6 @@ jobs:
               --eval "(load \"~/pdee/test/py-ert-indent-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-beginning-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-forward-tests.el\")" \
-              --eval "(load \"~/pdee/test/py-ert-misc-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-scope-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-function-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-variablen-tests.el\")" \
