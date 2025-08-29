@@ -407,7 +407,7 @@ def foo(rho, x):
    (goto-char (point-max))
    (search-backward "data : ndarray")
    (py-fill-paragraph)
-   (search-forward "Dict")
+   (search-forward "Series")
    (should (eq 8 (current-indentation)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-onetwo-KWl8aD ()
