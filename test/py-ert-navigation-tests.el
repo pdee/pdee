@@ -873,7 +873,31 @@
    (py-forward-clause-bol)
    (should (looking-at " +else b:"))))
 
-(ert-deftest py-ert-moves-up-position-tests-12-AJXhT7 ()
+(ert-deftest py-ert-position-test-12-sIXzmU ()
+  (py-test
+   "class kugel(object):
+    zeit = time.strftime('%Y%m%d--%H-%M-%S')
+    def pylauf(self):
+        \"\"\"Eine Doku fuer pylauf\"\"\"
+        ausgabe = [\" \",\" \",\" \",\" \",\" \",\" \",\" \",\" \", \" \"]
+        if treffer in gruen:
+            # print \"0, Gruen\"
+        elif treffer in schwarz:
+            # print \"%i, Schwarz\" % (treffer)
+            ausgabe[1] = treffer
+        else:
+            # print \"%i, manque\" % (treffer)
+            ausgabe[7] = treffer
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-max))
+   (search-backward "pylauf")
+   (end-of-line)
+   (py-forward-statement)
+   (should (eq (char-before) ?\]))))
+
+(ert-deftest py-ert-position-test-12-AJXhT7 ()
   (py-test
    "class kugel(object):
     zeit = time.strftime('%Y%m%d--%H-%M-%S')
@@ -895,7 +919,7 @@
    (search-backward "self")
    (end-of-line)
    (py-forward-statement)
-   (should (eq (char-before) ?\]))))
+   (should (eq (char-before) ?\"))))
 
 (ert-deftest py-ert-moves-up-copy-statement-test-UFUch0 ()
   (py-test-point-min
@@ -6798,7 +6822,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    'py-verbose-p
    (goto-char (point-min))
    (search-forward "if")
-   (beginning-of-line) 
+   (beginning-of-line)
    (py-forward-block (point) (bolp))
    (should (looking-at " +# sys.exit()"))
    ))

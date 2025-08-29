@@ -2572,7 +2572,7 @@ Remember source buffer where error might occur.")
 (defvar py-star-labelled-re "[ \\t]*[\\*-] +[[:graph:]]"
   "When looking at a star label.")
 
-(defvar py-colon-labelled-re "[ \\t]*[[:graph:]]* *: *[[:graph:]]+"
+(defvar py-colon-labelled-re "[ \\t]*[[:graph:]]* * :  *[[:graph:]]+"
   "When looking at a colon label.")
 ;; (setq py-colon-labelled-re "[ \\t]*[[:graph:]]* *: *[[:graph:]]+\\|[ \\t]*[\\*-] +[[:graph:]]")
 

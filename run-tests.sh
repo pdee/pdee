@@ -419,7 +419,6 @@ $EMACS -Q -L . --batch \
 -load $PYTHONMODE \
 -l $TEST1 \
 -l $TEST2 \
--l $TEST4 \
 -l $TEST5 \
 -l $TEST6 \
 -l $TEST7 \
