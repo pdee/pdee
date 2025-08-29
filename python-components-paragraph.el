@@ -206,7 +206,7 @@ See lp:1066489 "
                  (setq fill-prefix (make-string (+ (current-indentation) 2) 32))))
           (save-restriction
             (narrow-to-region thisbeg thisend)
-            (fill-region-as-paragraph-default thisbeg thisend))))))
+            (fill-region thisbeg thisend))))))
 
 (defun py-fill-string (&optional justify docstring pps)
   "String fill function for ‘py-fill-paragraph’.
