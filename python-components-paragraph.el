@@ -240,7 +240,7 @@ Fill according to ‘py-docstring-style’ "
       (goto-char orig)
       (when beg
         (if docstring
-            (py--fill-docstring docstring beg end fill-prefix fill-column)
+            (py--fill-docstring beg end fill-prefix fill-column)
           (if (not tqs)
               (if (py-preceding-line-backslashed-p)
                   (progn
@@ -257,7 +257,7 @@ Fill according to ‘py-docstring-style’ "
                   (py--continue-lines-region beg end)))
             (fill-region beg end justify)))))))
 
-(defun py--fill-docstring (docstring beg end fill-prefix fill-column)
+(defun py--fill-docstring (beg end fill-prefix fill-column)
   "Fills paragraph in docstring below or at cursor position."
   (let ((fill-prefix fill-prefix)
         (orig (point)))
@@ -352,7 +352,7 @@ Fill according to ‘py-docstring-style’ "
            (py-fill-comment))
           (docstring
            ;; (setq fill-column py-docstring-fill-colum;; n)
-           (py--fill-docstring docstring beg end fill-prefix fill-column))
+           (py--fill-docstring beg end fill-prefix fill-column))
           (t
            (and beg end (fill-region beg end))
            (when (and in-string (not tqs))

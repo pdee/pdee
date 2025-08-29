@@ -919,7 +919,7 @@
    (search-backward "self")
    (end-of-line)
    (py-forward-statement)
-   (should (eq (char-before) ?\"))))
+   (should (eq (char-before) ?\]))))
 
 (ert-deftest py-ert-moves-up-copy-statement-test-UFUch0 ()
   (py-test-point-min
