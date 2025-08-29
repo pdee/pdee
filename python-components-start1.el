@@ -2510,18 +2510,12 @@ process buffer for a list of commands.)"
                               (set-buffer
                                (get-buffer-create this-buffer))
                               (list shell nil args)))))
-         (this-buffer-name (buffer-name buffer))
-         delay)
+         (this-buffer-name (buffer-name buffer)))
     (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p (get-buffer "*Python Output*") buffer)))
     (with-current-buffer buffer
-      (setq delay (py--which-delay-process-dependent this-buffer-name))
+      ;; (setq delay (py--which-delay-process-dependent this-buffer-name))
       (unless fast
         (setq py-shell-mode-syntax-table python-mode-syntax-table)
-        ;; (when (and interactivep py-verbose-p)
-        ;;   (cond ((string-match "^.I" this-buffer-name)
-        ;;          (message "Waiting according to ‘py-ipython-send-delay:’ %s" delay))
-        ;;         ((string-match "^.+3" this-buffer-name)
-        ;;          (message "Waiting according to ‘py-python3-send-delay:’ %s" delay))))
         (setq py-modeline-display (py--update-lighter this-buffer-name))))
     (if (setq proc (get-buffer-process buffer))
         (progn

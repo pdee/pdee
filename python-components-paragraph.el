@@ -209,7 +209,7 @@ See lp:1066489 "
             (fill-region thisbeg thisend))))))
 
 (defun py-fill-string (&optional justify docstring pps)
-  "String fill function for ‘py-fill-paragraph’.
+  "String fill function.
 JUSTIFY should be used (if applicable) as in ‘fill-paragraph’.
 
 Fill according to ‘py-docstring-style’ "
@@ -240,7 +240,7 @@ Fill according to ‘py-docstring-style’ "
       (goto-char orig)
       (when beg
         (if docstring
-            (py--fill-docstring docstring)
+            (py--fill-docstring docstring beg end fill-prefix fill-column)
           (if (not tqs)
               (if (py-preceding-line-backslashed-p)
                   (progn

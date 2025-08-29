@@ -31,7 +31,7 @@ REPEAT - count and consider repeats"
           last
           ;; use by scan-lists
           (pps (parse-partial-sexp (point-min) (point)))
-          forward-sexp-function pps err)
+          forward-sexp-function err)
       ;; (origline (or origline (py-count-lines)))
       (cond
        ;; which-function-mode, lp:1235375
