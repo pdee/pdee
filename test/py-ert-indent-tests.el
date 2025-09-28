@@ -221,7 +221,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (push-mark)
     (search-backward "True")
     (save-excursion
-      (py-indent-region (line-beginning-position) (point-max) t))
+      (py-indent-region (line-beginning-position) (point-max)))
     (search-forward "with file")
     (should (eq 8 (current-indentation)))))
 
@@ -244,7 +244,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (push-mark)
     (search-backward "True")
     (save-excursion
-      (py-indent-region (line-beginning-position) (point-max) t))
+      (py-indent-region (line-beginning-position) (point-max)))
     (search-forward "for i ")
     (should (eq 12 (current-indentation)))))
 
@@ -267,7 +267,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (push-mark)
     (search-backward "True")
     (save-excursion
-      (py-indent-region (line-beginning-position) (point-max) t))
+      (py-indent-region (line-beginning-position) (point-max)))
     (search-forward "bar.")
     (should (eq 16 (current-indentation)))))
 
@@ -290,7 +290,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (push-mark)
     (search-backward "True")
     (save-excursion
-      (py-indent-region (line-beginning-position) (point-max) t))
+      (py-indent-region (line-beginning-position) (point-max)))
     (search-forward "datei.write")
     (should (eq 16 (current-indentation)))))
 
@@ -312,7 +312,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (set-mark (point))
     (search-backward "with file")
     (save-excursion
-      (py-indent-region (point) (point-max) t))
+      (py-indent-region (point) (point-max)))
     (should (eq 0 (current-indentation)))
     (search-forward "for i ")
     (should (eq 4 (current-indentation)))
@@ -929,7 +929,7 @@ def foo():
     (goto-char (point-max))
     (push-mark)
     (goto-char (point-min))
-    (py-indent-region (point-min) (point-max) t)
+    (py-indent-region (point-min) (point-max))
     (should (eq 4 (current-indentation)))))
 
 (ert-deftest py--indent-line-by-line-lp-1621672-b-tACrr5 ()
@@ -940,7 +940,7 @@ def foo():
     (goto-char (point-max))
     (push-mark)
     (goto-char (point-min))
-    (py-indent-region (point-min) (point-max) t)
+    (py-indent-region (point-min) (point-max))
     (should (eq 0 (current-indentation)))))
 
 (ert-deftest py-indentation-after-an-explicit-dedent-61-test-lpYaIp ()
@@ -1079,7 +1079,7 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     (push-mark)
     (search-backward "True")
     (save-excursion
-      (py-indent-region (line-beginning-position) (point-max) t))
+      (py-indent-region (line-beginning-position) (point-max)))
     (should (eq 4 (current-indentation)))))
 
 (ert-deftest py-match-case-test-i1nySM ()

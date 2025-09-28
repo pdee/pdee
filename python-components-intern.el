@@ -903,7 +903,7 @@ BEG END deliver the boundaries of region to work within"
       (py-indent-and-forward)))
   (unless (py-empty-line-p) (py-indent-and-forward)))
 
-(defun py-indent-region (&optional beg end no-check)
+(defun py-indent-region (&optional beg end)
   "Reindent a region delimited by BEG END.
 
 In case first line accepts an indent, keep the remaining

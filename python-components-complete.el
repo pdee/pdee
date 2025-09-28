@@ -239,7 +239,7 @@ in (I)Python shell-modes ‘py-shell-complete’"
   (window-configuration-to-register py--windows-config-register)
   ;; (setq py-last-window-configuration
   ;;       (current-window-configuration))
-  (let (py-switch-buffers-on-execute-p py-split-window-on-execute)
+  (let (py-switch-buffers-on-execute-p py-split-window-on-execute done)
   (cond ((use-region-p)
          (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘use-region-p’-clause"))
          (py-indent-region (region-beginning) (region-end)))
@@ -247,6 +247,8 @@ in (I)Python shell-modes ‘py-shell-complete’"
              (member (char-before) (list 9 10 12 13 32 ?: ?\) ?\] ?\}))
              (eq (current-column) (current-indentation))
              (not (looking-at "[ \t]*$")))
+         ;; ‘py-indent-line’ otherwise set back by registered
+         (setq done t)
          (py-indent-line))
         ;; (;; in comment
         ;;  (or (nth 4 (parse-partial-sexp (point-min) (point)))
@@ -260,7 +262,7 @@ in (I)Python shell-modes ‘py-shell-complete’"
          ;; (py-fast-complete)
          (completion-at-point)
          (skip-chars-forward "^ \t\r\n\f") ))
-  (jump-to-register py--windows-config-register)
+  (unless done (jump-to-register py--windows-config-register))
   ))
 
 (provide (quote python-components-complete))
