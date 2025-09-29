@@ -1,6 +1,15 @@
 Python Mode News
 ================
 
+New
+
+- ‘py-down’ API change:
+  Move forward down one level of syntactic indentation.
+
+  If at start of a list, move down one level of nesting.
+  From the beginning of a string or comment, jump inside.
+  Returns position if successful, nil otherwise
+
 New in version 6.3.1
 -----------------------
 - ‘py-up’ new command as pythonic ‘backward-sexp’,

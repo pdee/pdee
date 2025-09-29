@@ -579,20 +579,24 @@ Returns position successful, nil otherwise"
       (setq erg (point)))
     erg))
 
+(defun py--down-intern ()
+  "Go down from current indentation."
+  (let ((cui (current-indentation)))
+    (while (and (py-down-statement)
+                (or (eq (current-indentation) cui)
+                    (save-excursion (backward-char) (nth 8 (parse-partial-sexp (point-min) (point)))))))))
+
 (defun py-down ()
-  "Go to beginning one level below.
+  "Move forward down one level of syntactic indentation.
 
-Of compound statement or definition at point.
-
-When inside a string, list or comment, jump to its end.
-Repeated call from there will behave like down-list.
-
+If at start of a list, move down one level of nesting.
+From the beginning of a string or comment, jump inside.
 Returns position if successful, nil otherwise"
   (interactive)
   (let ((orig (point))
         (pps (parse-partial-sexp (point-min) (point))))
     (cond ((eq (syntax-class (syntax-after (point))) 4)
-           (forward-sexp))
+           (forward-char))
           ((nth 4 pps)
            (py-forward-comment))
           ((nth 3 pps)
@@ -601,13 +605,12 @@ Returns position if successful, nil otherwise"
           ((nth 1 pps)
            (goto-char (nth 1 pps))
            (forward-sexp))
-          ((or (eq (car (syntax-after orig)) 15)
-               (eq (car (syntax-after orig)) 4))
+          ((eq (car (syntax-after orig)) 15)
            (forward-sexp))
           ((not (py--beginning-of-statement-p))
            (py-backward-statement)
            (cond ((py--beginning-of-class-p)
-                  (py-forward-class))
+                  (py-forward-statement))
                  ((py--beginning-of-def-p)
                   (py-forward-def))
                  ((py--beginning-of-block-p)
@@ -615,15 +618,15 @@ Returns position if successful, nil otherwise"
                  ((py--beginning-of-clause-p)
                   (py-forward-clause))))
           ((py--beginning-of-class-p)
-           (py-forward-class))
+           (py--down-intern))
           ((py--beginning-of-def-p)
-           (py-forward-def))
+           (py--down-intern))
           ((py--beginning-of-block-p)
-           (py-forward-block))
+           (py--down-intern))
           ((py--beginning-of-clause-p)
-           (py-forward-clause))
+           (py--down-intern))
           (t
-           (py-forward-statement)))
+           (py-down-statement)))
     (if (< orig (point))
         (point)
       (goto-char orig)

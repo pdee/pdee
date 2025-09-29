@@ -3116,7 +3116,7 @@ ausgabe = kugel.ausgabe"
    'py-verbose-p
    (goto-char (point-min))
    (py-down)
-   (should (eq (char-before) ?\]))))
+   (should (eq (char-after) ?a))))
 
 (ert-deftest py-forward-commend-test-zsvwPG ()
   (py-test
@@ -6502,7 +6502,7 @@ class C:
    'py-verbose-p
    (goto-char (point-min))
    (py-down)
-   (should (eq (char-before) ?2))))
+   (should (looking-at "def"))))
 
 (ert-deftest py-down-def-test-4dAZaV ()
   (py-test
@@ -6519,7 +6519,7 @@ class C:
    (goto-char (point-max))
    (search-backward "def")
    (py-down)
-   (should (eq (char-before) ?2))))
+   (should (looking-at "self"))))
 
 (ert-deftest py-down-test-2XNdbk ()
   (py-test-point-min
@@ -6660,9 +6660,8 @@ class M:
    (goto-char (point-max))
    (search-backward "{" nil nil 2)
    (py-down)
-   (sit-for 0.1)
-   (should (eq (char-before) ?}))
-   (should (eq (char-after) ?,))))
+   (should (eq (char-before) ?{))
+   (should (eq (char-after) 10))))
 
 (ert-deftest py-forward-top-level-test-W20rg3 ()
   (py-test-point-min
@@ -6826,6 +6825,89 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    (py-forward-block (point) (bolp))
    (should (looking-at " +# sys.exit()"))
    ))
+
+(ert-deftest py-down-test-haFMoN ()
+  (py-test-point-min
+"class Test:
+    def __init__(self):
+        pass
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-min))
+   (py-down)
+   (should (looking-at "def"))
+   ))
+
+
+;; (ert-deftest py-down-test-YrsZ2Q ()
+;;   (py-test-point-min
+;; "class Test:
+;;     def __init__(self):
+;;         self.xyz = {
+;;             'foo': 0,
+;;             'bar': 0,
+;;             'baz': 0,
+;;         }
+;;     def load_something(fp: str) -> Optional[Dict]:
+;;         \"\"\" Load Something. \"\"\"
+;;         import pdb;pdb.set_trace()
+;;         try:
+;;             with open(fp, 'r', encoding='utf-8') as f:
+;;                 return foo(f)
+;;         except FileNotFoundError:
+;;             print(f\"Error: File '{fp}' not found.\")
+;;             return None
+;;         except json.JSONDecodeError as e:
+;;             print(f\"Error: Invalid JSON in '{fp}': {e}\")
+;;             return None
+;;         except Exception as e:
+;;             print(f\"Error loading '{fp}': {e}\")
+;;             return None
+;; "
+;;    'python-mode
+;;    'py-verbose-p
+;;    (goto-char (point-min))
+;;    (py-down)
+;;    (should (eq (char-before) ?}))
+;;    ))
+
+(ert-deftest py-down-test-YrsZ2Q ()
+  (py-test-point-min
+"class Test:
+    def __init__(self):
+        self.xyz = {
+            'foo': 0,
+            'bar': 0,
+            'baz': 0,
+        }
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-min))
+   (py-down)
+   (should (looking-at "def")
+   )))
+
+
+
+(ert-deftest py-down-def-test-JsAQUp ()
+  (py-test-point-min
+   "class M:
+    \"\"\"Blah Blub\"\"\"
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+        See GH#97850 for details.
+        \"\"\"
+        self.a = 1
+        self.b = 2
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-min))
+   (py-down)
+   (should (looking-at "def"))))
+
 
 
 
