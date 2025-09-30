@@ -3,7 +3,7 @@ Python Mode News
 
 New
 
-- ‘py-down’ API change:
+- ‘py-down’ change:
   Move forward down one level of syntactic indentation.
 
   If at start of a list, move down one level of nesting.

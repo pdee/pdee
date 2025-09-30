@@ -3226,7 +3226,7 @@ ausgabe = kugel.ausgabe"
    'py-verbose-p
    (end-of-line)
    (py-down)
-   (should (eq (char-before) 34))))
+   (should (eq (char-before) 10))))
 
 (ert-deftest py-backward-minor-block-test-OLNs0Y ()
   (py-test
