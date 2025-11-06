@@ -208,10 +208,9 @@ See lp:1066489 "
             (narrow-to-region thisbeg thisend)
             (fill-region thisbeg thisend))))))
 
-(defun py--fill-docstring (beg end fill-prefix)
+(defun py--fill-docstring (beg end)
   "Fills paragraph in docstring below or at cursor position."
-  (let ((fill-prefix fill-prefix)
-        (orig (point)))
+  (let ((orig (point)))
     ;; do not go backward beyond beginning of string
     (let* (;; Paragraph starts with beginning of string, skip the fence-chars
            (innerbeg (copy-marker
@@ -291,7 +290,7 @@ Fill according to ‘py-docstring-style’ "
       (goto-char orig)
       (when beg
         (if docstring
-            (py--fill-docstring beg end fill-prefix)
+            (py--fill-docstring beg end)
           (if (not tqs)
               (if (py-preceding-line-backslashed-p)
                   (progn
@@ -351,7 +350,7 @@ Fill according to ‘py-docstring-style’ "
            (py-fill-comment))
           (docstring
            ;; (setq fill-column py-docstring-fill-colum;; n)
-           (py--fill-docstring beg end fill-prefix))
+           (py--fill-docstring beg end))
           (t
            (and beg end (fill-region beg end))
            (when (and in-string (not tqs))

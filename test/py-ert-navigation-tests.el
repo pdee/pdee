@@ -6740,7 +6740,6 @@ for file in a:
    (py-backward-def-or-class)
    (should (char-equal (char-after) ?d))))
 
-
 (ert-deftest py-backward-statement-test-Wowy4a ()
   (py-test
    "nested_list = [
@@ -6839,7 +6838,6 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    (should (looking-at "def"))
    ))
 
-
 ;; (ert-deftest py-down-test-YrsZ2Q ()
 ;;   (py-test-point-min
 ;; "class Test:
@@ -6889,8 +6887,6 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    (should (looking-at "def")
    )))
 
-
-
 (ert-deftest py-down-def-test-JsAQUp ()
   (py-test-point-min
    "class M:
@@ -6907,10 +6903,6 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    (goto-char (point-min))
    (py-down)
    (should (looking-at "def"))))
-
-
-
-
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here
