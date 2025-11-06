@@ -3029,10 +3029,11 @@ Second group grabs the name")
   "See ‘py-minor-clause-re-raw’, which it reads.")
 
 (defcustom py-top-level-re
-  (concat
-   "^[a-zA-Z_]"
-   (regexp-opt  py-extended-block-or-clause-re-raw)
-   "[( \t]*.*:?")
+  ;; (concat
+   ;; "^[a-zA-Z_]"
+   "^[[:alpha:]_'\"]"
+   ;; (regexp-opt  py-extended-block-or-clause-re-raw)
+   ;; "[( \t]*.*:?")
   "A form which starts at zero indent level, but is not a comment."
   :type '(regexp)
   :tag "py-top-level-re"
