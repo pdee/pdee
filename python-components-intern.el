@@ -559,7 +559,7 @@ Returns position if successful, nil otherwise"
         erg)
     (while (and (not (eobp))
                 (progn (end-of-line)
-                       (re-search-forward "^[[:alpha:]_'\"]" nil 'move 1))
+                       (re-search-forward py-top-level-re nil 'move 1))
                 (nth 8 (parse-partial-sexp (point-min) (point)))))
     (when (and (not (eobp)) (< orig (point)))
       (goto-char (match-beginning 0))
