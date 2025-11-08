@@ -208,6 +208,23 @@ class kugel(object):
    (py-hide-block)
    (should (string-match "overlay from 109 to 216" (prin1-to-string (car (overlays-at (point))))))))
 
+(ert-deftest py-ert-show-block-test-Ik9nab ()
+  (py-test-point-min
+"def main():
+    if len(sys.argv) == 1:
+        usage()
+        # sys.exit()
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-min))
+   (should (search-forward "usage"))
+   (py-hide-block)
+   (should (string-match "overlay from 39 to 55" (prin1-to-string (car (overlays-at (point))))))
+   (py-hide-show)
+   (should-not (car (overlays-at (point))))
+   ))
+
 
 (provide 'py-ert-hide-tests)
 ;;; py-ert-hide-tests.el ends here
