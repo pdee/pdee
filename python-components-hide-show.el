@@ -27,15 +27,19 @@
 ;; (setq hs-forward-sexp-func (quote py-forward-block))
 
 (defun py-hide-base (form &optional beg end)
-  "Hide visibility of existing form at point."
+  "Hide visibility of existing FORM at point.
+
+FORM is of type symbol, not string"
   (hs-minor-mode 1)
   (save-excursion
-    (let* ((form (prin1-to-string form))
+    (let* ((form (or (prin1-to-string form) "block"))
            (beg (or beg (progn
                           (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
                               (funcall (intern-soft (concat "py-backward-" form))))
-                          (line-end-position))))
-                (end (or end (funcall (intern-soft (concat "py-forward-" form)))))
+                          (if (string= form "expression")
+                              (point)
+                            (line-end-position)))))
+           (end (or end (funcall (intern-soft (concat "py-forward-" form)))))
            (modified (buffer-modified-p))
            (inhibit-read-only t))
       (if (and beg end)
@@ -44,7 +48,7 @@
             (set-buffer-modified-p modified))
         (error (concat "No " (format "%s" form) " at point"))))))
 
-(defalias 'py-show 'py-hide-show)
+(defalias 'py-toggle-hide-show 'py-hide-show)
 (defun py-hide-show (&optional form beg end)
   "Toggle visibility of existing forms at point.
 
@@ -53,15 +57,21 @@ Optional arguments beg, end: numbers"
   (interactive)
   (save-excursion
     (let* ((form (or form "block"))
-           (beg (or beg (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
-                            (funcall (intern-soft (concat "py-backward-" form))))))
+           (beg (or beg (progn
+                          (or (funcall (intern-soft (concat "py--beginning-of-" form "-p")))
+                              (funcall (intern-soft (concat "py-backward-" form))))
+                          (if (string= form "expression")
+                              (point)
+                            (line-end-position)))))
            (end (or end (funcall (intern-soft (concat "py-forward-" form)))))
            (modified (buffer-modified-p))
            (inhibit-read-only t))
       (if (and beg end)
           (if (overlays-in beg end)
               (hs-discard-overlays beg end)
-            (hs-make-overlay beg end (quote code)))
+            (py-hide-base nil beg end)
+            ;; (hs-make-overlay beg end (quote code))
+            )
         (error (concat "No " (format "%s" form) " at point")))
       (set-buffer-modified-p modified))))
 
