@@ -88,9 +88,12 @@ For example:
   (message (concat "Virtualenv '" virtualenv-name "' deactivated."))
   (setq virtualenv-name nil))
 
-(defun virtualenv-p (dir)
-  "Check if a directory DIR is a virtualenv."
-  (file-exists-p (concat dir "/bin/activate")))
+(defun virtualenv-p ()
+  "Check if current directory is a virtualenv."
+  (interactive)
+  (let ((erg (file-exists-p (concat default-directory "bin/activate"))))
+    (when py-verbose-p (message "virtualenv-p: %s" erg))
+    erg))
 
 (defun virtualenv-workon-complete ()
   "Return available completions for ‘virtualenv-workon’."
