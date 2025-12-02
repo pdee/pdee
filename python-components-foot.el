@@ -230,7 +230,8 @@
     (py-message-which-python-mode))
   (when py-use-menu-p
     (py-define-menu python-mode-map))
-  (force-mode-line-update))
+  (add-hook 'python-mode-hook 'force-mode-line-update)
+  )
 
 (defun py--update-version-dependent-keywords ()
   (let ((kw-py2 '(("\\<print\\>" . 'font-lock-keyword-face)
