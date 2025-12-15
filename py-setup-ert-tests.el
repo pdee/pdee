@@ -31,8 +31,8 @@ BODY is code to be executed within the temp buffer "
        (insert ,contents)
        (funcall ,mode)
        (when ,verbose
-         (switch-to-buffer (current-buffer))
-         (font-lock-fontify-region (point-min)(point-max)))
+         (switch-to-buffer (current-buffer)))
+         ;; (font-lock-fontify-region (point-min)(point-max)))
        ,@body)))
 
 (defmacro py-test-point-min (contents mode verbose &rest body)
@@ -47,8 +47,8 @@ BODY is code to be executed within the temp buffer.  Point is
        (funcall ,mode)
        (goto-char (point-min))
        (and ,verbose
-         (switch-to-buffer (current-buffer))
-         (font-lock-fontify-region (point-min)(point-max)))
+         (switch-to-buffer (current-buffer)))
+         ;; (font-lock-fontify-region (point-min)(point-max)))
        ,@body)))
 
 (provide 'py-setup-ert-tests)
