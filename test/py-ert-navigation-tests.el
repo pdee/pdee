@@ -6904,5 +6904,72 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    (py-down)
    (should (looking-at "def"))))
 
+(ert-deftest py-down-test-4QKKdA ()
+  (py-test-point-min
+"a, b, c = (1, 2, 3)
+a = b = c = 5
+[a, b, c] = 1, 2, 3
+a, *b, c = range(10)
+inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
+(a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+
+print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+
+print(\"%(language)s has %(number)03d quote types.\" %
+       {'language': \"Python\", \"number\": 4})
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-min))
+   (py-down)
+   (should (looking-at "a = b"))))
+
+(ert-deftest py-down-test-adlqX5 ()
+  (py-test-point-min
+"a, b, c = (1, 2, 3)
+a = b = c = 5
+[a, b, c] = 1, 2, 3
+a, *b, c = range(10)
+inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
+(a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+
+print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+
+print(\"%(language)s has %(number)03d quote types.\" %
+       {'language': \"Python\", \"number\": 4})
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-min))
+   (search-forward "a" nil t 2)
+   (backward-char)
+   (py-down)
+   (should (looking-at "\\[a,"))))
+
+(ert-deftest py-down-test-K8XIlp ()
+  (py-test-point-min
+"a, b, c = (1, 2, 3)
+a = b = c = 5
+[a, b, c] = 1, 2, 3
+a, *b, c = range(10)
+inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
+(a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
+
+print('%(language)s has %(number)03d quote types.' %
+       {'language': \"Python\", \"number\": 2})
+
+print(\"%(language)s has %(number)03d quote types.\" %
+       {'language': \"Python\", \"number\": 4})
+"
+   'python-mode
+   'py-verbose-p
+   (goto-char (point-min))
+   (search-forward "[" nil t)
+   (backward-char)
+   (py-down)
+   (should (looking-at "a, b, c] = 1, 2, 3"))))
+
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here
