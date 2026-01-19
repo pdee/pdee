@@ -546,7 +546,7 @@ by the
    (py-indent-or-complete)
    (should (looking-back "print.?" (line-beginning-position)))))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-BBJoDt ()
+(ert-deftest py-ert-fill-paragraph-pep-257-nn-BBJoDt ()
   ""
   (let ((py-docstring-style 'pep-257-nn))
     (py-test-point-min
@@ -576,7 +576,7 @@ def baz():
      ;; (should (eq (char-after) 34))
      )))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-django-BVA4Jt ()
+(ert-deftest py-ert-fill-paragraph-django-BVA4Jt ()
   ""
   (let ((py-docstring-style 'django))
     (py-test-point-min
@@ -592,9 +592,11 @@ def baz():
      ;; (font-lock-ensure)
      (goto-char 49)
      (fill-paragraph)
-     (search-forward "multiline" nil t 3)
-     (forward-line 2)
-     (should (py-empty-line-p)))))
+     (goto-char (point-min)) 
+     (search-forward "Hello")
+     (forward-line 1)
+     (should (py-empty-line-p)))
+    ))
 
 ;; (ert-deftest py-fast-send-string-no-output-VxbcvH ()
 ;;   ""

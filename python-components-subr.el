@@ -30,28 +30,6 @@
     (beginning-of-line)
     (save-match-data (looking-at py-empty-line-p-chars))))
 
-(defsubst py--string-trim-left (strg &optional regexp trim-left)
-  "Trim STRING of leading string matching REGEXP.
-
-REGEXP defaults to \"[ \\t\\n\\r]+\"."
-  (if (and trim-left (string-match (concat "\\`\\(?:" (or regexp "[ \t\n\r]+") "\\)") strg))
-      (replace-match "" t t strg)
-    strg))
-
-(defsubst py--string-trim-right (strg &optional regexp trim-right)
-  "Trim STRING of trailing string matching REGEXP.
-
-REGEXP defaults to \"[ \\t\\n\\r]+\"."
-  (if (and trim-right (string-match (concat "\\(?:" (or regexp "[ \t\n\r]+") "\\)\\'") strg))
-      (replace-match "" t t strg)
-    strg))
-
-(defsubst py--string-trim (strg &optional regexp trim-left trim-right)
-  "Trim STRING of leading and trailing strings matching TRIM-LEFT and TRIM-RIGHT.
-
-TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
-  (py--string-trim-left (py--string-trim-right strg regexp trim-right) regexp trim-left))
-
 (defun py-trim-string-left (strg &optional arg)
   "Remove ARG characters from beginning and end of STRING.
 
