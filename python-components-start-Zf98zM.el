@@ -53,6 +53,7 @@
     (cond ((while (and (< 0 (abs (skip-chars-forward "^#;" (line-end-position))))
                        ;; (sit-for 1)
                        (and (nth 8 (parse-partial-sexp (point-min) (point))) (skip-chars-forward "#;" (line-end-position)))))))
+    (and (eq (char-after) ?\;)(forward-char 1))
     (and (< orig (point))(point))))
 
 (defun py--end-of-comment-intern (pos)

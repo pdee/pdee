@@ -47,7 +47,8 @@
             (if (file-readable-p filename)
                 (py--execute-file-base (expand-file-name filename) nil nil nil origline)
               (message "%s not readable. %s" filename "Do you have write permissions?"))
-        (py--execute-base beg end shell filename proc wholebuf fast dedicated split switch)))))
+        (py--execute-base beg end shell filename proc wholebuf fast dedicated split switch)
+        ))))
 
 (defun py-execute-block-ipython (&optional dedicated fast split switch proc)
   "Send block at point to a python3 interpreter."

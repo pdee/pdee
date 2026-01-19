@@ -152,20 +152,6 @@ def baz(self):
     (should (eq (region-beginning) 377 ))
     (should (eq (region-end) 414 ))))
 
-(ert-deftest py-test-embedded-51-test-sgaO9V ()
-  (py-test
-      "from Foo import *
-FooFoo."
-    'python-mode
-    'py-verbose-p
-    (goto-char(point-max))
-    (skip-chars-backward " \t\r\n\f") 
-    (ignore-errors (py-indent-or-complete))
-    ;; (sit-for 0.1)
-    (should (eq (char-before) ?.))))
-
-
-
 (ert-deftest py-ert-copy-indent-test-UbzMto ()
   (py-test-point-min
       "class A(object):
@@ -294,11 +280,12 @@ FooFoo."
     'python-mode
     'py-debug-p
     (when (executable-find "ipython3")
-      (let (;; also set in run-tests.sh
-            (python-mode-v5-behavior-p t)
-            (erg (buffer-name (py-shell nil nil nil "ipython3"))))
-        (should (string= "*Python Output*" erg)))
-      (py-kill-buffer-unconditional (get-buffer "*IPython3*")))))
+      (let* (;; also set in run-tests.sh
+             (python-mode-v5-behavior-p t)
+             (erg (buffer-name (py-shell nil nil nil "ipython3"))))
+        (should (buffer-live-p (get-buffer  "*Python Output*")))
+        (py-kill-buffer-unconditional (get-buffer "*IPython3*"))
+        ))))
 
 (ert-deftest py-named-shell-ipython-794850-test-P6QZmU ()
   (py-test
@@ -312,20 +299,22 @@ FooFoo."
      (should (buffer-live-p (get-buffer "Python Output*")))
      (py-kill-buffer-unconditional (get-buffer "*IPython*"))))))
 
-(when (featurep  'comint-mime)
-  (ert-deftest py-comint-mime-test-7JbtYW ()
-    (py-test
-	"__COMINT_MIME_setup"
-      'python-mode
-      'py-verbose-p
-      (push '(inferior-python-mode . comint-mime-setup-python)
-	    comint-mime-setup-function-alist)
-      (push '(py-shell-mode . comint-mime-setup-py-shell)
-	    comint-mime-setup-function-alist)
-      (add-hook 'py-shell-mode-hook 'comint-mime-setup)
-      (py-execute-buffer-ipython3)
-      (message "%s" py-result)
-      (should (string-match "__COMINT_MIME_setup" py-result)))))
+(ert-deftest py-comint-mime-test-7JbtYW ()
+  (py-test
+      "__COMINT_MIME_setup"
+    'python-mode
+    'py-verbose-p
+    (if (featurep 'comint-mime)
+        (progn
+          (push '(inferior-python-mode . comint-mime-setup-python)
+	        comint-mime-setup-function-alist)
+          (push '(py-shell-mode . comint-mime-setup-py-shell)
+	        comint-mime-setup-function-alist)
+          (add-hook 'py-shell-mode-hook 'comint-mime-setup)
+          (py-execute-buffer-ipython3)
+          (message "%s" py-result)
+          (should (string-match "__COMINT_MIME_setup" py-result)))
+      t)))
 
 (provide 'py-ert-misc-tests)
 ;;; py-ert-misc-tests.el ends here

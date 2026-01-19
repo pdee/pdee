@@ -6,7 +6,7 @@
 
 ;; Package-Requires: ((emacs "24"))
 
-;; Author: 2015-2025 https://gitlab.com/groups/python-mode-devs
+;; Author: 2015-2026 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
 ;;         1992-1994 Tim Peters
@@ -1750,7 +1750,7 @@ Else /usr/bin/python"
 (defvar py-shell-name py-python-command)
 ;; (defvaralias 'py-shell-name 'py-python-command)
 
-(defcustom py-python-command-args '("-i")
+(defcustom py-python-command-args "-i"
   "String arguments to be used when starting a Python shell."
   :type '(repeat string)
   :tag "py-python-command-args"
@@ -2566,7 +2566,7 @@ Restore ‘py-restore-window-configuration’.")
 
 Remember source buffer where error might occur.")
 
-(defvar py-string-delim-re "\\(\"\"\"\\|'''\\|\"\\|'\\)"
+(defvar py-string-delim-re "\"\"\"\\|'''\\|\"\\|'"
   "When looking at beginning of string.")
 
 (defvar py-star-labelled-re "[ \\t]*[\\*-] +[[:graph:]]"
@@ -2844,16 +2844,7 @@ for options to pass to the DOCNAME interpreter. \"
   :tag "py-block-re-raw"
   :group 'python-mode)
 
-(defconst py-block-re (concat
-                       ;; def main():
-                       ;; |   if len(sys.argv) == 1:
-                       ;;         usage()
-                       ;;         # sys.exit()
-
-                       ;;     class asdf(object):
-                       py-block-re-raw
-                       ".*[:( \n\t]"
-                       )
+(defconst py-block-re (concat py-block-re-raw ".*[:( \n\t]")
   "Matches the beginning of a compound statement.")
 
 (defconst py-minor-block-re-raw (regexp-opt
@@ -3448,28 +3439,6 @@ commonly \"cls\" and \"self\""
 
 ;; subr-x.el might not exist yet
 ;; #73, Byte compilation on Emacs 25.3 fails on different trim-right signature
-
-(defsubst py--string-trim-left (strg &optional regexp)
-  "Trim STRING of leading string matching REGEXP.
-
-REGEXP defaults to \"[ \\t\\n\\r]+\"."
-  (if (string-match (concat "\\`\\(?:" (or regexp "[ \t\n\r]+") "\\)") strg)
-      (replace-match "" t t strg)
-    strg))
-
-(defsubst py--string-trim-right (strg &optional regexp)
-  "Trim STRING of trailing string matching REGEXP.
-
-REGEXP defaults to \"[ \\t\\n\\r]+\"."
-  (if (string-match (concat "\\(?:" (or regexp "[ \t\n\r]+") "\\)\\'") strg)
-      (replace-match "" t t strg)
-    strg))
-
-(defsubst py--string-trim (strg &optional trim-left trim-right)
-  "Trim STRING of leading and trailing strings matching TRIM-LEFT and TRIM-RIGHT.
-
-TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
-  (py--string-trim-left (py--string-trim-right strg trim-right) trim-left))
 
 (defcustom py-empty-line-p-chars "^[ \t\r]*$"
   "Empty-line-p-chars."

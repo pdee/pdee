@@ -424,19 +424,21 @@ START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
          (filename (or (and filename (expand-file-name filename))
                        (py--buffer-filename-remote-maybe)))
          (py-orig-buffer-or-file (or filename (current-buffer)))
-         (proc-raw (or proc (get-buffer-process buffer-name)))
-
-         (proc (or proc-raw (get-buffer-process buffer-name)
-                   (prog1
-                       (get-buffer-process (py-shell nil nil dedicated shell buffer-name fast exception-buffer split switch))
-                     (sit-for 0.1))))
-
-         ;; (split (if python-mode-v5-behavior-p 'just-two split))
+         (cmd (py-shell-calculate-command shell py-python-command-args))
+         proc-raw output-buffer
          )
-    (setq py-output-buffer (or (and python-mode-v5-behavior-p "*Python Output*")
-                               (and proc (buffer-name (process-buffer proc)))
-                               (py--choose-buffer-name shell dedicated fast)))
-    (py--execute-base-intern strg filename proc wholebuf py-output-buffer origline execute-directory start end fast)))
+    (if python-mode-v5-behavior-p
+        (shell-command-on-region start end
+                                   cmd "*Python Output*")
+      (setq output-buffer (or (and proc (buffer-name (process-buffer proc)))
+                              (py--choose-buffer-name shell dedicated fast)))
+      (setq proc-raw (or proc (get-buffer-process output-buffer)))
+
+      (setq proc (or proc-raw (get-buffer-process buffer-name)
+                     (prog1
+                         (get-buffer-process (py-shell nil nil dedicated shell output-buffer fast exception-buffer split switch))
+                       (sit-for 0.1))))
+      (py--execute-base-intern strg filename proc wholebuf output-buffer origline execute-directory start end fast))))
 
 (provide 'python-components-start3)
 ;;; python-components-start3.el ends here

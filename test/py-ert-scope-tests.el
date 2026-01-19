@@ -30,8 +30,7 @@
    'python-mode
    'py-verbose-p
    (goto-char (point-min))
-   (and (should (string= "foo" (py-partial-expression)))
-	(py-kill-buffer-unconditional (current-buffer)))))
+   (should (string= "foo" (py-partial-expression)))))
 
 (ert-deftest py-partial-expression-test-yS2wLf ()
   (py-test-point-min
@@ -40,8 +39,7 @@
    'py-verbose-p
    (goto-char (point-min))
    (search-forward "getchildren")
-   (and (should (string= "getchildren()[0]" (py-partial-expression)))
-	(py-kill-buffer-unconditional (current-buffer)))))
+   (should (string= "getchildren()[0]" (py-partial-expression)))))
 
 (ert-deftest py-partial-expression-test-TmqVoM ()
   (py-test-point-min
@@ -50,9 +48,7 @@
    'py-verbose-p
    (goto-char (point-min))
    (search-forward "ro")
-   (and (should (string= "root" (py-partial-expression)))
-	(py-kill-buffer-unconditional (current-buffer)))))
-
+   (should (string= "root" (py-partial-expression)))))
 
 (ert-deftest py-partial-expression-test-HS6qOA ()
   (py-test

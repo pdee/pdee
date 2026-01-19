@@ -862,8 +862,8 @@
 (ert-deftest py-ert--string-fence-delete-spaces-functionp-test-GQjALY ()
   (should (functionp 'py--string-fence-delete-spaces)))
 
-(ert-deftest py-ert--fill-fix-end-functionp-test-M5IhuJ ()
-  (should (functionp 'py--fill-fix-end)))
+;; (ert-deftest py-ert--fill-fix-end-functionp-test-M5IhuJ ()
+;;   (should (functionp 'py--fill-fix-end)))
 
 (ert-deftest py-ert-insert-default-shebang-functionp-test-kvspuZ ()
   (should (functionp 'py-insert-default-shebang)))

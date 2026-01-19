@@ -6,7 +6,7 @@
 
 ;; Package-Requires: ((emacs "24"))
 
-;; Author: 2015-2025 https://gitlab.com/groups/python-mode-devs
+;; Author: 2015-2026 https://gitlab.com/groups/python-mode-devs
 ;;         2003-2014 https://launchpad.net/python-mode
 ;;         1995-2002 Barry A. Warsaw
 ;;         1992-1994 Tim Peters
@@ -403,6 +403,8 @@ If succesful, returns beginning of docstring position in buffer"
     (let ((erg
            (progn
              (goto-char pos)
+             (when (looking-back "\"\"\\|''" (line-beginning-position))
+               (goto-char (match-beginning 0)))
              (and (looking-at "\"\"\"\\|'''")
                   ;; https://github.com/swig/swig/issues/889
                   ;; def foo(rho, x):
@@ -1340,24 +1342,26 @@ thus remember ORIGLINE of source buffer"
       (setq py-error (buffer-substring-no-properties (point) (point-max))))
         py-error))
 
-(defun py--fetch-result (buffer  &optional limit cmd)
+(defun py--fetch-result (buffer &optional limit cmd)
   "CMD: some shells echo the command in output-buffer
 Delete it here"
-  (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
-  (cond (python-mode-v5-behavior-p
-         (with-current-buffer buffer
-           (py--string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n")))
-        ((and cmd limit (< limit (point-max)))
-         (replace-regexp-in-string cmd "" (py--string-trim (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max))))))
-        (t (when (and limit (< limit (point-max)))
-             (py--string-trim (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max))))))))
+  (with-current-buffer buffer
+    (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
+    (cond (python-mode-v5-behavior-p
+           (string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
+          ((and cmd limit (< limit (point-max)))
+           (replace-regexp-in-string cmd "" (string-trim (replace-regexp-in-string py-shell-prompt-regexp ""
+                                                                                   (string-trim (buffer-substring-no-properties limit (point-max)) nil "\n")))))
+          (t (when (and limit (< limit (point-max)))
+               (string-trim
+                (replace-regexp-in-string py-shell-prompt-regexp "" (buffer-substring-no-properties limit (point-max))) nil "\n"))))))
 
 (defun py--postprocess (output-buffer origline limit &optional cmd filename)
   "Provide return values, check result for error, manage windows.
 
 According to OUTPUT-BUFFER ORIGLINE ORIG"
   ;; py--fast-send-string does not set origline
-  (when (or py-return-result-p py-store-result-p)
+  ;; (when (or py-return-result-p py-store-result-p)
     (with-current-buffer output-buffer
       (when py-debug-p (switch-to-buffer (current-buffer)))
       (sit-for (py--which-delay-process-dependent (prin1-to-string output-buffer)))
@@ -1378,7 +1382,8 @@ According to OUTPUT-BUFFER ORIGLINE ORIG"
               (kill-new py-result))
             (when py-verbose-p (message "py-result: %s" py-result))
             py-result)
-        (when py-verbose-p (message "py--postprocess: %s" "Do not see any result"))))))
+        (when py-verbose-p (message "py--postprocess: %s" "Do not see any result")))))
+  ;; )
 
 (defun py-fetch-py-master-file ()
   "Lookup if a ‘py-master-file’ is specified.
@@ -1465,7 +1470,7 @@ default to utf-8."
   "Set ‘py-result’ according to ‘py-fast-filter-re’.
 
 Remove trailing newline"
-  (py--string-trim
+  (string-trim
    (replace-regexp-in-string
     py-fast-filter-re
     ""
@@ -2057,42 +2062,46 @@ With optional Arg NO-OUTPUT do not display any output
 With optional Arg ORIG deliver original position.
 With optional Arg OUTPUT-BUFFER specify output-buffer"
   (interactive "sPython command: ")
-  (save-excursion
-    (let* ((buffer (or output-buffer
-                       (and process (buffer-name (process-buffer process)))
-                       (buffer-name
-                        (py-shell argprompt args dedicated shell output-buffer fast exception-buffer split switch internal))))
-           (proc (or process (get-buffer-process buffer)))
-           (orig (or orig (point)))
-           (limit (ignore-errors (marker-position (process-mark proc)))))
-      (unless (eq 1 (length (window-list))) (window-configuration-to-register py--windows-config-register))
-      (cond ((and no-output fast)
-             (py--fast-send-string-no-output-intern strg proc limit buffer no-output))
-            (no-output
-             (py-send-string-no-output strg proc))
-            ((and (string-match ".\n+." strg) (string-match "^[Ii]"
-                                                            ;; (buffer-name buffer)
-                                                            buffer
-                                                            ))  ;; multiline
-             (let* ((temp-file-name (py-temp-file-name strg))
-                    (file-name (or (buffer-file-name) temp-file-name)))
-               (py-execute-file file-name proc)))
-            (t
-             (comint-send-string proc strg)
-             (when (or (not (string-match "\n\\'" strg))
-                       (string-match "\n[ \t].*\n?\\'" strg))
-               (comint-send-string proc "\n"))
-             (cond (result
-                    ;; (sit-for py-python-send-delay)
-                    (sit-for py-python-send-delay)
-                    (setq py-result (py--fetch-result buffer limit strg)))
-                   (no-output
-                    (and orig (py--cleanup-shell orig buffer))))))
-      ;; (message "py-execute-string; current-buffer: %s" (current-buffer))
-      (if (eq 1 (length (window-list)))
-          (py--shell-manage-windows buffer)
-        (when (get-register py--windows-config-register)
-          (ignore-errors (jump-to-register (get-register py--windows-config-register))))))))
+  (if python-mode-v5-behavior-p
+      (with-temp-buffer
+        (insert strg)
+        (py--execute-base (point-min) (point-max)))
+    (save-excursion
+      (let* ((buffer (or output-buffer
+                         (and process (buffer-name (process-buffer process)))
+                         (buffer-name
+                          (py-shell argprompt args dedicated shell output-buffer fast exception-buffer split switch internal))))
+             (proc (or process (get-buffer-process buffer)))
+             (orig (or orig (point)))
+             (limit (ignore-errors (marker-position (process-mark proc)))))
+        (unless (eq 1 (length (window-list))) (window-configuration-to-register py--windows-config-register))
+        (cond ((and no-output fast)
+               (py--fast-send-string-no-output-intern strg proc limit buffer no-output))
+              (no-output
+               (py-send-string-no-output strg proc))
+              ((and (string-match ".\n+." strg) (string-match "^[Ii]"
+                                                              ;; (buffer-name buffer)
+                                                              buffer
+                                                              ))  ;; multiline
+               (let* ((temp-file-name (py-temp-file-name strg))
+                      (file-name (or (buffer-file-name) temp-file-name)))
+                 (py-execute-file file-name proc)))
+              (t
+               (comint-send-string proc strg)
+               (when (or (not (string-match "\n\\'" strg))
+                         (string-match "\n[ \t].*\n?\\'" strg))
+                 (comint-send-string proc "\n"))
+               (cond (result
+                      ;; (sit-for py-python-send-delay)
+                      (sit-for py-python-send-delay)
+                      (setq py-result (py--fetch-result buffer limit strg)))
+                     (no-output
+                      (and orig (py--cleanup-shell orig buffer))))))
+        ;; (message "py-execute-string; current-buffer: %s" (current-buffer))
+        (if (eq 1 (length (window-list)))
+            (py--shell-manage-windows buffer)
+          (when (get-register py--windows-config-register)
+            (ignore-errors (jump-to-register (get-register py--windows-config-register)))))))))
 
 (defun py--shell-manage-windows (output-buffer &optional exception-buffer split switch)
   "Adapt or restore window configuration from OUTPUT-BUFFER.
@@ -2193,6 +2202,8 @@ Returns position where output starts."
       (py-execute-string cmd proc))
     (with-current-buffer buffer
       (when (or py-return-result-p py-store-result-p)
+        (when py-debug-p (message "py-return-result-p: %s" py-return-result-p))
+        (when py-debug-p (message "py-store-result-p: %s" py-store-result-p))
         (setq erg (py--postprocess buffer origline limit cmd filename))
         (if py-error
             (setq py-error (prin1-to-string py-error))
@@ -2440,6 +2451,59 @@ SEPCHAR is the file-path separator of your system."
     ;;       (t (unless (string-match "^\*" erg) (setq erg (concat "*" erg "*")))))
     ;; erg))
 
+;; (defun run-python (&optional argprompt args dedicated shell buffer fast exception-buffer split switch internal cmd show)
+;; (defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch internal cmd show)
+;;   "Run an inferior Python process.
+
+;; Argument CMD defaults to `python-shell-calculate-command' return
+;; value.  When called interactively with `prefix-arg', it allows
+;; the user to edit such value and choose whether the interpreter
+;; should be DEDICATED to the current buffer or project.  When
+;; numeric prefix arg is other than 0 or 4 do not SHOW.
+
+;; For a given buffer and same values of DEDICATED, if a process is
+;; already running for it, it will do nothing.  This means that if
+;; the current buffer is using a global process, the user is still
+;; able to switch it to use a dedicated one.
+
+;; Runs the hook `inferior-python-mode-hook' after
+;; `comint-mode-hook' is run.  (Type \\[describe-mode] in the
+;; process buffer for a list of commands.)"
+;;   (interactive
+;;    (if current-prefix-arg
+;;        (list
+;;         (read-shell-command "Run Python: " (python-shell-calculate-command))
+;;         (alist-get (car (read-multiple-choice "Make dedicated process?"
+;;                                               '((?b "to buffer")
+;;                                                 (?p "to project")
+;;                                                 (?n "no"))))
+;;                    '((?b . buffer) (?p . project)))
+;;         (= (prefix-numeric-value current-prefix-arg) 4))
+;;      (list (python-shell-calculate-command)
+;;            python-shell-dedicated
+;;            t)))
+;;   (let* ((project (and (eq 'project dedicated)
+;;                        (featurep 'project)
+;;                        (project-current t)))
+;;          (default-directory (if project
+;;                                 (project-root project)
+;;                               default-directory))
+;;          (show (or switch split py-split-window-on-execute py-switch-buffers-on-execute-p))
+;;          (buffer (python-shell-make-comint
+;;                   (or cmd (python-shell-calculate-command))
+;;                   (python-shell-get-process-name dedicated)
+;;                   show)))
+;;     (get-buffer-process buffer)))
+
+;; credits to python.el
+(defun py-shell-calculate-command (shell args)
+  "Calculate the string used to execute the inferior Python process."
+  (format "%s %s"
+          ;; `python-shell-make-comint' expects to be able to
+          ;; `split-string-and-unquote' the result of this function.
+          (combine-and-quote-strings (list shell))
+          args))
+
 (defun py-shell (&optional argprompt args dedicated shell buffer fast exception-buffer split switch internal)
   "Connect process to BUFFER.
 
@@ -2494,19 +2558,20 @@ process buffer for a list of commands.)"
          (this-buffer
           (or (and buffer (stringp buffer) buffer)
               (and buffer (buffer-name buffer))
-              (and python-mode-v5-behavior-p (get-buffer-create "*Python Output*"))
+              (and python-mode-v5-behavior-p (buffer-name (get-buffer-create "*Python Output*")))
               (py--choose-buffer-name shell dedicated fast)))
          (proc (get-buffer-process this-buffer))
-         (buffer (or (ignore-errors (process-buffer proc))
-                     ;; Use python.el's provision here
-                     (python-shell-with-environment
-                       (apply #'make-comint-in-buffer shell
-                              (set-buffer
-                               (get-buffer-create this-buffer))
-                              (list shell nil args)))))
-         (this-buffer-name (buffer-name buffer)))
-    (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p (get-buffer "*Python Output*") buffer)))
-    (with-current-buffer buffer
+         (cmd (py-shell-calculate-command shell args))
+         (buffer (python-shell-make-comint
+                  (or cmd (python-shell-calculate-command))
+                  ;; (string-trim (buffer-name this-buffer) "*" "*")
+                  (string-trim this-buffer "*" "*")
+                  ;; (python-shell-get-process-name dedicated)
+                  ;; show
+                  ))
+         (this-buffer-name buffer))
+    (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p (get-buffer "*Python Output*") (get-buffer buffer))))
+    (with-current-buffer (get-buffer buffer)
       ;; (setq delay (py--which-delay-process-dependent this-buffer-name))
       (unless fast
         (setq py-shell-mode-syntax-table python-mode-syntax-table)
@@ -2527,7 +2592,7 @@ process buffer for a list of commands.)"
           (when (or interactivep
                     (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
             (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
-          buffer)
+          (get-buffer buffer))
       (error (concat "py-shell:" (py--fetch-error py-output-buffer))))))
 
 (defun py-kill-buffer-unconditional (&optional buffer)

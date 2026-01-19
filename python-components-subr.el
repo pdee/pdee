@@ -24,12 +24,64 @@
 
 ;;; Code:
 
-
 (defun py-empty-line-p ()
   "Return t if cursor is at an empty line, nil otherwise."
   (save-excursion
     (beginning-of-line)
     (save-match-data (looking-at py-empty-line-p-chars))))
+
+(defsubst py--string-trim-left (strg &optional regexp trim-left)
+  "Trim STRING of leading string matching REGEXP.
+
+REGEXP defaults to \"[ \\t\\n\\r]+\"."
+  (if (and trim-left (string-match (concat "\\`\\(?:" (or regexp "[ \t\n\r]+") "\\)") strg))
+      (replace-match "" t t strg)
+    strg))
+
+(defsubst py--string-trim-right (strg &optional regexp trim-right)
+  "Trim STRING of trailing string matching REGEXP.
+
+REGEXP defaults to \"[ \\t\\n\\r]+\"."
+  (if (and trim-right (string-match (concat "\\(?:" (or regexp "[ \t\n\r]+") "\\)\\'") strg))
+      (replace-match "" t t strg)
+    strg))
+
+(defsubst py--string-trim (strg &optional regexp trim-left trim-right)
+  "Trim STRING of leading and trailing strings matching TRIM-LEFT and TRIM-RIGHT.
+
+TRIM-LEFT and TRIM-RIGHT default to \"[ \\t\\n\\r]+\"."
+  (py--string-trim-left (py--string-trim-right strg regexp trim-right) regexp trim-left))
+
+(defun py-trim-string-left (strg &optional arg)
+  "Remove ARG characters from beginning and end of STRING.
+
+Return the shortened string
+Argument STRG start."
+  (setq arg (or arg 1))
+  (substring strg arg))
+
+(defun py-trim-string-right (strg &optional arg)
+  "Remove ARG characters from beginning and end of STRING.
+
+Return the shortened string
+Argument STRG end."
+  (setq arg (or arg 1))
+  (let ((laenge (length strg)))
+    (substring strg 0 (- laenge arg))))
+
+(defun py-trim-string (strg &optional left right)
+  "Remove ARG characters from beginning and end of STRING.
+
+With no arguments remove just one character
+Return the shortened string
+Argument STRG strg.
+Optional argument LEFT border.
+Optional argument RIGHT border."
+  (let ((left (or left 1))
+	(right (or right 1))
+	(laenge (length strg)))
+    (setq right (- laenge right))
+    (substring strg left right)))
 
 (provide 'python-components-subr)
 ;;; python-components-subr.el ends here

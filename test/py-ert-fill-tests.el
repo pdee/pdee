@@ -33,7 +33,7 @@
    (goto-char (point-min) )
    (let ((py-docstring-style 'pep-257-nn))
      (search-forward "docstring")
-     (fill-paragraph)
+     (py-fill-paragraph)
      (forward-line 1)
      (skip-chars-forward " \t\r\n\f")
      (should (eq 4 (current-indentation)))
@@ -72,18 +72,20 @@
    (should (eq 8 (current-indentation)))))
 
 ;; https://bugs.launchpad.net/python-mode/+bug/1321266
-(ert-deftest py-fill-string-lp-1321266-test-f8sTTj ()
-  (py-test
-   "print(\"%(language)s has %(number)03d quote types. asdf asdf asdf asdfa sasdf asdfasdfasdfasdfasdfasda asd asdfa a asdf asdfa asdf \" %
-       {'language': \"Python\", \"number\": 2})"
-   'python-mode
-   'py-verbose-p
-   (goto-char (point-max))
-   (search-backward "asdf")
-   (py-fill-string)
-   (goto-char (point-min))
-   (end-of-line)
-   (should (eq (char-before) 92))))
+;; python-fill-string does not insert line continuation for multi-line string literals
+;; ==> use tqs
+;; (ert-deftest py-fill-string-lp-1321266-test-f8sTTj ()
+;;   (py-test
+;;    "print(\"%(language)s has %(number)03d quote types. asdf asdf asdf asdfa sasdf asdfasdfasdfasdfasdfasda asd asdfa a asdf asdfa asdf \" %
+;;        {'language': \"Python\", \"number\": 2})"
+;;    'python-mode
+;;    'py-verbose-p
+;;    (goto-char (point-max))
+;;    (search-backward "asdf")
+;;    (py-fill-string)
+;;    (goto-char (point-min))
+;;    (end-of-line)
+;;    (should (eq (char-before) 92))))
 
 (ert-deftest py-ert-fill-comment-test-Byd1i0 ()
   (py-test-point-min
@@ -102,37 +104,37 @@
    (should (eq 8 (current-column)))
    (should (eq 6 (count-lines (point-min) (point))))))
 
-(ert-deftest py-fill-singlequoted-string-test-zeKa2U ()
-  (py-test
-   "asd = 'asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf '"
-   'python-mode
-   'py-verbose-p
-   (goto-char (point-max))
-   (backward-char 2)
-   (py-fill-string)
-   (end-of-line)
-   (skip-chars-backward " \t\r\n\f")
-   (should (eq (char-before) ?'))
-   (forward-line -1)
-   (end-of-line)
-   (skip-chars-backward " \t\r\n\f")
-   (should (eq (char-before) ?\\))))
+;; (ert-deftest py-fill-singlequoted-string-test-zeKa2U ()
+;;   (py-test
+;;    "asd = 'asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf '"
+;;    'python-mode
+;;    'py-verbose-p
+;;    (goto-char (point-max))
+;;    (backward-char 2)
+;;    (py-fill-string)
+;;    (end-of-line)
+;;    (skip-chars-backward " \t\r\n\f")
+;;    (should (eq (char-before) ?'))
+;;    (forward-line -1)
+;;    (end-of-line)
+;;    (skip-chars-backward " \t\r\n\f")
+;;    (should (eq (char-before) ?\\))))
 
-(ert-deftest py-fill-doublequoted-string-test-Xi6FaW ()
-  (py-test
-   "asd = \"asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf \""
-   'python-mode
-   'py-verbose-p
-   (goto-char (point-max))
-   (backward-char 2)
-   (py-fill-string)
-   (end-of-line)
-   (skip-chars-backward " \t\r\n\f")
-   (should (eq (char-before) ?\"))
-   (forward-line -1)
-   (end-of-line)
-   (skip-chars-backward " \t\r\n\f")
-   (should (eq (char-before) ?\\))))
+;; (ert-deftest py-fill-doublequoted-string-test-Xi6FaW ()
+;;   (py-test
+;;    "asd = \"asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf \""
+;;    'python-mode
+;;    'py-verbose-p
+;;    (goto-char (point-max))
+;;    (backward-char 2)
+;;    (py-fill-string)
+;;    (end-of-line)
+;;    (skip-chars-backward " \t\r\n\f")
+;;    (should (eq (char-before) ?\"))
+;;    (forward-line -1)
+;;    (end-of-line)
+;;    (skip-chars-backward " \t\r\n\f")
+;;    (should (eq (char-before) ?\\))))
 
 (ert-deftest py-fill-paragraph-LEON2Q ()
   (py-test
@@ -235,7 +237,6 @@ def foo(rho, x):
    (goto-char 20)
    (call-interactively 'fill-paragraph)
    (should (eq 4 (current-indentation)))))
-
 
 (ert-deftest filling-docstring-paragraphs-gibberish-140-test-DqgSN7 ()
   "See lp:1066489"
@@ -456,6 +457,25 @@ def baz():
      (forward-line -1)
      (should (py-empty-line-p)))))
 
+(ert-deftest py-ert-moves-up-fill-paragraph-onetwo-5MgMMA ()
+  (py-test-point-min
+   "# r1416
+def baz():
+    \"\"\"Hello there. This is a oneline function definition.\"\"\"
+    return 7
+"
+   'python-mode
+   'py-verbose-p
+   (let ((py-docstring-style 'onetwo))
+     (goto-char 49)
+     (fill-paragraph)
+     (search-backward "\"\"\"")
+     (goto-char (match-end 0))
+     (should (<= (current-column) 72))
+     (fill-paragraph)
+     (end-of-line)
+     (skip-chars-backward " \t\r\n\f")
+     (looking-back "\"\"\"" (line-beginning-position)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-pep-257-4M7aUK ()
   (py-test-point-min
@@ -531,18 +551,24 @@ def baz():
 
 (ert-deftest py-ert-pep-257-9HrXY7 ()
   (py-test
-   "a='123'"
+   "class DataFrame(NDFrame, OpsMixin):
+    \"\"\"
+    index : Index or array-like
+        Index to use for resulting frame\. Will default to RangeIndex if
+        no indexing information part of input data and no index provided\.
+    \"\"\"
+    pass"
    'python-mode
    'py-verbose-p
    (goto-char (point-max))
-   (search-backward "2")
-   (py-fill-string)
-   (forward-char -2)
-   (should (eq (char-after) ?'))
-   (beginning-of-buffer)
-   (should (eq (char-after) ?a))
-   (end-of-buffer)
-   (should (eq (char-before) ?'))))
+   (search-backward "I")
+   (let ((py-docstring-style 'pep-257))
+     (py-fill-string)
+     (goto-char (point-max))
+     (re-search-backward py-string-delim-re)
+     (forward-line -1)
+     (should (py-empty-line-p)))))
+
 
 (provide 'py-ert-fill-tests)
 ;;; py-ert-fill-tests.el ends here

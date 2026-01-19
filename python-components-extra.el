@@ -61,7 +61,7 @@ completion."
   (with-current-buffer (process-buffer process)
     (let ((completions
            (ignore-errors
-             (py--string-trim
+             (string-trim
               (py-send-string-no-output
                (format
                 (concat py-completion-setup-code

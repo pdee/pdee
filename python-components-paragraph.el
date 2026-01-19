@@ -22,51 +22,58 @@
 
 ;;
 
+
+;;; Commentary:
+;;
+
 ;;; Code:
 
 (defun py-set-nil-docstring-style ()
-  "Set py-docstring-style to \\='nil"
+  "Set ‘py-docstring-style’ to \\='nil."
   (interactive)
   (setq py-docstring-style 'nil)
   (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-pep-257-nn-docstring-style ()
-  "Set py-docstring-style to \\='pep-257-nn"
+  "Set ‘py-docstring-style’ to \\='pep-257-nn."
   (interactive)
   (setq py-docstring-style 'pep-257-nn)
   (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-pep-257-docstring-style ()
-  "Set py-docstring-style to \\='pep-257"
+  "Set ‘py-docstring-style’ to \\='pep-257."
   (interactive)
   (setq py-docstring-style 'pep-257)
   (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-django-docstring-style ()
-  "Set py-docstring-style to \\='django"
+  "Set ‘py-docstring-style’ to \\='django."
   (interactive)
   (setq py-docstring-style 'django)
   (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-symmetric-docstring-style ()
-  "Set py-docstring-style to \\='symmetric"
+  "Set ‘py-docstring-style’ to \\='symmetric."
   (interactive)
   (setq py-docstring-style 'symmetric)
   (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py-set-onetwo-docstring-style ()
-  "Set py-docstring-style to \\='onetwo"
+  "Set ‘py-docstring-style’ to \\='onetwo."
   (interactive)
   (setq py-docstring-style 'onetwo)
   (when (and (called-interactively-p 'any) py-verbose-p)
     (message "docstring-style set to:  %s" py-docstring-style)))
 
 (defun py--continue-lines-region (beg end)
+  ".
+Argument BEG beginning of the region.
+Argument END end of the region."
   (save-excursion
     (goto-char beg)
     (while (< (line-end-position) end)
@@ -75,7 +82,8 @@
       (ignore-errors (forward-line 1)))))
 
 (defun py-fill-comment (&optional justify)
-  "Fill the comment paragraph at point"
+  "Fill the comment paragraph at point.
+Optional argument JUSTIFY: see ‘fill-paragraph’."
   (interactive "*P")
   (let (;; Non-nil if the current line contains a comment.
         has-comment
@@ -140,20 +148,33 @@
 (defun py--in-or-behind-or-before-a-docstring (pps)
   "Return start/end position of a docstring, if inside.
 
-Nil otherwise"
+Nil otherwise
+Argument PPS result of ‘parse-partial-sexp’."
   (interactive "*")
   (save-excursion
-    (py--docstring-p
-     (ignore-errors
-       (or (and (nth 3 pps) (nth 8 pps))
-                        (and
-                         (equal (string-to-syntax "|")
-                                (syntax-after (point)))
-                         (< 0 (skip-chars-forward "\"'"))
-                         (nth 3 (parse-partial-sexp (point-min) (point)))))))))
+    (let (erg
+          (pps (or pps
+                   (cond ((looking-back (concat py-delimiter-re "[ \t]*") (line-beginning-position))
+                          (goto-char (match-beginning 0))
+                          (skip-chars-backward "^ \t\r\n\f")
+                          (parse-partial-sexp (point-min) (point)))
+                         ((looking-at (concat "[ \t]*" py-delimiter-re))
+                          (goto-char (match-end 0))
+                          (parse-partial-sexp (point-min) (point)))))))
+      (when (nth 8 pps)
+        (goto-char (nth 8 pps))
+        (skip-chars-backward "^ \t\r\n\f")
+        (setq erg (point))
+        (while (or
+                (< 0 (abs (skip-chars-backward " \t\r\n\f")))
+                (py-backward-comment)))
+        (back-to-indentation)
+        (when (looking-at py-def-or-class-re)
+          erg)))))
 
 (defun py--string-fence-delete-spaces (&optional start)
-  "Delete spaces following or preceding delimiters of string at point. "
+  "Delete spaces following or preceding delimiters of string at point.
+Optional argument START"
   (interactive "*")
   (let ((beg (or start (nth 8 (parse-partial-sexp (point-min) (point))))))
     (save-excursion
@@ -168,24 +189,22 @@ Nil otherwise"
 )))
 
 (defun py--skip-raw-string-front-fence ()
-  "Skip forward chars u, U, r, R followed by string-delimiters. "
+  "Skip forward chars u, U, r, R followed by string-delimiters."
   (when (member (char-after) (list ?u ?U ?r ?R))
     (forward-char 1))
   (skip-chars-forward "\'\""))
 
-(defun py--fill-fix-end (thisend orig delimiters-style)
-  ;; Add the number of newlines indicated by the selected style
-  ;; at the end.
-  ;; (widen)
-  (goto-char thisend)
-  (skip-chars-backward "\"'\n ")
-  (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
-  (unless (eq (char-after) 10)
-    (and
-     (cdr delimiters-style)
-     (or (newline (cdr delimiters-style)) t)))
-  (py-indent-line nil t)
-  (goto-char orig))
+;; (defun py--fill-fix-end (thisend orig delimiters-style)
+;;   "Add the number of newlines indicated by the selected style at the end."
+;;   (goto-char thisend)
+;;   (skip-chars-backward "\"'\n ")
+;;   (delete-region (point) (progn (skip-chars-forward " \t\r\n\f") (point)))
+;;   (unless (eq (char-after) 10)
+;;     (and
+;;      (cdr delimiters-style)
+;;      (or (newline (cdr delimiters-style)) t)))
+;;   (py-indent-line nil t)
+;;   (goto-char orig))
 
 (defun py-fill-labelled-string (beg end orig)
   "Fill string or paragraph containing lines starting with label
@@ -208,7 +227,7 @@ See lp:1066489 "
             (narrow-to-region thisbeg thisend)
             (fill-region thisbeg thisend))))))
 
-(defun py--fill-docstring (beg end)
+(defun py--fill-docstring (beg end &optional justify)
   "Fills paragraph in docstring below or at cursor position."
   (let ((orig (point)))
     ;; do not go backward beyond beginning of string
@@ -224,14 +243,24 @@ See lp:1066489 "
         (pcase py-docstring-style
           (`django
            (if (eolp)
-               (forward-line 1)
+               (progn
+                 (forward-line 1)
+                 (indent-according-to-mode))
+             (newline 1)
+             (indent-according-to-mode)
+             ;; need to fill the region now WRT length of first line
+             (fill-region innerbeg innerend justify)
+             (forward-line 1)
              (newline 1)))
           (`onetwo
            (delete-horizontal-space)
-           (cond ((and multi-line-p (eolp))
-                  (forward-line 1))
-                 (multi-line-p
-                  (newline 1))))
+           (cond (multi-line-p
+                  ;; (progn
+                  (split-line)
+                  (forward-line 1)
+                  (indent-according-to-mode))))
+          ;; (multi-line-p)
+          ;; (newline 1))))
           (`pep-257
            (delete-horizontal-space))
           (`pep-257-nn
@@ -247,16 +276,18 @@ See lp:1066489 "
         (py-fill-labelled-string innerbeg innerend orig))
        ((string-match py-colon-labelled-re (buffer-substring-no-properties innerbeg innerend))
         (py-fill-labelled-string innerbeg innerend orig)
-        ;; (save-excursion (goto-char (match-beginning 0))(forward-line 1)(back-to-indentation) (make-string (current-column) 32))
         orig)
-
-       (t (fill-region innerbeg innerend)))
-      (goto-char innerend)
-      ;; (goto-char paraend)
-      (when (or (eq py-docstring-style 'onetwo)(and multi-line-p (eq py-docstring-style 'pep-257)))
-        (forward-line 1)
+       (t (fill-region innerbeg innerend justify)))
+      (when (and multi-line-p (or (eq py-docstring-style 'onetwo) (eq py-docstring-style 'pep-257)))
+        (goto-char end)
+        ;; (unless (py-empty-line-p)
+        ;; (beginning-of-line)
+        (forward-line -1)
         (unless (py-empty-line-p)
-          (newline 1))))))
+          (forward-line 1)
+          ;; (newline 1)
+          (split-line)
+          )))))
 
 (defun py-fill-string (&optional justify docstring pps)
   "String fill function.
@@ -275,7 +306,10 @@ Fill according to ‘py-docstring-style’ "
                            docstring)
                           (t (and (nth 3 pps) (nth 8 pps) (py--in-or-behind-or-before-a-docstring pps)))))
          (beg (and (nth 3 pps) (nth 8 pps)))
-         (tqs (progn (and beg (goto-char beg) (looking-at "\"\"\"\\|'''"))))
+         (tqs (progn (and beg (goto-char beg)
+                          ;; (looking-at "\"\"\"\\|'''")
+                          (looking-at py-string-delim-re)
+                          )))
          (end (copy-marker (if tqs
                                (or
                                 (progn (ignore-errors (forward-sexp))(and (< orig (point)) (point)))
@@ -290,7 +324,7 @@ Fill according to ‘py-docstring-style’ "
       (goto-char orig)
       (when beg
         (if docstring
-            (py--fill-docstring beg end)
+            (py--fill-docstring beg end justify)
           (if (not tqs)
               (if (py-preceding-line-backslashed-p)
                   (progn
@@ -307,34 +341,47 @@ Fill according to ‘py-docstring-style’ "
                   (py--continue-lines-region beg end)))
             (fill-region beg end justify)))))))
 
-(defun py-fill-paragraph (&optional pps beg end tqs)
+(defun py-fill-paragraph (&optional justify pps beg end tqs)
   "Fill the paragraph at point."
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
   (let* ((pps (or pps (parse-partial-sexp (point-min) (point))))
-         (docstring (unless (not py-docstring-style) (and (nth 3 pps) (nth 8 pps) (py--in-or-behind-or-before-a-docstring pps))))
+         (docstring (unless (not py-docstring-style) (py--in-or-behind-or-before-a-docstring pps)))
          (fill-column py-comment-fill-column)
          (in-string (nth 3 pps))
-         (beg (or beg (save-excursion
-                        (if (looking-at paragraph-start)
-                            (point)
-                          (backward-paragraph)
-                          (when (looking-at paragraph-start)
-                            (point))))
+         (beg (or beg docstring
+                  (save-excursion
+                    (if (looking-at paragraph-start)
+                        (point)
+                      (backward-paragraph)
+                      (when (looking-at paragraph-start)
+                        (point))))
                   (and (nth 3 pps) (nth 8 pps))))
-         (end (or end
-                  (when beg
-                    (save-excursion
-                      (or
-                       (and in-string
-                            (progn
-                              (goto-char (nth 8 pps))
-                              (setq tqs (looking-at "\"\"\"\\|'''"))
-                              (forward-sexp) (point)))
-                       (progn
-                         (forward-paragraph)
-                         (when (looking-at paragraph-separate)
-                           (point))))))))
+         (end (copy-marker
+               (or end
+                   (when beg
+                     (save-excursion
+                       (or
+                        (and in-string
+                             (progn
+                               (goto-char beg)
+                               (setq tqs
+                                     (looking-at (concat "r?" py-string-delim-re))
+                                     ;; (looking-at "\"\"\"\\|'''")
+                                     )
+                               (when tqs
+                                 (when (eq (char-after) ?r)
+                                   (forward-char 1) )
+                                 (skip-chars-forward "'\"")
+                                 (backward-char))
+                               (forward-sexp)
+                               (when tqs
+                                 (skip-chars-forward "'\"")
+                                 (point))))
+                        (progn
+                          (forward-paragraph)
+                          (when (looking-at paragraph-separate)
+                            (point)))))))))
          (fill-prefix (if beg
                           (save-excursion
                             (goto-char beg)
@@ -345,12 +392,14 @@ Fill according to ‘py-docstring-style’ "
               (save-excursion
                 (goto-char beg) (- py-docstring-fill-column (current-indentation)))
             py-docstring-fill-column)))
-    (cond ((or (nth 4 pps)
-               (and (bolp) (looking-at "[ \t]*#[# \t]*")))
+    (cond ((or
+            (nth 4 pps) ;; inside comment
+            (and (bolp) (looking-at "[ \t]*#[# \t]*")))
            (py-fill-comment))
           (docstring
            ;; (setq fill-column py-docstring-fill-colum;; n)
-           (py--fill-docstring beg end))
+           (py--fill-docstring beg end justify)
+           )
           (t
            (and beg end (fill-region beg end))
            (when (and in-string (not tqs))

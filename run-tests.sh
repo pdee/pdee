@@ -85,17 +85,18 @@ TEST9=$TESTDIR/py-ert-delete-tests.el
 TEST10=$TESTDIR/py-ert-execute-region-tests.el
 TEST11=$TESTDIR/py-execute-region-commandp-tests.el
 TEST12=$TESTDIR/py-ert-fill-tests.el
-TEST13=$TESTDIR/py-ert-extra-tests.el
-TEST14=$TESTDIR/py-ert-hide-tests.el
-TEST15=$TESTDIR/py-ert-font-lock-tests.el
-TEST16=$TESTDIR/py-executable-python-tests.el
-TEST17=$TESTDIR/py-split-window-on-execute-test
-TEST18=$TESTDIR/py-split-just-two-window-on-execute-test.el
+TEST13=$TESTDIR/py-ert-hide-tests.el
+TEST14=$TESTDIR/py-ert-font-lock-tests.el
+TEST15=$TESTDIR/py-executable-python-tests.el
+TEST16=$TESTDIR/py-split-window-on-execute-test
+TEST17=$TESTDIR/py-split-just-two-window-on-execute-test.el
+TEST18=$TESTDIR/py-ert-extra-tests.el
 TEST19=$TESTDIR/py-ert-interactive-tests.el
 TEST20=$HOME/emacs/test/lisp/progmodes/python-tests.el
 TEST21=$TESTDIR/py-ert-ipython-tests.el
 TEST22=$TESTDIR/py-interactive-tests.el
 echo "\$EMACS: $EMACS"
+
 
 PYCO="$PWD/completion/pycomplete.el"
 
@@ -457,6 +458,8 @@ hier() {
 -l $TEST21 \
 -f ert-run-tests-batch-and-exit
 }
+
+
 
 if [ $IFLOCAL -eq 0 ]; then
 

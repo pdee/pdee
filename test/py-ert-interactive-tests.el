@@ -24,6 +24,18 @@
 
 (require 'py-setup-ert-tests)
 
+(ert-deftest py-test-embedded-51-test-sgaO9V ()
+  (py-test
+      "from Foo import *
+FooFoo."
+    'python-mode
+    'py-verbose-p
+    (goto-char(point-max))
+    (skip-chars-backward " \t\r\n\f")
+    (ignore-errors (py-indent-or-complete))
+    ;; (sit-for 0.1)
+    (should (eq (char-before) ?.))))
+
 (ert-deftest py-ert-fill-paragraph-lp-1291493-JPuJd3 ()
   (py-test-point-min
    "if True:

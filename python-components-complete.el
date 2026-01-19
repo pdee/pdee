@@ -79,7 +79,8 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
            input process code)))
     ;; (set-buffer exception-buffer)
     (when completion
-      (py--shell-insert-completion-maybe completion input))))
+      (with-current-buffer exception-buffer
+        (py--shell-insert-completion-maybe completion input)))))
 
 (defun py--complete-base (shell word imports buffer)
   (let* ((proc (or
@@ -89,7 +90,8 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
                      (get-process shell))
                 (prog1
                     (get-buffer-process (py-shell nil nil nil shell))
-                  (sit-for py-new-shell-delay t))))
+                  ;; (sit-for py-new-shell-delay t)
+                  )))
          ;; (buffer (process-buffer proc))
          (code (if (string-match "[Ii][Pp]ython*" shell)
                    (py-set-ipython-completion-command-string shell)
@@ -261,7 +263,8 @@ in (I)Python shell-modes ‘py-shell-complete’"
          (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘(completion-at-point)’"))
          ;; (py-fast-complete)
          (completion-at-point)
-         (skip-chars-forward "^ \t\r\n\f") ))
+         (setq done (< 0 (skip-chars-forward "^ \t\r\n\f"))))
+         )
   (unless done (jump-to-register py--windows-config-register))
   ))
 
