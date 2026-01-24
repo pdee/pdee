@@ -33,13 +33,17 @@ jobs:
               --eval "(load \"~/pdee/test/py-ert-indent-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-beginning-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-forward-tests.el\")" \
+              --eval "(load \"~/pdee/test/py-ert-misc-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-scope-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-function-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-variablen-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-navigation-tests.el\")" \
-              --eval "(load \"~/pdee/test/py-ert-execute-region-test.el\")" \
-              --eval "(load \"~/pdee/test/py-ert-fill-tests.el\")" \
               --eval "(load \"~/pdee/test/py-ert-delete-tests.el\")" \
+              --eval "(load \"~/pdee/test/py-ert-execute-region-test.el\")" \
+              --eval "(load \"~/pdee/test/py-ert-execute-region-commandp-test.el\")" \
+              --eval "(load \"~/pdee/test/py-ert-fill-tests.el\")" \
+              --eval "(load \"~/pdee/test/py-ert-hide-tests.el\")" \
+              --eval "(load \"~/pdee/test/py-ert-font-lock--tests.el\")" \
               --eval "(load \"~/pdee/test/py-executable-python-tests.el\")" \
               --eval "(sit-for 1)" \
               -f ert-run-tests-batch-and-exit
