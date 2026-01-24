@@ -42,7 +42,8 @@
             ar_atpt_python_list_roh = ([
                 'python-expression',"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "def __init")
    (py-up-def-or-class)
@@ -69,7 +70,8 @@
                 ar_atpt_python_list_roh = ([
                     'python-expression'])"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "if")
    (py-up-minor-block)
@@ -93,7 +95,8 @@
             ar_atpt_python_list_roh = ([
                 'python-expression',"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-block-bol)
    (should (looking-at " +def f():"))))
@@ -124,7 +127,8 @@
         else b:
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-block)
    (should (eq (char-after) ?d))))
@@ -155,7 +159,8 @@
         else b:
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-block)
    (should (looking-at "if a:"))))
@@ -179,7 +184,8 @@
             if b:
                 pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-minor-block)
    (should (looking-at "if a:"))))
@@ -199,7 +205,8 @@
 	    class for in 'for in while with blah'
 	    \"\"\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-def-bol)
    (should (looking-at " +def __init__"))))
@@ -223,7 +230,8 @@
                 'python-expression',
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-class)
    (should (bolp))))
@@ -254,7 +262,8 @@
         else b:
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-def-or-class)
    (should (looking-at "class"))))
@@ -288,7 +297,8 @@
 '''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (goto-char 264)
    (py-down-block-bol)
@@ -323,7 +333,8 @@
 '''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "__init__")
    (py-down-def-bol)
@@ -349,7 +360,8 @@
                 'python-expression',
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-down-class-bol)
    (should (eobp))))
@@ -383,7 +395,8 @@
 '''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "__init__")
    (py-down-def-or-class-bol)
@@ -419,7 +432,8 @@
 '''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "__init__")
    (py-down-block)
@@ -454,7 +468,8 @@
 '''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "__init__")
    (py-down-block-bol)
@@ -485,7 +500,8 @@
         if b:
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (switch-to-buffer (current-buffer))
    (search-backward "a:")
@@ -516,7 +532,8 @@
         if b:
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "__init__")
    (py-down-minor-block-bol)
@@ -552,7 +569,8 @@
 '''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "def __init__")
    (py-down-def)
@@ -587,7 +605,8 @@
 '''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "__init__")
    (py-down-def)
@@ -612,7 +631,8 @@
                 'python-expression',
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should (not (py-down-class)))))
 
@@ -645,7 +665,8 @@
 '''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "__init__")
    (py-down-def-or-class)
@@ -670,7 +691,8 @@
                 'python-expression',
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-statement-bol)
    (should (looking-at " +ar_atpt_python_list_roh ="))))
@@ -694,7 +716,8 @@
                 'python-expression',
                 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-clause-bol)
    (should (looking-at " +if a:"))))
@@ -718,7 +741,8 @@
                 'python-expression',
                                   "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-block-or-clause-bol)
    (should (looking-at " +if a:"))))
@@ -750,7 +774,8 @@
             pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-class-bol)
    (should (bobp))))
@@ -773,7 +798,8 @@
             ar_atpt_python_list_roh = ([
                 'python-expression',"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-def-or-class-bol)
    (should (looking-at "^ +def"))))
@@ -803,7 +829,8 @@
             pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (goto-char 576)
    (py-forward-clause-bol)
@@ -836,7 +863,8 @@
             pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "elif b:")
    (py-forward-block-or-clause-bol)
    (should (looking-at " +else b:"))))
@@ -868,7 +896,8 @@
             pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "elif b:")
    (py-forward-clause-bol)
    (should (looking-at " +else b:"))))
@@ -890,7 +919,8 @@
             ausgabe[7] = treffer
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pylauf")
    (end-of-line)
@@ -914,19 +944,23 @@
             ausgabe[7] = treffer
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "self")
    (end-of-line)
    (py-forward-statement)
-   (should (eq (char-before) ?\]))))
+   ;; (should (eq (char-before) ?\]))
+   (should (looking-back py-string-delim-re (line-beginning-position)))
+   ))
 
 (ert-deftest py-ert-moves-up-copy-statement-test-UFUch0 ()
   (py-test-point-min
    "from foo.bar.baz import something
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-copy-statement)
    (should (string-match "from foo.bar.baz import something" (car kill-ring)))))
@@ -937,7 +971,8 @@
     def bar():
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-newline-and-indent)
    (should (eq 4 (current-indentation)))))
@@ -967,7 +1002,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-expression)
    (should (eq (char-before) ?s))
@@ -1031,7 +1067,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-expression)
    (should (eq (char-after) ?m))
@@ -1082,7 +1119,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "er")
    (end-of-line)
@@ -1109,7 +1147,8 @@ if __name__ == \"__main__\":
             ausgabe[2] = treffer
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "if")
    (back-to-indentation)
@@ -1125,7 +1164,8 @@ if __name__ == \"__main__\":
     def bar(self, element, tag, namespaces=None):
         return list(self.iterfind(element, tag, namespaces))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-line -1)
    (end-of-line)
@@ -1141,7 +1181,8 @@ if __name__ == \"__main__\":
     def bar(self, element, tag, namespaces=None):
         return list(self.iterfind(element, tag, namespaces))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (py-backward-def-or-class)
@@ -1156,7 +1197,8 @@ if __name__ == \"__main__\":
     def bar(self, element, tag, namespaces=None):
         return list(self.iterfind(element, tag, namespaces))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "def" nil t 2)
    (py-backward-def-or-class)
@@ -1197,7 +1239,8 @@ if __name__ == \"__main__\":
             pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (font-lock-fontify-region (point-min)(point-max))
    (goto-char 632)
@@ -1236,7 +1279,8 @@ if __name__ == \"__main__\":
                     finally:
                         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-block)
    (should (looking-at "if"))))
@@ -1271,7 +1315,8 @@ if __name__ == \"__main__\":
                     finally:
                         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-clause)
    (should (looking-at "else:"))))
@@ -1291,7 +1336,8 @@ def foo(*args):2
     args = \"asdf\"
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (let ((py-return-result-p t)
          py-result py-store-result-p)
@@ -1301,14 +1347,135 @@ def foo(*args):2
      (should (eq (char-after) 34))
      (py-backward-statement)
      (should (eq (char-after) ?d))
-     (py-backward-statement)
-     (should (eq (char-after) ?i))
-     (py-backward-statement)
-     (should (eq (char-after) ?c))
-     (py-backward-statement)
-     (should (eq (char-after) ?c))
-     (py-backward-statement)
-     (should (eq (char-after) ?p)))))
+)))
+     ;; (py-backward-statement)
+     ;; (should (eq (char-after) ?i))
+     ;; (py-backward-statement)
+     ;; (should (eq (char-after) ?c))
+     ;; (py-backward-statement)
+     ;; (should (eq (char-after) ?c))
+     ;; (py-backward-statement)
+     ;; (should (eq (char-after) ?p)))))
+
+(ert-deftest py-backward-statement-test-djSZ4W ()
+  (py-test
+      "# -*- coding: utf-8 -*-
+print dir()
+c = Cat()
+c.hello() #causes error, but emacs tracking fails
+import sys, os; os.remove('do/something/nasty') # lp:1025000
+def foo(*args):2
+    \"\"\"
+    ASDF
+    \"\"\"
+    # ABD
+    args = \"asdf\"
+"
+    'python-mode
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
+    (goto-char (point-max))
+    (search-backward "def")
+    (let ((py-return-result-p t)
+          py-result py-store-result-p)
+      (py-backward-statement)
+      (should (eq (char-after) ?o)))))
+
+(ert-deftest py-backward-statement-test-8UOIVy ()
+  (py-test
+      "# -*- coding: utf-8 -*-
+print dir()
+c = Cat()
+c.hello() #causes error, but emacs tracking fails
+import sys, os; os.remove('do/something/nasty') # lp:1025000
+def foo(*args):2
+    \"\"\"
+    ASDF
+    \"\"\"
+    # ABD
+    args = \"asdf\"
+"
+    'python-mode
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
+    (goto-char (point-max))
+    (search-backward "os.")
+    (let ((py-return-result-p t)
+          py-result py-store-result-p)
+      (py-backward-statement)
+      (should (eq (char-after) ?i)))))
+
+(ert-deftest py-backward-statement-test-cT1RCQ ()
+  (py-test
+      "# -*- coding: utf-8 -*-
+print dir()
+c = Cat()
+c.hello() #causes error, but emacs tracking fails
+import sys, os; os.remove('do/something/nasty') # lp:1025000
+def foo(*args):2
+    \"\"\"
+    ASDF
+    \"\"\"
+    # ABD
+    args = \"asdf\"
+"
+    'python-mode
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
+    (goto-char (point-max))
+    (search-backward "import")
+    (let ((py-return-result-p t)
+          py-result py-store-result-p)
+      (py-backward-statement)
+      (should (eq (char-after) ?c)))))
+
+(ert-deftest py-backward-statement-test-2sGoI7 ()
+  (py-test
+      "# -*- coding: utf-8 -*-
+print dir()
+c = Cat()
+c.hello() #causes error, but emacs tracking fails
+import sys, os; os.remove('do/something/nasty') # lp:1025000
+def foo(*args):2
+    \"\"\"
+    ASDF
+    \"\"\"
+    # ABD
+    args = \"asdf\"
+"
+    'python-mode
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
+    (goto-char (point-max))
+    (search-backward "c.")
+    (let ((py-return-result-p t)
+          py-result py-store-result-p)
+      (py-backward-statement)
+      (should (eq (char-after) ?c)))))
+
+(ert-deftest py-backward-statement-test-vFbbST ()
+  (py-test
+      "# -*- coding: utf-8 -*-
+print dir()
+c = Cat()
+c.hello() #causes error, but emacs tracking fails
+import sys, os; os.remove('do/something/nasty') # lp:1025000
+def foo(*args):2
+    \"\"\"
+    ASDF
+    \"\"\"
+    # ABD
+    args = \"asdf\"
+"
+    'python-mode
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
+    (goto-char (point-max))
+    (search-backward "c =")
+    (let ((py-return-result-p t)
+          py-result py-store-result-p)
+      (py-backward-statement)
+      (should (eq (char-after) ?p)))))
 
 (ert-deftest py-ert-backward-except-block-test-TC7jEj ()
   (py-test
@@ -1324,7 +1491,8 @@ class bar:
             block2
              "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-except-block)
    (should (eq (char-after) ?e))))
@@ -1342,7 +1510,8 @@ class bar:
             block2
              "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (py-backward-except-block-bol)
    (sit-for 0.1)
@@ -1371,7 +1540,8 @@ class bar:
     def test(self):
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "pass")
    (py-forward-def-or-class)
@@ -1389,7 +1559,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
 # }}
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (py-backward-section)
    (should (eq (char-after) ?#))
@@ -1408,7 +1579,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
 # }}
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-section)
    (should (eq (char-before) ?}))
@@ -1421,7 +1593,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (end-of-line)
    (py-sectionize-region (point-min) (point-max))
@@ -1455,7 +1628,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (search-backward "if ")
    (forward-line -1)
@@ -1470,7 +1644,8 @@ if __name__ == \"__main__\":
 else:
     print(\"Ja\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (py-backward-block)
    (should (eq (char-after) ?i))))
@@ -1484,7 +1659,8 @@ else:
         return 22
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "ret")
    (py-backward-block)
@@ -1499,7 +1675,8 @@ else:
         return 22
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "elif")
    (py-backward-block)
@@ -2573,7 +2750,8 @@ def run(statement, globals=None, locals=None):
     Pdb().run(statement, globals, locals)
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "return answer")
    (py-forward-def-or-class)
@@ -2615,7 +2793,8 @@ With a command name as argument, print help about that command
 \"help exec\" gives help on the ! command\"\"\"
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "prompt_prefix)" nil t)
    (end-of-line)
@@ -2635,7 +2814,8 @@ With a command name as argument, print help about that command
         asdf
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-indent)
    (should (eq (char-after) ?a))))
@@ -2651,7 +2831,8 @@ With a command name as argument, print help about that command
         asdf
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min) )
    (search-forward "sdf")
    (py-forward-indent)
@@ -2664,7 +2845,8 @@ With a command name as argument, print help about that command
         sdfasde
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min) )
    (search-forward "sdfasde")
    (should (not (py--beginning-of-indent-p)))
@@ -2678,7 +2860,8 @@ With a command name as argument, print help about that command
         sdfasde
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min) )
    (search-forward "sdfasde")
    (should (not (py--beginning-of-indent-bol-p)))
@@ -2694,7 +2877,8 @@ With a command name as argument, print help about that command
         # sdfasde
         print(123)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min) )
    (search-forward "sdfasde" nil t 3)
    (py-backward-comment)
@@ -2707,7 +2891,8 @@ With a command name as argument, print help about that command
         # sdfasde
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min) )
    (search-forward "sdf")
    (py-forward-comment)
@@ -2724,7 +2909,8 @@ string.
 \"\"\")
         return True"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-def-or-class)
    (should (eq (char-after) ?d))))
@@ -2748,7 +2934,8 @@ string.
         return wrapped_f
     return wwrap"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-line -1)
    (back-to-indentation)
@@ -2770,7 +2957,8 @@ string.
         return wrapped_f
     return wwrap"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "args)'")
    (py-forward-def-or-class)
@@ -2793,7 +2981,8 @@ string.
         return wrapped_f
     return wwrap"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "return wrapped_f")
    (py-forward-def-or-class)
@@ -2814,7 +3003,8 @@ string.
         return wrapped_f
     return wwrap"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "'")
    (forward-char 1)
@@ -2854,7 +3044,8 @@ else:
     finally:
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-block)
    (should (eobp))))
@@ -2874,7 +3065,8 @@ else:
         return wrapped_f
     return wwrap"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "args)'")
    (py-forward-clause)
@@ -2896,7 +3088,8 @@ def foo():
         except:
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-up-block)
    (should (looking-at "if True:"))))
@@ -2908,7 +3101,8 @@ def foo():
 print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min) )
    (py-forward-statement)
    (py-forward-statement)
@@ -2924,7 +3118,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
         def baz():
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "elif")
    (skip-chars-backward " \t\r\n\f")
@@ -2942,7 +3137,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
         def baz():
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    ;; (sit-for 0.1)
    (search-backward "elif")
@@ -2953,7 +3149,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
   (py-test-point-min
    "afd = \"asdf\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "f")
    (should-not (py--beginning-of-assignment-p))))
@@ -2962,7 +3159,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
   (py-test-point-min
    "afd = \"asdf\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (should (py--beginning-of-assignment-p))))
 
@@ -2970,7 +3168,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
   (py-test
    "a, b, c = (1, 2, 3)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should (py-backward-assignment))))
 
@@ -2978,7 +3177,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
   (py-test-point-min
    "a, b, c = (1, 2, 3)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "b")
    (py-forward-assignment)
@@ -2989,7 +3189,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
    "print('%(language)s has %(number)03d quote types.' %
        {'language': \"Python\", \"number\": 2})"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should-not (py-backward-assignment))))
 
@@ -2998,7 +3199,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
    "    zeit = kugel.zeit
     ausgabe = kugel.ausgabe"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-assignment-bol)
    (should (eq (char-after) 32))
@@ -3008,7 +3210,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
   (py-test-point-min
    "a, b, c = (1, 2, 3)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-assignment)
    (should (eq (char-before) ?\)))))
@@ -3018,7 +3221,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
    "a, b, c = (1, 2, 3)
 asdf = []"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "2")
    (py-forward-assignment)
@@ -3029,7 +3233,8 @@ asdf = []"
    "a, b, c = (1, 2, 3)
 asdf = []"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-forward-assignment)
    (should (eq (char-before) ?\]))))
@@ -3039,7 +3244,8 @@ asdf = []"
    "    zeit = kugel.zeit
     ausgabe = kugel.ausgabe"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-assignment-bol)
    (should (eq (char-after) 32))
@@ -3050,7 +3256,8 @@ asdf = []"
    "zeit = kugel.zeit
 ausgabe = kugel.ausgabe"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-assignment-bol)
    (should (eq (char-after) ?a))))
@@ -3067,7 +3274,8 @@ ausgabe = kugel.ausgabe"
         \"\"\"\"\"\"
         pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "@asdf")
    (end-of-line)
@@ -3085,7 +3293,8 @@ ausgabe = kugel.ausgabe"
         self._keys = d.keys()
         dict.__init__(self, d)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "\"")
    (forward-char 1)
@@ -3103,7 +3312,8 @@ ausgabe = kugel.ausgabe"
         self._keys = d.keys()
         dict.__init__(self, d)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "keeps")
    (py-down)
@@ -3113,7 +3323,8 @@ ausgabe = kugel.ausgabe"
   (py-test-point-min
    "[a, b, c] = 1, 2, 3"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-down)
    (should (eq (char-after) ?a))))
@@ -3135,7 +3346,8 @@ ausgabe = kugel.ausgabe"
     # \"\"\" % (
     #           os.path.basename(sys.argv[0])))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "def" nil nil 2)
    (py-forward-comment)
@@ -3158,7 +3370,8 @@ ausgabe = kugel.ausgabe"
     # \"\"\" % (
     #           os.path.basename(sys.argv[0])))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "def" nil nil 2)
    (py-down)
@@ -3177,7 +3390,8 @@ ausgabe = kugel.ausgabe"
     #    self._keys = d.keys()
     #    dict.__init__(self, d)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "This")
    (py-down)
@@ -3196,19 +3410,20 @@ ausgabe = kugel.ausgabe"
     in which keys were inserted.
     \"\"\"
     pass
+
 # def __init__(self, d={}):
 #    self._keys = d.keys()
 #    dict.__init__(self, d)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    ;; (goto-char (point-max))
    (skip-chars-forward "^\"")
    (py-down)
    (sit-for 0.1)
    ;; (should (eq 34 (char-before)))
    ;; (should (eq 140 (point)))
-   (should (eq 4 (current-indentation)))
-   ;; (should (eq 7 (current-column)))
+   (should (eobp))
    ))
 
 (ert-deftest py-down-class-test-826iF9 ()
@@ -3223,7 +3438,8 @@ ausgabe = kugel.ausgabe"
     #    dict.__init__(self, d)
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (end-of-line)
    (py-down)
    (should (eq (char-before) 10))))
@@ -3243,7 +3459,8 @@ ausgabe = kugel.ausgabe"
              pass
         if a:"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-minor-block)
    (should (eq (char-after) ?i))))
@@ -3259,7 +3476,8 @@ ausgabe = kugel.ausgabe"
         def Utf8_Exists(filename):
             return os.path.exists(filename.encode('utf-8'))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "()")
    (end-of-line)
@@ -3272,7 +3490,8 @@ ausgabe = kugel.ausgabe"
     for i in range(0, len(x)-1):
         yield (x[i], x[i+1]), (y[i], y[i+1])"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "yie")
    (py-forward-statement)
@@ -3289,7 +3508,8 @@ ausgabe = kugel.ausgabe"
   }
 }"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "\"b")
    (should (eq 54 (py-forward-indent)))))
@@ -3303,7 +3523,8 @@ ausgabe = kugel.ausgabe"
     gruen = \[0]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "zeit")
    (end-of-line)
@@ -3319,7 +3540,8 @@ ausgabe = kugel.ausgabe"
         fertig = ''
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (forward-line 1)
    (end-of-line)
@@ -3335,7 +3557,8 @@ def bar():
     pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-indent 'stop-at-empty-line)
    (should (eq (char-before) ?s))))
@@ -3348,7 +3571,8 @@ def bar():
     print(\"\")
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-indent)
    (should (eq (char-before) ?\)))))
@@ -3361,7 +3585,8 @@ def bar():
     print(\"\")
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (py-forward-indent)
@@ -3380,7 +3605,8 @@ asdf asfsd afd
 from __future__ import foo
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-def-or-class)
    (should-not (nth 3 (parse-partial-sexp (point-min) (point))))
@@ -3392,7 +3618,8 @@ from __future__ import foo
     print(\"Setze anzahl auf 1\")
     anzahl = 1"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-indent)
    (should (eq (char-after) ?p))))
@@ -3402,7 +3629,8 @@ from __future__ import foo
    "  d
   "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should-not (py-backward-def-or-class))))
 
@@ -3410,7 +3638,8 @@ from __future__ import foo
   (py-test
    "__version__  = \"Bla   #: current file version"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-top-level)
    (should (py--top-level-form-p))))
@@ -3426,7 +3655,8 @@ except:
     anzahl = 1
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "main()")
    (beginning-of-line)
@@ -3439,7 +3669,8 @@ except:
         usage()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "if")
    (should (eq 38 (length (py-block))))))
@@ -3450,7 +3681,8 @@ except:
     anzahl = int(args[1])
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-assignment)
    (should (eq 4 (current-column)))))
@@ -3461,7 +3693,8 @@ except:
     anzahl = int(args[1])
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-assignment-bol)
    (should (bolp))))
@@ -3496,7 +3729,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
 def example3():
     list(map(lambda tpl: print(f\"{tpl\[0]} {tpl\[1]}\"), enumerate(\[\"yellow\",\"blue\",\"red\"])))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "return treffer")
    (py-forward-def-or-class)
@@ -3511,7 +3745,8 @@ def example3():
     sample_file = \"{0}_file_{1}.txt\".format(name, file_name) #swap your name here
     example_file = open(sample_file, \"w+\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "CONN_ID)")
    (py-forward-statement)
@@ -4596,7 +4831,8 @@ __all__ = \[
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-class)
    (should (looking-back "return result" (line-beginning-position)))))
@@ -4706,7 +4942,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward (char-to-string 40))
    (py-up)
@@ -4818,7 +5055,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "p")
    (py-up)
@@ -4929,7 +5167,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "return")
    (py-up)
@@ -5041,7 +5280,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "return")
    (py-up)
@@ -5153,7 +5393,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "read_grammar")
    (py-up)
@@ -5265,7 +5506,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "encoding")
    (py-up)
@@ -5376,7 +5618,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "read_grammar(")
    (back-to-indentation)
@@ -5408,7 +5651,8 @@ class CFG(object):
         return cls(start, productions)
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward ":param")
    (py-up)
@@ -5523,7 +5767,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "\"\"\"" nil nil 2)
    ;; (goto-char (match-beginning 0))
@@ -5636,7 +5881,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "@classmethod")
    (py-up)
@@ -5748,7 +5994,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "left, set")
    (py-up)
@@ -5859,7 +6106,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "update")
    (py-up)
@@ -5971,7 +6219,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "for left")
    (py-up)
@@ -6083,7 +6332,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "self._leftcorner_words = None")
    (py-up)
@@ -6195,7 +6445,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "In that case it is better")
    (py-up)
@@ -6306,7 +6557,8 @@ class CFG(object):
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "10000")
    (py-up)
@@ -6321,7 +6573,8 @@ class CFG(object):
         pass
    "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-def)
    (should (looking-at "def foo():"))))
@@ -6334,7 +6587,8 @@ class CFG(object):
         pass
    "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (forward-line -1)
@@ -6350,7 +6604,8 @@ class CFG(object):
         pass
     "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-def)
    ;; (message "(point) %s" (point))
@@ -6368,7 +6623,8 @@ class CFG(object):
         pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-def)
    (should (looking-at "def foo():"))))
@@ -6381,7 +6637,8 @@ class CFG(object):
         pass
      "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "s")
    (py-backward-def)
@@ -6395,7 +6652,8 @@ class CFG(object):
         print(\"\")
    "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "print(\"\")")
    (py-backward-def)
@@ -6409,7 +6667,8 @@ class CFG(object):
         print(\"\")
          "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "p")
    (forward-line 1)
@@ -6425,7 +6684,8 @@ class CFG(object):
         print(\"\")
          "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "p")
    (forward-line 1)
@@ -6443,7 +6703,8 @@ class C:
         pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-def-or-class)
    (should (looking-at "class C:"))))
@@ -6457,7 +6718,8 @@ class C:
         ausgabe[7] = treffer
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "i" nil nil 2)
    (py-forward-clause)
@@ -6481,7 +6743,8 @@ class C:
         self.a = 1
         self.b = 2"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "bar")
    (py-up)
@@ -6499,7 +6762,8 @@ class C:
         self.b = 2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-down)
    (should (looking-at "def"))))
@@ -6515,11 +6779,12 @@ class C:
         self.b = 2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "def")
    (py-down)
-   (should (looking-at "self"))))
+   (should (looking-at "self.a"))))
 
 (ert-deftest py-down-test-2XNdbk ()
   (py-test-point-min
@@ -6532,7 +6797,8 @@ class C:
 var1: int = 5
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "red")
    (end-of-line)
@@ -6557,7 +6823,8 @@ class M:
         self.b = 2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "def")
    (py-up)
@@ -6573,7 +6840,8 @@ class M:
         zeit = time.strftime\('%Y%m%d\-\-%H\-%M\-%S'\)
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "'")
    (py-down)
@@ -6635,7 +6903,8 @@ class M:
         return treffer
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "ausgabe" nil nil 2)
    (end-of-line)
@@ -6656,7 +6925,8 @@ class M:
 ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "{" nil nil 2)
    (py-down)
@@ -6669,7 +6939,8 @@ class M:
     pass
 # >>>"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-top-level)
    (skip-chars-backward " \t\r\n\f")
@@ -6681,7 +6952,8 @@ class M:
 for file in a:
     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (skip-chars-backward " \t\r\n\f")
    (py-backward-top-level)
@@ -6700,7 +6972,8 @@ for file in a:
     return cls(start, productions)
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "start")
    (py-backward-statement)
@@ -6727,7 +7000,8 @@ for file in a:
         def Utf8_Exists(filename):
             return os.path.exists(filename.encode('utf-8'))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-def-or-class)
    (should (char-equal (char-after) ?d))
@@ -6749,7 +7023,8 @@ for file in a:
     ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (skip-chars-backward "] \t\r\n\f")
    (py-backward-statement)
@@ -6765,7 +7040,8 @@ for file in a:
     ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "[")
    (py-backward-statement)
@@ -6781,7 +7057,8 @@ for file in a:
     ]
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "[1")
    (py-backward-statement)
@@ -6795,7 +7072,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
 (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "range")
    (end-of-line)
@@ -6817,7 +7095,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         def Utf8_Exists(filename):
             return os.path.exists(filename.encode('utf-8'))    "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "if")
    (beginning-of-line)
@@ -6832,7 +7111,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-down)
    (should (looking-at "def"))
@@ -6864,7 +7144,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
 ;;             return None
 ;; "
 ;;    'python-mode
-;;    'py-verbose-p
+;;    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
 ;;    (goto-char (point-min))
 ;;    (py-down)
 ;;    (should (eq (char-before) ?}))
@@ -6881,13 +7162,14 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         }
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-down)
    (should (looking-at "def")
    )))
 
-(ert-deftest py-down-def-test-JsAQUp ()
+(ert-deftest py-down-test-JsAQUp ()
   (py-test-point-min
    "class M:
     \"\"\"Blah Blub\"\"\"
@@ -6899,10 +7181,54 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         self.b = 2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-down)
-   (should (looking-at "def"))))
+   ;; (should (looking-at py-string-delim-re))
+   (should (looking-at "def"))
+   ))
+
+(ert-deftest py-down-test-qmm00d ()
+  (py-test-point-min
+   "class M:
+    \"\"\"Blah Blub\"\"\"
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+        See GH#97850 for details.
+        \"\"\"
+        self.a = 1
+        self.b = 2
+"
+   'python-mode
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
+   (goto-char (point-min))
+   (search-forward "self.a")
+   (back-to-indentation)
+   (py-down)
+   ;; (should (looking-at py-string-delim-re))
+   (should (looking-at "self.b"))
+   ))
+
+(ert-deftest py-down-test-iGApXn ()
+  (py-test-point-min
+   "class M:
+    \"\"\"Blah Blub\"\"\"
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+        See GH#97850 for details.
+        \"\"\"
+        self.a = 1
+        self.b = 2
+"
+   'python-mode
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
+   (goto-char (point-min))
+   (re-search-forward py-string-delim-re nil t 2)
+   (py-down)
+   (should (looking-at "self.a"))))
 
 (ert-deftest py-down-test-4QKKdA ()
   (py-test-point-min
@@ -6920,7 +7246,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 4})
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-down)
    (should (looking-at "a = b"))))
@@ -6941,7 +7268,8 @@ print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 4})
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "a" nil t 2)
    (backward-char)
@@ -6964,12 +7292,32 @@ print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 4})
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "[" nil t)
    (backward-char)
    (py-down)
    (should (looking-at "a, b, c] = 1, 2, 3"))))
+
+(ert-deftest py-forward-statement-test-Uwfnmp ()
+  (py-test
+"class M:
+    \"\"\"Blah Blub\"\"\"
+    def __init__(self):
+        \"\"\"Helper function implementing the current module loader policy.1
+        See GH#97850 for details.
+        \"\"\"
+        self.a = 1
+        self.b = 2
+"
+   'python-mode
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
+   (goto-char (point-max))
+   (search-backward "self.a" nil t)
+   (py-forward-statement)
+   (should (eq (char-before) ?1))))
 
 (provide 'py-ert-navigation-tests)
 ;;; py-ert-navigation-tests.el ends here

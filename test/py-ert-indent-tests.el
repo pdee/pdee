@@ -32,7 +32,8 @@
       "def foo(a, b, c):
     if a:"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
@@ -44,7 +45,8 @@
         print(a)
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
@@ -56,7 +58,8 @@
         print(a)
     elif b:"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
@@ -69,7 +72,8 @@
     elif b:
         print(b)"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
@@ -84,7 +88,8 @@
     else:
         try:"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
@@ -100,7 +105,8 @@
         try:
             print(c.pop())"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 12 (py-compute-indentation)))))
 
@@ -117,7 +123,8 @@
             print(c.pop())
         except (IndexError, AttributeError):"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
@@ -135,7 +142,8 @@
         except (IndexError, AttributeError):
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 12 (py-compute-indentation)))))
 
@@ -155,7 +163,8 @@
         finally:
             print('nor a, nor b are true')"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 12 (py-compute-indentation)))))
 
@@ -163,7 +172,8 @@
   (py-test
       "from foo.bar.baz import something, something_1 \\"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 0 (py-compute-indentation)))))
 
@@ -172,7 +182,8 @@
       "from foo.bar.baz import something, something_1 \\
      something_2 something_3, \\"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 5 (py-compute-indentation)))))
 
@@ -182,7 +193,8 @@
      something_2 something_3, \\
      something_4, something_5"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 5 (py-compute-indentation)))))
 
@@ -195,7 +207,8 @@ from foo.bar.baz import something, something_1 \\
      something_4, something_5
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (search-forward "something_2 something_3,")
     (should (= (py-compute-indentation) 5))
@@ -216,7 +229,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         datei.write(str(baz[i]) + \"\\n\")
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (push-mark)
     (search-backward "True")
@@ -239,7 +253,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         datei.write(str(baz[i]) + \"\\n\")
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (push-mark)
     (search-backward "True")
@@ -262,7 +277,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         datei.write(str(baz[i]) + \"\\n\")
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (push-mark)
     (search-backward "True")
@@ -285,7 +301,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         datei.write(str(baz[i]) + \"\\n\")
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (push-mark)
     (search-backward "True")
@@ -307,7 +324,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
             datei.write(str(baz[i]) + \"\\n\")
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (set-mark (point))
     (search-backward "with file")
@@ -326,7 +344,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       "import pdb
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 0 (py-compute-indentation)))))
 
@@ -339,7 +358,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         pass
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (should (eq 0 (py-compute-indentation)))))
 
@@ -349,7 +369,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
 asdf = {
     'a':{"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (beginning-of-line)
     (should (eq 4 (py-compute-indentation)))))
@@ -360,7 +381,8 @@ asdf = {
 asdf = {
     'a':{"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (forward-char -2)
     (should (eq 4 (py-compute-indentation)))))
@@ -373,7 +395,8 @@ asdf = {
          'b':3,
          'c':4"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (beginning-of-line)
     (should (eq 9 (py-compute-indentation)))))
@@ -386,7 +409,8 @@ asdf = {
          'b':3,
          'c':4"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (should (eq 9 (py-compute-indentation)))))
 
@@ -398,7 +422,8 @@ asdf = {
          'b':4,
          'c':5"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (should (eq 9 (py-compute-indentation)))))
 
@@ -411,7 +436,8 @@ asdf = {
          'c':4
          }"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (beginning-of-line)
     (let ((py-closing-list-dedents-bos nil))
@@ -426,7 +452,8 @@ asdf = {
          'c':4
          }"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (forward-char -1)
     (let ((py-closing-list-dedents-bos nil))
@@ -442,7 +469,8 @@ asdf = {
         }
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (let ((py-closing-list-dedents-bos nil))
       (should (eq 4 (py-compute-indentation))))))
@@ -457,7 +485,8 @@ asdf = {
     }
     }"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (beginning-of-line)
     (let ((py-closing-list-dedents-bos t))
@@ -473,7 +502,8 @@ asdf = {
     }
     }"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (forward-char -1)
     (let ((py-closing-list-dedents-bos t))
@@ -489,7 +519,8 @@ asdf = {
     }
     }"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (let ((py-closing-list-dedents-bos t))
       (should (eq 0 (py-compute-indentation))))))
@@ -499,7 +530,8 @@ asdf = {
       "(long, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-indent-list-style 'line-up-with-first-element))
       (goto-char (point-max))
       (should (eq 4 (py-compute-indentation))))))
@@ -512,7 +544,8 @@ asdf = {
     self._break()
     log.error('lifetime has expired, breaking')"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-indent-list-style 'line-up-with-first-element))
       (goto-char (point-max))
       (search-backward "datetime.datetime.now")
@@ -523,7 +556,8 @@ asdf = {
       "packed_entry = (long, sequence, of_items,
 that, needs, to_be, wrapped)"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (search-backward "d")
     (let ((py-indent-list-style 'line-up-with-first-element))
@@ -533,7 +567,8 @@ that, needs, to_be, wrapped)"
   (py-test
       "def foo (a,\n):"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (search-backward ")")
     (let ((py-indent-list-style 'line-up-with-first-element))
@@ -544,7 +579,8 @@ that, needs, to_be, wrapped)"
       "def foo (
 a):"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (search-backward ")")
     (let ((py-indent-list-style 'line-up-with-first-element))
@@ -554,7 +590,8 @@ a):"
   (py-test
       "def foo (a,\n):"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
       (should (eq 4 (py-compute-indentation))))))
@@ -563,7 +600,8 @@ a):"
   (py-test
       "def foo (\na,"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
       (should (eq 4 (py-compute-indentation))))))
@@ -579,7 +617,8 @@ if __name__==\"__main__\":
     main()
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (search-forward "exit()")
     (should (eq 4 (py-close-block)))))
@@ -588,7 +627,8 @@ if __name__==\"__main__\":
   (py-test
       "def foo (a,\n):"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-from-first-element)
           py-closing-list-dedents-bos)
@@ -605,7 +645,8 @@ if __name__==\"__main__\":
     main()
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (search-forward "exit()")
     (should (eq 0 (py-close-def-or-class)))))
@@ -621,7 +662,8 @@ if __name__==\"__main__\":
     main()
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (search-forward "exit()")
     (should (eq 0 (py-close-def)))))
@@ -638,7 +680,8 @@ class asdf:
         main()
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (search-forward "exit()")
     (should (eq 0 (py-close-class)))))
@@ -650,7 +693,8 @@ class asdf:
         klauf.pylauf()
         datei.write(str(spiel[i]) + \"\\n\")"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (skip-chars-backward " \t\r\n\f")
     (py-dedent-forward-line)
@@ -667,7 +711,8 @@ class asdf:
         await asyncio.sleep(1)
         print('coro {}: releasing the lock'.format(name))"
                'python-mode
-               'py-verbose-p
+               'py-debug-p
+               (when py-debug-p (font-lock-ensure))
                (goto-char (point-max))
                (py-backward-block)
                (should (looking-at "async with"))))
@@ -679,7 +724,8 @@ import sys
 import os
         try:"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min) )
     (search-forward "try")
     (should (eq 0 (py-compute-indentation)))))
@@ -693,7 +739,8 @@ my_list = [
     ]
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-closing-list-dedents-bos t))
       (goto-char (point-max))
       (should (eq 0 (py-compute-indentation))))))
@@ -707,7 +754,8 @@ my_list = [
     7, 8, 9]
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-closing-list-dedents-bos t))
       (goto-char (point-max))
       (skip-chars-backward " \t\r\n\f")
@@ -720,7 +768,8 @@ my_list = [1, 2, 3,
     4, 5, 6
     ]"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let (py-closing-list-dedents-bos)
       (goto-char (point-max))
       (search-backward "4")
@@ -734,7 +783,8 @@ my_list = [1, 2, 3,
     4, 5, 6
     ]"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-closing-list-dedents-bos t))
       (goto-char (point-max))
       (search-backward "4")
@@ -749,7 +799,8 @@ my_list = [
     4, 5, 6
     ]"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-indent-list-style 'one-level-to-beginning-of-statement))
       (goto-char (point-max))
       (search-backward "]")
@@ -763,7 +814,8 @@ my_list = [
     4, 5, 6
     ]"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-closing-list-dedents-bos t))
       (goto-char (point-max))
       (search-backward "]")
@@ -776,7 +828,8 @@ my_list = [
     1, 2, 3,
     4, 5, 6]"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-closing-list-dedents-bos t)
           (py-indent-list-style 'one-level-to-beginning-of-statement))
       (goto-char (point-max))
@@ -790,7 +843,8 @@ my_list = [
     1, 2, 3,
     4, 5, 6]"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-closing-list-dedents-bos t)
           (py-indent-list-style 'line-up-with-first-element))
       (goto-char (point-max))
@@ -805,7 +859,8 @@ my_list = [
     1, 2, 3,
     4, 5, 6]"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-closing-list-dedents-bos t))
       (goto-char (point-max))
       (search-backward "3")
@@ -820,7 +875,8 @@ my_list = [
         await asyncio.sleep(1)
         print('coro {}: releasing the lock'.format(name))"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min) )
     (forward-line 1)
     (should (eq 4 (py-compute-indentation)))
@@ -845,7 +901,8 @@ def foo():
         bar()
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min) )
     (let ((py-indent-list-style 'one-level-from-first-element))
       (search-forward "b")
@@ -861,7 +918,8 @@ def foo():
     else:
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 8 (py-compute-indentation)))))
 
@@ -871,7 +929,8 @@ def foo():
           'string'
           'here')"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "s")
     (should (eq 6 (py-compute-indentation)))))
@@ -884,7 +943,8 @@ def foo():
     self._break()
     log.error('lifetime has expired, breaking')"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
       (search-backward "datetime.datetime.now")
@@ -895,7 +955,8 @@ def foo():
       "(long, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (skip-chars-backward " \t\r\n\f")
     (let ((py-indent-list-style 'one-level-from-first-element))
@@ -906,7 +967,8 @@ def foo():
       "( whitespaced, long, sequence, of_items,
     that, needs, to_be, wrapped) = input_list"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (let ((py-indent-list-style 'one-level-from-first-element))
       (should (eq 4 (py-compute-indentation))))))
@@ -916,7 +978,8 @@ def foo():
       "if (release_time != -1 and
     datetime.datetime.now() > release_time + CLOCK_SLOP):"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
@@ -925,7 +988,8 @@ def foo():
       "def asdf()
      pass"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (push-mark)
     (goto-char (point-min))
@@ -936,7 +1000,8 @@ def foo():
   (py-test
       "    print(\"asdf\")"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (push-mark)
     (goto-char (point-min))
@@ -952,7 +1017,8 @@ def main():
     x = 7
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
@@ -972,7 +1038,8 @@ def main():
         print(\"Erfolg\")
 else: "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 4 (py-compute-indentation)))))
 
@@ -992,7 +1059,8 @@ else: "
     return
     yield"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (beginning-of-line)
     (should (eq 4 (py-compute-indentation)))
@@ -1004,7 +1072,8 @@ else: "
       "def main():
 if len(sys.argv) == 1"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (let (py-electric-colon-greedy-p
 	  (py-electric-colon-active-p t))
@@ -1020,7 +1089,8 @@ if len(sys.argv) == 1"
     \"\"\"
     if the_cursor_is_here:"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (should (eq 4 (current-indentation)))))
 
@@ -1030,7 +1100,8 @@ if len(sys.argv) == 1"
 # -*- coding: utf-8 -*-
 import os"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (backward-char 6)
     (should (eq 0 (py-compute-indentation)))))
@@ -1042,7 +1113,8 @@ import os"
     print(var_one)
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "print")
     (should (eq 4 (py-compute-indentation)))))
@@ -1055,7 +1127,8 @@ import os"
 ):
 foo"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (beginning-of-line)
     (should (eq 4 (py-compute-indentation)))))
@@ -1074,7 +1147,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         datei.write(str(baz[i]) + \"\\n\")
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (push-mark)
     (search-backward "True")
@@ -1094,7 +1168,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     case _:  # Pattern not attempted
         print('Case 4, I match anything!')"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "print")
     ;; (beginning-of-line)
@@ -1110,7 +1185,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
   (py-test
       "test()"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward ")")
     (should (eq 0 (py-compute-indentation)))))
@@ -1121,7 +1197,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
  asdf = {
      'a':{"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (should (eq 5 (py-compute-indentation)))))
 
@@ -1133,7 +1210,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         pass
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "#")
     (should (eq 4 (py-compute-indentation)))))
@@ -1147,7 +1225,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     else:
         return 0"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "else")
     (should (eq 4 (current-indentation)))))
@@ -1160,7 +1239,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         return \"Bad request\"
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "case")
     (should (eq 4 (py-compute-indentation)))))
@@ -1173,7 +1253,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
         return \"Bad request\"
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "return")
     (should (eq 12 (py-compute-indentation)))))
@@ -1185,7 +1266,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     print(long_variable_name)
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "print")
     (should (eq 4 (py-compute-indentation)))
@@ -1205,7 +1287,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     return True
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "comment" nil t 2)
     (should (eq 4 (py-compute-indentation)))))
@@ -1217,7 +1300,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     print(\"asdf\")
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "print" nil t 1)
     (should (eq 4 (py-compute-indentation)))))
@@ -1230,7 +1314,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     print(infix)
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "is" nil t 1)
     (should (eq 14 (py-compute-indentation)))
@@ -1248,7 +1333,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     ]
 }}"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "name" nil t 1)
     (should (eq 9 (py-compute-indentation)))))
@@ -1264,7 +1350,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     ]
 }}"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "name" nil t 1)
     (should (eq 9 (py-compute-indentation)))))
@@ -1280,7 +1367,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     ]
 }}"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pk" nil t 1)
     (should (eq 8 (py-compute-indentation)))))
@@ -1296,7 +1384,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     ]
 }}"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "name" nil t 2)
     (should (eq 9 (py-compute-indentation)))))
@@ -1312,7 +1401,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
     ]
 }}"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pk" nil t 2)
     (should (eq 8 (py-compute-indentation)))))
@@ -1322,7 +1412,8 @@ with file(\"foo\" + zeit + \".ending\", 'w') as datei:
       "_PN34 = (-1475, -1438, -1427, -1401, -1398, -1380, -1376, -1363, -1354,
         -1277)"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-closing-list-dedents-bos t))
       (goto-char (point-max))
       (should (eq (py-compute-indentation) 9)))))
@@ -1338,7 +1429,8 @@ args.suppliercodename == \"MS\"
 else: #<- this else is not possible to indent 1 tab
 		#do something"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "args" nil t 1)
     (should (eq 0 (py-compute-indentation)))))
@@ -1354,7 +1446,8 @@ args.suppliercodename == \"MS\"
 else: #<- this else is not possible to indent 1 tab
 		#do something"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "args" nil t 2)
     (should (eq 0 (py-compute-indentation)))))
@@ -1370,7 +1463,8 @@ args.suppliercodename == \"MS\"
 else: #<- this else is not possible to indent 1 tab
 		#do something"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let (py-closing-list-dedents-bos)
       (goto-char (point-max))
       (search-backward "else:")
@@ -1386,7 +1480,8 @@ else: #<- this else is not possible to indent 1 tab
 else: #<- this else is not possible to indent 1 tab
 		#do something"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let (py-closing-list-dedents-bos)
       (goto-char (point-max))
       (search-backward ")")
@@ -1403,7 +1498,8 @@ else: #<- this else is not possible to indent 1 tab
     ]
 }}"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "obj" nil t 1)
     (should (eq 4 (py-compute-indentation)))))
@@ -1420,7 +1516,8 @@ else: #<- this else is not possible to indent 1 tab
 }}
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (skip-chars-backward " \t\r\n\f")
     (should (py-compute-indentation--at-closer-p))))
@@ -1437,7 +1534,8 @@ else: #<- this else is not possible to indent 1 tab
 }}
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "}")
     (should (py-compute-indentation--at-closer-p))))
@@ -1454,7 +1552,8 @@ else: #<- this else is not possible to indent 1 tab
 }}
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "}" nil t 2)
     (should (py-compute-indentation--at-closer-p))))
@@ -1471,7 +1570,8 @@ else: #<- this else is not possible to indent 1 tab
 }}
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "]")
     (forward-char 1)
@@ -1489,7 +1589,8 @@ else: #<- this else is not possible to indent 1 tab
 }}
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "]")
     (should (py-compute-indentation--at-closer-p))))
@@ -1506,7 +1607,8 @@ else: #<- this else is not possible to indent 1 tab
 }}
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "]")
     (beginning-of-line)
@@ -1524,7 +1626,8 @@ else: #<- this else is not possible to indent 1 tab
 }}
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "name")
     (forward-char -1)
@@ -1542,7 +1645,8 @@ else: #<- this else is not possible to indent 1 tab
 }}
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "}" nil t 3)
     (should-not (py-compute-indentation--at-closer-p))))
@@ -1560,7 +1664,8 @@ else: #<- this else is not possible to indent 1 tab
 ]
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "sword" nil t)
     (beginning-of-line)
@@ -1577,7 +1682,8 @@ else: #<- this else is not possible to indent 1 tab
     pass
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (should (eq 4 (py-compute-indentation)))))
@@ -1593,7 +1699,8 @@ args.suppliercodename == \"MS\"
 else: #<- this else is not possible to indent 1 tab
 		#do something"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "args.")
     (should (eq 7 (py-compute-indentation)))))
@@ -1609,7 +1716,8 @@ args.suppliercodename == \"MS\"
 else: #<- this else is not possible to indent 1 tab
 		#do something"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "else" nil t 2)
     (beginning-of-line)
@@ -1627,7 +1735,8 @@ else: #<- this else is not possible to indent 1 tab
            pass
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "else" nil t 2)
     (beginning-of-line)

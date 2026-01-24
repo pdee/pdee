@@ -38,7 +38,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-block)
@@ -57,7 +58,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-clause)
@@ -76,7 +78,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-block-or-clause)
@@ -95,7 +98,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def)
@@ -108,7 +112,8 @@ class bar:
         pass
     "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (py-backward-def)
     (should (looking-at "def bar"))))
@@ -126,7 +131,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-class)
@@ -145,7 +151,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def-or-class)
@@ -164,7 +171,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-if-block)
@@ -183,7 +191,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-try-block)
@@ -202,7 +211,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-minor-block)
@@ -221,7 +231,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-for-block)
@@ -240,7 +251,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-top-level)
@@ -259,7 +271,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-statement)
@@ -278,7 +291,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-expression)
@@ -297,7 +311,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "ange")
     (should-not (py--beginning-of-expression-p))))
@@ -315,7 +330,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "range")
     (should (py--beginning-of-expression-p))))
@@ -333,7 +349,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-partial-expression)
@@ -352,7 +369,8 @@ class bar:
             block2
 "
       'python-mode
-      'py-verbose-p
+      'py-debug-p
+      (when py-debug-p (font-lock-ensure))
       (goto-char (point-max))
       (search-backward "pass")
       (py-backward-clause-bol)
@@ -371,7 +389,8 @@ class bar:
             block2
 "
         'python-mode
-        'py-verbose-p
+        'py-debug-p
+        (when py-debug-p (font-lock-ensure))
         (goto-char (point-max))
         ;; (skip-chars-backward " \t\r\n\f")
         (py-backward-block-or-clause-bol)
@@ -390,7 +409,8 @@ class bar:
             block2
 "
         'python-mode
-        'py-verbose-p
+        'py-debug-p
+        (when py-debug-p (font-lock-ensure))
         (goto-char (point-max))
         (skip-chars-backward " \t\r\n\f")
         (py-backward-block-or-clause-bol)
@@ -409,7 +429,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-def-bol)
@@ -428,7 +449,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (py-backward-class-bol)
@@ -447,7 +469,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (py-backward-def-or-class-bol)
@@ -466,7 +489,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (py-backward-if-block-bol)
@@ -485,7 +509,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (py-backward-try-block-bol)
@@ -501,7 +526,8 @@ class bar:
                 for a in range(anzahl):
                     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-minor-block-bol)
    (should (looking-at " +for"))))
@@ -519,7 +545,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (py-backward-for-block-bol)
@@ -538,7 +565,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pass")
    (py-backward-statement-bol)
@@ -559,7 +587,8 @@ class bar:
         except:
             pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    ;; (sit-for 0.1)
    (py-backward-def-or-class)
@@ -579,7 +608,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "pass")
     (py-backward-block-bol)
@@ -600,7 +630,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "for")
     (py-backward-block-bol)
@@ -621,7 +652,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (search-backward "if")
     (py-backward-block-bol)

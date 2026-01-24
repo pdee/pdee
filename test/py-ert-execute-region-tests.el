@@ -27,7 +27,8 @@
       "print(\"one\")
 print(\"two\")"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if
         (executable-find "python")
         (let ((buffer "*Python*"))
@@ -43,7 +44,8 @@ print(\"two\")"
       "print(\"one\")
 print(\"two\")"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if
         (executable-find "python3")
         (let ((buffer "*Python3*"))
@@ -58,7 +60,8 @@ print(\"two\")"
       "print(\"one\")
 print(\"two\")"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if
         (ignore-errors (executable-find "ipython"))
         (let ((buffer "*IPython*"))
@@ -78,7 +81,8 @@ print(\"two\")"
       "print(\"one\")
 print(\"two\")"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if
         (ignore-errors (executable-find "ipython3"))
         (let ((buffer "*IPython3*")
@@ -107,7 +111,8 @@ print(\"two\")"
       "print(\"one\")
 print(\"two\")"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if
         (executable-find "jython")
         (let ((buffer "*Jython*"))

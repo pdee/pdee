@@ -38,7 +38,8 @@
   (py-test-point-min
    "print(\"I'm the py-execute-statement-test\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (if (executable-find "python2")
        (progn
          (goto-char (point-min))
@@ -56,7 +57,7 @@
   (py-test-point-min
       "print(\"I'm the py-execute-statement-test\")"
       'python-mode
-      'py-verbose-p
+      'py-debug-p
       (when (executable-find "python3")
         (goto-char (point-min))
         (let ((py-shell-name "python3"))
@@ -72,7 +73,8 @@
   (py-test
       "print(u'\\xA9')"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((py-return-result-p t)
 	  (py-store-result-p t)
           (py-verbose-p t))
@@ -93,7 +95,8 @@
 import os
 os.write"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if (executable-find "python")
         (progn
           (goto-char (point-max))
@@ -116,7 +119,8 @@ os.write"
 import os
 os.write"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if (executable-find "python3")
         (progn
           (goto-char (point-max))
@@ -144,7 +148,8 @@ finally:
     a+=1
     print(a)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-fast-process-p t)
 	 (py-return-result-p t)
 	 ;; (py-debug-p t)
@@ -167,7 +172,8 @@ finally:
     a+=1
     print(a)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (setq py-result "")
    (let ((py-fast-process-p nil)
 	 (py-return-result-p t)
@@ -184,7 +190,8 @@ finally:
   (py-test-point-min
    "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let (;; (py-debug-p t)
 	 py-store-result-p
 	 erg)
@@ -204,7 +211,8 @@ finally:
   (py-test-point-min
    "print(2)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-fast-process-p t)
 	 (py-return-result-p t)
 	 py-result py-store-result-p)
@@ -219,7 +227,8 @@ finally:
   (py-test
    "\"\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should (string= (buffer-string) "\"\""))
    (should (null (nth 3 (parse-partial-sexp (point-min) (point)))))
@@ -231,7 +240,8 @@ finally:
   (py-test-point-min
    "print(123234)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (let ((py-split-window-on-execute py-switch-buffers-on-execute-p)
          (shell (py-choose-shell)))
@@ -249,7 +259,8 @@ finally:
   (py-test
    "obj"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-fast-complete)
    ;; (sit-for 0.1)
@@ -264,7 +275,8 @@ finally:
   (py-test
    ""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-store-result-p t))
      (py-execute-string "print(\"foo\")" nil t)
      (sit-for 0.1)
@@ -302,7 +314,8 @@ finally:
     ###########################################################################
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-forward-def-or-class)
    (should (looking-back "return themes" (line-beginning-position)))
@@ -313,7 +326,8 @@ finally:
   (py-test
    "print(u'\\xA9')"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (push-mark)
    (beginning-of-line)
@@ -398,7 +412,8 @@ by the
 # paragraphs using M-q.
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     ;; (font-lock-fontify-region (point-min)(point-max))
     (search-forward "Some other" nil t 1)
@@ -512,7 +527,8 @@ by the
     pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "First")
    (should (eq 4 (py-compute-indentation)))))
@@ -529,7 +545,8 @@ by the
     pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "Return")
    (should (eq 4 (py-compute-indentation)))))
@@ -540,7 +557,8 @@ by the
    "def foo:
     pass\n\npri"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (skip-chars-backward " \t\r\n\f")
    (py-indent-or-complete)
@@ -559,7 +577,8 @@ def baz():
     return 7
 "
      'python-mode
-     'py-verbose-p
+     'py-debug-p
+     (when py-debug-p (font-lock-ensure))
      (search-forward "\"\"\"")
      (fill-paragraph)
      (goto-char (point-min))
@@ -588,7 +607,8 @@ def baz():
     return 7
 "
      'python-mode
-     'py-verbose-p
+     'py-debug-p
+     (when py-debug-p (font-lock-ensure))
      ;; (font-lock-ensure)
      (goto-char 49)
      (fill-paragraph)
@@ -603,7 +623,8 @@ def baz():
 ;;   (py-test
 ;;    "print(234)"
 ;;    'python-mode
-;;    'py-verbose-p
+;;    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
 ;;    (py--fast-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
 ;;    (set-buffer "*Python3 Fast*")
 ;;    (when py-debug-p (switch-to-buffer (current-buffer)))
@@ -616,7 +637,8 @@ def baz():
   (py-test
    "print(234)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (py-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
    (set-buffer "*Python3*")
    (goto-char (point-max))
@@ -643,7 +665,8 @@ def main():
         # sys.exit()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (save-excursion
      (let ((inhibit-field-text-motion t)
 	   py-split-window-on-execute
@@ -663,7 +686,8 @@ def main():
    ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2020-06/msg00128.html
    "foo: int = 1"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "foo")

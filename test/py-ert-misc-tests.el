@@ -38,7 +38,8 @@ def baz(self):
 #     some_actual_code()
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     ;; (font-lock-fontify-region (point-min)(point-max))
     (search-forward "def baz(self):")
@@ -51,14 +52,16 @@ def baz(self):
   (py-test
       "# "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (should (py--in-comment-p))))
 
 (ert-deftest py-ert-in-sq-string-p-test-nwha1D ()
   (py-test
       "' "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (should (py-in-string-p))))
 
@@ -66,7 +69,8 @@ def baz(self):
   (py-test
       "\" "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (should (py-in-string-p))))
 
@@ -74,7 +78,8 @@ def baz(self):
   (py-test
       "''' "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (should (py-in-string-p))))
 
@@ -82,7 +87,8 @@ def baz(self):
   (py-test
       "\"\"\" "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (should (py-in-string-p))))
 
@@ -90,7 +96,8 @@ def baz(self):
   (py-test-point-min
       "  {}"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (py-electric-delete)
     (should (eq (char-after) ?{))))
@@ -100,7 +107,8 @@ def baz(self):
       "'''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf
 '''"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (forward-char 4)
     (fill-paragraph)
@@ -112,7 +120,8 @@ def baz(self):
       "def foo():
     '''asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdfasdf' asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf'''"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (let (py-docstring-style)
       (search-forward "'''")
@@ -144,7 +153,8 @@ def baz(self):
             ausgabe[1] = treffer
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (search-forward "fertig")
     (py-sectionize-region (match-beginning 0) (line-end-position))
@@ -159,7 +169,8 @@ def baz(self):
         sdfasde
         pass"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-copy-indent)
@@ -175,7 +186,8 @@ def baz(self):
         sdfasde
         pass"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-delete-indent)
@@ -189,7 +201,8 @@ def baz(self):
         sdfasde
         pass"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-kill-indent)
@@ -204,7 +217,8 @@ def baz(self):
         sdfasde
         pass"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min) )
     (search-forward "sdfasde")
     (py-mark-indent)
@@ -219,7 +233,8 @@ def baz(self):
     pass
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min) )
     (let ((py-edit-buffer "Edit docstring"))
       (search-forward "pass" nil t 1)
@@ -242,7 +257,8 @@ def baz(self):
   (py-test
       "print(u'\\xA9')"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-max))
     (let (transient-mark-mode)
       (push-mark)
@@ -255,6 +271,7 @@ def baz(self):
       "foo"
     'python-mode
     'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let (;; also set in run-tests.sh
           (python-mode-v5-behavior-p t))
       (when (executable-find "python3")
@@ -267,6 +284,7 @@ def baz(self):
       "foo"
     'python-mode
     'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let (;; also set in run-tests.sh
           (python-mode-v5-behavior-p t))
       (when (executable-find "ipython3")
@@ -292,6 +310,7 @@ def baz(self):
    "foo"
    'python-mode
    'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let (;; also set in run-tests.sh
          (python-mode-v5-behavior-p t))
    (when (executable-find "ipython")
@@ -303,7 +322,8 @@ def baz(self):
   (py-test
       "__COMINT_MIME_setup"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if (featurep 'comint-mime)
         (progn
           (push '(inferior-python-mode . comint-mime-setup-python)

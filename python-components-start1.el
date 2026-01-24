@@ -831,12 +831,13 @@ Return position."
     (point)))
 
 (defun py--skip-to-semicolon-backward (&optional limit)
-  "Fetch the beginning of statement after a semicolon.
+  "Fetch the beginning of statement after a semicolon at the same line.
 
 Returns ‘t’ if point was moved"
-  (prog1
-      (< 0 (abs (skip-chars-backward "^;" (or limit (line-beginning-position)))))
-    (skip-chars-forward " \t" (line-end-position))))
+  (let ((orig (point)))
+    (skip-chars-backward "^;" (or limit (line-beginning-position)))
+    (skip-chars-forward " \t" (line-end-position))
+    (< (point) orig))) 
 
 ;; (defun py-forward-comment ()
 ;;   "Go to the end of comment at point."

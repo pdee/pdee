@@ -92,9 +92,8 @@ TEST16=$TESTDIR/py-split-window-on-execute-test
 TEST17=$TESTDIR/py-split-just-two-window-on-execute-test.el
 TEST18=$TESTDIR/py-ert-extra-tests.el
 TEST19=$TESTDIR/py-ert-interactive-tests.el
-TEST20=$HOME/emacs/test/lisp/progmodes/python-tests.el
-TEST21=$TESTDIR/py-ert-ipython-tests.el
-TEST22=$TESTDIR/py-interactive-tests.el
+TEST20=$TESTDIR/py-ert-ipython-tests.el
+TEST21=$HOME/emacs/test/lisp/progmodes/python-tests.el
 echo "\$EMACS: $EMACS"
 
 
@@ -297,7 +296,10 @@ h16() {
 h17() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
--l $HOME/emacs/lisp/progmodes/python.el \
+--eval "(setq py-debug-p nil)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
 -l $TEST17 \
 -f ert-run-tests-batch-and-exit
 }
@@ -305,7 +307,10 @@ h17() {
 h18() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
--l $HOME/emacs/lisp/progmodes/python.el \
+--eval "(setq py-debug-p nil)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+-load $PYTHONMODE \
 -l $TEST18 \
 -f ert-run-tests-batch-and-exit
 }
@@ -339,31 +344,9 @@ h21() {
 --eval "(setq py-debug-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
--load $PYTHONMODE \
+--l $HOME/emacs/lisp/progmodes/python.el \
 -l $TEST21 \
 -f ert-run-tests-batch-and-exit
-}
-
-h22() {
-    date; time -p $EMACS -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST22 \
--f ert-run-tests-batch-and-exit
-}
-
-h23() {
-    date; time -p $EMACS -Q -L . --batch \
---eval "(message (emacs-version))" \
---eval "(setq py-debug-p nil)" \
---eval "(add-to-list 'load-path \"$TESTDIR/\")" \
--load $SETUP \
--load $PYTHONMODE \
--l $TEST23 \
---eval "(py-in-list-indent-test-XnIq9d1)"
 }
 
 hierv5() {
@@ -453,9 +436,15 @@ hier() {
 -l $TEST9 \
 -l $TEST10 \
 -l $TEST11 \
+-l $TEST12 \
 -l $TEST13 \
+-l $TEST14 \
+-l $TEST15 \
 -l $TEST16 \
--l $TEST21 \
+-l $TEST17 \
+-l $TEST18 \
+-l $TEST19 \
+-l $TEST20 \
 -f ert-run-tests-batch-and-exit
 }
 
@@ -465,7 +454,7 @@ if [ $IFLOCAL -eq 0 ]; then
 
     # sleep 1
 
-    while getopts 123456789abcdefghijklmnopqrstuvx option
+    while getopts 123456789abcdefghijklmnopqrstuvxyz option
     do
         case $option in
 	    1) echo "h1: Lade \$TEST1: \"$TEST1\"";h1;;
@@ -488,9 +477,8 @@ if [ $IFLOCAL -eq 0 ]; then
 	    i) echo "h18: Lade \$TEST18: \"$TEST18\"";h18;;
 	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
 	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
-	    l) echo "h21: Lade neu: \"neu\"";neu;;
-	    m) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
-	    n) echo "Lade Testumgebung ‘hier’";hier
+	    l) echo "h22: Lade \$TEST21: \"$TEST22\"";h21;;
+	    z) echo "Lade Testumgebung ‘hier’";hier
 
 	esac
 	echo "\$*: $*"

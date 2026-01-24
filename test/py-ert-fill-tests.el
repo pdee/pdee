@@ -29,7 +29,8 @@
     \"\"\"
  pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min) )
    (let ((py-docstring-style 'pep-257-nn))
      (search-forward "docstring")
@@ -50,7 +51,8 @@
     else:
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should (eq 8 (py-compute-indentation)))))
 
@@ -63,7 +65,8 @@
         sdfasde
         print(123)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min) )
    (search-forward "sdfasde")
    (py-shift-indent-right)
@@ -79,7 +82,8 @@
 ;;    "print(\"%(language)s has %(number)03d quote types. asdf asdf asdf asdfa sasdf asdfasdfasdfasdfasdfasda asd asdfa a asdf asdfa asdf \" %
 ;;        {'language': \"Python\", \"number\": 2})"
 ;;    'python-mode
-;;    'py-verbose-p
+;;    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
 ;;    (goto-char (point-max))
 ;;    (search-backward "asdf")
 ;;    (py-fill-string)
@@ -95,7 +99,8 @@
         self.assertEqual([str(image.version) for image in state.winner],
                              [])"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "XXX")
    (fill-paragraph)
@@ -108,7 +113,8 @@
 ;;   (py-test
 ;;    "asd = 'asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf '"
 ;;    'python-mode
-;;    'py-verbose-p
+;;    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
 ;;    (goto-char (point-max))
 ;;    (backward-char 2)
 ;;    (py-fill-string)
@@ -124,7 +130,8 @@
 ;;   (py-test
 ;;    "asd = \"asdf asdf asdf asdf asdf asdfasdf asdfasdf a asdf asdf asdf asdfasdfa asdf asdf asdf asdf asdf asdf asdf asdf \""
 ;;    'python-mode
-;;    'py-verbose-p
+;;    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
 ;;    (goto-char (point-max))
 ;;    (backward-char 2)
 ;;    (py-fill-string)
@@ -143,7 +150,8 @@ this is a test this is a test this is a test this is a test this is a test this 
 is a test
 \'\'\'"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "k")
    (end-of-line)
@@ -157,7 +165,8 @@ is a test
    "def foo():
     # asdf asdf adf adf adsf adsf adsf adf adf adf ad adf adf adf adf"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (turn-on-auto-fill)
    (insert " ")
@@ -170,7 +179,8 @@ is a test
    "def foo():
     #r# asdf asdf adf adf adsf adsf adsf adf adf adf ad adf adf adf adf"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (turn-on-auto-fill)
    (let ((comment-start-skip "^[ 	]*#r#+ *")
@@ -192,7 +202,8 @@ is a test
         mo = CRE.match(line)
         version = mo['version']"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "foo")
    (end-of-line)
@@ -205,7 +216,8 @@ is a test
    "def test():
     \"a b"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (auto-fill-mode 1)
    (goto-char (point-max))
    (insert " ")
@@ -218,7 +230,8 @@ is a test
 def foo(rho, x):
     r\"\"\"Calculate :math:\`D^\\nu \\rho(x)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (auto-fill-mode 1)
    (goto-char (point-max))
    (insert " ")
@@ -231,7 +244,7 @@ def foo(rho, x):
     \"\"\"abc\"\"\"
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
    (when py-debug-p (switch-to-buffer (current-buffer))
 	 (jit-lock-fontify-now))
    (goto-char 20)
@@ -261,7 +274,8 @@ def foo(rho, x):
     \"\"\"
     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'pep-257-nn))
      (goto-char (point-max))
      (search-backward "attribute")
@@ -296,7 +310,8 @@ def foo(rho, x):
     pass
     "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'pep-257-nn))
      (goto-char (point-max))
      (search-backward "__loader__")
@@ -404,7 +419,8 @@ def foo(rho, x):
     \"\"\"
     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "data : ndarray")
    (py-fill-paragraph)
@@ -422,7 +438,8 @@ def baz():
     return 7
 "
      'python-mode
-     'py-verbose-p
+     'py-debug-p
+     (when py-debug-p (font-lock-ensure))
      (goto-char 49)
      (fill-paragraph)
      (search-backward "\"\"\"")
@@ -441,7 +458,8 @@ def baz():
     return 7
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'onetwo))
      (goto-char 49)
      (fill-paragraph)
@@ -465,7 +483,8 @@ def baz():
     return 7
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'onetwo))
      (goto-char 49)
      (fill-paragraph)
@@ -487,7 +506,8 @@ def baz():
     return 7
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'pep-257))
      (goto-char 49)
      (fill-paragraph)
@@ -516,7 +536,8 @@ def baz():
     \"\"\"
     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'pep-257))
      (search-forward "index")
      (fill-paragraph)
@@ -537,7 +558,8 @@ def baz():
     \"\"\"
     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'symmetric)
          (python-docstring-style 'symmetric))
      (search-forward "index")
@@ -559,7 +581,8 @@ def baz():
     \"\"\"
     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "I")
    (let ((py-docstring-style 'pep-257))

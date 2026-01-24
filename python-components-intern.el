@@ -584,6 +584,9 @@ Returns position successful, nil otherwise"
   (let ((cui (current-indentation)))
     (while (and (py-down-statement)
                 (or (eq (current-indentation) cui)
+                    ;; (not (looking-at py-extended-block-or-clause-re))
+                    (or (not (py--beginning-of-statement-p))(looking-at py-string-delim-re))
+                    ;; still in string or comment
                     (save-excursion (backward-char) (nth 8 (parse-partial-sexp (point-min) (point)))))))))
 
 (defun py-down ()
@@ -605,8 +608,11 @@ Returns position if successful, nil otherwise"
           ((nth 1 pps)
            (goto-char (nth 1 pps))
            (forward-sexp))
-          ((eq (car (syntax-after orig)) 15)
-           (forward-char 1))
+          ((looking-at py-string-delim-re)
+           (py-forward-statement)
+           (py-down))
+          ;; ((eq (car (syntax-after orig)) 15)
+           ;; (forward-char 1))
           ((not (py--beginning-of-statement-p))
            (py-backward-statement)
            (cond ((py--beginning-of-class-p)

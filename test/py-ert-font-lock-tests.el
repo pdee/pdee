@@ -41,7 +41,8 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
     }
 ]"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "Sequence" nil nil 2)
@@ -57,7 +58,8 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
   (py-test
    "range(len(list((1, 2, 3))))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-fontify-region (point-min) (point-max))
    ;; (sit-for 0.1)
    (search-forward "l" )
@@ -67,7 +69,8 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
   (py-test
    "ArithmeticError"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-fontify-region (point-min) (point-max))
    (goto-char (point-max))
    (sit-for 0.1)
@@ -78,7 +81,8 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
   (py-test-point-min
    " and as assert break continue del elif else except exec finally for global if in is lambda not or pass raise return while with yield"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (font-lock-fontify-region (point-min)(point-max))
    (while (and (not (eobp))(< 0 (skip-chars-forward " ")))
@@ -89,7 +93,8 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
   (py-test-point-min
    "_ __doc__ __import__ __name__ __package__ abs all any apply basestring bin bool buffer bytearray bytes callable chr classmethod cmp coerce compile complex delattr dict dir divmod enumerate eval execfile file filter float format frozenset getattr globals hasattr hash help hex id input int intern isinstance issubclass iter len list locals long map max min next object oct open ord pow print property range raw_input reduce reload repr reversed round set setattr slice sorted staticmethod str sum super tuple type unichr unicode vars xrange zip"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-fontify-region (point-min)(point-max))
    (goto-char (point-min))
    (should (eq (get-char-property (point) 'face) 'py-builtins-face))))
@@ -98,7 +103,8 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
   (py-test-point-min
    "  Ellipsis True False None __debug__ NotImplemented"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (font-lock-fontify-region (point-min) (point-max))
    (sit-for 0.2)
@@ -111,7 +117,8 @@ var5: Sequence[Mapping[str, Sequence[str]]] = [
   (py-test-point-min
    "self cls"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (font-lock-fontify-region (point-min) (point-max))
    (should (eq 'py-object-reference-face (get-char-property (point) 'face)))))
@@ -132,7 +139,8 @@ def foo3(bar):
     return eggs
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (font-lock-ensure)
    (search-backward "spam" nil t 2)
@@ -157,7 +165,8 @@ def foo3(bar):
     idnum: int = 0
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "idnum")
@@ -190,7 +199,8 @@ def foo3(bar):
         case \[(int() | float()) as value]:
             return Num(value)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (font-lock-ensure)
    (search-backward "return")
@@ -211,7 +221,8 @@ def foo3(bar):
 def possibly_break():
     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "bly")
    (font-lock-ensure)
@@ -225,7 +236,8 @@ def possibly_break():
 def 1possibly_break():
     pass"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "bly")
    (should-not (eq (get-char-property (point) 'face) 'py-def-face))))
@@ -238,7 +250,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
 (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (font-lock-ensure)
    (sit-for 0.1)
@@ -273,7 +286,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
   (py-test
    "weight = 23"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-ensure)
    (sit-for 0.1)
    (goto-char (point-max))
@@ -288,7 +302,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         self.a = 1
         self.b = 2"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-ensure)
    (sit-for 0.1)
    (goto-char (point-max))
@@ -305,7 +320,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
 (a, b, *c, d) = x, *y = 5, 6, 7, 8, 9
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (font-lock-ensure)
    (sit-for 0.1)
@@ -320,7 +336,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    "while foo <= 0:
     foo = float(input(\"You can't play for free! Buy some chips: $\"))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (font-lock-ensure)
    (sit-for 0.1)
@@ -336,7 +353,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
             input(f\"Insufficient funds! Maximum bet allowed ${money}\\nPlace your bet $\")
         )"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "money:")
@@ -350,7 +368,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     (py-test
         "print(\"asdf\")"
       'python-mode
-      'py-verbose-p
+      'py-debug-p
+      (when py-debug-p (font-lock-ensure))
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "print")
@@ -367,7 +386,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     (py-test
         "print(\"asdf\")"
       'python-mode
-      'py-verbose-p
+      'py-debug-p
+      (when py-debug-p (font-lock-ensure))
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "print")
@@ -385,6 +405,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
         "print(\"asdf\")"
       'python-mode
       'py-debug-p
+      (when py-debug-p (font-lock-ensure))
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "print")
@@ -401,7 +422,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     (py-test
         "print(\"asdf\")"
       'python-mode
-      'py-verbose-p
+      'py-debug-p
+      (when py-debug-p (font-lock-ensure))
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "print")
@@ -418,7 +440,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     (py-test
         "def print_this_file(): pass"
       'python-mode
-      'py-verbose-p
+      'py-debug-p
+      (when py-debug-p (font-lock-ensure))
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "_this_")
@@ -435,7 +458,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     (py-test
         "def print_this_file(): pass"
       'python-mode
-      'py-verbose-p
+      'py-debug-p
+      (when py-debug-p (font-lock-ensure))
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "_this_")
@@ -452,7 +476,8 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
     (py-test
         "def print_this_file(): pass"
       'python-mode
-      'py-verbose-p
+      'py-debug-p
+      (when py-debug-p (font-lock-ensure))
       (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "_this_")
@@ -468,9 +493,10 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
                                 ))
     (py-test
         "def print_this_file(): pass"
-      (font-lock-ensure)
       'python-mode
-      'py-verbose-p
+      'py-debug-p
+      ;; (when py-debug-p (font-lock-ensure))
+      (font-lock-ensure)
       (goto-char (point-max))
       (search-backward "_this_")
       (sit-for 0.1)
@@ -485,7 +511,9 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
       "(along, sequence, of_items,
  that, needs, to_be, wrapped) = input_list"
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (font-lock-ensure)
+    ;; (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (forward-char 1)
     (should (eq (get-char-property (point) 'face) 'py-variable-name-face))))

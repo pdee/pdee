@@ -25,7 +25,8 @@
   (py-test
    "asdf    "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-electric-backspace)
    (should (eq ?f (char-before)))))
@@ -34,7 +35,8 @@
   (py-test
    "asdf"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-electric-backspace)
    (should (eq (char-before) ?d))))
@@ -44,7 +46,8 @@
    "def bar():
 x = 7"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max)) 
    (beginning-of-line)
    (insert (make-string 4 32))
@@ -59,7 +62,8 @@ x = 7"
    "def bar():
         x = 7"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "x")
    (when py-debug-p (whitespace-mode))
@@ -72,7 +76,8 @@ x = 7"
    "def bar():
        x = 7"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (beginning-of-line)
    (when py-debug-p (whitespace-mode))
@@ -84,7 +89,8 @@ x = 7"
    "def bar():
     x = 7    "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (skip-chars-backward " \t\r\n\f")
    (when py-debug-p (whitespace-mode))
@@ -96,7 +102,8 @@ x = 7"
    "def bar():
 x = 7         "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (backward-char 3)
    (when py-debug-p (whitespace-mode))
@@ -110,7 +117,8 @@ x = 7         "
    "def bar():
     x = 7         "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (backward-char 3)
    (when py-debug-p (whitespace-mode))
@@ -131,7 +139,8 @@ x = 7         "
     }
 ]"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "'sword")
    (backward-char)
@@ -147,7 +156,7 @@ x = {'abc':'def',
          'ghi':'jkl'}
 "
            'python-mode
-           'py-verbose-p
+           'py-debug-p
            (when py-debug-p (switch-to-buffer (current-buffer)))
            (goto-char 25)
            (py-electric-delete)
@@ -156,7 +165,8 @@ x = {'abc':'def',
 (ert-deftest delete-test-120-dMegYd ()
   (py-test "x"
            'python-mode
-           'py-verbose-p
+           'py-debug-p
+           (when py-debug-p (font-lock-ensure))
            (goto-char (point-max))
            (when py-debug-p (switch-to-buffer (current-buffer)))
            (py-electric-backspace)
@@ -165,7 +175,8 @@ x = {'abc':'def',
 (ert-deftest delete-test-120-v32Zaq ()
   (py-test " "
            'python-mode
-           'py-verbose-p
+           'py-debug-p
+           (when py-debug-p (font-lock-ensure))
            (goto-char (point-max))
            (when py-debug-p (switch-to-buffer (current-buffer)))
            (py-electric-backspace)
@@ -177,7 +188,8 @@ x = {'abc':'def',
     {
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (insert (make-string 8 32))
    (insert "'red': ['scarlet', 'vermilion', 'ruby'],\n")
@@ -204,7 +216,8 @@ x = {'abc':'def',
     x = 7
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-electric-delete)
    (should (eq (char-before) 10))))
@@ -215,7 +228,8 @@ x = {'abc':'def',
     x = 7
   "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (beginning-of-line)
    (when py-debug-p (whitespace-mode))
@@ -230,7 +244,8 @@ x = {'abc':'def',
     return baz + bar
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (search-backward "7")
@@ -244,7 +259,8 @@ x = {'abc':'def',
     123,
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "1")
    ;; (forward-char 1)
@@ -258,7 +274,8 @@ x = {'abc':'def',
 123,
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "1")
    ;; (forward-char 1)
@@ -272,7 +289,8 @@ x = {'abc':'def',
 234
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-line -2)
    (py-electric-delete)
@@ -282,7 +300,8 @@ x = {'abc':'def',
   (py-test
    "def test():  a = 'a'"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward ":")
    (forward-char 1)
@@ -294,7 +313,8 @@ x = {'abc':'def',
   (py-test
    "def test(): a = 'a'"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward ":")
    (forward-char 1)
@@ -309,7 +329,8 @@ x = {'abc':'def',
         asdf
     "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (py-newline-and-indent)
@@ -323,7 +344,8 @@ x = {'abc':'def',
         asdf
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (py-newline-and-indent)
@@ -335,7 +357,8 @@ x = {'abc':'def',
    "def test():
     a = 'a'"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-line -1)
    (end-of-line)
@@ -348,7 +371,8 @@ x = {'abc':'def',
    "def test():
     a = 'a'"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-electric-delete)
    (should (eq (char-after) ?e))))
@@ -358,7 +382,8 @@ x = {'abc':'def',
    "def bar():
     x = 7"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (beginning-of-line)
    (when py-debug-p (whitespace-mode))
@@ -372,7 +397,8 @@ x = {'abc':'def',
        x = 7
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-line -1)
    (beginning-of-line)
@@ -388,7 +414,8 @@ x = {'abc':'def',
         print('ok')
         "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (py-electric-backspace)
@@ -401,7 +428,8 @@ x = {'abc':'def',
         print('ok')
            "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (py-electric-backspace)
@@ -414,7 +442,8 @@ x = {'abc':'def',
         print('ok')
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (py-electric-backspace)
@@ -427,7 +456,8 @@ x = {'abc':'def',
         print('in')
     print('out')"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (forward-line -1)
@@ -442,7 +472,8 @@ x = {'abc':'def',
         print('in')
            print('out')"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (beginning-of-line)
@@ -456,7 +487,8 @@ x = {'abc':'def',
     x = 7
             "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (py-electric-backspace)
@@ -466,7 +498,8 @@ x = {'abc':'def',
   (py-test
    "def test():          a = 'a'"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (when py-debug-p (whitespace-mode))
    (forward-char -9)
@@ -478,7 +511,8 @@ x = {'abc':'def',
   (py-test
    "test()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -490,7 +524,8 @@ x = {'abc':'def',
   (py-test
    "test()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -502,7 +537,8 @@ x = {'abc':'def',
   (py-test
    "\"\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -514,7 +550,8 @@ x = {'abc':'def',
   (py-test
    "\"\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -527,7 +564,8 @@ x = {'abc':'def',
   (py-test
    "asdf\"\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -538,7 +576,8 @@ x = {'abc':'def',
   (py-test
    "asdf\"\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -550,7 +589,8 @@ x = {'abc':'def',
   (py-test
    "\"asdf\""
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -561,7 +601,8 @@ x = {'abc':'def',
   (py-test
    "''"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -574,7 +615,8 @@ x = {'abc':'def',
   (py-test
    "asdf''"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -586,7 +628,8 @@ x = {'abc':'def',
   (py-test
    "'asdf'"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (call-interactively 'electric-pair-mode t)
    (let ((electric-pair-mode t))
      (goto-char (point-max))
@@ -601,7 +644,8 @@ x = {'abc':'def',
         pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "#")
    (py-electric-backspace)

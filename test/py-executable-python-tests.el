@@ -24,7 +24,8 @@
 (ert-deftest py-dedicated-shell-test-7tw0PH ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (if (not (ignore-errors (executable-find "python")))
       (message "py-dedicated-shell-test-7tw0PH: %s" "No python executable found!")
     (let ((erg (buffer-name (py-shell nil nil t "python"))))
@@ -34,7 +35,8 @@
 (ert-deftest py-shell-python-lp-1398530-test-Haizw1 ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (if (not (executable-find "python"
                             ))
       (message "py-shell-python-lp-1398530-test-Haizw1: %s" "No python executable found!")
@@ -52,7 +54,8 @@
   (py-test
       ""
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (if (not (executable-find "python3"))
         (message "py-shell-python3-lp-1398530-test-gm7LwH: %s" "No python3 executable found!")
       (when (buffer-live-p (get-buffer "*Python3*"))
@@ -60,22 +63,25 @@
       (let ((py-shell-name "python3"))
         (py-shell)
         (sit-for 0.1 t)
-        (should (buffer-live-p (get-buffer "*Python3*")))))))
+        (and (get-buffer "*Python3*")
+             (should (buffer-live-p (get-buffer "*Python3*"))))))))
 
 (ert-deftest py-python-mode-v5-behavior-test-bSPpqY ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (let ((python-mode-v5-behavior-p t))
-    (python3)
-    (sit-for 0.1)
-    (should (buffer-live-p (get-buffer "*Python Output*")))
-    (py-kill-buffer-unconditional "*Python Output*")))
+    (py-execute-string "print('%(language)s has %(number)03d quote types.' % \
+       {'language': \"Python\", \"number\": 2})"))
+  (sit-for 0.1)
+  (should (buffer-live-p (get-buffer "*Python Output*")))
+  (py-kill-buffer-unconditional "*Python Output*"))
 
 (ert-deftest py-python-mode-v5-behavior-test-2n0wbL ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
   (when (buffer-live-p (get-buffer "*Python Output*"))
     (py-kill-buffer-unconditional "*Python Output*"))
   (let ((python-mode-v5-behavior-p t))

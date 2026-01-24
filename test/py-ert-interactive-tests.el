@@ -29,7 +29,8 @@
       "from Foo import *
 FooFoo."
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char(point-max))
     (skip-chars-backward " \t\r\n\f")
     (ignore-errors (py-indent-or-complete))
@@ -47,7 +48,8 @@ def foo():
     \"\"\"Foo\"\"\"
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (sit-for 0.1 t)
    (search-forward "\"\"\"")
    (fill-paragraph)
@@ -59,7 +61,8 @@ def foo():
    "print(1)
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-shell-name "ipython")
 	 py-split-window-on-execute
 	 py-switch-buffers-on-execute-p)
@@ -77,7 +80,8 @@ def foo():
    "print(1)
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-shell-name "ipython3")
 	 py-split-window-on-execute
 	 py-switch-buffers-on-execute-p)
@@ -94,7 +98,8 @@ def foo():
   (py-test-point-min
    "print(\"I'm the py-execute-expression-test\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-shell-name "python"))
      (py-execute-expression)
      (sit-for 0.1 t)
@@ -110,7 +115,8 @@ def foo():
   (py-test-point-min
    "print(\"I'm the py-execute-line-test\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (py-execute-line)
    (set-buffer py-output-buffer)
    ;; (sit-for 0.1 t)
@@ -124,7 +130,8 @@ def foo():
 print(\"I'm the py-always-reuse-lp-1361531-test\")
 from datetime import datetime; datetime.now()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    ;; (delete-other-windows)
    (let* ((py-split-window-on-execute 'always)
 	  py-switch-buffers-on-execute-p
@@ -147,7 +154,8 @@ from datetime import datetime; datetime.now()"
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-ipython-test\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (if (executable-find "ipython")
        (progn
 	 (delete-other-windows)
@@ -168,7 +176,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-ipython-test\")"
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-ipython-test\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (if (executable-find "ipython3")
        (progn
 	 ;; (delete-other-windows)
@@ -189,7 +198,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-ipython-test\")"
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (delete-other-windows)
    (let* ((py-split-window-on-execute 'just-two)
 	  (erg1 (progn (py-execute-statement-jython-dedicated) py-output-buffer))
@@ -216,7 +226,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-jython-test\")"
    "#! /usr/bin/env python3
 file.close()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-python-edit-version ""))
      (goto-char (point-max))
      (beginning-of-line)
@@ -227,7 +238,8 @@ file.close()"
    "#! /usr/bin/env python3
 file.close()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-python-edit-version "python3"))
      (goto-char (point-max))
      (beginning-of-line)
@@ -238,7 +250,8 @@ file.close()"
    "#! /usr/bin/env python3
 print()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-python-edit-version ""))
      (goto-char (point-max))
      (search-backward "print")
@@ -249,7 +262,8 @@ print()"
   (py-test-point-min
    "print(123)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-split-window-on-execute t))
      (delete-other-windows)
      (py-execute-statement)
@@ -262,7 +276,8 @@ print()"
 print(3+3)
 # }}"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-store-result-p t))
      (search-backward "print")
      (py-execute-section)
@@ -275,7 +290,8 @@ print(3+3)
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (skip-chars-backward " \t\r\n\f")
    (back-to-indentation)
    (py-match-paren)
@@ -306,7 +322,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-backward "(treffer)")
    (skip-chars-backward "^\"")
    (forward-char -1)
@@ -323,7 +340,8 @@ if __name__ == \"__main__\":
         \"\"\"Some long line with more than 70 characters in the docstring. Some more text.\"\"\"
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'pep-257-nn))
      (goto-char (point-min))
      (search-forward "\"\"\"")
@@ -336,7 +354,8 @@ if __name__ == \"__main__\":
    "print(\"%(language)s has %(number)03d quote types.\" %
        {'language': \"Python\", \"number\": 2})"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((oldbuf (current-buffer))
 	 (py-split-window-on-execute t)
 	 (py-split-window-on-execute-threshold 3))
@@ -358,7 +377,8 @@ if __name__ == \"__main__\":
 '''
 a, b, c = (1, 2, 3)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (beginning-of-line)
    (py-backward-top-level)
    (should (bobp))
@@ -374,7 +394,8 @@ a, b, c = (1, 2, 3)"
   print(x)
 exercise()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (py-execute-buffer)
    (set-buffer py-output-buffer)
    (switch-to-buffer (current-buffer))
@@ -392,7 +413,8 @@ exercise()"
   print(x)
 exercise()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (py-execute-buffer)
    (set-buffer py-output-buffer)
    (switch-to-buffer (current-buffer))
@@ -410,7 +432,8 @@ exercise()"
   print(x)
 exercise()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (py-execute-buffer)
    (switch-to-buffer py-output-buffer)
    (should py-pdbtrack-is-tracking-p)))
@@ -462,7 +485,8 @@ def baz():
     return 7
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char 49)
    ;; (sit-for 0.1 t)
    (fill-paragraph)
@@ -495,7 +519,8 @@ def py_if_name_main_permission_test():
 py_if_name_main_permission_test()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (let ((py-if-name-main-permission-p t))
      (py-execute-buffer-python2)
@@ -509,7 +534,8 @@ py_if_name_main_permission_test()
    "def foo():
 print(rest)"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "rest")
    (py-indent-or-complete)
@@ -526,7 +552,8 @@ print(rest)"
         print(i)
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "print" nil t 2)
    (py-indent-line)
@@ -543,7 +570,8 @@ print(rest)"
 pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-line -1)
    (py-indent-or-complete)
@@ -562,7 +590,8 @@ pass
 # -*- coding: utf-8 -*-
 print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (delete-other-windows)
    (let* ((py-split-window-on-execute 'just-two)
 	  (erg1 (progn (py-execute-statement-python3-dedicated) py-output-buffer))
@@ -581,7 +610,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 (ert-deftest py-python3-shell-test-YW7ToN ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (let ((erg (python3))
         erg)
     (should (bufferp (get-buffer erg)))
@@ -590,7 +620,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 (ert-deftest py-python2-shell-test-8Ostfe ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (let ((erg (python2)))
     (sit-for 0.1)
     (should (bufferp (get-buffer erg)))
@@ -600,7 +631,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
   (py-test
    "print('py-keep-windows-configuration-test-string')"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (delete-other-windows)
    (let ((py-keep-windows-configuration t)
          (py-split-window-on-execute t)
@@ -612,7 +644,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
   (py-test
       ""
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (let ((buffer (py-shell nil nil t)))
       (sit-for 0.1)
       (with-current-buffer buffer
@@ -624,7 +657,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
   (py-test
       ""
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (with-current-buffer (py-shell nil nil t)
       (goto-char (point-max))
       (insert "def")
@@ -636,7 +670,8 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
 # -*- coding: utf-8 -*-
 import os"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should (py-execute-import-or-reload))))
 
@@ -649,7 +684,8 @@ import os"
 # End:
  "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((oldbuf (current-buffer)))
      (save-excursion
        (set-buffer (get-buffer-create "test-master.py"))
@@ -675,7 +711,8 @@ def baz():
     return 7
 "
      'python-mode
-     'py-verbose-p
+     'py-debug-p
+     (when py-debug-p (font-lock-ensure))
      (goto-char (point-min))
      (font-lock-fontify-region (point-min)(point-max))
      (goto-char 49)
@@ -704,7 +741,8 @@ def baz():
 \"\"\")
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "Bar")
    (should (eq 0 (py-compute-indentation)))))
@@ -720,7 +758,8 @@ def baz():
     return 7
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'django))
      (goto-char 49)
      (fill-paragraph)
@@ -743,7 +782,8 @@ def baz():
     return 7
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'django))
      (goto-char 49)
      (when py-debug-p (message "fill-column: %s" fill-column))
@@ -768,7 +808,8 @@ def baz():
         self.a = 1
         self.b = 2"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "error")
    ;; (and py-debug-p (message "py-version: %s" py-version))
@@ -782,7 +823,8 @@ def baz():
   (py-test
    "a = b = c = 5     "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-electric-backspace-mode -1)
    (execute-kbd-macro (kbd "<backspace>"))
@@ -792,7 +834,8 @@ def baz():
   (py-test
    "a = b = c = 5     "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-electric-backspace-mode 1)
    (execute-kbd-macro (kbd "<backspace>"))
@@ -814,7 +857,8 @@ def baz():
         self.a = 1
         self.b = 2"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    ;; (font-lock-ensure)
    (goto-char (point-max))
    (search-backward "\"\"\"")
@@ -826,7 +870,8 @@ def baz():
   (py-test
       ""
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (require 'gud)
     (let ((py-shell-name "python3"))
       (goto-char (point-max))

@@ -28,7 +28,8 @@
   (py-test-point-min
    "foo=1"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (should (string= "foo" (py-partial-expression)))))
 
@@ -36,7 +37,8 @@
   (py-test-point-min
    "print(root.getchildren()[0])"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "getchildren")
    (should (string= "getchildren()[0]" (py-partial-expression)))))
@@ -45,7 +47,8 @@
   (py-test-point-min
    "print(root.getchildren()[0])"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "ro")
    (should (string= "root" (py-partial-expression)))))
@@ -54,7 +57,8 @@
   (py-test
    "def __init__(self):"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "_")
    (should (string= "__init__" (py-partial-expression)))))
@@ -88,7 +92,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "kugel")
    (should (string-match "kugel" (py-which-def-or-class)))
@@ -125,7 +130,8 @@ if __name__ == \"__main__\":
 else:
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should (string= "???" (py-which-def-or-class)))
    (forward-line -3)
@@ -152,7 +158,8 @@ else:
     def pylauf(self):
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-line -2)
    (should (string= "kugel.foo" (py-which-def-or-class)))))
@@ -162,7 +169,8 @@ else:
    "if __name__ == \"__main__\":
     main()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-char -1)
    (py-match-paren)
@@ -173,7 +181,8 @@ else:
    "if __name__ == \"__main__\":
     main()"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-char -2)
    (py-match-paren)
@@ -185,7 +194,8 @@ else:
     main()
     "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-match-paren)
    (should (eq (char-after) ?m))))
@@ -196,7 +206,8 @@ else:
     main()
     "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-match-paren)
    (should (py-empty-line-p))
@@ -232,7 +243,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (skip-chars-backward "^\]")
    (forward-char -1)
@@ -270,7 +282,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (skip-chars-backward "^:")
    (py-match-paren)
@@ -305,7 +318,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "pylauf")
    (py-match-paren)
@@ -321,7 +335,8 @@ if __name__ == \"__main__\":
         sys.exit()
               "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "if")
    (py-match-paren)
@@ -336,7 +351,8 @@ import sys
 import os
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (py-match-paren)
    (should (looking-at "import sys"))
@@ -358,7 +374,8 @@ import os
             return os.path.exists(filename.encode('utf-8'))
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "class")
    (py-match-paren)
@@ -373,7 +390,8 @@ except:
     print \"Setze anzahl auf 1\"
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward "arg")
    (py-match-paren)
@@ -387,7 +405,8 @@ except:
     print \"Setze anzahl auf 1\"
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (search-backward " int")
    (py-match-paren)
@@ -403,7 +422,8 @@ except:
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-match-paren)
    (should (eq (char-after) ?i))))
@@ -415,7 +435,8 @@ except:
         klauf.pylauf()
                     "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (skip-chars-backward " \t\r\n\f")
    (py-narrow-to-block)
@@ -428,7 +449,8 @@ except:
         klauf.pylauf()
         "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (skip-chars-backward " \t\r\n\f")
    (py-narrow-to-block)
@@ -446,7 +468,8 @@ elif treffer in schwarz:
     ausgabe[1] = treffer
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (skip-chars-backward " \t\r\n\f")
    (py-narrow-to-block-or-clause)
@@ -464,7 +487,8 @@ elif treffer in schwarz:
     ausgabe[1] = treffer
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (py-narrow-to-clause)
    (should (eq 87 (length (buffer-substring-no-properties (point-min)(point-max)))))))
@@ -498,7 +522,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (search-backward "treffer")
    (py-narrow-to-class)
@@ -533,7 +558,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (search-backward "treffer")
    (py-narrow-to-def)
@@ -569,7 +595,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (search-backward "treffer")
    (py-narrow-to-def-or-class)
@@ -605,7 +632,8 @@ if __name__ == \"__main__\":
     main()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char(point-max))
    (search-backward "treffer")
    (py-narrow-to-statement)
@@ -614,7 +642,8 @@ if __name__ == \"__main__\":
 (ert-deftest py-ert-bracket-closing-1-4wPEHo ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (py-test
    "
 my_list = [
@@ -622,7 +651,8 @@ my_list = [
     4, 5, 6,
     ]"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (beginning-of-line)
    (let ((py-closing-list-dedents-bos t))
@@ -631,7 +661,8 @@ my_list = [
 (ert-deftest py-ert-bracket-closing-2-Ef3fSe ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (py-test
    "
 my_list = [
@@ -639,7 +670,8 @@ my_list = [
     4, 5, 6,
     ]"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (forward-char -1)
    (let ((py-closing-list-dedents-bos t))
@@ -648,7 +680,8 @@ my_list = [
 (ert-deftest py-ert-bracket-closing-3-4Q5V34 ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (py-test
    "
 my_list = [
@@ -656,7 +689,8 @@ my_list = [
     4, 5, 6,
     ]"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (let ((py-closing-list-dedents-bos t))
      (should (eq 0 (py-compute-indentation))))))
@@ -664,7 +698,8 @@ my_list = [
 (ert-deftest py-ert-bracket-closing-4-q2feIY ()
   ""
   'python-mode
-  'py-verbose-p
+  'py-debug-p
+  (when py-debug-p (font-lock-ensure))
   (py-test
    "
 my_list = [
@@ -672,7 +707,8 @@ my_list = [
     4, 5, 6,
     ]"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (beginning-of-line)
    (let ((py-closing-list-dedents-bos nil)
@@ -687,7 +723,8 @@ def foo():
     pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (let ((py-mark-decorators t))
      (py-backward-def-or-class)
@@ -701,7 +738,8 @@ def foo():
     pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (let* (py-mark-decorators
           (erg (py-backward-def-or-class)))
@@ -716,7 +754,8 @@ def foo():
         await asyncio.sleep(1)
         print('coro {}: releasing the lock'.format(name))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-block)
    (should (looking-at "async with"))))
@@ -730,7 +769,8 @@ def foo():
         await asyncio.sleep(1)
         print('coro {}: releasing the lock'.format(name))"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (py-backward-def)
    (should (looking-at "async def"))))

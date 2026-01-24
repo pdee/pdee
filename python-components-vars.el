@@ -2620,7 +2620,7 @@ stop at it.")
 (setq py-partial-expression-re (concat "[" py-partial-expression-stop-backward-chars "]+"))
 
 ;; (defvar py-statement-re py-partial-expression-re)
-(defvar py-statement-re "[^] .=,\"'()[{}:#
+(defvar py-statement-re "[^\"'#
 ]+" "Match beginning of a statement")
 
 (defvar py-indent-re ".+"
@@ -3439,12 +3439,6 @@ commonly \"cls\" and \"self\""
 
 ;; subr-x.el might not exist yet
 ;; #73, Byte compilation on Emacs 25.3 fails on different trim-right signature
-
-(defcustom py-empty-line-p-chars "^[ \t\r]*$"
-  "Empty-line-p-chars."
-  :type 'regexp
-  :tag "py-empty-line-p-chars"
-  :group 'python-mode)
 
 (defcustom py-default-working-directory ""
   "If not empty used by ‘py-set-current-working-directory’."

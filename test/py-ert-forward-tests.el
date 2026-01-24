@@ -43,7 +43,8 @@ else:
         pass
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (let (py-font-lock-defaults-p)
      (py-forward-block)
@@ -70,7 +71,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "elif")
    (py-forward-block-or-clause)
    (should (eq (char-before) ?s))))
@@ -96,7 +98,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "if")
    (py-forward-class)
    (should (eq (char-before) ?2))))
@@ -122,7 +125,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "elif")
    (py-forward-clause)
    (should (eq (char-before) ?s))))
@@ -148,7 +152,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "if")
    (py-forward-def)
    (should (eq (char-before) ?2))))
@@ -174,7 +179,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "if")
    (py-forward-def-or-class)
    (should (eq (char-before) ?2))))
@@ -200,7 +206,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "elif")
    (py-forward-elif-block)
    (should (eq (char-before) ?s))))
@@ -226,7 +233,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "else")
    (py-forward-else-block)
    (should (eq (char-before) ?s))))
@@ -252,7 +260,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "except")
    (py-forward-except-block)
    (should (eq (char-before) ?2))))
@@ -278,14 +287,15 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "if")
    (py-forward-expression)
    (should (eq (char-before) ?:))))
 
 (ert-deftest py-ert-forward-for-block-test ()
   (py-test
-   "# {{
+      "# {{
 class bar:
     def foo ():
         try:
@@ -303,12 +313,13 @@ class bar:
         except:
             block2
 "
-   'python-mode
-   'py-verbose-p
-   (goto-char (point-max)) 
-   (search-backward "for")
-   (py-forward-for-block)
-   (should (looking-back "pass" (line-beginning-position)))))
+    'python-mode
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
+    (goto-char (point-max))
+    (search-backward "for")
+    (py-forward-for-block)
+    (should (looking-back "pass" (line-beginning-position)))))
 
 (ert-deftest py-ert-forward-if-block-test ()
   (py-test-point-min
@@ -331,7 +342,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "if")
    (py-forward-if-block)
    (should (eq (char-before) ?s))))
@@ -357,7 +369,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (search-forward "if")
     (py-forward-minor-block)
@@ -384,7 +397,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "try:")
    (py-forward-minor-block)
@@ -392,7 +406,7 @@ class bar:
 
 (ert-deftest py-ert-forward-partial-expression-test ()
   (py-test
-   "# {{
+      "# {{
 class bar:
     def foo ():
         try:
@@ -410,12 +424,13 @@ class bar:
         except:
             block2
 "
-   'python-mode
-   'py-verbose-p
-   (goto-char (point-max))
-   (search-backward "Pyt")
-   (py-forward-partial-expression)
-   (should (eq (char-before) ?n))))
+    'python-mode
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
+    (goto-char (point-max))
+    (search-backward "Pyt")
+    (py-forward-partial-expression)
+    (should (eq (char-before) ?n))))
 
 (ert-deftest py-ert-forward-section-test ()
   (py-test-point-min
@@ -438,7 +453,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "if")
    (py-forward-section)
    (should (eq (char-before) ?}))))
@@ -464,7 +480,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "if")
    (py-forward-statement)
    (should (eq (char-before) ?:))))
@@ -490,7 +507,8 @@ class bar:
             block2
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (search-forward "if")
    (py-forward-top-level)
    (should (eq (char-before) ?2))))
@@ -531,7 +549,8 @@ def foo():
             pass
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char (point-min))
     (search-forward "try")
     (py-forward-try-block)
@@ -550,7 +569,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-block-bol)
     (should (looking-at " +except:"))))
@@ -568,7 +588,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-clause-bol)
     (should (bolp))))
@@ -586,7 +607,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-block-or-clause-bol)
     (should (looking-at " +except:"))))
@@ -604,7 +626,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-def-bol)
     (should (eobp))))
@@ -622,7 +645,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-class-bol)
     (should (eobp))))
@@ -640,7 +664,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-def-or-class-bol)
     (should (eobp))))
@@ -658,7 +683,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-if-block-bol)
     (should (looking-at " +except:"))))
@@ -676,7 +702,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-try-block-bol)
     (should (eobp))))
@@ -694,7 +721,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-minor-block-bol)
     (should (looking-at " +except:"))))
@@ -713,7 +741,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-for-block-bol)
     (should (looking-at " +except:"))))
@@ -731,7 +760,8 @@ class bar:
             block2
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-top-level-bol)
     (should (eobp))))
@@ -747,7 +777,8 @@ class bar:
                     pass
 "
     'python-mode
-    'py-verbose-p
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
     (goto-char 103)
     (py-forward-statement-bol)
     (should (looking-at " +pass"))))
@@ -759,7 +790,8 @@ class bar:
 		# wwwwwwwwwww www wwwwwwww wwwwwww.
 		self.wwwwww.append(\"<!--%(text)s-->\" % locals())"
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (end-of-line)
    (py-forward-statement)
    (should (eq (char-before) 41))))

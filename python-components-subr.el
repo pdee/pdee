@@ -24,6 +24,12 @@
 
 ;;; Code:
 
+(defcustom py-empty-line-p-chars "^[ \t\r]*$"
+  "Empty-line-p-chars."
+  :type 'regexp
+  :tag "py-empty-line-p-chars"
+  :group 'python-mode)
+
 (defun py-empty-line-p ()
   "Return t if cursor is at an empty line, nil otherwise."
   (save-excursion

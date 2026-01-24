@@ -1,4 +1,4 @@
-;;; py-ert-hide-tests.el ---
+;;; py-ert-hide-tests.el ---  -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
@@ -54,7 +54,8 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
                      'python-mode
-                     'py-verbose-p
+                     'py-debug-p
+                     (when py-debug-p (font-lock-ensure))
                      (font-lock-ensure)
                      (search-forward "+ \"")
                      (py-hide-expression)
@@ -75,7 +76,8 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
                      'python-mode
-                     'py-verbose-p
+                     'py-debug-p
+                     (when py-debug-p (font-lock-ensure))
                      (font-lock-ensure)
                      (search-forward "+ \"")
                      (py-hide-clause)
@@ -92,7 +94,8 @@ class kugel(object):
         ausgabe[7] = treffer
 "
            'python-mode
-           'py-verbose-p
+           'py-debug-p
+           (when py-debug-p (font-lock-ensure))
            (font-lock-ensure)
            (goto-char (point-max))
            (search-backward "6")
@@ -114,7 +117,8 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
                      'python-mode
-                     'py-verbose-p
+                     'py-debug-p
+                     (when py-debug-p (font-lock-ensure))
                      ;; (font-lock-ensure)
                      (search-forward "+ \"")
                      (py-hide-block)
@@ -135,7 +139,8 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
                      'python-mode
-                     'py-verbose-p
+                     'py-debug-p
+                     (when py-debug-p (font-lock-ensure))
                      ;; (font-lock-ensure)
                      (search-forward "+ \"")
                      (py-hide-def)
@@ -156,7 +161,8 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
                      'python-mode
-                     'py-verbose-p
+                     'py-debug-p
+                     (when py-debug-p (font-lock-ensure))
                      (switch-to-buffer (current-buffer))
                      ;; (font-lock-ensure)
                      (search-forward "+ \"")
@@ -179,7 +185,8 @@ class kugel(object):
             datei.write(str(spiel[i]) + \"\\n\")
 "
                      'python-mode
-                     'py-verbose-p
+                     'py-debug-p
+                     (when py-debug-p (font-lock-ensure))
                      ;; (font-lock-ensure)
                      (search-forward "+ \"")
                      (py-hide-indent)
@@ -202,7 +209,8 @@ class kugel(object):
         return 25
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
    (should (search-backward "else"))
    (py-hide-block)
@@ -216,7 +224,8 @@ class kugel(object):
         # sys.exit()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (should (search-forward "usage"))
    (py-hide-block)
@@ -233,7 +242,8 @@ class kugel(object):
         # sys.exit()
 "
    'python-mode
-   'py-verbose-p
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (should (search-forward "usage"))
    (py-hide-block)
