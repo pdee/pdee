@@ -283,7 +283,7 @@ Matches lists, but also block, statement, string and comment. "
 
 With optional \\[universal-argument] print as string"
   (interactive "*P")
-  (let* ((name (py--string-strip (or strg (car kill-ring))))
+  (let* ((name (string-trim (or strg (car kill-ring))))
          ;; guess if doublequotes or parentheses are needed
          (numbered (not (eq 4 (prefix-numeric-value arg))))
          (form (if numbered
@@ -296,7 +296,7 @@ With optional \\[universal-argument] print as string"
 
 print(\"\\nfoo: {}\"\.format(foo))"
   (interactive "*")
-  (let ((name (py--string-strip (or strg (car kill-ring)))))
+  (let ((name (string-trim (or strg (car kill-ring)))))
     (insert (concat "print(\"" name ": {}\\n\".format(" name "))"))))
 
 (defun py-line-to-printform-python2 ()

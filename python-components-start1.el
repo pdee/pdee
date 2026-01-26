@@ -123,23 +123,6 @@ The returned file name can be used directly as argument of
 Return nil otherwise. "
   (when (bobp)(point)))
 
-;;  (setq strip-chars-before  "[ \t\r\n]*")
-(defun py--string-strip (str &optional chars-before chars-after)
-  "Return a copy of STR, CHARS removed.
-
-Removed chars default to values of ‘py-chars-before’ and ‘py-chars-after’
-i.e. spaces, tabs, carriage returns, newlines and newpages
-
-Optional arguments ‘CHARS-BEFORE’ and ‘CHARS-AFTER’ override default"
-  (let ((s-c-b (or chars-before
-                   py-chars-before))
-        (s-c-a (or chars-after
-                   py-chars-after))
-        (erg str))
-    (setq erg (replace-regexp-in-string  s-c-b "" erg))
-    (setq erg (replace-regexp-in-string  s-c-a "" erg))
-    erg))
-
 (defun py-toggle-session-p (&optional arg)
   "Switch boolean variable ‘py-session-p’.
 
@@ -940,7 +923,7 @@ If no EXECUTABLE given, ‘py-shell-name’ is used.
 Interactively output of ‘--version’ is displayed. "
   (interactive)
   (let* ((executable (or executable py-shell-name))
-         (erg (py--string-strip (shell-command-to-string (concat executable " --version")))))
+         (erg (string-trim (shell-command-to-string (concat executable " --version")))))
     (when (called-interactively-p 'any) (message "%s" erg))
     (unless verbose (setq erg (cadr (split-string erg))))
     erg))

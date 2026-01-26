@@ -318,9 +318,6 @@ Default is t"
 (defvar py-chars-before " \t\n\r\f"
   "Used by ‘py--string-strip’.")
 
-(defvar py-chars-after " \t\n\r\f"
-    "Used by ‘py--string-strip’.")
-
 (defcustom py-max-help-buffer-p nil
   "If \"\*Python-Help\*\"-buffer should appear as the only visible.
 
