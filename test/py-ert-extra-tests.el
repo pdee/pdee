@@ -562,6 +562,9 @@ by the
    (goto-char (point-max))
    (skip-chars-backward " \t\r\n\f")
    (py-indent-or-complete)
+   (when py-verbose-p
+     (let ((erg (buffer-substring-no-properties (line-beginning-position) (point))))
+       (message "%s" erg)))
    (should (looking-back "print.?" (line-beginning-position)))))
 
 (ert-deftest py-ert-fill-paragraph-pep-257-nn-BBJoDt ()
@@ -612,7 +615,7 @@ def baz():
      ;; (font-lock-ensure)
      (goto-char 49)
      (fill-paragraph)
-     (goto-char (point-min)) 
+     (goto-char (point-min))
      (search-forward "Hello")
      (forward-line 1)
      (should (py-empty-line-p)))

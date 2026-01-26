@@ -106,7 +106,7 @@ print(\"two\")"
     (when py-verbose-p
       (message "py-ert-execute-region-ipython3-test: %s" "No executable found!"))))
 
-(ert-deftest py-ert-execute-region-jython-test ()
+(ert-deftest py-ert-execute-region-jython-6cDiVW ()
   (py-test
       "print(\"one\")
 print(\"two\")"

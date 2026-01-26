@@ -262,8 +262,10 @@ in (I)Python shell-modes ‘py-shell-complete’"
         (py-do-completion-p
          (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘(completion-at-point)’"))
          ;; (py-fast-complete)
-         (completion-at-point)
-         (setq done (< 0 (skip-chars-forward "^ \t\r\n\f"))))
+         (setq done (completion-at-point))
+         (when py-verbose-p (message "%s" done))
+         (setq done (< 0 (skip-chars-forward "^ \t\r\n\f")))
+         )
          )
   (unless done (jump-to-register py--windows-config-register))
   ))
