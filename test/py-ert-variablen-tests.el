@@ -46,12 +46,6 @@
 (ert-deftest py-ert-shell-map-test-zr6lBC ()
   (should (boundp 'py-shell-mode-map)))
 
-;; (ert-deftest py-ert-eldoc-string-code-test-zOpVTu ()
-;;   (should (boundp 'py-eldoc-string-code)))
-
-(ert-deftest py-ert-chars-after-test-TNpn9m ()
-  (should (boundp 'py-chars-after)))
-
 (ert-deftest py-ert-chars-before-test-rW2cnf ()
   (should (boundp 'py-chars-before)))
 

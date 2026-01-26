@@ -1624,9 +1624,6 @@
 (ert-deftest py-ert-flake8-help-functionp-test-Y1b7oZ ()
   (should (functionp 'py-flake8-help)))
 
-(ert-deftest py-ert--string-strip-functionp-test-s7pwwP ()
-  (should (functionp 'py--string-strip)))
-
 (ert-deftest py-ert-nesting-level-functionp-test-o7PUFF ()
   (should (functionp 'py-nesting-level)))
 
