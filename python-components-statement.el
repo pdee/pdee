@@ -136,7 +136,6 @@ REPEAT - count and consider repeats"
                (not (member (char-before) (list 10 32 9 ?#)))
                (point))))))
 
-
 (defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat maxindent)
   "Go to the initial line of a simple statement.
 
@@ -256,6 +255,29 @@ Optional MAXINDENT: do not stop if indentation is larger"
         ;; return nil when before comment
         (unless (and (looking-at "[ \t]*#") (looking-back "^[ \t]*" (line-beginning-position)))
           (when (< (point) orig) (point)))))))
+
+(defun py--beginning-of-statement-p (&optional pps bol)
+  "Return ‘t’, if cursor is at the beginning of a ‘statement’, nil otherwise."
+  (interactive)
+  (save-excursion
+    (when (or bol (bolp)) (back-to-indentation))
+    (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
+      (and (not (or (nth 8 pps) (nth 1 pps)))
+           (looking-at py-statement-re)
+           (looking-back "[^ \t]*" (line-beginning-position))
+           (eq (current-column) (current-indentation))
+           (eq (point) (progn (py-forward-statement) (py-backward-statement)))))))
+
+(defun py--beginning-of-statement-bol-p (&optional pps)
+  "Return position, if cursor is at the beginning of a ‘statement’, nil otherwise."
+  (save-excursion
+    (let ((pps (or pps (parse-partial-sexp (point-min) (point)))))
+      (and (bolp)
+           (not (or (nth 8 pps) (nth 1 pps)))
+           (looking-at py-statement-re)
+           (looking-back "[^ \t]*" (line-beginning-position))
+           (eq (point) (progn (py-forward-statement-bol) (py-backward-statement-bol)))
+           (point)))))
 
 ;; python-components-statement.el ends here
 (provide 'python-components-statement)

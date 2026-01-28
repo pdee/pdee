@@ -280,9 +280,6 @@
 (ert-deftest py-ert-leave-comment-or-string-backward-functionp-test-GWv6vd ()
   (should (functionp 'py-leave-comment-or-string-backward)))
 
-(ert-deftest py-ert-beginning-of-list-pps-functionp-test-8YgrcP ()
-  (should (functionp 'py-beginning-of-list-pps)))
-
 (ert-deftest py-ert-forward-into-nomenclature-functionp-test-8WApPq ()
   (should (functionp 'py-forward-into-nomenclature)))
 

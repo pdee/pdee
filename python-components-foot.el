@@ -156,7 +156,7 @@
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
-  ;; recent Emacs binds ‘M-q’ to ‘prog-fill-reindent-defun’  
+  ;; recent Emacs binds ‘M-q’ to ‘prog-fill-reindent-defun’
   ;; (local-set-key [(meta ?q)] 'fill-pararaph)
   (set (make-local-variable 'normal-auto-fill-function) 'py-fill-string-or-comment)
   (set (make-local-variable 'require-final-newline) mode-require-final-newline)
@@ -328,6 +328,68 @@ may want to re-add custom functions to it using the
       (progn
         (py-shell-font-lock-turn-on))
     (py-shell-font-lock-turn-off)))
+
+;; (define-derived-mode inferior-python-mode comint-mode py-modeline-display
+;;   "Major mode for Python inferior process.
+;; Runs a Python interpreter as a subprocess of Emacs, with Python
+;; I/O through an Emacs buffer.  Variables `python-shell-interpreter'
+;; and `python-shell-interpreter-args' control which Python
+;; interpreter is run.  Variables
+;; `python-shell-prompt-regexp',
+;; `python-shell-prompt-output-regexp',
+;; `python-shell-prompt-block-regexp',
+;; `python-shell-font-lock-enable',
+;; `python-shell-completion-setup-code',
+;; `python-eldoc-setup-code',
+;; `python-ffap-setup-code' can
+;; customize this mode for different Python interpreters.
+
+;; This mode resets `comint-output-filter-functions' locally, so you
+;; may want to re-add custom functions to it using the
+;; `inferior-python-mode-hook'.
+
+;; You can also add additional setup code to be run at
+;; initialization of the interpreter via `python-shell-setup-codes'
+;; variable.
+;; \\<inferior-python-mode-map>
+;; \(Type \\[describe-mode] in the process buffer for a list of commands.)"
+;;   (when python-shell--parent-buffer
+;;     (python-util-clone-local-variables python-shell--parent-buffer))
+;;   (setq-local indent-tabs-mode nil)
+;;   ;; Users can interactively override default values for
+;;   ;; `python-shell-interpreter' and `python-shell-interpreter-args'
+;;   ;; when calling `run-python'.  This ensures values let-bound in
+;;   ;; `python-shell-make-comint' are locally set if needed.
+;;   (setq-local python-shell-interpreter
+;;               (or python-shell--interpreter python-shell-interpreter))
+;;   (setq-local python-shell-interpreter-args
+;;               (or python-shell--interpreter-args python-shell-interpreter-args))
+;;   (setq-local python-shell--prompt-calculated-input-regexp nil)
+;;   (setq-local python-shell--block-prompt nil)
+;;   (setq-local python-shell--prompt-calculated-output-regexp nil)
+;;   (python-shell-prompt-set-calculated-regexps)
+;;   (setq comint-prompt-regexp python-shell--prompt-calculated-input-regexp)
+;;   (setq-local comint-prompt-read-only t)
+;;   (setq mode-line-process '(":%s"))
+;;   (setq-local comint-output-filter-functions
+;;               '(ansi-color-process-output
+;;                 python-shell-comint-watch-for-first-prompt-output-filter
+;;                 comint-watch-for-password-prompt))
+;;   (setq-local comint-highlight-input nil)
+;;   (setq-local compilation-error-regexp-alist
+;;               python-shell-compilation-regexp-alist)
+;;   (setq-local scroll-conservatively 1)
+;;   (setq-local comint-dynamic-complete-functions
+;;               '(comint-c-a-p-replace-by-expanded-history))
+;;   (add-hook 'completion-at-point-functions
+;;             #'python-shell-completion-at-point nil 'local)
+;;   (define-key inferior-python-mode-map "\t"
+;;     #'python-shell-completion-complete-or-indent)
+;;   (make-local-variable 'python-shell-internal-last-output)
+;;   (when python-shell-font-lock-enable
+;;     (python-shell-font-lock-turn-on))
+;;   (compilation-shell-minor-mode 1)
+;;   (python-pdbtrack-setup-tracking))
 
 (make-obsolete 'jpython-mode 'jython-mode nil)
 

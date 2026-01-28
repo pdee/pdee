@@ -1177,8 +1177,8 @@ Precedes guessing when not empty, returned by function ‘py-separator-char’."
   :tag "py-separator-char"
   :group 'python-mode)
 
-(defvar py-separator-char "/"
-  "Values set by defcustom only will not be seen in batch-mode.")
+;; (defvar py-separator-char "/"
+;;   "Values set by defcustom only will not be seen in batch-mode.")
 
 (and
  ;; used as a string finally
