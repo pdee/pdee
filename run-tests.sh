@@ -103,6 +103,7 @@ h1() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq py-verbose-p nil)" \
 --eval "(setq py-install-dir \"$PWD\")" \
 --eval "(setq python-mode-v5-behavior-p t)" \
@@ -118,6 +119,7 @@ h2() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -130,6 +132,7 @@ h3() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -142,6 +145,7 @@ h4() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -154,6 +158,7 @@ h5() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -166,6 +171,7 @@ h6() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -178,6 +184,7 @@ h7() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -190,6 +197,7 @@ h8() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -202,6 +210,7 @@ h9() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -227,6 +236,7 @@ h11() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -239,6 +249,7 @@ h12() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -251,6 +262,7 @@ h13() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -263,6 +275,7 @@ h14() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -287,6 +300,7 @@ h16() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -299,6 +313,7 @@ h17() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -310,6 +325,7 @@ h18() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -321,6 +337,7 @@ h19() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-indent-guess-indent-offset-verbose nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -333,6 +350,7 @@ h20() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
@@ -344,6 +362,7 @@ h21() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 --l $HOME/emacs/lisp/progmodes/python.el \
@@ -355,6 +374,7 @@ hierv5() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -378,6 +398,7 @@ extrav5() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p t)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -390,6 +411,7 @@ extra() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(setq python-mode-v5-behavior-p nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
@@ -414,6 +436,7 @@ $EMACS -Q -L . --batch \
 -l $TEST14 \
 -l $TEST20 \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 -f ert-run-tests-batch-and-exit
 }
 
