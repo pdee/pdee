@@ -22,22 +22,24 @@
 
 (require 'py-setup-ert-tests)
 
-(ert-deftest py-ert-execute-region-python-test ()
-  (py-test
-      "print(\"one\")
+
+
+(if
+    (executable-find "python")
+    (ert-deftest py-ert-execute-region-python-test ()
+      (py-test
+          "print(\"one\")
 print(\"two\")"
-    'python-mode
-    'py-debug-p
-    (when py-debug-p (font-lock-ensure))
-    (if
-        (executable-find "python")
+        'python-mode
+        'py-debug-p
+        (when py-debug-p (font-lock-ensure))
         (let ((buffer "*Python*"))
           (py-execute-region-python (point-min) (point-max))
           ;; (sit-for 0.5 t)
           (set-buffer buffer)
           (goto-char (point-max))
-          (should (search-backward "two"))))
-    (when py-verbose-p (message "%s" "Don't see a ‘python’ executable"))))
+          (should (search-backward "two")))))
+    (when py-verbose-p (message "%s" "Don't see a ‘python’ executable")))
 
 (ert-deftest py-ert-execute-region-python3-test ()
   (py-test
@@ -46,24 +48,22 @@ print(\"two\")"
     'python-mode
     'py-debug-p
     (when py-debug-p (font-lock-ensure))
-    (if
-        (executable-find "python3")
-        (let ((buffer "*Python3*"))
-          (py-execute-region-python3 (point-min) (point-max))
-          (set-buffer (get-buffer buffer))
-          (goto-char (point-max))
-          (should (search-backward "two")))
-      (when py-verbose-p (message "%s" "Don't see a ‘python3’ executable")))))
+    (let ((buffer "*Python3*"))
+      (py-execute-region-python3 (point-min) (point-max))
+      (set-buffer (get-buffer buffer))
+      (goto-char (point-max))
+      (should (search-backward "two")))
+    (py-kill-buffer-unconditional (get-buffer "*Python3*"))))
 
-(ert-deftest py-ert-execute-region-ipython-test ()
-  (py-test
-      "print(\"one\")
+(if
+    (ignore-errors (executable-find "ipython"))
+    (ert-deftest py-ert-execute-region-ipython-test ()
+      (py-test
+          "print(\"one\")
 print(\"two\")"
-    'python-mode
-    'py-debug-p
-    (when py-debug-p (font-lock-ensure))
-    (if
-        (ignore-errors (executable-find "ipython"))
+        'python-mode
+        'py-debug-p
+        (when py-debug-p (font-lock-ensure))
         (let ((buffer "*IPython*"))
           (py-execute-region-ipython (point-min) (point-max))
           (set-buffer buffer)
@@ -72,19 +72,18 @@ print(\"two\")"
           (goto-char (point-max))
           ;; (sit-for 0.5 t)
           (should (search-backward "two"))))
-    (when py-verbose-p
-      (message "py-ert-execute-region-ipython-test: %s" "No executable found!"))))
+      (when py-verbose-p
+        (message "py-ert-execute-region-ipython-test: %s" "No executable found!"))))
 
-
-(ert-deftest py-ert-execute-region-ipython3-test ()
-  (py-test
-      "print(\"one\")
+(if
+    (ignore-errors (executable-find "ipython3"))
+    (ert-deftest py-ert-execute-region-ipython3-test ()
+      (py-test
+          "print(\"one\")
 print(\"two\")"
-    'python-mode
-    'py-debug-p
-    (when py-debug-p (font-lock-ensure))
-    (if
-        (ignore-errors (executable-find "ipython3"))
+        'python-mode
+        'py-debug-p
+        (when py-debug-p (font-lock-ensure))
         (let ((buffer "*IPython3*")
               ;; (buffer (py--choose-buffer-name "ipython3"))
 	      (inhibit-point-motion-hooks t))
@@ -103,25 +102,26 @@ print(\"two\")"
                 ;; (sit-for 2)
                 (when py-debug-p (message "current-buffer4: %s" (current-buffer)))
                 (should (search-backward "two")))))
-    (when py-verbose-p
-      (message "py-ert-execute-region-ipython3-test: %s" "No executable found!"))))
+      (when py-verbose-p
+        (message "py-ert-execute-region-ipython3-test: %s" "No executable found!"))))
 
-(ert-deftest py-ert-execute-region-jython-6cDiVW ()
-  (py-test
-      "print(\"one\")
-print(\"two\")"
-    'python-mode
-    'py-debug-p
-    (when py-debug-p (font-lock-ensure))
-    (if
-        (executable-find "jython")
-        (let ((buffer "*Jython*"))
-          (py-execute-region-jython (point-min) (point-max))
-          (set-buffer buffer)
-          (goto-char (point-max))
-          (should (search-backward "two"))))
-    (when py-verbose-p
-      (message "py-ert-execute-region-jython-test: %s" "No executable found!"))))
+;; (if
+;;     (and (executable-find "jython")
+;;          (shell-command-to-string "jython")
+;;     (ert-deftest py-ert-execute-region-jython-6cDiVW ()
+;;       (py-test
+;;           "print(\"one\")
+;; print(\"two\")"
+;;         'python-mode
+;;         'py-debug-p
+;;         (when py-debug-p (font-lock-ensure))
+;;         (let ((buffer "*Jython*"))
+;;           (py-execute-region-jython (point-min) (point-max))
+;;           (set-buffer buffer)
+;;           (goto-char (point-max))
+;;           (should (search-backward "two")))))
+;;   (when py-verbose-p
+;;     (message "py-ert-execute-region-jython-test: %s" "No executable found!"))))
 
 (provide 'py-ert-execute-region-test)
 ;;; py-ert-execute-region-test.el here

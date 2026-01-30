@@ -2128,41 +2128,44 @@ process buffer for a list of commands.)"
               (and buffer (buffer-name buffer))
               (and python-mode-v5-behavior-p (buffer-name (get-buffer-create "*Python Output*")))
               (py--choose-buffer-name shell dedicated fast)))
-         (proc (get-buffer-process this-buffer))
-         (cmd (py-shell-calculate-command shell args))
-         (buffer (python-shell-make-comint
-                  (or cmd (python-shell-calculate-command))
-                  ;; (string-trim (buffer-name this-buffer) "*" "*")
-                  (string-trim this-buffer "*" "*")
-                  ;; (python-shell-get-process-name dedicated)
-                  ;; show
-                  ))
-         (this-buffer-name buffer))
-    (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p (get-buffer "*Python Output*") (get-buffer buffer))))
-    (with-current-buffer (get-buffer buffer)
-      ;; (setq delay (py--which-delay-process-dependent this-buffer-name))
-      (unless fast
-        (when py-debug-p (switch-to-buffer (current-buffer)))
-        (setq py-shell-mode-syntax-table python-mode-syntax-table)
-        (setq py-modeline-display (py--update-lighter this-buffer-name))))
-    (if (setq proc (get-buffer-process buffer))
-        (progn
-          (when py-register-shell-buffer-p
-            (save-excursion
-              (save-restriction
-                (with-current-buffer buffer
-                  (when (or switch py-switch-buffers-on-execute-p py-split-window-on-execute)
-                    (switch-to-buffer (current-buffer))
-                    (goto-char (point-max))
-                    (sit-for 0.1)
-                    (funcall 'window-configuration-to-register py-register-char))))))
-          (unless fast (py-shell-mode))
-          (and internal (set-process-query-on-exit-flag proc nil))
-          (when (or interactivep
-                    (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
-            (py--shell-manage-windows buffer exception-buffer split (or interactivep switch)))
-          (get-buffer buffer))
-      (error (concat "py-shell:" (py--fetch-error py-output-buffer))))))
+         (proc (and (get-buffer-process this-buffer))))
+    (unless proc
+      (let*
+          ((cmd (py-shell-calculate-command shell args))
+           (buffer (python-shell-make-comint
+                    (or cmd (python-shell-calculate-command))
+                    ;; (string-trim (buffer-name this-buffer) "*" "*")
+                    (string-trim this-buffer "*" "*")
+                    ;; (python-shell-get-process-name dedicated)
+                    ;; show
+                    ))
+           (this-buffer-name this-buffer))
+        (when py-debug-p (switch-to-buffer this-buffer))
+        (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p (get-buffer "*Python Output*") (get-buffer this-buffer))))
+        (with-current-buffer (get-buffer this-buffer)
+          ;; (setq delay (py--which-delay-process-dependent this-buffer-name))
+          (unless fast
+            (when py-debug-p (switch-to-buffer (current-buffer)))
+            (setq py-shell-mode-syntax-table python-mode-syntax-table)
+            (setq py-modeline-display (py--update-lighter this-buffer-name))))
+        (if (setq proc (get-buffer-process buffer))
+            (progn
+              (when py-register-shell-buffer-p
+                (save-excursion
+                  (save-restriction
+                    (with-current-buffer buffer
+                      (when (or switch py-switch-buffers-on-execute-p py-split-window-on-execute)
+                        (switch-to-buffer (current-buffer))
+                        (goto-char (point-max))
+                        (sit-for 0.1)
+                        (funcall 'window-configuration-to-register py-register-char))))))
+              ;; (unless fast (py-shell-mode))
+              (and internal (set-process-query-on-exit-flag proc nil)))
+          (error (concat "py-shell:" (py--fetch-error py-output-buffer))))))
+    (when (or interactivep
+              (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
+      (py--shell-manage-windows this-buffer exception-buffer split (or interactivep switch)))
+    (get-buffer this-buffer)))
 
 (defun py-kill-buffer-unconditional (&optional buffer)
   "Kill buffer unconditional, kill buffer-process if existing."

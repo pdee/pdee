@@ -214,6 +214,8 @@ h10() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-guess-indent-offset nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \

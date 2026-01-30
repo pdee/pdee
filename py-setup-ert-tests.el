@@ -20,6 +20,8 @@
 
 ;;; Code:
 
+(setq python-indent-offset 4)
+
 (defmacro py-test (contents mode verbose &rest body)
   "Create temp buffer inserting CONTENTS.
 
