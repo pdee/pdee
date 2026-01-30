@@ -115,7 +115,8 @@ The returned file name can be used directly as argument of
 ;; (format "execfile(r'%s')\n" file)
 (defun py-execute-file-command (filename)
   "Return the command using FILENAME."
-  (format "exec(compile(open(r'%s').read(), r'%s', 'exec')) # PYTHON-MODE\n" filename filename)
+  (format "exec(compile(open(r'%s').read(), r'%s', 'exec')) # PYTHON-MODE\n"
+          filename filename)
   )
 
 (defun py-toggle-session-p (&optional arg)
