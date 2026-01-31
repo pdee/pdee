@@ -1747,7 +1747,7 @@ Else /usr/bin/python"
 (defvar py-shell-name py-python-command)
 ;; (defvaralias 'py-shell-name 'py-python-command)
 
-(defcustom py-python-command-args "-i"
+(defcustom py-python-command-args '("-i")
   "String arguments to be used when starting a Python shell."
   :type '(repeat string)
   :tag "py-python-command-args"
