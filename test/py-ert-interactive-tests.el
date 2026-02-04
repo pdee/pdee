@@ -23,6 +23,7 @@
 ;;; Code:
 
 (require 'py-setup-ert-tests)
+(require 'python-mode)
 
 (ert-deftest py-test-embedded-51-test-sgaO9V ()
   (py-test
