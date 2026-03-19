@@ -38,6 +38,13 @@ REPEAT - count and consider repeats"
        ;; which-function-mode, lp:1235375
        ((< py-max-specpdl-size repeat)
         (error "py-forward-statement reached loops max. If no error, customize ‘max-specpdl-size’"))
+       ((nth 1 pps)
+        (goto-char (nth 1 pps))
+        ;; if a:
+        ;;   ar_atpt_python_list_roh = ([
+        ;; provide for uncomplete code, ignore errors
+        (ignore-errors (forward-sexp))
+        (point))
        ((looking-at (symbol-value (quote py-def-or-class-re)))
         (end-of-line)
         (skip-chars-backward " \t\r\n\f"))
@@ -68,6 +75,7 @@ REPEAT - count and consider repeats"
        ((nth 4 pps)
         (py--end-of-comment-intern (point))
         (py--skip-to-comment-or-semicolon)
+        (skip-chars-backward " \t\r\n\f")
         (while (and (eq (char-before (point)) ?\\)
                     (py-escaped-p) (setq last (point)))
           (forward-line 1) (end-of-line))
@@ -75,8 +83,14 @@ REPEAT - count and consider repeats"
              (forward-line 1)
              (back-to-indentation))
         ;; py-forward-statement-test-3JzvVW
-        (unless (or (looking-at (concat " *" comment-start))(eolp))
-          (py-forward-statement orig done repeat)))
+        (if (or (looking-at (concat " *" comment-start))(eolp))
+            (or err
+              (and (< orig (point))
+                   (not (member (char-before) (list 10 32 9 ?#)))
+                   ;; (not (nth 1 (parse-partial-sexp (point-min) (point))))
+                   (point)))
+            (py-forward-statement orig done repeat)
+          ))
        ;; string
        ((looking-at py-string-delim-re)
         (goto-char (match-end 0))
@@ -103,15 +117,18 @@ REPEAT - count and consider repeats"
                ;; (skip-chars-forward " \t\r\n\f#'\"")
                (skip-chars-forward " \t\r\n\f")
                (end-of-line)
-               (skip-chars-backward " \t\r\n\f" orig)
-               (when (nth 4 (setq pps (parse-partial-sexp (point-min) (point))))
-                 (py-forward-comment)
-                 (py-forward-statement orig t repeat)
-                 (skip-chars-backward " \t\r\n\f" orig))
-               (when (or (nth 1 (setq pps (parse-partial-sexp (point-min) (point)))) (nth 8 pps))
-                 (py-forward-statement orig t repeat)))
+               (unless (eobp)
+                 (skip-chars-backward " \t\r\n\f" orig)
+                 (if (nth 4 (setq pps (parse-partial-sexp (point-min) (point))))
+                     (progn
+                   (py-forward-comment)
+                   (py-forward-statement orig t repeat))
+                   ;; (skip-chars-backward " \t\r\n\f" orig))
+                 (py-forward-statement orig t repeat (parse-partial-sexp (point-min) (point)))
+                 )))
               ((and (eq (current-indentation) (current-column)) (looking-at py-statement-re))
                (goto-char (match-end 0))
+               (py-forward-statement orig done repeat)
                ;; (setq done t)
                )
               ((eq (point) orig)
@@ -130,11 +147,15 @@ REPEAT - count and consider repeats"
           (unless done
             (py-forward-statement orig done repeat))))
        ((and (looking-at "[[:print:]]+$") (not done) (py--skip-to-comment-or-semicolon))
-        (py-forward-statement orig done repeat)))
-      (or err
-          (and (< orig (point))
-               (not (member (char-before) (list 10 32 9 ?#)))
-               (point))))))
+        (py-forward-statement orig done repeat))
+       ((and (not err) (setq pps (nth 1 (parse-partial-sexp (point-min) (point)))))
+        (py-forward-statement orig done repeat pps))
+       (t (or err
+              (and (< orig (point))
+                   (not (member (char-before) (list 10 32 9 ?#)))
+
+                   (not (nth 1 (parse-partial-sexp (point-min) (point))))
+                   (point))))))))
 
 (defun py-backward-statement (&optional orig done limit ignore-in-string-p repeat maxindent)
   "Go to the initial line of a simple statement.

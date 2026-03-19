@@ -2429,14 +2429,15 @@ class bar:
 ;; directory devel. Edits here might not be persistent.\n")
   (insert arkopf)
   (goto-char (point-max))
-  (insert "\n(defun py-forward-assignment (&optional orig bol)
+  (insert "\n(defun py-forward-assignment (&optional bol)
   \"Go to end of assignment.
 
 Return end of ‘assignment’ if successful, nil otherwise
 Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position\"
   (interactive)
-  (py--end-base 'py-assignment-re orig bol))
+  (let ((orig (point)))
+    (py--end-base 'py-assignment-re orig bol)))
 
 \(defun py-forward-assignment-bol ()
   \"Goto beginning of line following end of ‘assignment’.
@@ -2457,17 +2458,18 @@ See also ‘py-down-assignment’.\"
     ;;   (insert "\n;;;###autoload"))
     ;; beg-end check forms
     (insert (concat "
-\(defun py-forward-" ele " (&optional orig bol)
+\(defun py-forward-" ele " (&optional bol)
   \"Go to end of " ele ".
 
 Return end of `" ele "' if successful, nil otherwise
 Optional ORIG: start position
 Optional BOL: go to beginning of line following end-position\"
   (interactive)
-  (let (erg)
+  (let ((orig (point))
+         erg)
     (unless (setq erg (py--end-base 'py-" (ar-block-regexp-name-richten ele)
                                "-re orig bol))
-      (skip-chars-forward \" \\t\\r\\n\\f\")
+      (py-forward-statement) 
       (setq erg (py--end-base 'py-" (ar-block-regexp-name-richten ele)
                                "-re orig bol)))
     erg))
@@ -2478,7 +2480,7 @@ Optional BOL: go to beginning of line following end-position\"
 Return position reached, if successful, nil otherwise.
 See also `py-down-" ele "'.\"
   (interactive)
-  (py-forward-" ele " nil t))\n")))
+  (py-forward-" ele " t))\n")))
 
   (insert "\n;; python-components-forward-forms.el ends here
 \(provide 'python-components-forward-forms)")

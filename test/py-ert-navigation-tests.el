@@ -780,7 +780,7 @@
    (py-backward-class-bol)
    (should (bobp))))
 
-(ert-deftest py-ert-moves-backward-def-or-class-bol-xTvIPv-s3x1zu ()
+(ert-deftest py-ert-moves-backward-def-or-class-bol-s3x1zu ()
   (py-test
    "class OrderedDict1(dict):
     \"\"\"
@@ -6784,6 +6784,7 @@ class C:
    (goto-char (point-max))
    (search-backward "def")
    (py-down)
+   ;; (sit-for 0.1) 
    (should (looking-at "self.a"))))
 
 (ert-deftest py-down-test-2XNdbk ()

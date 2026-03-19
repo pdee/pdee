@@ -1,4 +1,4 @@
-;;; py-ert-extra-tests.el --- extra tests                -*- lexical-binding: t; -*-
+;;; py-ert-extra-tests.el --- extra tests -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: convenience
@@ -133,7 +133,7 @@ os.write"
     ;; (goto-char (point-min))
     (goto-char (process-mark (get-buffer-process (current-buffer))))
     (forward-line 0)
-    (sit-for 0.1) 
+    (sit-for 0.1)
     (should (string-match "write" (buffer-substring-no-properties (point) (or (re-search-backward python-shell-prompt-regexp nil t) comint-last-input-end))))
     ;; (py-kill-buffer-unconditional py-output-buffer)
     (py-kill-buffer-unconditional (current-buffer))
@@ -569,6 +569,7 @@ by the
    (when py-verbose-p
      (let ((erg (buffer-substring-no-properties (line-beginning-position) (point))))
        (message "%s" erg)))
+   (sit-for 0.1) 
    (should (looking-back "print.?" (line-beginning-position)))))
 
 (ert-deftest py-ert-fill-paragraph-pep-257-nn-BBJoDt ()

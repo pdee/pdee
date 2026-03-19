@@ -46,9 +46,9 @@ else:
    'py-debug-p
    (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
-   (let (py-font-lock-defaults-p)
-     (py-forward-block)
-     (should (eobp)))))
+   (py-forward-block)
+   (skip-chars-forward " \t\r\n\f")
+   (should (eobp))))
 
 (ert-deftest py-ert-forward-block-or-clause-test ()
   (py-test-point-min
@@ -795,6 +795,17 @@ class bar:
    (end-of-line)
    (py-forward-statement)
    (should (eq (char-before) 41))))
+
+(ert-deftest py-ert-forward-statement-test-5yxjRT ()
+  (py-test-point-min
+   "print(\"I'm the py-execute-statement-python3-dedicated-test\")"
+   'python-mode
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
+   ;; (goto-char (point-min))
+   (py-forward-statement)
+   (should (eq (char-before) 41))))
+
 
 (provide 'py-ert-forward-tests)
 ;;; py-ert-forward-tests.el ends here

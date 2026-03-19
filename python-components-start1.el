@@ -919,7 +919,8 @@ Return and move to match-beginning if successful"
          (py-forward-statement)
          (< indent (current-indentation))
          (setq last (point))))
-    (when last (goto-char last))))
+    (when last (goto-char last)))
+  )
 
 (defun py--down-end-form ()
   "Return position."
@@ -1927,9 +1928,7 @@ according to ‘py-split-windows-on-execute-function’."
     erg))
 
 (defun py-send-string-no-output (strg &optional process buffer-name)
-  "Send STRING to PROCESS and inhibit output.
-
-Return the output."
+  "Send STRING to PROCESS and inhibit output. "
   (let* ((proc (or process (py--get-process)))
          (buffer (or buffer-name (if proc (buffer-name (process-buffer proc)) (py-shell))))
          (comint-preoutput-filter-functions

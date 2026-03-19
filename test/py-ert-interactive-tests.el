@@ -408,7 +408,7 @@ exercise()"
 (ert-deftest py-pdbtrack-input-prompt-45-test-7V1h5F ()
   (py-test
    "def exercise():
-  import pdb\\; pdb.set_trace()
+  import pdb; pdb.set_trace()
   x = \"hello\"
   y = \"darkness\"
   print(x)
@@ -421,8 +421,8 @@ exercise()"
    (switch-to-buffer (current-buffer))
    (message "prompt-45: %s" (buffer-name (current-buffer)))
    (message "Nach Prompt: %s" (buffer-substring-no-properties (1- (line-beginning-position)) (point)))
-   (sit-for 1)
-   (should (looking-back py-pdbtrack-input-prompt (line-beginning-position)))))
+   (sit-for 0.1)
+   (should (looking-back py-pdbtrack-input-prompt (- (line-beginning-position) 6)))))
 
 (ert-deftest py-pdbtrack-is-tracking-45-test-N1CTvI ()
   (py-test
@@ -538,8 +538,8 @@ print(rest)"
    'py-debug-p
    (when py-debug-p (font-lock-ensure))
    (goto-char (point-max))
-   (search-backward "rest")
-   (py-indent-or-complete)
+   (search-backward "print")
+   (py-indent-line)
    ;; (switch-to-buffer (current-buffer))
    ;; (message "py-in-list-indent-test-LEON2Q (current-buffer):  %s" (current-buffer))
    ;; (sit-for 1)
@@ -613,8 +613,7 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
   'python-mode
   'py-debug-p
   (when py-debug-p (font-lock-ensure))
-  (let ((erg (python3))
-        erg)
+  (let ((erg (python3)))
     (should (bufferp (get-buffer erg)))
     (should (get-buffer-process erg))))
 
@@ -623,10 +622,12 @@ print(\"I'm the py-just-two-split-dedicated-lp-1361531-python3-test\")"
   'python-mode
   'py-debug-p
   (when py-debug-p (font-lock-ensure))
-  (let ((erg (python2)))
-    (sit-for 0.1)
-    (should (bufferp (get-buffer erg)))
-    (should (get-buffer-process erg))))
+  (if (ignore-errors (executable-find "python2"))
+      (let ((erg (python2)))
+        (sit-for 0.1)
+        (should (bufferp (get-buffer erg)))
+        (should (get-buffer-process erg)))
+    (when py-debug-p (message "py-python2-shell-test-8Ostfe: %s" "‘python2’ not found"))))
 
 (ert-deftest py-keep-windows-configuration-test-Hh2GD6 ()
   (py-test

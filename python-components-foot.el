@@ -246,6 +246,7 @@
            (font-lock-add-keywords 'python-mode kw-py3 t))
           (t (font-lock-add-keywords 'python-mode kw-py2 t)))))
 
+;;;###autoload
 (define-derived-mode python-mode prog-mode python-mode-modeline-display
   "Major mode for editing Python files.
 
@@ -282,6 +283,7 @@ VARIABLES
   ;; Local vars
   (all-mode-setting))
 
+;;;###autoload
 (define-derived-mode py-shell-mode comint-mode py-modeline-display
   "Major mode for Python shell process.
 

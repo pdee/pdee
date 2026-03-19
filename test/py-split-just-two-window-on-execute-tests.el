@@ -1,4 +1,4 @@
-;;; py-split-just-two-window-on-execute-test.el --- Test splitting
+;;; py-split-just-two-window-on-execute-test.el --- Test splitting -*- lexical-binding: t; -*- 
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience

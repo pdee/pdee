@@ -587,7 +587,8 @@ Returns position successful, nil otherwise"
                     ;; (not (looking-at py-extended-block-or-clause-re))
                     (or (not (py--beginning-of-statement-p))(looking-at py-string-delim-re))
                     ;; still in string or comment
-                    (save-excursion (backward-char) (nth 8 (parse-partial-sexp (point-min) (point)))))))))
+                    (save-excursion (backward-char) (nth 8 (parse-partial-sexp (point-min) (point))))))))
+  (back-to-indentation))
 
 (defun py-down ()
   "Move forward down one level of syntactic indentation.
