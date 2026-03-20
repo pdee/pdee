@@ -48,13 +48,14 @@ print(\"two\")"
     'python-mode
     'py-debug-p
     (when py-debug-p (font-lock-ensure))
-    ;; (let ((buffer "*Python3*"))
-    (py-execute-region-python3 (point-min) (point-max))
-    (set-buffer (get-buffer "*Python3*"))
-    (goto-char (point-max))
-    (should (search-backward "two"))
-    
-    (py-kill-buffer-unconditional (get-buffer "*Python3*"))))
+    (if (executable-find "python3")
+        (let ((buffer "*Python3*"))
+          (py-execute-region-python3 (point-min) (point-max))
+          (set-buffer (get-buffer buffer))
+          (goto-char (point-max))
+          (should (search-backward "two"))
+          (py-kill-buffer-unconditional (get-buffer buffer)))
+      (when py-verbose-p (message "%s" "Don't see a 'python3' executable")))))
 
 
 (if
