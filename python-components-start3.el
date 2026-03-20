@@ -424,7 +424,7 @@ START END SHELL FILENAME PROC FILE WHOLEBUF FAST DEDICATED SPLIT SWITCH."
          (filename (or (and filename (expand-file-name filename))
                        (py--buffer-filename-remote-maybe)))
          (py-orig-buffer-or-file (or filename (current-buffer)))
-         (cmd (py-shell-calculate-command shell py-python-command-args))
+         (cmd (py-shell-calculate-command shell (car  py-python-command-args)))
          proc-raw output-buffer
          )
     (if python-mode-v5-behavior-p
