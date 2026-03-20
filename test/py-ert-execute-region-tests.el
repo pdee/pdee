@@ -1,4 +1,4 @@
-;;; py-ert-execute-region-test.el --- py-execute-region tests -*- lexical-binding: t; -*- -*- lexical-binding: t; -*-
+;;; py-ert-execute-region-tests.el --- py-execute-region tests -*- lexical-binding: t; -*- -*- lexical-binding: t; -*-
 
 ;; URL: https://gitlab.com/python-mode-devs
 ;; Keywords: languages, convenience
@@ -125,5 +125,5 @@ print(\"two\")"
 ;;   (when py-verbose-p
 ;;     (message "py-ert-execute-region-jython-test: %s" "No executable found!"))))
 
-(provide 'py-ert-execute-region-test)
-;;; py-ert-execute-region-test.el here
+(provide 'py-ert-execute-region-tests)
+;;; py-ert-execute-region-tests.el here

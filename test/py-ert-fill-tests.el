@@ -565,12 +565,14 @@ def baz():
      (search-forward "index")
      (fill-paragraph)
      (goto-char (point-max))
-     (search-backward "\"")
-     (forward-char 1)
-     (should (eolp))
-     (forward-line -1)
-     (sit-for 1) 
-     (should-not (py-empty-line-p)))))
+     (should (eq 7 (py-count-lines))))))
+
+     ;; (search-backward "\"")
+     ;; (forward-char 1)
+     ;; (should (eolp))
+     ;; (forward-line -1)
+     ;; (sit-for 1)
+     ;; (should-not (py-empty-line-p)))))
 
 (ert-deftest py-ert-pep-257-9HrXY7 ()
   (py-test
