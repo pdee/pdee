@@ -569,6 +569,7 @@ def baz():
      (forward-char 1)
      (should (eolp))
      (forward-line -1)
+     (sit-for 0.1) 
      (should-not (py-empty-line-p)))))
 
 (ert-deftest py-ert-pep-257-9HrXY7 ()

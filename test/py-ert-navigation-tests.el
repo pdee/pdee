@@ -7101,7 +7101,7 @@ inst.a, inst.b, inst.c = 'foo', 'bar', 'baz'
    (goto-char (point-min))
    (search-forward "if")
    (beginning-of-line)
-   (py-forward-block (point) (bolp))
+   (py-forward-block (bolp))
    (should (looking-at " +# sys.exit()"))
    ))
 

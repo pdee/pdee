@@ -101,12 +101,12 @@ Optional arguments beg, end: numbers"
     (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
   (py-hide-base (quote region) beg end))
 
-(defun py-show-region (beg end)
-  "Un-hide active region."
-  (interactive
-   (list
-    (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
-  (hs-discard-overlays beg end))
+;; (defun py-show-region (beg end)
+;;   "Un-hide active region."
+;;   (interactive
+;;    (list
+;;     (and (use-region-p) (region-beginning))(and (use-region-p) (region-end))))
+;;   (hs-discard-overlays beg end))
 
 (defun py-hide-block ()
   "Hide block at point."

@@ -44,7 +44,7 @@ Optional BOL: go to beginning of line following end-position"
 Return position reached, if successful, nil otherwise.
 See also ‘py-down-assignment’."
   (interactive)
-  (py-forward-assignment nil t))
+  (py-forward-assignment t))
 
 (defun py-forward-region ()
   "Go to the end of current region."
