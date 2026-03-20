@@ -287,7 +287,12 @@ See lp:1066489 "
           (forward-line 1)
           ;; (newline 1)
           (split-line)
-          )))))
+          ))
+      (when (and multi-line-p (eq py-docstring-style 'symmetric))
+        (goto-char end)
+        (forward-line -1)
+        (when (py-empty-line-p)
+          (delete-region (line-beginning-position) (1+ (line-end-position)))))))
 
 (defun py-fill-string (&optional justify docstring pps)
   "String fill function.
