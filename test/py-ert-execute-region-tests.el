@@ -53,7 +53,6 @@ print(\"two\")"
     (set-buffer (get-buffer "*Python3*"))
     (goto-char (point-max))
     (should (search-backward "two"))
-    
     (py-kill-buffer-unconditional (get-buffer "*Python3*"))))
 
 
