@@ -22,7 +22,6 @@
 
 ;;
 
-
 ;;; Commentary:
 ;;
 
@@ -206,7 +205,6 @@ Optional argument START"
 ;;   (py-indent-line nil t)
 ;;   (goto-char orig))
 
-
 (defun py--fill-region (beg end fill-prefix)
   ""
   (goto-char beg)
@@ -220,7 +218,7 @@ Optional argument START"
     (unless (eolp) (split-line))
     (forward-line 1)))
 
-(defun py-fill-labelled-string (beg end orig fill-prefix)
+(defun py-fill-labelled-string (beg end orig)
   "Fill string or paragraph containing lines starting with label
 
 See lp:1066489 "
@@ -228,7 +226,7 @@ See lp:1066489 "
   (save-restriction
     (narrow-to-region beg end)
     ;; (goto-char orig)
-    (let ((fill-prefix fill-prefix)
+    (let ((old-fill-prefix fill-prefix)
           (thisbeg (copy-marker beg))
           (thisend (copy-marker end)))
       ;; (if (and
@@ -256,8 +254,9 @@ See lp:1066489 "
             (py--fill-region thisbeg (line-end-position))
             (forward-line 1)
             (py--fill-region (line-beginning-position) thisend)
+            ;; restore fill-prefix
+            (setq fill-prefix old-fill-prefix)
             ))))))
-
 
 (defun py--fill-docstring (beg end &optional justify)
   "Fills paragraph in docstring below or at cursor position."
@@ -305,7 +304,7 @@ See lp:1066489 "
                  (t (delete-horizontal-space))))))
       (cond
        ((string-match py-star-labelled-re (buffer-substring-no-properties innerbeg innerend))
-        (py-fill-labelled-string innerbeg innerend orig fill-prefix))
+        (py-fill-labelled-string innerbeg innerend orig))
        ((string-match py-colon-labelled-re (buffer-substring-no-properties innerbeg innerend))
         (py-fill-labelled-string innerbeg innerend orig)
         orig)
