@@ -438,6 +438,7 @@ exercise()"
    'python-mode
    'py-debug-p
    (when py-debug-p (font-lock-ensure))
+   ;; (turn-on-pdbtrack)
    (py-execute-buffer)
    (switch-to-buffer py-output-buffer)
    (should py-pdbtrack-is-tracking-p)))
@@ -883,6 +884,21 @@ def baz():
     (let ((py-shell-name "python3"))
       (goto-char (point-max))
       (should (string= "pdb3" (py--pdb-versioned))))))
+
+(ert-deftest py-ert-execute-region-python3-test-iwySKV ()
+  (py-test
+      "print(\"one\")
+print(\"two\")"
+    'python-mode
+    'py-debug-p
+    (when py-debug-p (font-lock-ensure))
+    ;; (let ((buffer "*Python3*"))
+    (py-execute-region-python3 (point-min) (point-max))
+    (set-buffer (get-buffer "*Python3*"))
+    (goto-char (point-max))
+    (sit-for 0.1)
+    (should (search-backward "two"))
+    (py-kill-buffer-unconditional (get-buffer "*Python3*"))))
 
 ;; (defun py-up-string-test-NJ7sie ()
 ;;   ""

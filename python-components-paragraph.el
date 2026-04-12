@@ -206,26 +206,58 @@ Optional argument START"
 ;;   (py-indent-line nil t)
 ;;   (goto-char orig))
 
-(defun py-fill-labelled-string (beg end orig)
+
+(defun py--fill-region (beg end fill-prefix)
+  ""
+  (goto-char beg)
+  (while (< (line-end-position) end)
+    (beginning-of-line)
+    (delete-horizontal-space)
+    (insert fill-prefix)
+    (end-of-line)
+    (while (< (current-fill-column) (current-column))
+      (backward-word))
+    (unless (eolp) (split-line))
+    (forward-line 1)))
+
+(defun py-fill-labelled-string (beg end orig fill-prefix)
   "Fill string or paragraph containing lines starting with label
 
 See lp:1066489 "
   (interactive "r*")
-  (goto-char orig)
-  (let ((fill-prefix fill-prefix)
-        thisbeg thisend)
-    (if (and
-         (ignore-errors (< orig (setq thisend (copy-marker (or (save-excursion (end-of-line) (and (re-search-forward py-labelled-re nil t 1)(line-beginning-position))) end)))))
-         (ignore-errors (<=  (setq thisbeg (copy-marker (or (and (looking-at py-labelled-re)(match-beginning 0)) (save-excursion (and (re-search-backward py-labelled-re nil 'move 1) (match-beginning 0))) beg))) orig)))
-        (save-excursion
-          (goto-char thisbeg)
+  (save-restriction
+    (narrow-to-region beg end)
+    ;; (goto-char orig)
+    (let ((fill-prefix fill-prefix)
+          (thisbeg (copy-marker beg))
+          (thisend (copy-marker end)))
+      ;; (if (and
+      ;; (ignore-errors (< orig (setq thisend (copy-marker (or (save-excursion (end-of-line) (and (re-search-forward py-labelled-re nil t 1)(line-beginning-position))) end)))))
+      ;; (ignore-errors (<=  (setq thisbeg (copy-marker (or (and (looking-at py-labelled-re)(match-beginning 0)) (save-excursion (and (re-search-backward py-labelled-re nil 'move 1) (match-beginning 0))) beg))) orig)))
+      (save-excursion
+        (goto-char beg)
+        (skip-chars-forward " \t\r\n\f")
+        (unless (looking-at py-colon-labelled-re)
+          (fill-region (point) (progn (re-search-forward py-labelled-re nil t 1) (beginning-of-line) (skip-chars-backward " \t\r\n\f")(point)) t t)
+          (end-of-line)
+          (skip-chars-forward " \t\r\n\f"))
+        (while (looking-at py-colon-labelled-re)
+          (setq thisbeg (match-beginning 0))
+          (if (re-search-forward py-labelled-re nil 'move 1)
+              (setq thisend (match-beginning 0))
+            (setq thisend (point-max)))
           (cond ((looking-at py-colon-labelled-re)
                  (setq fill-prefix (make-string (+ (current-indentation) py-indent-offset) 32)))
                 ((looking-at py-star-labelled-re)
                  (setq fill-prefix (make-string (+ (current-indentation) 2) 32))))
           (save-restriction
             (narrow-to-region thisbeg thisend)
-            (fill-region thisbeg thisend))))))
+            (goto-char thisbeg)
+            (py--fill-region thisbeg (line-end-position))
+            (forward-line 1)
+            (py--fill-region (line-beginning-position) thisend)
+            ))))))
+
 
 (defun py--fill-docstring (beg end &optional justify)
   "Fills paragraph in docstring below or at cursor position."
@@ -273,7 +305,7 @@ See lp:1066489 "
                  (t (delete-horizontal-space))))))
       (cond
        ((string-match py-star-labelled-re (buffer-substring-no-properties innerbeg innerend))
-        (py-fill-labelled-string innerbeg innerend orig))
+        (py-fill-labelled-string innerbeg innerend orig fill-prefix))
        ((string-match py-colon-labelled-re (buffer-substring-no-properties innerbeg innerend))
         (py-fill-labelled-string innerbeg innerend orig)
         orig)

@@ -152,8 +152,6 @@ If pdb is called at a Python buffer."
         )
     (py-execute-buffer)))
 
-
-
 (defun py--pdbtrack-overlay-arrow (activation)
   "Activate or de arrow at beginning-of-line in current buffer."
   ;; This was derived/simplified from edebug-overlay-arrow
@@ -359,12 +357,9 @@ Returns the tracked buffer."
   (interactive)
   (py-pdbtrack-toggle-stack-tracking 0))
 
-
-
 (if pdb-track-stack-from-shell-p
     (add-hook 'comint-output-filter-functions (quote py--pdbtrack-track-stack-file))
   (remove-hook 'comint-output-filter-functions (quote py--pdbtrack-track-stack-file)))
-
 
 (defun py-pdbtrack-comint-output-filter-function (output)
   "Move overlay arrow to current pdb line in tracked buffer.

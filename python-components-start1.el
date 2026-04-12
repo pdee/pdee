@@ -971,7 +971,10 @@ Delete it here"
   (with-current-buffer buffer
     (when py-debug-p (message "(current-buffer): %s" (current-buffer)))
     (cond (python-mode-v5-behavior-p
-           (string-trim (buffer-substring-no-properties (point-min) (point-max)) nil "\n"))
+           (string-trim
+            ;; (buffer-substring-no-properties (point-min) (point-max))
+            (buffer-string) 
+            nil "\n"))
           ((and cmd limit (< limit (point-max)))
            (replace-regexp-in-string cmd "" (string-trim (replace-regexp-in-string py-shell-prompt-regexp ""
                                                                                    (string-trim (buffer-substring-no-properties limit (point-max)) nil "\n")))))

@@ -325,10 +325,10 @@ h18() {
     date; time -p $EMACS -Q -L . --batch \
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \
---eval "(setq python-indent-offset 4)" \
 -l $TEST18 \
 -f ert-run-tests-batch-and-exit
 }

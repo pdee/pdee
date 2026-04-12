@@ -347,10 +347,10 @@ def foo(rho, x):
         Data type to force. Only a single dtype is allowed. If None, infer.
     copy : bool or None, default None
         Copy data from inputs.
-        For dict data, the default of None behaves like \`\`copy=True\`\`.  For DataFrame
-        or 2d ndarray input, the default of None behaves like \`\`copy=False\`\`.
+        For dict data, the default of None behaves like ``copy=True``.  For DataFrame
+        or 2d ndarray input, the default of None behaves like ``copy=False``.
         If data is a dict containing one or more Series (possibly of different dtypes),
-        \`\`copy=False\`\` will ensure that these inputs are not copied.
+        ``copy=False`` will ensure that these inputs are not copied.
         .. versionchanged:: 1.3.0
     See Also
     --------
@@ -361,7 +361,7 @@ def foo(rho, x):
     read_clipboard : Read text from clipboard into DataFrame.
     Notes
     -----
-    Please reference the :ref:\`User Guide <basics.dataframe>\` for more information.
+    Please reference the :ref:`User Guide <basics.dataframe>` for more information.
     Examples
     --------
     Constructing DataFrame from a dictionary.

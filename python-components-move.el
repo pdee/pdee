@@ -297,7 +297,7 @@ go to beginning of previous line."
   (interactive)
   (unless (bobp)
     (forward-line -1)
-    (point))) 
+    (point)))
 
 (defun py-forward-line ()
   "Go to ‘end-of-line’, return position.
@@ -488,11 +488,11 @@ If already at the beginning of a block, move these form upward."
         (goto-char (nth 8 pps))
         (setq last (point))
         (when py-debug-p (message "last: %s" (point)))
-        (skip-chars-backward " \t\r\n\f")
+        ;; (skip-chars-backward " \t\r\n\f")
         (setq pps (parse-partial-sexp (point-min) (point))))
       (when last (goto-char last))
-      (when py-debug-p (message "last-pos-reached: %s" (point)))
-      )
+      (back-to-indentation)
+      (when py-debug-p (message "last-pos-reached: %s" (point))))
      ((nth 1 pps)
       (goto-char (nth 1 pps)))
      (t (py-backward-statement)))))

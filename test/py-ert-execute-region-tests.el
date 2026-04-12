@@ -22,8 +22,6 @@
 
 (require 'py-setup-ert-tests)
 
-
-
 (if
     (executable-find "python")
     (ert-deftest py-ert-execute-region-python-test ()
@@ -40,21 +38,6 @@ print(\"two\")"
           (goto-char (point-max))
           (should (search-backward "two")))))
     (when py-verbose-p (message "%s" "Don't see a ‘python’ executable")))
-
-(ert-deftest py-ert-execute-region-python3-test-iwySKV ()
-  (py-test
-      "print(\"one\")
-print(\"two\")"
-    'python-mode
-    'py-debug-p
-    (when py-debug-p (font-lock-ensure))
-    ;; (let ((buffer "*Python3*"))
-    (py-execute-region-python3 (point-min) (point-max))
-    (set-buffer (get-buffer "*Python3*"))
-    (goto-char (point-max))
-    (should (search-backward "two"))
-    (py-kill-buffer-unconditional (get-buffer "*Python3*"))))
-
 
 (if
     (ignore-errors (executable-find "ipython"))
