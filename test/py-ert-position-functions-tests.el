@@ -94,9 +94,6 @@
 (ert-deftest py-ert--beginning-of-block-or-clause-position-functionp-test ()
   (should (functionp 'py--beginning-of-block-or-clause-position)))
 
-(ert-deftest py-ert--beginning-of-buffer-position-functionp-test ()
-  (should (functionp 'py--beginning-of-buffer-position)))
-
 (ert-deftest py-ert--beginning-of-comment-position-functionp-test ()
   (should (functionp 'py--beginning-of-comment-position)))
 
@@ -111,9 +108,6 @@
 
 (ert-deftest py-ert-end-of-list-position-functionp-test ()
   (should (functionp 'py-end-of-list-position)))
-
-(ert-deftest py-ert--end-of-buffer-position-functionp-test ()
-  (should (functionp 'py--end-of-buffer-position)))
 
 (ert-deftest py-ert-list-beginning-position-functionp-test ()
   (should (functionp 'py-list-beginning-position)))
@@ -138,9 +132,6 @@
 
 (ert-deftest py-ert--end-of-def-or-class-position-functionp-test ()
   (should (functionp 'py--end-of-def-or-class-position)))
-
-(ert-deftest py-ert--end-of-buffer-position-functionp-test ()
-  (should (functionp 'py--end-of-buffer-position)))
 
 (ert-deftest py-ert--end-of-expression-position-functionp-test ()
   (should (functionp 'py--end-of-expression-position)))

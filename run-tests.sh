@@ -93,7 +93,8 @@ TEST17=$TESTDIR/py-split-just-two-window-on-execute-tests.el
 TEST18=$TESTDIR/py-ert-extra-tests.el
 TEST19=$TESTDIR/py-ert-interactive-tests.el
 TEST20=$TESTDIR/py-ert-ipython-tests.el
-TEST21=$HOME/emacs/test/lisp/progmodes/python-tests.el
+TEST21=$TESTDIR/py-ert-position-functions-tests.el
+TEST22=$HOME/emacs/test/lisp/progmodes/python-tests.el
 echo "\$EMACS: $EMACS"
 
 
@@ -365,8 +366,20 @@ h21() {
 --eval "(setq python-indent-offset 4)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
---l $HOME/emacs/lisp/progmodes/python.el \
+-load $PYTHONMODE \
 -l $TEST21 \
+-f ert-run-tests-batch-and-exit
+}
+
+h22() {
+    date; time -p $EMACS -Q -L . --batch \
+--eval "(message (emacs-version))" \
+--eval "(setq py-debug-p nil)" \
+--eval "(setq python-indent-offset 4)" \
+--eval "(add-to-list 'load-path \"$TESTDIR/\")" \
+-load $SETUP \
+--l $HOME/emacs/lisp/progmodes/python.el \
+-l $TEST22 \
 -f ert-run-tests-batch-and-exit
 }
 
@@ -502,7 +515,8 @@ if [ $IFLOCAL -eq 0 ]; then
 	    i) echo "h18: Lade \$TEST18: \"$TEST18\"";h18;;
 	    j) echo "h19: Lade \$TEST19: \"$TEST19\"";h19;;
 	    k) echo "h20: Lade \$TEST20: \"$TEST20\"";h20;;
-	    l) echo "h22: Lade \$TEST21: \"$TEST22\"";h21;;
+	    l) echo "h21: Lade \$TEST21: \"$TEST21\"";h21;;
+            m) echo "h22: Lade \$TEST22: \"$TEST22\"";h22;;
 	    z) echo "Lade Testumgebung ‘hier’";hier
 
 	esac
