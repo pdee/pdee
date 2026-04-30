@@ -603,42 +603,7 @@ def baz():
      ;; (should (eq (char-after) 34))
      )))
 
-(ert-deftest py-ert-fill-paragraph-django-BVA4Jt ()
-  ""
-  (let ((py-docstring-style 'django))
-    (py-test-point-min
-     "# r1416
-def baz():
-    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-     'python-mode
-     'py-debug-p
-     (when py-debug-p (font-lock-ensure))
-     ;; (font-lock-ensure)
-     (goto-char 49)
-     (fill-paragraph)
-     (goto-char (point-min))
-     (search-forward "Hello")
-     (forward-line 1)
-     (should (py-empty-line-p)))
-    ))
 
-;; (ert-deftest py-fast-send-string-no-output-VxbcvH ()
-;;   ""
-;;   (py-test
-;;    "print(234)"
-;;    'python-mode
-;;    'py-debug-p
-    (when py-debug-p (font-lock-ensure))
-;;    (py--fast-send-string-no-output (buffer-substring-no-properties (point-min) (point-max)))
-;;    (set-buffer "*Python3 Fast*")
-;;    (when py-debug-p (switch-to-buffer (current-buffer)))
-;;    (when py-debug-p (switch-to-buffer "*Python3 Fast*"))
-;;    (goto-char (point-max))
-;;    (should (search-backward "234"))))
 
 (ert-deftest py-send-string-no-output-VxbcvH ()
   ""

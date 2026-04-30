@@ -485,6 +485,33 @@ Default is  non-nil"
   :tag "py-empty-comment-line-separates-paragraph-p"
   :group 'python-mode)
 
+(defvar py-string-delim-re "\"\"\"\\|'''\\|\"\\|'"
+  "When looking at beginning of string.")
+
+(defvar py-star-labelled-re    "[ \t]*\\([\\*-]\\) +\\([[:graph:]]\\)"
+  "When looking at a star label.")
+
+;; (setq  py-star-labelled-re "^[ \t]*\\([\\*-]\\) +\\([[:graph:]]\\)")
+
+(defvar py-colon-labelled-re  "[ \\t]*\\([[:graph:]]\\)* * :  *\\([[:graph:]]+\\)"
+  "When looking at a colon label.")
+;; (setq py-colon-labelled-re "[ \\t]*\\([[:graph:]]\\)* * :  *\\([[:graph:]]+\\)")
+
+(defvar py-labelled-re (concat py-colon-labelled-re "\\|" py-star-labelled-re)
+  "When looking at label.")
+
+(defcustom py-paragraph-start (concat py-labelled-re "\f\\|^[ \t]*$\\|^[ \t\f]*-+[ \t\f]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*[[:alnum:]]+ : +[[:alnum:]]+.+$")
+  "Sets python-mode specific ‘paragraph-start’"
+  :type 'regexp
+  :tag "py-paragraph-start"
+  :group 'python-mode)
+
+(defcustom py-paragraph-separate (concat py-labelled-re "\f\\|^[ \t]*$\\|^[ \t\f]*-+[ \t\f]*$\\|^[ \t\f]*[[:alnum:]]+ : [[:alnum:]]")
+  "Sets python-mode specific ‘paragraph-separate’"
+  :type 'regexp
+  :tag "py-paragraph-separate"
+  :group 'python-mode)
+
 (defcustom py-indent-honors-inline-comment nil
   "If non-nil, indents to column of inlined comment start.
 Default is nil."
@@ -2563,19 +2590,6 @@ Restore ‘py-restore-window-configuration’.")
 
 Remember source buffer where error might occur.")
 
-(defvar py-string-delim-re "\"\"\"\\|'''\\|\"\\|'"
-  "When looking at beginning of string.")
-
-(defvar py-star-labelled-re "[ \\t]*[\\*-] +[[:graph:]]"
-  "When looking at a star label.")
-
-(defvar py-colon-labelled-re "[ \\t]*[[:graph:]]* * :  *[[:graph:]]+"
-  "When looking at a colon label.")
-;; (setq py-colon-labelled-re "[ \\t]*[[:graph:]]* *: *[[:graph:]]+\\|[ \\t]*[\\*-] +[[:graph:]]")
-
-(defvar py-labelled-re (concat py-colon-labelled-re "\\|" py-star-labelled-re)
-  "When looking at label.")
-
 ;; "[ \t]+\\c.+"
 (defvar py-symbol-re "[ \t]*\\c.+[ \t]*$"
   "Matching lines only containing symbols.")
@@ -2592,7 +2606,7 @@ Remember source buffer where error might occur.")
 (defvar py-expression-re "[^ =#\t\r\n\f]+"
   "Expression possibly composing a ‘py-expression’.")
 
-(defcustom py-paragraph-re paragraph-start
+(defcustom py-paragraph-re "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alnum:]]+ [[:alnum:]]+:.+$\\|^[ \t\f]*-+^[ \t\f]*$"
   "Allow Python specific ‘paragraph-start’ var."
   :type 'string
   :tag "py-paragraph-re"

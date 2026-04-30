@@ -327,6 +327,7 @@ h18() {
 --eval "(message (emacs-version))" \
 --eval "(setq py-debug-p nil)" \
 --eval "(setq python-indent-offset 4)" \
+--eval "(setq python-indent-guess-indent-offset-verbose nil)" \
 --eval "(add-to-list 'load-path \"$TESTDIR/\")" \
 -load $SETUP \
 -load $PYTHONMODE \

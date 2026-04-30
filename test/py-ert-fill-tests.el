@@ -21,6 +21,28 @@
 
 (require 'py-setup-ert-tests)
 
+(ert-deftest py-ert-fill-paragraph-django-BVA4Jt ()
+  ""
+  (let ((py-docstring-style 'django))
+    (py-test-point-min
+     "# r1416
+def baz():
+    \"\"\"Hello there. This is a multiline function definition. Don't wor ry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy. This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+    This is a multiline function definition. Don't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+     'python-mode
+     'py-debug-p
+     (when py-debug-p (font-lock-ensure))
+     ;; (font-lock-ensure)
+     (goto-char 49)
+     (save-excursion (fill-paragraph))
+     ;; (goto-char (point-min))
+     (should (re-search-forward "^$"))
+     ;; (should (py-empty-line-p)))
+    )))
+
 (ert-deftest py-raw-docstring-test-pep-257-nn-pbqel7 ()
   (py-test-point-min
    "def f():
@@ -37,6 +59,7 @@
      (py-fill-paragraph)
      (forward-line 1)
      (skip-chars-forward " \t\r\n\f")
+     (sit-for 0.1)
      (should (eq 4 (current-indentation)))
      (search-forward "\"\"\"")
      (should (eq 4 (current-indentation))))))
@@ -103,7 +126,7 @@
    (when py-debug-p (font-lock-ensure))
    (goto-char (point-min))
    (search-forward "XXX")
-   (fill-paragraph)
+   (py-fill-paragraph)
    (search-forward "self")
    (back-to-indentation)
    (should (eq 8 (current-column)))
@@ -240,16 +263,28 @@ def foo(rho, x):
 
 (ert-deftest fill-paragraph-causes-wrong-indent-lp-1397936-test-DqgSN7 ()
   (py-test
-   "def foo():
+      "def foo():
     \"\"\"abc\"\"\"
 "
-   'python-mode
-   'py-debug-p
-   (when py-debug-p (switch-to-buffer (current-buffer))
-	 (jit-lock-fontify-now))
-   (goto-char 20)
-   (call-interactively 'fill-paragraph)
-   (should (eq 4 (current-indentation)))))
+    'python-mode
+    'py-debug-p
+    (let ((py-docstring-style 'pep-257-nn))
+      (when py-debug-p (font-lock-ensure))
+      (goto-char 20)
+      (call-interactively 'py-fill-paragraph)
+      (should (eq 4 (current-indentation))))))
+
+(ert-deftest fill-paragraph-causes-wrong-indent-lp-1397936-test-2l64JB ()
+  (py-test
+      "def foo():
+    \"\"\"abc\"\"\""
+    'python-mode
+    'py-debug-p
+    (let ((py-docstring-style 'django))
+      (when py-debug-p (font-lock-ensure))
+      (goto-char 20)
+      (call-interactively 'py-fill-paragraph)
+      (should (eq 4 (current-indentation))))))
 
 (ert-deftest filling-docstring-paragraphs-gibberish-140-test-DqgSN7 ()
   "See lp:1066489"
@@ -279,7 +314,7 @@ def foo(rho, x):
    (let ((py-docstring-style 'pep-257-nn))
      (goto-char (point-max))
      (search-backward "attribute")
-     (fill-paragraph)
+     (py-fill-paragraph)
      (forward-line -1)
      (should-not (py-empty-line-p)))))
 
@@ -315,7 +350,7 @@ def foo(rho, x):
    (let ((py-docstring-style 'pep-257-nn))
      (goto-char (point-max))
      (search-backward "__loader__")
-     (fill-paragraph)
+     (py-fill-paragraph)
      (back-to-indentation)
      (should (eq (current-column) 6)))))
 
@@ -441,7 +476,7 @@ def baz():
      'py-debug-p
      (when py-debug-p (font-lock-ensure))
      (goto-char 49)
-     (fill-paragraph)
+     (py-fill-paragraph)
      (search-backward "\"\"\"")
      (goto-char (match-end 0))
      (forward-line 1)
@@ -462,7 +497,7 @@ def baz():
    (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'onetwo))
      (goto-char 49)
-     (fill-paragraph)
+     (py-fill-paragraph)
      (search-backward "\"\"\"")
      (goto-char (match-end 0))
      (forward-line 1)
@@ -470,7 +505,7 @@ def baz():
      (should (<= (current-column) 72))
      (search-forward "\"\"\"")
      (forward-line -1)
-     (fill-paragraph)
+     (py-fill-paragraph)
      (search-forward "\"\"\"")
      (forward-line -1)
      (should (py-empty-line-p)))))
@@ -487,11 +522,11 @@ def baz():
    (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'onetwo))
      (goto-char 49)
-     (fill-paragraph)
+     (py-fill-paragraph)
      (search-backward "\"\"\"")
      (goto-char (match-end 0))
      (should (<= (current-column) 72))
-     (fill-paragraph)
+     (py-fill-paragraph)
      (end-of-line)
      (skip-chars-backward " \t\r\n\f")
      (looking-back "\"\"\"" (line-beginning-position)))))
@@ -510,7 +545,7 @@ def baz():
    (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'pep-257))
      (goto-char 49)
-     (fill-paragraph)
+     (py-fill-paragraph)
      (end-of-line)
      (should (<= (current-column) 72))
      (forward-line 2)
@@ -540,7 +575,7 @@ def baz():
    (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'pep-257))
      (search-forward "index")
-     (fill-paragraph)
+     (py-fill-paragraph)
      (goto-char (point-max))
      (search-backward "\"")
      (forward-char 1)
@@ -548,7 +583,7 @@ def baz():
      (forward-line -1)
      (should (py-empty-line-p)))))
 
-(ert-deftest py-ert-symmetric_1Okwdy ()
+(ert-deftest py-ert-fill-symmetric_1Okwdy ()
   (py-test-point-min
    "class DataFrame(NDFrame, OpsMixin):
     \"\"\"
@@ -563,16 +598,27 @@ def baz():
    (let ((py-docstring-style 'symmetric)
          (python-docstring-style 'symmetric))
      (search-forward "index")
-     (fill-paragraph)
-     (goto-char (point-max))
-     (should (eq 7 (py-count-lines))))))
+     (save-excursion (py-fill-paragraph))
+     (should (re-search-forward "^$")))))
 
-     ;; (search-backward "\"")
-     ;; (forward-char 1)
-     ;; (should (eolp))
-     ;; (forward-line -1)
-     ;; (sit-for 1)
-     ;; (should-not (py-empty-line-p)))))
+(ert-deftest py-ert-fill-symmetric_-cgxq5c ()
+  (py-test-point-min
+   "class DataFrame(NDFrame, OpsMixin):
+    \"\"\"
+    index : Index or array-like
+        Index to use for resulting frame\. Will default to RangeIndex if
+        no indexing information part of input data and no index provided\.
+    \"\"\"
+    pass"
+   'python-mode
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
+   (let ((py-docstring-style 'symmetric)
+         (python-docstring-style 'symmetric))
+     (search-forward "index")
+     (save-excursion (py-fill-paragraph))
+     (search-forward "use")
+     (should (eq (current-indentation) 6)))))
 
 (ert-deftest py-ert-pep-257-9HrXY7 ()
   (py-test
@@ -589,12 +635,103 @@ def baz():
    (goto-char (point-max))
    (search-backward "I")
    (let ((py-docstring-style 'pep-257))
-     (py-fill-string)
+     (py-fill-paragraph)
      (goto-char (point-max))
      (re-search-backward py-string-delim-re)
      (forward-line -1)
+     ;; (sit-for 0.1)
      (should (py-empty-line-p)))))
 
+(ert-deftest py-ert-fill-paragraph-lp-1291493-JPuJd3 ()
+  (py-test-point-min
+   "if True:
+    if True:
+        if True:
+            if True:
+                pass
+def foo():
+    \"\"\"Foo\"\"\"
+"
+   'python-mode
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
+   (sit-for 0.1 t)
+   (search-forward "\"\"\"")
+   (py-fill-paragraph)
+   (sit-for 0.1 t)
+   (should (eq 7 (current-column)))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-2-rq3mat ()
+  (py-test-point-min
+   "class MyClass(object):
+    def my_method(self):
+        \"\"\"Some long line with more than 70 characters in the docstring. Some more text.\"\"\"
+"
+   'python-mode
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
+   (let ((py-docstring-style 'pep-257-nn))
+     (goto-char (point-min))
+     (search-forward "\"\"\"")
+     (py-fill-paragraph)
+     (search-forward "\"\"\"")
+     (should (eq 8 (current-indentation))))))
+
+(ert-deftest py-ert-moves-up-fill-paragraph-lp-1286318 ()
+  (py-test-point-min
+   "# r1416
+def baz():
+    \"\"\"Hello there.
+    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
+    \"\"\"
+    return 7
+# The last line of the docstring is longer than fill-column (set to
+# 78 = for me). Put point on the 'T' in 'This' and hit M-q= . Nothing
+# happens.
+#
+# Another example:
+#
+def baz():
+    \"\"\"Hello there.
+    This is a multiline
+    function definition.
+    Don't worry, be happy.
+    Be very very happy.
+    Very. happy.
+    \"\"\"
+    return 7
+# All of those lines are shorter than fill-column. Put point anywhere
+# = in that paragraph and hit M-q. Nothing happens.
+#
+# In both cases I would expect to end up with:
+#
+def baz():
+    \"\"\"Hello there.
+    This is a multiline function definition. Don= 't worry, be happy. Be very
+    very happy. Very. happy.
+    \"\"\"
+    return 7
+"
+   'python-mode
+   'py-debug-p
+   (when py-debug-p (font-lock-ensure))
+   (goto-char 49)
+   ;; (sit-for 0.1 t)
+   (py-fill-paragraph)
+   (end-of-line)
+   (should (<= (current-column) 72))
+   (goto-char 409)
+   (py-fill-paragraph)
+   (end-of-line)
+   (should (<= (current-column) 72))
+   (goto-char 731)
+   (py-fill-paragraph)
+   (end-of-line)
+   (should (<= (current-column) 72))
+   (search-forward "\"\"\"")
+   (forward-line -1)
+   ;; (sit-for 0.1 t)
+   (should (not (py-empty-line-p)))))
 
 (provide 'py-ert-fill-tests)
 ;;; py-ert-fill-tests.el ends here

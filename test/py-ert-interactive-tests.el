@@ -38,25 +38,6 @@ FooFoo."
     ;; (sit-for 0.1)
     (should (eq (char-before) ?.))))
 
-(ert-deftest py-ert-fill-paragraph-lp-1291493-JPuJd3 ()
-  (py-test-point-min
-   "if True:
-    if True:
-        if True:
-            if True:
-                pass
-def foo():
-    \"\"\"Foo\"\"\"
-"
-   'python-mode
-   'py-debug-p
-   (when py-debug-p (font-lock-ensure))
-   (sit-for 0.1 t)
-   (search-forward "\"\"\"")
-   (fill-paragraph)
-   (sit-for 0.1 t)
-   (should (eq 7 (current-column)))))
-
 (ert-deftest py-ert-execute-region-ipython-lp-1294796-HePARg ()
   (py-test-point-min
    "print(1)
@@ -336,22 +317,6 @@ if __name__ == \"__main__\":
    ;; (should (eolp))
    ))
 
-(ert-deftest py-ert-moves-up-fill-paragraph-pep-257-nn-2-rq3mat ()
-  (py-test-point-min
-   "class MyClass(object):
-    def my_method(self):
-        \"\"\"Some long line with more than 70 characters in the docstring. Some more text.\"\"\"
-"
-   'python-mode
-   'py-debug-p
-   (when py-debug-p (font-lock-ensure))
-   (let ((py-docstring-style 'pep-257-nn))
-     (goto-char (point-min))
-     (search-forward "\"\"\"")
-     (fill-paragraph)
-     (search-forward "\"\"\"")
-     (should (eq 8 (current-indentation))))))
-
 (ert-deftest py-ert-split-window-on-execute-1361535-test-fK4Nqy ()
   (py-test-point-min
    "print(\"%(language)s has %(number)03d quote types.\" %
@@ -453,62 +418,6 @@ exercise()"
 exercise()"
    'python-mode
    py-verbose-p))
-
-(ert-deftest py-ert-moves-up-fill-paragraph-lp-1286318 ()
-  (py-test-point-min
-   "# r1416
-def baz():
-    \"\"\"Hello there.
-    This is a multiline function definition. Don= 't worry, be happy. Be very very happy. Very. happy.
-    \"\"\"
-    return 7
-# The last line of the docstring is longer than fill-column (set to
-# 78 = for me). Put point on the 'T' in 'This' and hit M-q= . Nothing
-# happens.
-#
-# Another example:
-#
-def baz():
-    \"\"\"Hello there.
-    This is a multiline
-    function definition.
-    Don't worry, be happy.
-    Be very very happy.
-    Very. happy.
-    \"\"\"
-    return 7
-# All of those lines are shorter than fill-column. Put point anywhere
-# = in that paragraph and hit M-q. Nothing happens.
-#
-# In both cases I would expect to end up with:
-#
-def baz():
-    \"\"\"Hello there.
-    This is a multiline function definition. Don= 't worry, be happy. Be very
-    very happy. Very. happy.
-    \"\"\"
-    return 7
-"
-   'python-mode
-   'py-debug-p
-   (when py-debug-p (font-lock-ensure))
-   (goto-char 49)
-   ;; (sit-for 0.1 t)
-   (fill-paragraph)
-   (end-of-line)
-   (should (<= (current-column) 72))
-   (goto-char 409)
-   (fill-paragraph)
-   (end-of-line)
-   (should (<= (current-column) 72))
-   (goto-char 731)
-   (fill-paragraph)
-   (end-of-line)
-   (should (<= (current-column) 72))
-   (search-forward "\"\"\"")
-   (forward-line -1)
-   ;; (sit-for 0.1 t)
-   (should (not (py-empty-line-p)))))
 
 (ert-deftest py-ert-if-name-main-permission-lp-326620-test-CZefpG ()
   (py-test-point-min
@@ -722,7 +631,7 @@ def baz():
      (goto-char (point-min))
      (font-lock-fontify-region (point-min)(point-max))
      (goto-char 49)
-     (fill-paragraph)
+     (py-fill-paragraph)
      (search-backward "\"\"\"")
      (goto-char (match-end 0))
      (eolp)
@@ -768,13 +677,16 @@ def baz():
    (when py-debug-p (font-lock-ensure))
    (let ((py-docstring-style 'django))
      (goto-char 49)
-     (fill-paragraph)
+     (py-fill-paragraph)
      (search-backward "\"\"\"")
      (goto-char (match-end 0))
+     (sit-for 0.1)
+     ;; (should (looking-at " \t\r\n\f"))
      (should (eolp))
      (forward-line 1)
      (end-of-line)
      (when py-debug-p (message "fill-column: %s" fill-column))
+     (sit-for 0.1)
      (should (<= (current-column) 72)))))
 
 (ert-deftest py-ert-moves-up-fill-paragraph-django-w8Rbx5 ()
@@ -793,7 +705,7 @@ def baz():
    (let ((py-docstring-style 'django))
      (goto-char 49)
      (when py-debug-p (message "fill-column: %s" fill-column))
-     (fill-paragraph)
+     (py-fill-paragraph)
      (py-end-of-string)
      (forward-line -1)
      (should-not (py-empty-line-p)))))

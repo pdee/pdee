@@ -203,5 +203,26 @@ From a programm use macro ‘py-backward-comment’ instead"
       (or (< 0 (abs (skip-chars-backward " \t\r\n\f")))
           (py-backward-comment))))
 
+(defun py-fixup-whitespace (&optional arg end)
+  "Fixup white space between objects around point.
+
+Leave one space or none, according to the context.
+With \\[universal-argument], keep just one space"
+  (interactive "P*")
+  (save-excursion
+    (skip-chars-backward " \t\r\n\f")
+    (let ((start (point)))
+      (skip-chars-forward " \t\r\n\f" end)
+      (delete-region start (point)))
+    (if (or (looking-at "^\\|\\s)")
+	    (save-excursion (forward-char -1)
+			    (looking-at "$\\|\\s(\\|\\s'")))
+	nil
+      (when (eq 4 (prefix-numeric-value arg))
+        (insert ? ))))
+  (when (or (eq major-mode 'text-mode)
+            (eq major-mode 'sgml-mode))
+    (re-search-forward "[ \t\n]\\{2\\}" nil t 1)))
+
 (provide 'python-components-subr)
 ;;; python-components-subr.el ends here

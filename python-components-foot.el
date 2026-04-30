@@ -140,14 +140,9 @@
   (set (make-local-variable 'comment-start) "#")
   (set (make-local-variable 'comment-start-skip) "#+\\s-*")
   (if py-empty-comment-line-separates-paragraph-p
-      (progn
-        (set (make-local-variable 'paragraph-separate) (concat "\f\\|^[\t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[\t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
-        (set (make-local-variable 'paragraph-start)
-             (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
-        (set (make-local-variable 'paragraph-separate)
-             (concat "\f\\|^[ \t]*$\\|^[ \t]*" comment-start "[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")))
-    (set (make-local-variable 'paragraph-separate) "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$")
-    (set (make-local-variable 'paragraph-start) "\f\\|^[ \t]*$\\|^[\t]*#[ \t]*$\\|^[ \t\f]*:[[:alpha:]]+ [[:alpha:]]+:.+$"))
+      (set (make-local-variable 'paragraph-separate) (concat "^[\t]*#[ \t]*$\\|" py-paragraph-separate))
+    (set (make-local-variable 'paragraph-separate) py-paragraph-separate))
+  (set (make-local-variable 'paragraph-start) py-paragraph-start)
   (set (make-local-variable 'comment-column) 40)
   ;; (set (make-local-variable 'comment-indent-function) #'py--comment-indent-function)
   (set (make-local-variable 'indent-region-function) 'py-indent-region)
@@ -158,7 +153,8 @@
   (set (make-local-variable 'open-paren-in-column-0-is-defun-start) nil)
   (set (make-local-variable 'add-log-current-defun-function) 'py-current-defun)
   (set (make-local-variable 'fill-paragraph-function) 'py-fill-paragraph)
-  (set (make-local-variable 'prog-fill-reindent-defun-function) 'py-fill-paragraph)
+  ;; (setq-local prog-fill-reindent-defun-function 'py-fill-paragraph)
+  ;; (set (make-local-variable 'prog-fill-reindent-defun-function) 'py-fill-paragraph)
   ;; recent Emacs binds ‘M-q’ to ‘prog-fill-reindent-defun’
   ;; (local-set-key [(meta ?q)] 'fill-pararaph)
   (set (make-local-variable 'normal-auto-fill-function) 'py-fill-string-or-comment)
@@ -235,8 +231,7 @@
     (py-message-which-python-mode))
   (when py-use-menu-p
     (py-define-menu python-mode-map))
-  (add-hook 'python-mode-hook 'force-mode-line-update)
-  )
+  (add-hook 'python-mode-hook 'force-mode-line-update))
 
 (defun py--update-version-dependent-keywords ()
   (let ((kw-py2 '(("\\<print\\>" . 'font-lock-keyword-face)
@@ -284,6 +279,7 @@ VARIABLES
   :group 'python-mode
   ;; load known shell listed in
   ;; Local vars
+  (define-key python-mode-map [(meta q)] 'py-fill-paragraph)
   (all-mode-setting))
 
 ;;;###autoload
@@ -339,7 +335,7 @@ may want to re-add custom functions to it using the
 ;; (push "*Python*"  same-window-buffer-names)
 ;; (push "*IPython*"  same-window-buffer-names)
 
-;; Python Macro File
+;; python.el
 (unless (member '("\\.py\\'" . python-mode) auto-mode-alist)
   (push (cons "\\.py\\'"  'python-mode)  auto-mode-alist))
 

@@ -185,8 +185,7 @@ Optional MAXINDENT: do not stop if indentation is larger"
         ;; (unless done
         ;;   (and (< 0 (abs (skip-chars-backward " \t\r\n\f")))
         ;;        (setq pps (parse-partial-sexp (or limit (point-min))(point)))))
-        (when py-debug-p (message "orig: %s (point): %s" orig (point)))
-        ;; (when py-debug-p (message "(point): %s" (point)))
+        ;; (when py-debug-p (message "orig: %s (point): %s" orig (point)))
         (cond
          ((< py-max-specpdl-size repeat)
           (error "py-backward-statement reached loops max. If no error, customize ‘py-max-specpdl-size’"))
