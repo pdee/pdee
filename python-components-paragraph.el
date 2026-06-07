@@ -210,7 +210,7 @@ Return position of first line incluse empty line according to style"
   ;; (narrow-to-region innerbeg end)
   (save-excursion
     (if multi-line-p
-        (progn 
+        (progn
         (save-restriction
           ;; (narrow-to-region innerbeg (line-end-position))
           (narrow-to-region (line-beginning-position) (line-end-position))
@@ -246,15 +246,12 @@ Return position of first line incluse empty line according to style"
 
 (defun py--fill-next-end ()
   "Check if next paragraph starts from an empty line or ‘labelled’. "
-  (let ((next-labelled-start (save-excursion (end-of-line) (or (setq next-labelled-start (and (re-search-forward (concat py-star-labelled-re "\\|" py-colon-labelled-re) nil t 1 ) (line-beginning-position))) (point-max))))
+  (let ((next-labelled-start (save-excursion (end-of-line) (or (and (re-search-forward (concat py-star-labelled-re "\\|" py-colon-labelled-re) nil t 1 ) (line-beginning-position)) (point-max))))
          (plain-paragraph-start (save-excursion (progn (py-forward-paragraph) (point)))))
     ;; a paragraph may end before the next match
     (if (< plain-paragraph-start next-labelled-start) plain-paragraph-start next-labelled-start)))
-        ;; fill the lesser region
-        ;; (py-fill-labelled-string (point) this this-fill-prefix)
-      ;; (py-fill-labelled-string (point) (- last 1) this-fill-prefix))))
 
-(defun py--fill-docstring-intern (this-fill-prefix &optional justify)
+(defun py--fill-docstring-intern (this-fill-prefix)
   "Call it form string-start position. "
   (skip-chars-forward " \t\r\n\f")
   (unless (eobp)
@@ -364,7 +361,7 @@ Return position of first line incluse empty line according to style"
 ;; (<= fill-column (current-column))
 ;; (py-fixup-whitespace '(4) end)
 
-(defun py--fill-paragraph-intern (beg-raw pps docstring in-string end-first end-raw justify)
+(defun py--fill-paragraph-intern (beg-raw pps docstring in-string end-first end-raw)
   ""
   (let* ((beg (or beg-raw
                   ;; (save-excursion
@@ -401,7 +398,7 @@ Return position of first line incluse empty line according to style"
       ;; (narrow-to-region (or beg docstring) end)
       (cond ((nth 4 pps) ;; inside comment
              (goto-char (nth 8 pps))
-             
+
              (py-fill-comment))
              ((looking-at "[ \t]*#[# \t]*")
               (py-fill-comment))
@@ -438,18 +435,16 @@ Return position of first line incluse empty line according to style"
           (save-excursion
             (narrow-to-region (progn (goto-char (nth 8 pps))(line-beginning-position))
                               (setq end-raw (or end-first (progn (goto-char (nth 8 pps)) (forward-sexp) (point))))))
-          (py--fill-paragraph-intern (or beg-raw (point-min)) pps docstring in-string end-first end-raw justify))
-      (py--fill-paragraph-intern beg-raw pps docstring in-string end-first end-raw justify))))
+          (py--fill-paragraph-intern (or beg-raw (point-min)) pps docstring in-string end-first end-raw))
+      (py--fill-paragraph-intern beg-raw pps docstring in-string end-first end-raw))))
 
-(defun py-fill-string (&optional justify docstring pps)
+(defun py-fill-string (&optional docstring pps)
   "String fill function.
 JUSTIFY should be used (if applicable) as in ‘fill-paragraph’.
 
 Fill according to ‘py-docstring-style’ "
   (interactive "*")
   (let* ((this-fill-prefix fill-prefix)
-         (justify (or justify (if current-prefix-arg 'full t)))
-         ;; (style (or style py-docstring-style))
          (pps (or pps (parse-partial-sexp (point-min) (point))))
          (orig (copy-marker (point)))
          ;; (docstring (or docstring (py--in-or-behind-or-before-a-docstring pps)))
@@ -526,7 +521,7 @@ Fill according to ‘py-docstring-style’ "
 See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
-  (py-fill-string justify 'django t))
+  (py-fill-string 'django t))
 
 (defun py-fill-string-onetwo (&optional justify)
   "One newline and start and Two at end style.
@@ -543,7 +538,7 @@ See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
-  (py-fill-string justify 'onetwo t))
+  (py-fill-string 'onetwo t))
 
 (defun py-fill-string-pep-257 (&optional justify)
   "PEP-257 with 2 newlines at end of string.
@@ -559,7 +554,7 @@ See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
-  (py-fill-string justify 'pep-257 t))
+  (py-fill-string 'pep-257 t))
 
 (defun py-fill-string-pep-257-nn (&optional justify)
   "PEP-257 with 1 newline at end of string.
@@ -574,7 +569,7 @@ See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
-  (py-fill-string justify 'pep-257-nn t))
+  (py-fill-string 'pep-257-nn t))
 
 (defun py-fill-string-symmetric (&optional justify)
   "Symmetric style.
@@ -590,7 +585,7 @@ See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
 "
   (interactive "*P")
-  (py-fill-string justify 'symmetric t))
+  (py-fill-string 'symmetric t))
 
 (provide 'python-components-paragraph)
 ;;; python-components-paragraph.el ends here
