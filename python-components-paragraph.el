@@ -417,7 +417,7 @@ Return position of first line incluse empty line according to style"
                (py--continue-lines-region beg end)))))
     (jump-to-register py--windows-config-register)))
 
-(defun py-fill-paragraph (&optional justify pps beg end)
+(defun py-fill-paragraph (&optional pps beg end)
   "Fill the paragraph at point honoring ‘py-docstring-style’."
   (interactive "*")
   (window-configuration-to-register py--windows-config-register)
@@ -501,11 +501,11 @@ Fill according to ‘py-docstring-style’ "
   (unless (< (current-column) fill-column)
     (let ((pps (parse-partial-sexp (point-min) (point))))
       (if (nth 3 pps)
-          (py-fill-string nil nil pps)
+          (py-fill-string nil pps)
         ;; (py-fill-comment pps)
         (do-auto-fill)))))
 
-(defun py-fill-string-django (&optional justify)
+(defun py-fill-string-django ()
   "Fill docstring according to Django's coding standards style.
 
     \"\"\"
@@ -523,7 +523,7 @@ See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
   (interactive "*P")
   (py-fill-string 'django t))
 
-(defun py-fill-string-onetwo (&optional justify)
+(defun py-fill-string-onetwo ()
   "One newline and start and Two at end style.
 
     \"\"\"Process foo, return bar.\"\"\"
@@ -540,7 +540,7 @@ See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
   (interactive "*P")
   (py-fill-string 'onetwo t))
 
-(defun py-fill-string-pep-257 (&optional justify)
+(defun py-fill-string-pep-257 ()
   "PEP-257 with 2 newlines at end of string.
 
     \"\"\"Process foo, return bar.\"\"\"
@@ -556,7 +556,7 @@ See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
   (interactive "*P")
   (py-fill-string 'pep-257 t))
 
-(defun py-fill-string-pep-257-nn (&optional justify)
+(defun py-fill-string-pep-257-nn ()
   "PEP-257 with 1 newline at end of string.
 
     \"\"\"Process foo, return bar.\"\"\"
@@ -571,7 +571,7 @@ See available styles at ‘py-fill-paragraph’ or var ‘py-docstring-style’
   (interactive "*P")
   (py-fill-string 'pep-257-nn t))
 
-(defun py-fill-string-symmetric (&optional justify)
+(defun py-fill-string-symmetric ()
   "Symmetric style.
 
     \"\"\"Process foo, return bar.\"\"\"
