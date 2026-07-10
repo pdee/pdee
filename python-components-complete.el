@@ -72,7 +72,7 @@ Takes END"
 
 Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
   (when imports
-    (py-execute-string imports process))
+    (py-execute-string imports process nil t))
   (sit-for 0.1 t)
   (let* ((completion
           (py--shell-completion-get-completions
@@ -83,15 +83,17 @@ Takes PROCESS IMPORTS INPUT EXCEPTION-BUFFER CODE"
         (py--shell-insert-completion-maybe completion input)))))
 
 (defun py--complete-base (shell word imports buffer)
-  (let* ((proc (or
+  (let* (py-switch-buffers-on-execute-p
+         py-split-window-on-execute
+         py-register-shell-buffer-p
+         (proc (or
                 ;; completing inside a shell
                 (get-buffer-process buffer)
                 (and (comint-check-proc shell)
                      (get-process shell))
-                (prog1
-                    (get-buffer-process (py-shell nil nil nil shell))
-                  ;; (sit-for py-new-shell-delay t)
-                  )))
+                (get-buffer-process (py-shell nil nil nil shell nil nil (current-buffer) nil nil))
+                ;; (sit-for py-new-shell-delay t)
+                ))
          ;; (buffer (process-buffer proc))
          (code (if (string-match "[Ii][Pp]ython*" shell)
                    (py-set-ipython-completion-command-string shell)
@@ -120,9 +122,14 @@ Interal used. Takes INPUT COMPLETION"
         (unless (string= erg elt)
           (push elt newlist)))
       (if (< 1 (length newlist))
-          (with-output-to-temp-buffer py-python-completions
+          ;; (with-output-to-temp-buffer py-python-completions
+          (with-output-to-temp-buffer "*Python Completions*"
             (display-completion-list
-             (all-completions input (or newlist completion))))))))
+             completion
+             ;; (all-completions input (or newlist completion))
+             )
+            ;; (switch-to-buffer "*Python Completions*")
+            )))))
 
 (defun py--fast-completion-get-completions (input process completion-code buffer)
   "Retrieve available completions for INPUT using PROCESS.
@@ -223,7 +230,7 @@ Use ‘py-fast-process’ "
   (setq py-last-window-configuration
         (current-window-configuration))
   (py-shell-complete shell nil nil word 1 imports)
-  (py-restore-window-configuration)
+  ;; (py-restore-window-configuration)
   )
 
 (defun py-indent-or-complete ()
@@ -261,8 +268,8 @@ in (I)Python shell-modes ‘py-shell-complete’"
          (ignore-errors (completion-at-point)))
         (py-do-completion-p
          (when py-debug-p (message "py-indent-or-complete: %s" "calling ‘(completion-at-point)’"))
-         ;; (py-fast-complete)
-         (setq done (completion-at-point))
+         (or (py-fast-complete)
+             (setq done (completion-at-point)))
          (when py-verbose-p (message "%s" done))
          (setq done (< 0 (skip-chars-forward "^ \t\r\n\f")))
          )

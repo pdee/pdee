@@ -618,7 +618,7 @@ def baz():
      (search-forward "index")
      (save-excursion (py-fill-paragraph))
      (search-forward "use")
-     (should (eq (current-indentation) 6)))))
+     (should (eq (current-indentation) 4)))))
 
 (ert-deftest py-ert-pep-257-9HrXY7 ()
   (py-test

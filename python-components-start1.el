@@ -2144,7 +2144,7 @@ process buffer for a list of commands.)"
          (this-buffer-name (buffer-name buffer)))
     (setq py-output-buffer (buffer-name (if python-mode-v5-behavior-p (get-buffer "*Python Output*") buffer)))
     (with-current-buffer buffer
-      (when py-debug-p (switch-to-buffer (current-buffer)))
+      ;; (when py-debug-p (switch-to-buffer (current-buffer)))
       ;; (setq delay (py--which-delay-process-dependent this-buffer-name))
       (unless fast
         (setq py-shell-mode-syntax-table python-mode-syntax-table)
@@ -2156,11 +2156,10 @@ process buffer for a list of commands.)"
               (save-restriction
                 (with-current-buffer buffer
                   (when (or switch py-switch-buffers-on-execute-p py-split-window-on-execute)
-                    (switch-to-buffer (current-buffer))
                     (goto-char (point-max))
                     (sit-for 0.1)
-                    (funcall 'window-configuration-to-register py-register-char))))))
-          (unless fast (py-shell-mode))
+                    (funcall 'window-configuration-to-register py-register-char)))))
+            (unless fast (py-shell-mode)))
           (and internal (set-process-query-on-exit-flag proc nil))
           (when (or interactivep
                     (or switch py-switch-buffers-on-execute-p py-split-window-on-execute))
