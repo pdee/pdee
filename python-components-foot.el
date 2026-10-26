@@ -107,6 +107,7 @@
 (autoload 'python-mode "python-mode" "Python Mode." t)
 
 (defun all-mode-setting ()
+  (interactive) 
   (set (make-local-variable 'indent-tabs-mode) py-indent-tabs-mode)
   (set (make-local-variable 'electric-indent-inhibit) nil)
   (set (make-local-variable 'outline-regexp)
@@ -280,7 +281,8 @@ VARIABLES
   ;; load known shell listed in
   ;; Local vars
   (define-key python-mode-map [(meta q)] 'py-fill-paragraph)
-  (all-mode-setting))
+  (all-mode-setting)
+  (force-mode-line-update))
 
 ;;;###autoload
 (define-derived-mode py-shell-mode comint-mode py-modeline-display

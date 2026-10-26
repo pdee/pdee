@@ -70,7 +70,7 @@ fi
 
 echo "\$PYTHONMODE: $PYTHONMODE"
 
-SETUP=py-setup-ert-tests.el
+SETUP=${TESTDIR}/py-setup-ert-tests.el
 echo "\$SETUP: $SETUP"
 
 TEST1=$TESTDIR/py-ert-indent-tests.el
